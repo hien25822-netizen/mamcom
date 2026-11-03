@@ -76,7 +76,8 @@
   }
   .panel__head h2{font-size:15px;font-weight:800;margin:0;color:var(--red)}
   .hint{font-size:11.5px;color:var(--muted)}
-  .menu__hint{font-size:15px;font-weight:800;color:var(--red);margin:10px 0 0}
+  .menu__hint{padding:10px 16px 0;font-size:15px;font-weight:400;color:var(--red);margin:0}
+  .menu__price{padding:0 16px;font-size:14px;font-weight:800;color:var(--ink);margin:0 0 2px}
 
   .menu{
     list-style:none;margin:0;padding:10px;
@@ -213,6 +214,25 @@
   .editor-actions [data-act="cancel"]:hover{background:var(--red-soft)}
 
   .menu__foot{padding:8px 10px 10px;border-top:1px solid var(--line);margin-top:2px}
+  /* ============ OWNER SETTINGS (opens on logo click) ============ */
+  .logo{cursor:pointer}
+  .set__sec{border-top:1px solid var(--line);padding:10px 0}
+  .set__sec:first-of-type{border-top:0;padding-top:2px}
+  .set__label{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+  .set__row{display:flex;gap:8px;align-items:center}
+  .set__input{width:88px;border:2px solid var(--line);border-radius:10px;padding:9px 10px;font-size:16px;font-weight:800;text-align:center;color:var(--ink);font-family:inherit}
+  .set__input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+  .set__row .btn{flex:1}
+  .set__btn{width:100%;border:0;background:var(--red-soft);color:var(--red-dark);font:inherit;font-size:13px;font-weight:800;padding:9px 10px;border-radius:10px;cursor:pointer}
+  .set__btn:hover{background:#fff}
+  .set__list{display:grid;gap:6px;max-height:200px;overflow:auto;margin:4px 0}
+  .set__cmt{display:flex;align-items:flex-start;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px;font-size:12px;color:var(--ink);background:#fffdf8}
+  .set__cmt__txt{flex:1;line-height:1.4;overflow-wrap:anywhere}
+  .set__cmt__meta{color:var(--muted);font-size:10.5px}
+  .set__cmt button{border:0;background:transparent;color:var(--red);font-size:14px;font-weight:800;cursor:pointer;padding:2px 4px;line-height:1}
+  .set__empty{font-size:12px;color:var(--muted)}
+  .set__hint{font-size:11px;color:var(--muted);margin:4px 0 0}
+
   .link-btn{
     background:none;border:0;color:var(--muted);
     font-size:12px;text-decoration:underline;cursor:pointer;padding:4px 0;
@@ -367,8 +387,8 @@
   .btn--ghost:hover{background:var(--red-soft);filter:none}
   .btn.is-ok{background:var(--yellow);color:#574800}
   .note{font-size:12px;color:var(--yellow)}
-  #inboxBtn{background:var(--red-soft);color:var(--red-dark);border:1px solid var(--line)}
-  #inboxBtn:hover{background:#fff;filter:none}
+  #inboxBtn{background:#000;color:var(--yellow);border:1px solid #000}
+  #inboxBtn:hover{background:#222;filter:none}
   .inbox-sep{color:var(--ink);font-size:18px;line-height:1;opacity:.55;user-select:none}
 
   /* ============ FLIP MEALS COUNTER ============ */
@@ -376,9 +396,9 @@
   .flip{
     position:relative;width:42px;height:56px;border-radius:10px;overflow:hidden;
     perspective:220px;
-    background:#111;color:var(--yellow);
-    border:1px solid #000;
-    box-shadow:inset 0 -2px 0 rgba(0,0,0,.45), inset 0 2px 0 rgba(255,255,255,.12), 0 3px 8px rgba(0,0,0,.25);
+    background:var(--yellow);color:#000;
+    border:1px solid #d8d27e;
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,.08), inset 0 2px 0 rgba(255,255,255,.55), 0 3px 8px rgba(0,0,0,.16);
   }
   .flip__card{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
@@ -584,6 +604,7 @@
         <h2>Menu</h2>
         <span class="hint">6 món</span>
       </div>
+      <p class="menu__price"><span id="menuPriceLabel">49k/1 mâm/1 khẩu phần</span></p>
       <p class="menu__hint">Bạn hãy kéo thả mâm cơm vào các ngày muốn ăn</p>
       <ul class="menu" id="menu"></ul>
 
@@ -605,7 +626,7 @@
         </div>
       </div>
 
-      <div class="menu__foot">
+      <div class="menu__foot" hidden>
         <button class="link-btn" id="resetMenu" type="button">🔒 Khôi phục món mặc định (cần PIN chủ)</button>
       </div>
     </section>
@@ -748,6 +769,36 @@
         <ul class="rev__list" id="revList"></ul>
       </div>
     </section>
+  </div>
+</div>
+
+<!-- OWNER SETTINGS (opens on logo click; PIN-gated) -->
+<div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="modal__box" style="max-width:420px">
+    <div class="modal__head">
+      <h3 id="setTitle">⚙️ Cài đặt chủ Mâm Cơm</h3>
+      <button class="link-btn" type="button" id="setClose" style="text-decoration:none">Đóng</button>
+    </div>
+
+    <div class="set__sec">
+      <div class="set__label">Giá mỗi mâm</div>
+      <div class="set__row">
+        <input class="set__input" id="setPrice" type="number" min="1" step="1" inputmode="numeric">
+        <button class="btn" id="setPriceSave" type="button">Lưu giá</button>
+      </div>
+      <p class="set__hint">Thay đổi giá thì mọi khách đang xem sẽ được tính lại tổng tiền theo công thức: giá × số mâm × số người.</p>
+    </div>
+
+    <div class="set__sec">
+      <div class="set__label">Thay đổi món</div>
+      <button class="set__btn" id="setResetMenu" type="button">🔁 Khôi phục 6 món mặc định</button>
+    </div>
+
+    <div class="set__sec">
+      <div class="set__label">Xóa đánh giá / bình luận</div>
+      <div class="set__list" id="setCmtList"></div>
+      <p class="set__empty" id="setCmtEmpty" hidden>Chưa có đánh giá nào để xóa.</p>
+    </div>
   </div>
 </div>
 
@@ -1933,6 +1984,36 @@
       });
     },
 
+    // ---- shared price (owner-settable, in "k") ----
+    // resolves the shared price number, or null when none is stored yet
+    getPrice: function(){
+      if(USE_SUPABASE){
+        // maybeSingle: the price row may not exist yet; .single() would 406.
+        return SUPABASE.from("state").select("value").eq("key","price").maybeSingle()
+          .then(function(st){
+            var n = (st && st.value != null) ? parseInt(st.value, 10) : NaN;
+            return isFinite(n) && n > 0 ? n : null;
+          });
+      }
+      var v = parseInt(localStorage.getItem("mamcom.price") || "", 10);
+      return isFinite(v) && v > 0 ? v : null;
+    },
+    // persists the shared price, resolves the new value
+    savePrice: function(n){
+      n = Math.max(1, Math.round(n));
+      if(USE_SUPABASE){
+        return SUPABASE.from("state")
+          .upsert({ key:"price", value:String(n) }, { onConflict:"key" })
+          .select("value").single()
+          .then(function(res){
+            if(res.error) throw res.error;
+            return n;
+          });
+      }
+      localStorage.setItem("mamcom.price", String(n));
+      return Promise.resolve(n);
+    },
+
     // resolves the new shared total
     addMeals: function(n){
       if(USE_SUPABASE){
@@ -2149,7 +2230,7 @@
 
   function renderReviews(comments){
     allComments = comments || [];
-    revAdminBtn.hidden = false;
+    revAdminBtn.hidden = true; // now lives inside the owner Settings panel
     // Summary reflects every comment; the filter only affects the visible list.
     if(allComments.length === 0){
       revAvgEl.textContent = "—";
@@ -2207,14 +2288,8 @@
       empty.textContent = starFilter ? "Không có đánh giá " + starFilter + " sao." : "Chưa có đánh giá nào.";
       revListEl.appendChild(empty);
     }
-    // The admin button is always visible; its label reflects owner state.
-    if(isOwner()){
-      revAdminBtn.textContent = "✓ Đã vào chế độ chủ — bấm ✕ ở mỗi bình luận để xóa";
-      revAdminBtn.classList.add("is-on");
-    } else {
-      revAdminBtn.textContent = "Cần PIN chủ";
-      revAdminBtn.classList.remove("is-on");
-    }
+    // Keep the owner Settings panel's delete list in sync.
+    if(typeof renderSettingsComments === "function") renderSettingsComments();
   }
 
   function deleteComment(id, liEl){
@@ -2286,6 +2361,114 @@
     })
     .then(function(){ revSubmitEl.disabled = false; });
   });
+
+  // ================= owner settings (opens on logo click; PIN-gated) =====
+  var settingsModal  = document.getElementById("settingsModal");
+  var setClose       = document.getElementById("setClose");
+  var setPrice       = document.getElementById("setPrice");
+  var setPriceSave   = document.getElementById("setPriceSave");
+  var setResetMenu   = document.getElementById("setResetMenu");
+  var setCmtList     = document.getElementById("setCmtList");
+  var setCmtEmpty    = document.getElementById("setCmtEmpty");
+
+  function openSettings(){
+    if(!isOwner()){
+      requestPin(function(ok){ if(ok) openSettings(); },
+        "Cài đặt chủ Mâm Cơm cần PIN của chủ");
+      return;
+    }
+    setPrice.value = PRICE_PER_MAM;
+    renderSettingsComments();
+    settingsModal.classList.add("show");
+  }
+  function closeSettings(){ settingsModal.classList.remove("show"); }
+
+  function renderSettingsComments(){
+    setCmtList.innerHTML = "";
+    if(!allComments.length){
+      setCmtEmpty.hidden = false;
+      return;
+    }
+    setCmtEmpty.hidden = true;
+    allComments.forEach(function(c){
+      var row = document.createElement("div");
+      row.className = "set__cmt";
+      var txt = document.createElement("div");
+      txt.className = "set__cmt__txt";
+      var name = c.name && c.name.trim() ? c.name.trim() + " — " : "";
+      txt.textContent = name + starStr(c.rating || 0) + "  “" + c.text + "”";
+      var meta = document.createElement("div");
+      meta.className = "set__cmt__meta";
+      meta.textContent = fmtTs(c.ts);
+      var del = document.createElement("button");
+      del.type = "button";
+      del.textContent = "✕";
+      del.setAttribute("aria-label", "Xóa bình luận này");
+      del.addEventListener("click", function(){ deleteComment(c.id, null); });
+      row.appendChild(txt);
+      row.appendChild(meta);
+      row.appendChild(del);
+      setCmtList.appendChild(row);
+    });
+  }
+
+  setPriceSave.addEventListener("click", function(){
+    if(!isOwner()){ requestPin(function(ok){ if(ok) setPriceSave.click(); },
+      "Lưu giá cần PIN của chủ"); return; }
+    var n = parseNum(setPrice.value);
+    if(!n){ setPrice.focus(); setPrice.select && setPrice.select(); return; }
+    setPriceSave.disabled = true;
+    sharedStore.savePrice(n).then(function(saved){
+      PRICE_PER_MAM = saved;
+      var lbl = document.getElementById("menuPriceLabel");
+      if(lbl) lbl.textContent = PRICE_PER_MAM + "k/1 mâm/1 khẩu phần";
+      updateOrderTotal();
+      setPrice.value = PRICE_PER_MAM;
+      setPriceSave.textContent = "✓ Đã lưu";
+      setTimeout(function(){ setPriceSave.textContent = "Lưu giá"; }, 1400);
+    }).catch(function(){
+      // Backend offline — keep the value on this device so the owner's own
+      // view still updates, and retry on the next save.
+      PRICE_PER_MAM = n;
+      var lbl2 = document.getElementById("menuPriceLabel");
+      if(lbl2) lbl2.textContent = PRICE_PER_MAM + "k/1 mâm/1 khẩu phần";
+      updateOrderTotal();
+      setPriceSave.textContent = "Lưu giá";
+    }).then(function(){ setPriceSave.disabled = false; });
+  });
+
+  setResetMenu.addEventListener("click", function(){
+    if(!isOwner()) return;   // owner already confirmed when the panel opened
+    doResetMenu();
+  });
+
+  setClose.addEventListener("click", closeSettings);
+  settingsModal.addEventListener("click", function(e){
+    if(e.target === settingsModal) closeSettings();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && settingsModal.classList.contains("show")) closeSettings();
+  });
+
+  var logoEl = document.querySelector(".logo");
+  if(logoEl){
+    logoEl.setAttribute("tabindex", "0");
+    logoEl.setAttribute("role", "button");
+    logoEl.setAttribute("aria-label", "Mở cài đặt chủ Mâm Cơm");
+    logoEl.addEventListener("click", openSettings);
+  }
+
+  // Load the owner-set price once (refreshes the label + totals everywhere).
+  if(typeof sharedStore.getPrice === "function"){
+    sharedStore.getPrice().then(function(n){
+      if(typeof n === "number"){
+        PRICE_PER_MAM = n;
+        var lbl3 = document.getElementById("menuPriceLabel");
+        if(lbl3) lbl3.textContent = PRICE_PER_MAM + "k/1 mâm/1 khẩu phần";
+        updateOrderTotal();
+      }
+    }).catch(function(){ /* offline — keep the default 49k */ });
+  }
 
   // ================= init =================
   buildMenu();
