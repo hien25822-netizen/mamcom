@@ -1,0 +1,11 @@
+# Supabase CLI config for Mâm Cơm.
+# `project_id` is just the local folder name — set the real one with
+# `supabase link --project-ref <ref>` after creating the Singapore project.
+
+project_id = "mamcom"
+
+# The review form is public (no Supabase Auth by design): the edge function is
+# reached with the anon key, so JWT verification must be OFF. Rate limiting is
+# enforced inside the function via the `rate_limits` table instead.
+[functions.add-comment]
+verify_jwt = false

@@ -1,0 +1,13 @@
+# SQLite local database (chỉ dùng chế độ local, không deploy lên Vercel)
+mamcom.db
+mamcom.db-shm
+mamcom.db-wal
+
+# File backup / phát triển tạm
+index.mamcom.bak.html
+
+# Công cụ chạy local của Claude (không phải một phần của web)
+.claude/
+
+# File hệ điều hành
+.DS_Store

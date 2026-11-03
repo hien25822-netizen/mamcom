@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mâm Cơm — Thẻ công thức & Hướng dẫn nấu</title>
+<meta name="description" content="Xem thẻ công thức (mặt trước & sau) và hướng dẫn nấu từng bước cho các món Mâm Cơm.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c4271d;
+    --red-dark: #a81f16;
+    --yellow: #fffb05;
+    --ink: #1a1d2e;
+    --muted: #6b7080;
+    --line: #e5e3df;
+    --bg: #fffdf5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+
+  /* ===== Header ===== */
+  .site-header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--ink); color: #fff;
+  }
+  .site-header .inner {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 0;
+  }
+  .brand-mark {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--red); color: var(--yellow);
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 20px; flex: none;
+  }
+  .brand-name { font-weight: 800; font-size: 18px; letter-spacing: .2px; }
+  .brand-sub { font-size: 12px; color: #b9bcc9; }
+  .site-header .sp { flex: 1; }
+  .help-chip {
+    font-size: 12px; color: #fff; background: var(--red);
+    padding: 7px 12px; border-radius: 999px; font-weight: 600;
+  }
+
+  .hero { padding: 26px 0 8px; text-align: center; }
+  .hero h1 { font-size: 24px; font-weight: 800; }
+  .hero h1 em { color: var(--red); font-style: normal; }
+  .hero p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+  /* ===== List view ===== */
+  .list { padding: 18px 0 40px; display: grid; gap: 14px; }
+  .card-item {
+    display: flex; align-items: center; gap: 14px;
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 16px; padding: 14px 16px;
+    text-align: left; cursor: pointer; width: 100%;
+    transition: transform .15s ease, box-shadow .15s ease;
+    font: inherit; color: inherit;
+  }
+  .card-item:active { transform: scale(.985); }
+  .card-item:hover { box-shadow: 0 6px 20px rgba(26,29,46,.08); }
+  .card-emoji {
+    width: 54px; height: 54px; flex: none; border-radius: 14px;
+    background: #fff4f3; display: grid; place-items: center;
+    font-size: 28px;
+  }
+  .card-info { flex: 1; min-width: 0; }
+  .card-title { font-weight: 700; font-size: 16px; }
+  .card-meta { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .card-arrow { color: var(--red); font-weight: 800; font-size: 18px; }
+
+  /* ===== Detail view ===== */
+  .detail { padding: 20px 0 60px; }
+  .back-btn {
+    background: none; border: none; color: var(--muted);
+    font: inherit; font-size: 14px; cursor: pointer;
+    margin-bottom: 12px; font-weight: 600;
+  }
+  .back-btn:hover { color: var(--ink); }
+
+  .detail-head { text-align: center; margin-bottom: 16px; }
+  .detail-head .emoji { font-size: 44px; }
+  .detail-head h2 { font-size: 22px; font-weight: 800; margin-top: 4px; }
+  .detail-head .meta { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+
+  .face-tabs { display: flex; gap: 8px; margin: 14px 0 10px; }
+  .face-tab {
+    flex: 1; padding: 10px; border-radius: 12px; cursor: pointer;
+    border: 2px solid var(--line); background: #fff;
+    font: inherit; font-weight: 700; font-size: 14px; color: var(--muted);
+  }
+  .face-tab.on { border-color: var(--red); color: var(--red); background: #fff4f3; }
+
+  .card-face {
+    width: 100%; border-radius: 18px; overflow: hidden;
+    border: 1px solid var(--line); background: #fff;
+    margin-bottom: 6px;
+  }
+  .card-face img { width: 100%; display: block; }
+  .hint {
+    font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 18px;
+  }
+
+  /* Digital card (fallback khi chưa có ảnh) */
+  .digicard {
+    background: #fff; border: 3px solid var(--ink); border-radius: 18px;
+    padding: 16px; position: relative;
+  }
+  .digicard::before {
+    content: ''; position: absolute; inset: 0 0 auto 0; height: 8px;
+    background: var(--red);
+  }
+  .digicard .dc-head {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 800; font-size: 13px; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--red); margin-top: 6px;
+  }
+  .digicard .dc-name {
+    font-size: 24px; font-weight: 800; margin: 10px 0 4px;
+    background: linear-gradient(transparent 62%, var(--yellow) 62%);
+  }
+  .digicard .dc-row { font-size: 13.5px; color: var(--ink); }
+  .digicard .dc-row strong { color: var(--muted); font-weight: 600; }
+  .digicard .dc-list { margin-top: 10px; font-size: 14px; }
+  .digicard .dc-list li { margin: 5px 0; list-style: none; display: flex; gap: 8px; }
+  .digicard .dc-list li::before { content: '·'; color: var(--red); font-weight: 800; }
+  .digicard ul.dc-list { padding: 0; }
+  .dc-block-title {
+    font-size: 12px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--ink);
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin: 14px 0 6px;
+  }
+
+  /* Cook section */
+  .cook-head {
+    margin-top: 26px;
+  }
+  .cook-head h3 { font-size: 18px; font-weight: 800; }
+  .cook-head p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .dish-block { margin-top: 22px; }
+  .dish-block > h4 {
+    font-size: 16.5px; font-weight: 800;
+    background: linear-gradient(transparent 62%, var(--yellow) 62%);
+    display: inline-block; padding: 0 4px;
+  }
+  .ing-box {
+    margin-top: 10px; background: #fff; border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px 14px;
+  }
+  .ing-box h5 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--red); }
+  .ing-box li { list-style: none; font-size: 14px; padding: 3px 0; }
+  .ing-box li::before { content: '✓ '; color: var(--red); font-weight: 800; }
+
+  .steps { margin-top: 14px; display: grid; gap: 10px; }
+  .step {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 14px; padding: 13px 14px;
+    display: flex; gap: 12px; align-items: flex-start;
+    cursor: pointer; -webkit-tap-highlight-color: #ffe4e2;
+  }
+  .step .num {
+    width: 34px; height: 34px; flex: none; border-radius: 50%;
+    background: var(--ink); color: #fff; font-weight: 800;
+    display: grid; place-items: center; font-size: 15px;
+    transition: background .2s;
+  }
+  .step .st { font-size: 14.5px; font-weight: 700; }
+  .step .sb { font-size: 13.5px; color: var(--muted); margin-top: 2px; }
+  .step.done { background: #fff4f3; border-color: var(--red); }
+  .step.done .num { background: var(--red); }
+  .step.done .st, .step.done .sb { text-decoration: line-through; opacity: .6; }
+  .step.active { border: 2px solid var(--red); }
+
+  .progress {
+    margin-top: 14px; display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 700; color: var(--muted);
+  }
+  .progress .bar { flex: 1; height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .progress .fill { height: 100%; background: var(--red); width: 0%; transition: width .3s; }
+
+  .notes-box {
+    margin-top: 22px; background: #fffbe6; border: 1px solid #f0e68c;
+    border-radius: 14px; padding: 14px 16px;
+  }
+  .notes-box h5 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #8a7a00; }
+  .notes-box li { font-size: 13.5px; padding: 3px 0; list-style: none; }
+  .notes-box li::before { content: '💡 '; }
+
+  .btn-row { margin-top: 26px; display: grid; gap: 10px; }
+  .btn {
+    display: block; text-align: center; padding: 14px;
+    border-radius: 14px; font: inherit; font-weight: 700; font-size: 15px;
+    cursor: pointer; border: none; text-decoration: none;
+  }
+  .btn--primary { background: var(--red); color: #fff; }
+  .btn--primary:hover { background: var(--red-dark); }
+  .btn--ghost { background: #fff; color: var(--ink); border: 2px solid var(--ink); }
+
+  .done-banner {
+    display: none; margin-top: 14px; text-align: center;
+    background: #e8f7ee; border: 1px solid #b5dfc2; color: #1d7a3a;
+    font-weight: 700; font-size: 14px; border-radius: 12px; padding: 12px;
+  }
+  .done-banner.show { display: block; }
+
+  footer {
+    text-align: center; padding: 28px 16px 40px; color: var(--muted); font-size: 12.5px;
+  }
+  footer .fm { font-weight: 800; color: var(--ink); }
+
+  @media print {
+    .site-header, .cook-head, .steps, .progress, .btn-row, .face-tabs,
+    .done-banner, .hint, .back-btn, footer, .list, .site-header { display: none !important; }
+    .card-face { border: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap inner">
+    <div class="brand-mark">M</div>
+    <div>
+      <div class="brand-name">Mâm Cơm</div>
+      <div class="brand-sub">Thẻ công thức & hướng dẫn nấu</div>
+    </div>
+    <div class="sp"></div>
+    <span class="help-chip">📞 Hotline hỗ trợ</span>
+  </div>
+</header>
+
+<div id="app" class="wrap"></div>
+
+<footer>
+  <div><span class="fm">Mâm Cơm</span> — Bữa cơm ngon, chuẩn nhà ngoài</div>
+  <div style="margin-top:4px">Nếu món không hiện hoặc ảnh thẻ chưa rõ, hãy nhắn Mâm Cơm để được hỗ trợ.</div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+const app = document.getElementById('app');
+const byId = id => RECIPES.find(r => r.id === id);
+
+/* ---------- Lister view ---------- */
+function renderList() {
+  const total = RECIPES.reduce((n, r) => n + r.dishes.length, 0);
+  app.innerHTML = `
+    <div class="hero">
+      <h1>Thẻ công thức của <em>bữa ăn này</em></h1>
+      <p>${RECIPES.length} thẻ · ${total} món — bấm vào thẻ để xem trước & sau, rồi nấu theo từng bước.</p>
+    </div>
+    <div class="list">
+      ${RECIPES.map(r => `
+        <button class="card-item" data-open="${r.id}">
+          <span class="card-emoji">${r.emoji}</span>
+          <span class="card-info">
+            <span class="card-title">${r.label}</span>
+            <span class="card-meta">${r.dishes.length} món · ${r.servings} phần · ~${r.time} phút</span>
+          </span>
+          <span class="card-arrow">›</span>
+        </button>`).join('')}
+    </div>`;
+  app.querySelectorAll('[data-open]').forEach(b =>
+    b.addEventListener('click', () => { location.hash = 'card/' + b.dataset.open; }));
+}
+
+/* ---------- Ảnh mặt trước/sau: ưu tiên ảnh thật (front/back.jpg),
+   nếu chưa có thì render thẻ số cùng layout ---------- */
+function faceFallback(id, face) {
+  return digitalCard(byId(id), face);
+}
+function faceHTML(r, face) {
+  const src = r[face];
+  if (!src) return digitalCard(r, face);
+  return `
+  <div class="card-face">
+    <img src="${src}" alt="Thẻ ${r.label} — mặt ${face === 'front' ? 'trước' : 'sau'}"
+         onerror="this.parentElement.innerHTML = faceFallback('${r.id}','${face}')">
+  </div>`;
+}
+
+/* Thẻ số: mặt trước = tên + nguyên liệu; mặt sau = các bước (bản in sẵn) */
+function digitalCard(r, face, dish) {
+  const dishes = face === 'front' ? r.dishes : r.dishes;
+  if (face === 'front') {
+    return `
+    <div class="card-face"><div class="digicard">
+      <div class="dc-head">${r.emoji} Mâm Cơm · Thẻ trước</div>
+      <div class="dc-name">${r.label}</div>
+      <div class="dc-row"><strong>Khẩu phần:</strong> ${r.servings} người &nbsp; <strong>Thời gian:</strong> ~${r.time} phút</div>
+      ${r.intro ? `<p class="dc-row" style="margin-top:8px">${r.intro}</p>` : ''}
+      ${r.dishes.map((d, i) => `
+        <div class="dc-block-title">${d.emoji} Món ${i + 1}: ${d.name}</div>
+        <ul class="dc-list">${d.ingredients.map(x => `<li>${x}</li>`).join('')}</ul>`).join('')}
+    </div></div>`;
+  }
+  return `
+    <div class="card-face"><div class="digicard">
+      <div class="dc-head">${r.emoji} Mâm Cơm · Thẻ sau — Các bước</div>
+      ${r.dishes.map((d, i) => `
+        <div class="dc-block-title">Món ${i + 1}: ${d.name}</div>
+        <ol style="padding-left:18px;font-size:13.5px">${d.steps.map(s => `<li style="margin:4px 0"><b>${s.t}.</b> ${s.b}</li>`).join('')}</ol>
+      `).join('')}
+      ${r.notes.length ? `<div class="dc-block-title">Mẹo</div>${r.notes.map(n => `<div class="dc-row" style="font-size:13px">💡 ${n}</div>`).join('')}` : ''}
+    </div></div>`;
+}
+
+/* ---------- Chi tiết view ---------- */
+function renderDetail(r) {
+  const allSteps = r.dishes.reduce((n, d) => n + d.steps.length, 0);
+  app.innerHTML = `
+  <div class="detail">
+    <button class="back-btn" data-back>‹ Tất cả thẻ</button>
+    <div class="detail-head">
+      <div class="emoji">${r.emoji}</div>
+      <h2>${r.label}</h2>
+      <div class="meta">${r.servings} phần · ~${r.time} phút · ${allSteps} bước</div>
+    </div>
+
+    <div class="face-tabs">
+      <button class="face-tab on" data-face="front">Mặt trước</button>
+      <button class="face-tab" data-face="back">Mặt sau</button>
+    </div>
+    <div id="cardFace" class="card-face">${faceHTML(r, 'front')}</div>
+    <div class="hint">Mặt trước: nguyên liệu & thông tin · Mặt sau: các bước nấu (bản in).<br>Chưa chụp thẻ thật? Thẻ số bên trên tự tạo theo đúng thông tin món.</div>
+
+    <div class="cook-head">
+      <h3>👨‍🍳 Nấu theo từng bước</h3>
+      <p>Bấm vào từng bước để đánh dấu đã hoàn thành.</p>
+    </div>
+
+    <div id="dishBlocks"></div>
+
+    ${r.notes.length ? `
+    <div class="notes-box">
+      <h5>Mẹo của đầu bếp</h5>
+      ${r.notes.map(n => `<li>${n}</li>`).join('')}
+    </div>` : ''}
+
+    <div class="progress">
+      <span id="progLabel">0/${allSteps} bước</span>
+      <div class="bar"><div class="fill" id="progFill"></div></div>
+    </div>
+    <div class="done-banner" id="doneBanner">🎉 Tuyệt vời! Bữa cơm của bạn đã sẵn sàng. Chúc ngon miệng!</div>
+
+    <div class="btn-row">
+      <button class="btn btn--primary" id="printBtn">🖨️ In thẻ công thức</button>
+      <button class="btn btn--ghost" data-back>← Về danh sách</button>
+    </div>
+  </div>`;
+
+  const blocks = app.querySelector('#dishBlocks');
+  const stepBtns = [];
+  r.dishes.forEach((d, di) => {
+    const box = document.createElement('div');
+    box.className = 'dish-block';
+    box.innerHTML = `
+      <h4>${d.emoji} ${d.name}</h4>
+      <div class="ing-box"><h5>Nguyên liệu</h5>
+        ${d.ingredients.map(x => `<li>${x}</li>`).join('')}
+      </div>
+      <div class="steps">
+        ${d.steps.map((s, si) => `
+          <div class="step" data-d="${di}" data-s="${si}">
+            <div class="num">${di * 1 + si + 1}</div>
+            <div><div class="st">${s.t}</div><div class="sb">${s.b}</div></div>
+          </div>`).join('')}
+      </div>`;
+    blocks.appendChild(box);
+  });
+  // đánh số bước liên tục giữa các món
+  let n = 0;
+  blocks.querySelectorAll('.step').forEach(el => {
+    el.querySelector('.num').textContent = ++n;
+    el.addEventListener('click', () => {
+      el.classList.toggle('done');
+      updateProgress();
+    });
+  });
+
+  function updateProgress() {
+    const done = blocks.querySelectorAll('.step.done').length;
+    app.querySelector('#progLabel').textContent = `${done}/${allSteps} bước`;
+    app.querySelector('#progFill').style.width = (allSteps ? done / allSteps * 100 : 0) + '%';
+    const banner = app.querySelector('#doneBanner');
+    banner.classList.toggle('show', done === allSteps && allSteps > 0);
+  }
+
+  // tabs mặt trước/sau
+  app.querySelectorAll('.face-tab').forEach(t => t.addEventListener('click', () => {
+    app.querySelectorAll('.face-tab').forEach(x => x.classList.remove('on'));
+    t.classList.add('on');
+    app.querySelector('#cardFace').innerHTML =
+      t.dataset.face === 'front' ? faceHTML(r, 'front') : faceHTML(r, 'back');
+  }));
+
+  app.querySelectorAll('[data-back]').forEach(b =>
+    b.addEventListener('click', () => { location.hash = ''; }));
+  app.querySelector('#printBtn').addEventListener('click', () => window.print());
+}
+
+/* ---------- Routing ---------- */
+function route() {
+  const m = location.hash.match(/^#card\/([\w-]+)/);
+  if (m && byId(m[1])) { renderDetail(byId(m[1])); }
+  else { renderList(); location.hash = ''; }
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
