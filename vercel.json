@@ -1,9 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "builds": [],
-  "routes": [
-    { "src": "/index.html", "dist": "index.html" },
-    { "src": "/(.*)", "status": 404 }
+  "version": 3,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
