@@ -42,8 +42,15 @@ def init_db():
             " id INTEGER PRIMARY KEY AUTOINCREMENT,"
             " rating INTEGER,"
             " text TEXT,"
-            " ts INTEGER)"
+            " ts INTEGER,"
+            " name TEXT DEFAULT '')"
         )
+        # Migration for an existing db predating the `name` column:
+        # CREATE TABLE IF NOT EXISTS won't add it, so add it explicitly.
+        try:
+            c.execute("ALTER TABLE comments ADD COLUMN name TEXT DEFAULT ''")
+        except Exception:
+            pass  # column already present
         # Seed the meal counter only once, so it starts at 23 (or higher).
         row = c.execute("SELECT value FROM state WHERE key='meals'").fetchone()
         if row is None:
@@ -68,9 +75,12 @@ def add_meals(conn, n):
 
 def list_comments(conn):
     rows = conn.execute(
-        "SELECT id, rating, text, ts FROM comments ORDER BY ts DESC, id DESC"
+        "SELECT id, rating, text, ts, name FROM comments ORDER BY ts DESC, id DESC"
     ).fetchall()
-    return [{"id": r[0], "rating": r[1], "text": r[2], "ts": r[3]} for r in rows]
+    return [
+        {"id": r[0], "rating": r[1], "text": r[2], "ts": r[3], "name": r[4] or ""}
+        for r in rows
+    ]
 
 
 def delete_comment(conn, cid):
@@ -157,10 +167,11 @@ class Handler(BaseHTTPRequestHandler):
             if not text:
                 self._json(400, {"error": "empty comment"})
                 return
+            name = (data.get("name") or "").strip()[:60]
             with LOCK, get_db() as c:
                 cur = c.execute(
-                    "INSERT INTO comments(rating, text, ts) VALUES(?, ?, ?)",
-                    (rating, text[:500], int(time.time())),
+                    "INSERT INTO comments(rating, text, ts, name) VALUES(?, ?, ?, ?)",
+                    (rating, text[:500], int(time.time()), name),
                 )
                 c.commit()
                 new_id = cur.lastrowid

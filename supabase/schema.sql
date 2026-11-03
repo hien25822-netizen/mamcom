@@ -13,14 +13,21 @@ create table if not exists public.state (
 );
 
 -- Shared reviews (kept forever, no auto-purge).
+-- `name` is optional (the reviewer may skip it); kept short.
 create table if not exists public.comments (
   id     bigint generated always as identity primary key,
   rating int  not null check (rating between 1 and 5),
   text   text not null check (char_length(text) between 1 and 500),
   ts     bigint not null default (extract(epoch from now())::bigint),
+  name   text not null default '',
   created_at timestamptz not null default now()
 );
 create index if not exists comments_ts_id_idx on public.comments (ts desc, id desc);
+
+-- For an ALREADY-LIVE database that predates the `name` column:
+-- add it if missing (idempotent, safe to re-run). The create-table above
+-- covers fresh installs; this covers the migration path.
+alter table public.comments add column if not exists name text not null default '';
 
 -- Per-device anti-spam window for comments (enforced by the edge function).
 create table if not exists public.rate_limits (

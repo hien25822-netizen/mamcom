@@ -3,8 +3,8 @@
 // Inserts a review and enforces ~1 comment / 60s per device (stateful, so it
 // survives the busy case; a client-side timer alone is bypassable).
 //
-// POST body: { rating: 1..5, text: string, visitorId: string }
-// 200 -> { id, comments: [ {id, rating, text, ts}, ... ] }  (full list, newest first)
+// POST body: { rating: 1..5, text: string, name?: string, visitorId: string }
+// 200 -> { id, comments: [ {id, rating, text, ts, name}, ... ] } (full list, newest first)
 // 429 -> { error: "rate-limited" }
 //
 // Deploy:  supabase functions deploy add-comment
@@ -41,6 +41,7 @@ Deno.serve(async (req) => {
 
   const visitorId = String(body.visitorId || "anon");
   const text = String(body.text || "").trim().slice(0, 500);
+  const name = String(body.name || "").trim().slice(0, 60); // optional
   let rating = parseInt(body.rating, 10);
   if (!(rating >= 1 && rating <= 5)) rating = 5;
 
@@ -68,8 +69,8 @@ Deno.serve(async (req) => {
   // ---- insert the comment ----------------------------------------------
   const { data: created, error: insErr } = await supabase
     .from("comments")
-    .insert({ rating, text, ts: now })
-    .select("id, rating, text, ts")
+    .insert({ rating, text, ts: now, name })
+    .select("id, rating, text, ts, name")
     .single();
 
   if (insErr || !created) {

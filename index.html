@@ -31,7 +31,7 @@
   }
   .wrap{max-width:1080px;margin:0 auto;padding:24px 18px 40px}
   header{margin-bottom:16px}
-  .logo{width:220px;max-width:60%;height:auto;display:block}
+  .logo{width:150px;max-width:44%;height:auto;display:block}
   .splash{
     position:fixed;inset:0;z-index:99;display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:14px;
@@ -98,10 +98,24 @@
     touch-action:manipulation;
     display:flex;flex-direction:column;
   }
+  /* Kéo thả trên màn cảm ứng cần touch-action:none (chỉ trên thiết bị
+  coarse — chuột vẫn dùng HTML5 drag như cũ, cuộn trang không bị ảnh hưởng). */
+  @media (pointer:coarse){
+    .tile{touch-action:none}
+  }
   .tile:hover{border-color:var(--red);box-shadow:0 0 0 3px var(--yellow-soft)}
   .tile:active{cursor:grabbing}
   .tile.is-armed{border-color:var(--red);box-shadow:0 0 0 3px var(--yellow)}
   .tile.is-dragging{opacity:.45}
+  /* "Mảnh" (ghost) khi kéo món bằng ngón tay, đi theo con trỏ */
+  .tile.drag-ghost{
+    position:fixed;left:0;top:0;z-index:98;width:84px;height:84px;
+    transform:translate(-50%,-50%);pointer-events:none;opacity:.95;
+    display:flex;align-items:center;justify-content:center;font-size:34px;
+    background:var(--yellow-soft);overflow:hidden;
+    box-shadow:0 6px 18px rgba(140,30,20,.35);
+  }
+  .tile.drag-ghost img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .tile__media{
     position:relative;flex:1 1 auto;
     background:var(--yellow-soft);
@@ -284,7 +298,7 @@
   .order__field{display:grid;gap:3px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
   .order__field input{
     border:2px solid var(--line);border-radius:10px;
-    padding:9px 10px;font-size:14px;font-weight:600;background:#fff;color:var(--ink);
+    padding:9px 10px;font-size:16px;font-weight:600;background:#fff;color:var(--ink);
     font-family:inherit;width:100%;box-sizing:border-box;
   }
   .order__field input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
@@ -328,7 +342,7 @@
   .order__field--wide{grid-column:1 / -1}
   .order__field--wide textarea{
     border:2px solid var(--line);border-radius:10px;
-    padding:9px 10px;font-size:14px;font-weight:500;background:#fff;color:var(--ink);
+    padding:9px 10px;font-size:16px;font-weight:500;background:#fff;color:var(--ink);
     font-family:inherit;width:100%;box-sizing:border-box;
     resize:vertical;min-height:64px;line-height:1.4;
   }
@@ -406,10 +420,14 @@
   .rev__pick button.on{filter:none;transform:scale(1.12)}
   .rev__pick button:active{transform:scale(1.25)}
   .rev__form{margin-bottom:8px}
-  .rev__form textarea{width:100%;min-height:56px;resize:vertical;font:inherit;font-size:13.5px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .rev__form textarea{width:100%;min-height:56px;resize:vertical;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px}
   .rev__form textarea:focus{outline:2px solid rgba(218,36,28,.25);border-color:var(--red)}
+  .rev__row{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .rev__row input{flex:1;min-width:0;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .rev__row input:focus{outline:2px solid rgba(218,36,28,.25);border-color:var(--red)}
   .rev__submit{border:0;background:var(--yellow);color:#574800;font:inherit;font-size:13px;font-weight:800;padding:9px 18px;border-radius:999px;cursor:pointer}
   .rev__submit:disabled{opacity:.5;cursor:not-allowed}
+  .rev__name{font-size:12px;font-weight:800;color:var(--red-dark);margin-top:3px}
   .rev__list{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
   .rev__item{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fffdf8}
   .rev__meta{display:flex;align-items:center;gap:8px;margin-bottom:3px;font-size:11px;color:var(--muted);font-weight:700}
@@ -710,8 +728,11 @@
           </div>
         </div>
         <form class="rev__form" id="revForm">
-          <textarea id="revText" rows="2" maxlength="500" placeholder="Đừng ngại nhắn vài lời về Mâm Cơm…"></textarea>
-          <button class="rev__submit" id="revSubmit" type="submit">Gửi đánh giá</button>
+          <textarea id="revText" rows="2" maxlength="500" placeholder="Đừng ngại nhắn vài lời về Mâm Cơm thành Feedback của khách hàng là giá trị vô cùng đáng quý với Mâm Cơm, rất mong quý khách ghi thật chi tiết để Mâm Cơm có thể phục vụ tốt hơn cho những lần sau."></textarea>
+          <div class="rev__row">
+            <input id="revName" type="text" maxlength="60" placeholder="Tên của bạn (tuỳ chọn)">
+            <button class="rev__submit" id="revSubmit" type="submit">Gửi đánh giá</button>
+          </div>
         </form>
         <div class="rev__filter" id="revFilter">
           <span class="rev__filter__lbl">Lọc đánh giá</span>
@@ -1085,6 +1106,77 @@
     return wrap;
   }
 
+  // ================= pointer-drag (màn cảm ứng) =================
+  // HTML5 drag & drop không chạy trên thiết bị cảm ứng → tự viết bằng
+  // Pointer Events: một "ghost" bay theo ngón tay, tìm ô ngày bằng
+  // elementFromPoint, và thả món vào đó. Chuột vẫn dùng HTML5 drag như cũ.
+  var suppressDayClickUntil = 0;   // chặn click tổng hợp ngay sau khi kéo thả
+  function makeDragGhost(dish){
+    var g = document.createElement("div");
+    g.className = "tile drag-ghost";
+    g.appendChild(makeMedia(dish, "tile"));
+    return g;
+  }
+  function clearDropHighlights(){
+    weekEl.querySelectorAll(".day__body.drop-over").forEach(function(b){
+      b.classList.remove("drop-over");
+    });
+  }
+  function startPointerDrag(e, li, i){
+    if(e.pointerType === "mouse") return;          // desktop → HTML5 drag
+    if(e.target.closest(".tile__edit")) return;    // nút ✎ của chủ
+    var startX = e.clientX, startY = e.clientY;
+    var moved = false, ghost = null;
+    var onMove = function(ev){
+      if(!moved && Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) > 10){
+        moved = true;
+        ghost = makeDragGhost(DISHES[i]);
+        document.body.appendChild(ghost);
+        li.classList.add("is-dragging");
+        setArmed(-1);
+      }
+      if(moved){
+        ev.preventDefault();
+        if(ghost){ ghost.style.left = ev.clientX + "px"; ghost.style.top = ev.clientY + "px"; }
+        var el = document.elementFromPoint(ev.clientX, ev.clientY);
+        var target = el && el.closest ? el.closest(".day__body") : null;
+        weekEl.querySelectorAll(".day__body").forEach(function(b){
+          b.classList.toggle("drop-over", b === target);
+        });
+      }
+    };
+    var finish = function(ev){
+      window.removeEventListener("pointermove", onMove, true);
+      window.removeEventListener("pointerup", finish, true);
+      window.removeEventListener("pointercancel", cancel, true);
+      if(moved){
+        var el = document.elementFromPoint(ev.clientX, ev.clientY);
+        var target = el && el.closest ? el.closest(".day__body") : null;
+        if(target){
+          var day = target.closest(".day");
+          var dayIndex = Number(day.dataset.day);
+          if(dayIndex >= 0 && dayIndex < plan.length) addDish(dayIndex, i);
+        }
+        clearDropHighlights();
+        if(ghost){ ghost.remove(); ghost = null; }
+        li.classList.remove("is-dragging");
+        suppressDayClickUntil = Date.now() + 300;   // nuốt click tổng hợp sau thả
+      }
+    };
+    var cancel = function(){
+      window.removeEventListener("pointermove", onMove, true);
+      window.removeEventListener("pointerup", finish, true);
+      window.removeEventListener("pointercancel", cancel, true);
+      clearDropHighlights();
+      if(ghost){ ghost.remove(); ghost = null; }
+      li.classList.remove("is-dragging");
+      suppressDayClickUntil = Date.now() + 300;   // bỏ qua click tổng hợp
+    };
+    window.addEventListener("pointermove", onMove, true);
+    window.addEventListener("pointerup", finish, true);
+    window.addEventListener("pointercancel", cancel, true);
+  }
+
   function buildMenu(){
     menuEl.innerHTML = "";
     DISHES.forEach(function(dish, i){
@@ -1130,9 +1222,14 @@
         li.classList.remove("is-dragging");
       });
 
-      // tap-to-arm (mobile); ignore clicks on the ✎ button
+      // kéo bằng ngón tay (mobile)
+      li.addEventListener("pointerdown", function(e){ startPointerDrag(e, li, i); });
+
+      // tap-to-arm (mobile); ignore clicks on the ✎ button. Bỏ qua click tổng
+      // hợp ngay sau khi vừa kéo thả xong (chống "arm" nhầm).
       li.addEventListener("click", function(e){
         if(e.target.closest(".tile__edit")) return;
+        if(Date.now() < suppressDayClickUntil) return;
         setArmed(armed === i ? -1 : i);
       });
 
@@ -1653,19 +1750,19 @@
   var savedBox = document.getElementById("savedBox");
   document.getElementById("ctaBtn").addEventListener("click", function(){
     var target = (weekOffset >= 2) ? 0 : weekOffset + 1;
-    var currentPlan = plan.map(function(arr){ return arr.slice(); });
     weekOffset = target;
     plan = loadPlan();
-    if(plan.every(function(arr){ return arr.length === 0; })){
-      plan = currentPlan;
-      savePlan();
-    }
     buildWeek();
     updateWeekBar();
     setArmed(-1);
     render();
-    // đưa khách quay lại bảng các ngày muốn ăn
-    document.getElementById("week").scrollIntoView({ behavior: "smooth", block: "start" });
+    // đưa khách về đúng ranh giới giữa bảng ngày (calendar) và menu —
+    // tức đầu mục tuần (weekbar), không phải khung thông tin/mini-calendar.
+    var weekBar = document.querySelector(".weekbar");
+    if(weekBar){
+      var y = weekBar.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
   });
   var WEEK_IDEAS = [
     { min: 0,   text: "uống một ly cà phê thật chậm", img: "☕" },
@@ -1782,29 +1879,22 @@
   }
   copyBtn.addEventListener("click", copyText);
 
-  // ================= "Mở inbox" (deep-link vào Instagram của Mâm Cơm) =================
+  // ================= "Mở inbox" (mở trang chủ Instagram của Mâm Cơm) =================
   // Trang web KHÔNG THỂ mở thẳng vào hộp thư (DM thread) của một tài khoản khác
-  // (Instagram chặn điều này). Nên nút mở đúng app Instagram tại PROFILE của
-  // Mâm Cơm — khách chỉ cần thêm 1 lần chạm "Nhắn tin" là tới inbox.
-  //
-  // Dùng https://ig.me/mamcomvn (universal/app link):
-  //   - Điện thoại CÓ app Instagram  → mở TRỰC TIẾP trong app (iOS & Android)
-  //   - Chưa cài app / desktop        → tự rơi về trang web profile (không gãy)
-  // Đây là cách ổn định nhất; scheme "instagram://" bị iOS Safari chặn nên
-  // không dùng.
-  var INBOX_LINK = {
-    username: "mamcomvn",
-    universal: "https://ig.me/mamcomvn",   // app link: mở app nếu đã cài, web nếu chưa
-    web:      "https://www.instagram.com/mamcomvn/"
-  };
+  // (Instagram chặn điều này). Nút mở thẳng TRANG CHỦ profile Mâm Cơm:
+  //   https://www.instagram.com/mamcomvn/
+  // — khách chỉ cần thêm 1 lần chạm "Nhắn tin" là tới inbox.
+  // (Điện thoại đã cài app Instagram, trình duyệt/app link thường tự mở
+  //   thẳng vào app tại trang này; nếu không thì hiện trang web.)
+  var INBOX_LINK = "https://www.instagram.com/mamcomvn/";
   function openInbox(){
     var isTouch = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
     if(isTouch){
-      // Điện thoại: chuyển hướng ngay sang ig.me (mở app hoặc web, luôn hoạt động).
-      window.location.href = INBOX_LINK.universal;
+      // Điện thoại: chuyển hướng luôn tại tab hiện tại (rời được web này).
+      window.location.href = INBOX_LINK;
     } else {
-      // Desktop: không có app nên mở thẳng trang web profile (tab mới, an toàn).
-      window.open(INBOX_LINK.web, "_blank", "noopener");
+      // Desktop: mở tab mới, không mất trang.
+      window.open(INBOX_LINK, "_blank", "noopener");
     }
   }
   inboxBtn.addEventListener("click", openInbox);
@@ -1824,13 +1914,13 @@
           .then(function(st){
             var meals = (st && st.value != null) ? parseInt(st.value, 10) : null;
             return SUPABASE.from("comments")
-              .select("id, rating, text, ts")
+              .select("id, rating, text, ts, name")
               .order("ts", { ascending:false })
               .order("id", { ascending:false })
               .then(function(r){
                 if(r.error) throw r.error;
                 var comments = (r.data || []).map(function(c){
-                  return { id:c.id, rating:c.rating, text:c.text, ts:c.ts };
+                  return { id:c.id, rating:c.rating, text:c.text, ts:c.ts, name:c.name || "" };
                 });
                 return { meals: meals, comments: comments };
               });
@@ -1872,12 +1962,12 @@
     },
 
     // resolves {id, comments}
-    addComment: function(rating, text){
+    addComment: function(rating, text, name){
       if(USE_SUPABASE){
         // Enforced server-side by the edge function (survives the busy case):
         // ~1 comment / 60s per device, keyed on the visitor id.
         return SUPABASE.functions.invoke("add-comment", {
-          body: { rating: rating, text: text, visitorId: visitorId() }
+          body: { rating: rating, text: text, name: name || "", visitorId: visitorId() }
         }).then(function(r){
           if(r.error) throw r.error;
           var d = r.data || {};
@@ -1887,7 +1977,7 @@
       return fetch("/api/comment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating: rating, text: text })
+        body: JSON.stringify({ rating: rating, text: text, name: name || "" })
       }).then(function(r){ return r.json(); });
     },
 
@@ -1896,12 +1986,12 @@
       if(USE_SUPABASE){
         return SUPABASE.from("comments").delete().eq("id", id)
           .then(function(){
-            return SUPABASE.from("comments").select("id, rating, text, ts")
+            return SUPABASE.from("comments").select("id, rating, text, ts, name")
               .order("ts", { ascending:false }).order("id", { ascending:false })
               .then(function(r){
                 if(r.error) throw r.error;
                 return (r.data || []).map(function(c){
-                  return { id:c.id, rating:c.rating, text:c.text, ts:c.ts };
+                  return { id:c.id, rating:c.rating, text:c.text, ts:c.ts, name:c.name || "" };
                 });
               });
           });
@@ -2040,6 +2130,7 @@
   var revPickNumEl = document.getElementById("revPickNum");
   var revFormEl    = document.getElementById("revForm");
   var revTextEl    = document.getElementById("revText");
+  var revNameEl    = document.getElementById("revName");
   var revListEl    = document.getElementById("revList");
   var revSubmitEl  = document.getElementById("revSubmit");
   var revFilterEl  = document.getElementById("revFilter");
@@ -2100,6 +2191,12 @@
       body.className = "rev__body";
       body.textContent = c.text;
       li.appendChild(meta);
+      if(c.name && c.name.trim()){
+        var nm = document.createElement("div");
+        nm.className = "rev__name";
+        nm.textContent = c.name.trim();
+        li.appendChild(nm);
+      }
       li.appendChild(body);
       revListEl.appendChild(li);
     });
@@ -2174,10 +2271,12 @@
     e.preventDefault();
     var text = revTextEl.value.trim();
     if(!text){ revTextEl.focus(); return; }
+    var name = (revNameEl && revNameEl.value) ? revNameEl.value.trim() : "";
     revSubmitEl.disabled = true;
-    sharedStore.addComment(pickRating, text).then(function(d){
+    sharedStore.addComment(pickRating, text, name).then(function(d){
       renderReviews(d.comments || []);
       revTextEl.value = "";
+      if(revNameEl) revNameEl.value = "";
       pickRating = 5; paintPick();
       flashRev("Đã gửi đánh giá ✓");
     }).catch(function(err){
