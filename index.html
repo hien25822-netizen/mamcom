@@ -126,11 +126,13 @@
   .tile__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   .tile__name{
     flex:0 0 auto;
-    padding:7px 8px;
+    padding:5px 8px;
     background:#fff;
     border-top:1px solid var(--line);
-    font-size:12.5px;font-weight:700;text-align:center;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    font-size:12px;font-weight:700;text-align:center;line-height:1.3;
+    /* 2 dòng tối đa: hiện đủ tên món dài mà vẫn gọn trong ô vuông */
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;word-wrap:break-word;
   }
   .tile__badge{
     position:absolute;top:6px;left:6px;z-index:1;
@@ -961,7 +963,7 @@
   // ---- calendar week (Mon → Sun), with a "week after next" offset ----
   var DAYS = ["Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7","Chủ Nhật"];
   var WEEK_KEY = "mamcom.week.v1";
-  var weekOffset = 0; // 0 = this week, 1 = next week, ...
+  var weekOffset = 0; // 0 = tuần này, 1 = tuần sau
   function mondayOf(offset){
     var d = new Date();
     var day = d.getDay();            // 0=Sun … 6=Sat
@@ -973,17 +975,47 @@
   function fmtDate(d){
     return ("0"+d.getDate()).slice(-2) + "/" + ("0"+(d.getMonth()+1)).slice(-2);
   }
-  function weekRange(){
-    var m = mondayOf(weekOffset);
+  function weekRange(offset){
+    var off = (offset === undefined) ? weekOffset : offset;
+    var m = mondayOf(off);
     var sun = new Date(m); sun.setDate(m.getDate() + 6);
     return fmtDate(m) + " – " + fmtDate(sun) + "/" + sun.getFullYear();
   }
-  function weekName(){
-    return weekOffset === 0 ? "Tuần này" : (weekOffset === 1 ? "Tuần sau" : "Tuần +" + weekOffset);
+  function weekName(offset){
+    var off = (offset === undefined) ? weekOffset : offset;
+    return off === 0 ? "Tuần này" : "Tuần sau";
   }
-  function mondayOfDateKey(){
-    var m = mondayOf(weekOffset);
+  function mondayOfDateKey(offset){
+    var off = (offset === undefined) ? weekOffset : offset;
+    var m = mondayOf(off);
     return Array.from({length:7}, function(_, i){ var d = new Date(m); d.setDate(m.getDate()+i); return d; });
+  }
+  // Plan for a SPECIFIC week (0=this week, 1=next week), without touching the
+  // module-level `plan` (which holds the currently-viewed week). Read-only.
+  function weekPlanAt(offset){
+    var p = emptyPlan();
+    try{
+      var raw = localStorage.getItem(PLAN_KEY + ":" + mondayOf(offset).toDateString());
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(Array.isArray(parsed) && parsed.length === 7){
+          parsed.forEach(function(arr, i){
+            if(Array.isArray(arr)) p[i] = arr.filter(function(n){ return Number.isInteger(n) && n>=0 && n<DISHES.length; });
+          });
+        }
+      }
+    }catch(e){}
+    return p;
+  }
+  // Số mâm (món) trong một tuần kế hoạch (mỗi món = 1 mâm).
+  function countTrays(p){
+    var t = 0;
+    (p || []).forEach(function(arr){ t += (arr || []).length; });
+    return t;
+  }
+  // Tổng số mâm khách ĐÃ ĐẶT qua CẢ HAI TUẦN (tuần này + tuần sau).
+  function totalTraysAllWeeks(){
+    return countTrays(weekPlanAt(0)) + countTrays(weekPlanAt(1));
   }
   // plan keyed by the specific week (so each week keeps its own dishes)
   var PLAN_KEY = "mamcom.plan.v1";
@@ -1072,6 +1104,11 @@
     ownerUnlocked = true;
     // Re-render reviews so the ✕ delete buttons + admin label appear.
     if(typeof renderReviews === "function") renderReviews(allComments);
+    // Rebuild the menu so the ✎ edit buttons become visible to the owner.
+    if(typeof buildMenu === "function" && typeof menuEl !== "undefined"){
+      buildMenu();
+      render();
+    }
   }
   function isOwner(){ return ownerUnlocked; }
 
@@ -1251,6 +1288,9 @@
       editBtn.className = "tile__edit";
       editBtn.textContent = "✎";
       editBtn.setAttribute("aria-label","Chỉnh sửa món " + dish.name + " (chỉ chủ)");
+      // Nút chỉ hiện ra khi chủ đã mở khóa PIN trong phiên này (isOwner()).
+      // Khách xem không thấy ✎; buildMenu() được gọi lại khi unlockOwner().
+      editBtn.hidden = !isOwner();
       editBtn.addEventListener("click", function(e){
         e.stopPropagation();
         openEditor(i);
@@ -1380,7 +1420,7 @@
     nextWeekBtn.textContent = weekOffset === 0 ? "→ Tuần sau" : "← Tuần trước";
   }
   function goNextWeek(){
-    weekOffset = (weekOffset >= 2) ? 0 : weekOffset + 1; // cycle this → next → +2 → this
+    weekOffset = weekOffset === 0 ? 1 : 0; // chỉ có 2 chế độ: tuần này ↔ tuần sau
     plan = loadPlan();
     buildWeek();
     updateWeekBar();
@@ -1791,7 +1831,7 @@
   }
   function updateOrderTotal(){
     var people = parseNum(document.getElementById("cPeople").value);
-    var mams = totalWeekDishes();           // mỗi món trong tuần = 1 mâm
+    var mams = totalTraysAllWeeks();        // số mâm cả hai tuần (khớp với nội dung sao chép)
     var totalK = PRICE_PER_MAM * mams * people;
     orderTotalEl.textContent = totalK ? totalK + "k" : "0đ";
     orderTotalCalcEl.textContent = PRICE_PER_MAM + "k × " + mams + " mâm × " + people + " người";
@@ -1801,8 +1841,7 @@
   var MIN_PER_MEAL = 45;
   var savedBox = document.getElementById("savedBox");
   document.getElementById("ctaBtn").addEventListener("click", function(){
-    var target = (weekOffset >= 2) ? 0 : weekOffset + 1;
-    weekOffset = target;
+    weekOffset = weekOffset === 0 ? 1 : 0;
     plan = loadPlan();
     buildWeek();
     updateWeekBar();
@@ -1887,16 +1926,25 @@
       var v = el ? el.value.trim() : "";
       if(v) lines.push(f.label + ": " + v);
     });
-    var days = DAYS.map(function(dayName, i){
-      var dates = mondayOfDateKey();
-      var names = plan[i].map(function(idx){ return DISHES[idx].name; });
-      return dayName + " " + fmtDate(dates[i]) + (names.length ? ": " + names.join(", ") : "");
-    }).join("\n");
+    // Chỉ hiện NHỮNG NGÀY KHÁCH ĐÃ KÉO MÓN (bỏ các ngày trống),
+    // và gom ĐỦ CẢ HAI TUẦN (tuần này + tuần sau).
+    [0, 1].forEach(function(off){
+      var p = weekPlanAt(off);
+      var dates = mondayOfDateKey(off);
+      var dayLines = DAYS.map(function(dayName, i){
+        var names = (p[i] || []).map(function(idx){ return DISHES[idx].name; });
+        return names.length
+          ? dayName + " " + fmtDate(dates[i]) + (names.length ? ": " + names.join(", ") : "")
+          : null;
+      }).filter(Boolean);
+      if(!dayLines.length) return;              // tuần này (tuần đó) không có món nào
+      lines.push(weekName(off) + " (" + weekRange(off) + ")");
+      lines.push(dayLines.join("\n"));
+    });
+    var mams = totalTraysAllWeeks();
     var people = parseNum(document.getElementById("cPeople").value);
-    var totalK = PRICE_PER_MAM * people;
-    lines.push("Tổng tiền: " + (totalK ? totalK + "k (" + PRICE_PER_MAM + "k × " + people + " người)" : "—"));
-    lines.push("Tuần: " + weekName() + " (" + weekRange() + ")");
-    lines.push(days);
+    var totalK = PRICE_PER_MAM * mams * people;
+    lines.push("Tổng tiền: " + (totalK ? totalK + "k (" + PRICE_PER_MAM + "k × " + mams + " mâm × " + people + " người)" : "—"));
     return lines.join("\n");
   }
   function flashCopy(msg){
@@ -2177,23 +2225,22 @@
     if(mealsSpanEl) mealsSpanEl.textContent = n;
   }
 
-  function totalWeekDishes(){
-    var t = 0;
-    plan.forEach(function(arr){
-      t += (arr || []).filter(function(i){ return i >= 0 && i < DISHES.length; }).length;
-    });
-    return t;
-  }
-
+  // Số mâm đã KHỚP (counted) trên thiết bị này — để sao chép lại đơn
+  // không đổi không cộng dồn lần 2. Chỉ giữ tăng, không giảm.
+  var COUNTED_KEY = "mamcom.counted.v1";
   function bumpMeals(){
-    var add = totalWeekDishes();
-    if(add <= 0) add = 1;
+    var total = totalTraysAllWeeks();          // khách đã đặt CẢ HAI TUẦN
+    var last = 0;
+    try{ last = parseInt(localStorage.getItem(COUNTED_KEY) || "0", 10) || 0; }catch(e){}
+    var add = total - last;                     // chỉ phần CHƯA được đếm
+    if(add <= 0){ try{ localStorage.setItem(COUNTED_KEY, String(total)); }catch(e){} return; }
+    try{ localStorage.setItem(COUNTED_KEY, String(total)); }catch(e){}
     var target = currentMeals + add;
     renderFlip(target);
-    // Optimistic: paint the local increment now, then confirm the shared total.
-    sharedStore.addMeals(add).then(function(total){
-      if(typeof total === "number") renderFlip(total);
-    }).catch(function(){ /* backend offline — keep the local tally */ });
+    // Cộng dồn vào bộ đếm chung (Supabase, hoặc máy chủ cục bộ): chỉ tăng.
+    sharedStore.addMeals(add).then(function(next){
+      if(typeof next === "number") renderFlip(next);
+    }).catch(function(){ /* backend offline — giữ số đếm cục bộ */ });
   }
 
   function loadServerState(){
