@@ -77,9 +77,6 @@
   .panel__head h2{font-size:15px;font-weight:800;margin:0;color:var(--red)}
   .hint{font-size:11.5px;color:var(--muted)}
   .menu__hint{padding:10px 16px 0;font-size:15px;font-weight:400;color:var(--red);margin:0}
-  .price-row{display:flex;align-items:baseline;gap:8px;padding:0 16px;font-size:14px;margin:0 0 4px}
-  .price-row__lbl{font-weight:800;color:var(--ink)}
-  .price-row__val{font-weight:600;color:var(--red)}
 
   .menu{
     list-style:none;margin:0;padding:10px;
@@ -606,10 +603,6 @@
   <div class="board">
     <!-- MENU: square tiles -->
     <section class="panel">
-      <div class="price-row">
-        <span class="price-row__lbl">Giá</span>
-        <span class="price-row__val" id="menuPriceLabel">49k/1 "mâm"/1 người</span>
-      </div>
       <div class="panel__head">
         <h2>Mâm</h2>
         <span class="hint">6 món</span>
@@ -2059,7 +2052,7 @@
         // a lost counter increment only affects the display number, never data.
         return SUPABASE.from("state").select("value").eq("key","meals").single()
           .then(function(st){
-            var cur = (st && st.value != null) ? parseInt(st.value, 10) : 0;
+            var cur = (st && st.value != null) ? parseInt(st.value, 10) : 23; // chưa có dòng thì khởi điểm mặc định 23
             var next = cur + add;
             return SUPABASE.from("state")
               .upsert({ key:"meals", value:String(next) }, { onConflict:"key" })
@@ -2456,8 +2449,6 @@
     setPriceSave.disabled = true;
     sharedStore.savePrice(n).then(function(saved){
       PRICE_PER_MAM = saved;
-      var lbl = document.getElementById("menuPriceLabel");
-      if(lbl) lbl.textContent = PRICE_PER_MAM + "k/1 \"mâm\"/1 người";
       updateOrderTotal();
       setPrice.value = PRICE_PER_MAM;
       setPriceSave.textContent = "✓ Đã lưu";
@@ -2466,8 +2457,6 @@
       // Backend offline — keep the value on this device so the owner's own
       // view still updates, and retry on the next save.
       PRICE_PER_MAM = n;
-      var lbl2 = document.getElementById("menuPriceLabel");
-      if(lbl2) lbl2.textContent = PRICE_PER_MAM + "k/1 \"mâm\"/1 người";
       updateOrderTotal();
       setPriceSave.textContent = "Lưu giá";
     }).then(function(){ setPriceSave.disabled = false; });
@@ -2494,13 +2483,11 @@
     logoEl.addEventListener("click", openSettings);
   }
 
-  // Load the owner-set price once (refreshes the label + totals everywhere).
+  // Load the owner-set price once (updates the total calculation).
   if(typeof sharedStore.getPrice === "function"){
     sharedStore.getPrice().then(function(n){
       if(typeof n === "number"){
         PRICE_PER_MAM = n;
-        var lbl3 = document.getElementById("menuPriceLabel");
-        if(lbl3) lbl3.textContent = PRICE_PER_MAM + "k/1 \"mâm\"/1 người";
         updateOrderTotal();
       }
     }).catch(function(){ /* offline — keep the default 49k */ });

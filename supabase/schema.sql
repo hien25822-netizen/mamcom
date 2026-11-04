@@ -99,10 +99,10 @@ create policy "dish-images anon upload" on storage.objects
   with check (bucket_id = 'dish-images' and (owner is null));
 
 -- ============================================================
--- Seed — shared counter starts at 27; first two reviews.
+-- Seed — shared counter starts at 23; first two reviews.
 -- (Idempotent: only inserts if absent.)
 -- ============================================================
-insert into public.state (key, value) values ('meals', '27')
+insert into public.state (key, value) values ('meals', '23')
   on conflict (key) do nothing;
 
 -- Default 6 dishes (match the app's DEFAULT_DISHES) so a fresh install
