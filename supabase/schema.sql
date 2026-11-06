@@ -44,6 +44,31 @@ create table if not exists public.dishes (
   updated_at timestamptz not null default now()
 );
 
+-- Orders placed by customers (thẻ đơn hàng).
+-- `products` = danh sách món đã chọn; `schedule` = lịch trình theo ngày.
+create table if not exists public.orders (
+  id          text primary key,
+  status      text not null default 'pending'
+                check (status in ('pending','confirmed','preparing','done','cancelled')),
+  people      text not null default '',
+  phone       text not null default '',
+  address     text not null default '',
+  note        text not null default '',
+  date        text not null default '',   -- ngày nhận (yyyy-mm-dd)
+  time        text not null default '',   -- giờ nhận (hh:mm)
+  products    jsonb not null default '[]'::jsonb,
+  schedule    jsonb not null default '[]'::jsonb,
+  total       int  not null default 0,
+  visitor_id  text not null default '',
+  created_at  timestamptz not null default now()
+);
+create index if not exists orders_created_at_idx on public.orders (created_at desc);
+
+-- For an ALREADY-CREATED orders table that predates the date/time columns:
+-- add them if missing (idempotent, safe to re-run).
+alter table public.orders add column if not exists date text not null default '';
+alter table public.orders add column if not exists time text not null default '';
+
 -- ============================================================
 -- RLS — anon key gets what it needs; owner actions are limited to
 -- what the app exposes (delete comment, write menu/counter).
@@ -54,6 +79,7 @@ create table if not exists public.dishes (
 alter table public.state    enable row level security;
 alter table public.comments enable row level security;
 alter table public.dishes   enable row level security;
+alter table public.orders   enable row level security;
 
 -- state: anon can read + upsert the counter row. A read-modify-write upsert
 -- fires both an INSERT and an UPDATE, so allow both (no ON CONFLICT clause in
@@ -83,6 +109,14 @@ create policy "dishes anon insert" on public.dishes
   for insert to anon, public with check (slot between 1 and 6);
 create policy "dishes anon update" on public.dishes
   for update to anon, public using (slot between 1 and 6) with check (slot between 1 and 6);
+
+-- orders: anon can read + insert their own order; owner can update status.
+create policy "orders anon read" on public.orders
+  for select to anon, public using (true);
+create policy "orders anon insert" on public.orders
+  for insert to anon, public with check (true);
+create policy "orders anon update" on public.orders
+  for update to anon, public using (true) with check (true);
 
 -- ============================================================
 -- Storage — dish-images bucket (public read, anon upload)

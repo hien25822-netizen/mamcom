@@ -11,3 +11,9 @@ index.mamcom.bak.html
 
 # File hệ điều hành
 .DS_Store
+
+# Supabase CLI: cache/link cục bộ, không đưa lên git
+supabase/.temp/
+
+# Thư mục rỗng sinh nhầm, có .git riêng
+mamcom/

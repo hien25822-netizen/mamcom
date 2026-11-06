@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
   // ---- return the refreshed list (newest first) -------------------------
   const { data: rows, error: listErr } = await supabase
     .from("comments")
-    .select("id, rating, text, ts")
+    .select("id, rating, text, ts, name")
     .order("ts", { ascending: false })
     .order("id", { ascending: false });
 

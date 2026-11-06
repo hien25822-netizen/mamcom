@@ -1,0 +1,15 @@
+# Registered Spec Kit extension hooks.
+#
+# Each hook names a shell command run before/after a workflow command.
+#   optional: true  -> run only when enabled here
+#   optional: false -> mandatory, must always run
+#
+# This repository has no external tooling to invoke, so the hook lists are
+# intentionally empty: the workflow commands execute their checks inline.
+
+before_bug_assess: []
+after_bug_assess: []
+before_bug_fix: []
+after_bug_fix: []
+before_bug_test: []
+after_bug_test: []
