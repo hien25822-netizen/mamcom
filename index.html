@@ -2,7 +2,8 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#da241c">
 <title>Kế hoạch bữa ăn tuần</title>
 <style>
   :root{
@@ -94,7 +95,9 @@
     user-select:none;
     transition:border-color .15s,box-shadow .15s,transform .05s;
     touch-action:manipulation;
-    display:flex;flex-direction:row;align-items:center;gap:10px;
+    display:flex;flex-direction:row;align-items:center;gap:8px;
+    padding:5px 6px;
+    min-height:52px;
   }
   /* Kéo thả trên màn cảm ứng cần touch-action:none (chỉ trên thiết bị
   coarse — chuột vẫn dùng HTML5 drag như cũ, cuộn trang không bị ảnh hưởng). */
@@ -107,48 +110,48 @@
   .tile.is-dragging{opacity:.45}
   /* "Mảnh" (ghost) khi kéo món bằng ngón tay, đi theo con trỏ */
   .tile.drag-ghost{
-    position:fixed;left:0;top:0;z-index:130;width:84px;height:84px;
+    position:fixed;left:0;top:0;z-index:130;width:62px;height:62px;
     transform:translate(-50%,-50%);pointer-events:none;opacity:.95;
-    display:flex;align-items:center;justify-content:center;font-size:34px;
+    display:flex;align-items:center;justify-content:center;font-size:28px;
     background:var(--yellow-soft);overflow:hidden;
     box-shadow:0 6px 18px rgba(140,30,20,.35);
   }
   .tile.drag-ghost img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .tile__media{
-    position:relative;flex:0 0 72px;height:72px;   /* ảnh bé, tên hiện đủ */
+    position:relative;flex:0 0 48px;height:48px;   /* ảnh gọn, dễ kéo trên máy */
     background:var(--yellow-soft);
     display:flex;align-items:center;justify-content:center;
-    font-size:30px;
+    font-size:24px;
+    border-radius:10px;
     overflow:hidden;
   }
   /* Ảnh bé + bấm vào xem to (lightbox): tên món có chỗ hiện đủ */
   .tile__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
   .tile__name{
     flex:1 1 auto;min-width:0;
-    padding:8px 10px;
+    padding:2px 4px;
     background:#fff;
-    border-top:1px solid var(--line);
-    font-size:12.5px;font-weight:700;text-align:left;line-height:1.35;
+    font-size:13px;font-weight:700;text-align:left;line-height:1.3;
     /* Tên hiện ĐỦ (không cắt dòng) — ảnh tự co lại cho tên dài */
     overflow:hidden;word-wrap:break-word;
   }
   .tile__badge{
-    position:absolute;top:6px;left:6px;z-index:1;
-    background:rgba(255,255,255,.9);
-    border-radius:8px;
-    padding:2px 8px;
-    font-size:10px;font-weight:700;color:var(--red);
+    position:absolute;bottom:2px;left:2px;z-index:1;
+    background:rgba(255,255,255,.92);
+    border-radius:7px;
+    padding:1px 6px;
+    font-size:9.5px;font-weight:700;color:var(--red);
     display:none;
     align-items:center;
   }
   .tile.has-dish .tile__badge{display:flex}
   .tile__edit{
-    position:absolute;top:5px;right:5px;z-index:1;
-    width:26px;height:26px;
+    position:absolute;top:3px;right:3px;z-index:1;
+    width:28px;height:28px;
     border:0;border-radius:8px;
     background:rgba(255,255,255,.95);
     box-shadow:0 1px 3px rgba(140,30,20,.15);
-    color:var(--red);font-size:13px;cursor:pointer;
+    color:var(--red);font-size:14px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;padding:0;
   }
   .tile__edit:hover{background:var(--yellow);color:#574800}
@@ -258,28 +261,28 @@
   .day__head{
     display:flex;align-items:center;justify-content:space-between;
     gap:8px;flex-wrap:wrap;
-    padding:10px 14px;
+    padding:7px 11px;
     border-bottom:1px solid var(--line);
     background:linear-gradient(180deg,#fff,var(--bg));
   }
-  .day__name{font-size:14px;font-weight:800;color:var(--red)}
-  .day__date{font-size:11px;font-weight:700;color:var(--muted);margin-left:6px}
+  .day__name{font-size:13.5px;font-weight:800;color:var(--red)}
+  .day__date{font-size:10.5px;font-weight:700;color:var(--muted);margin-left:6px}
   .day__count{
     font-size:11px;font-weight:700;color:var(--muted);
     background:#fff;border:1px solid var(--line);
-    padding:2px 8px;border-radius:999px;min-width:26px;text-align:center;
+    padding:1px 8px;border-radius:999px;min-width:26px;text-align:center;
   }
   .day__count.has{background:var(--yellow);color:#574800;border-color:#e6e07a}
   .day__body{
-    min-height:52px;
-    padding:8px 10px;
-    display:flex;flex-wrap:wrap;gap:6px;
+    min-height:44px;
+    padding:6px 9px;
+    display:flex;flex-wrap:wrap;gap:5px;
     transition:background .15s;
   }
   .day__body.drop-over{background:var(--yellow-soft)}
   .day__empty{
-    font-size:12.5px;color:var(--muted);
-    padding:6px 4px;flex:1 1 100%;
+    font-size:12px;color:var(--muted);
+    padding:4px 3px;flex:1 1 100%;
   }
 
   .chip{
@@ -342,19 +345,19 @@
   .picker__box{
     background:var(--card);border-radius:16px;
     box-shadow:0 12px 40px rgba(56,33,29,.25);
-    width:100%;max-width:330px;padding:16px;
+    width:100%;max-width:300px;padding:12px;
   }
-  .picker__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-  .picker__head h3{margin:0;font-size:15px;font-weight:800;color:var(--red)}
-  .picker__nav{border:0;background:transparent;color:var(--muted);font-size:20px;font-weight:800;line-height:1;cursor:pointer;padding:2px 10px;border-radius:8px}
+  .picker__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .picker__head h3{margin:0;font-size:14px;font-weight:800;color:var(--red)}
+  .picker__nav{border:0;background:transparent;color:var(--muted);font-size:22px;font-weight:800;line-height:1;cursor:pointer;padding:2px 12px;border-radius:8px}
   .picker__nav:hover:not(:disabled){color:var(--red)}
   .picker__nav:disabled{opacity:.3;cursor:default}
-  .picker__month{text-align:center;font-size:13px;font-weight:800;color:var(--ink);margin:0 0 10px}
-  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-  .cal__wd{text-align:center;font-size:10.5px;font-weight:800;color:var(--muted);padding:2px 0}
+  .picker__month{text-align:center;font-size:12.5px;font-weight:800;color:var(--ink);margin:0 0 6px}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .cal__wd{text-align:center;font-size:10px;font-weight:800;color:var(--muted);padding:0 0 2px}
   .cal__day{
-    border:1px solid var(--line);background:#fffdf8;border-radius:9px;
-    padding:7px 0;font:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;
+    border:1px solid var(--line);background:#fffdf8;border-radius:8px;
+    padding:5px 0;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink);cursor:pointer;
   }
   .cal__day:hover{border-color:var(--red);box-shadow:0 0 0 2px var(--yellow-soft)}
   .cal__day.is-past{opacity:.3;pointer-events:none}
@@ -454,21 +457,23 @@
   .inbox-sep{color:var(--ink);font-size:18px;line-height:1;opacity:.55;user-select:none}
 
   /* ============ FLIP MEALS COUNTER ============ */
-  .flipbox{display:flex;gap:8px;align-items:stretch}
+  .flipbox{display:flex;gap:7px;align-items:stretch;justify-content:center}
   .flip{
-    position:relative;width:56px;height:62px;overflow:hidden;
+    position:relative;width:46px;height:58px;overflow:hidden;
     perspective:220px;
-    background:transparent;
+    background:linear-gradient(180deg,#8f130e 0%,#5d0a06 100%);
+    border:2px solid #ffe14d;border-radius:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,.28), inset 0 -6px 10px rgba(0,0,0,.25);
   }
   .flip__card{
     position:absolute;inset:0;
     display:flex;align-items:center;justify-content:center;
     transform-origin:center;
     backface-visibility:hidden;
-  }
-  .flip__card img{
-    width:auto;height:100%;
-    -webkit-user-drag:none;user-select:none;pointer-events:none;
+    font-family:Impact,"Arial Black","Helvetica Neue",system-ui,sans-serif;
+    font-size:38px;font-weight:900;line-height:1;color:var(--yellow);
+    text-shadow:0 2px 0 rgba(0,0,0,.35);
+    -webkit-user-select:none;user-select:none;
   }
   /* Old digit is hidden at rest; it only folds away during a flip so the two
      cards never overlap/bleed through each other. */
@@ -622,10 +627,13 @@
   }
   @media (max-width:560px){
     .menu{grid-template-columns:1fr;gap:8px;padding:8px}
-    .wrap{padding:18px 14px 32px}
+    .wrap{padding:18px 14px calc(32px + env(safe-area-inset-bottom))}
     h1{font-size:20px}
-    .tile__name{font-size:11.5px}
-    .tile__media{font-size:26px}
+    /* Món gọn để kéo dễ trên điện thoại (mục 1): ảnh nhỏ, tên đủ đọc */
+    .tile__name{font-size:13px;line-height:1.25}
+    .tile__media{flex:0 0 44px;height:44px;font-size:22px;border-radius:9px}
+    .tile{padding:4px 5px;min-height:48px}
+    .tile__edit{width:30px;height:30px;font-size:15px}
     /* 1 cột dọc duy nhất, đúng yêu cầu: mọi thẻ xếp theo hàng dọc */
     .week{grid-template-columns:1fr;gap:8px}
     .day__head{padding:7px 9px}
@@ -635,10 +643,19 @@
     .day__empty{font-size:11.5px;padding:3px 2px}
     .chip{font-size:12px;gap:5px;padding:4px 5px 4px 4px}
     .chip__media{width:22px;height:22px;font-size:13px}
-    .chip__x{width:18px;height:18px;font-size:12px}
+    .chip__x{width:22px;height:22px;font-size:13px}   /* chạm được dễ hơn (iOS) */
     .order{margin-top:10px;padding:10px 12px}
     .order__grid{grid-template-columns:1fr;gap:8px}
+    .btn{padding:12px 14px}                            /* nút cao đủ cho ngón tay */
   }
+  /* iOS: bỏ viền xanh khi bấm, và tôn trọng vùng an toàn (notch / home bar) */
+  @supports (-webkit-touch-callout:none){
+    button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+  }
+  .wrap{padding-left:max(14px,env(safe-area-inset-left));
+        padding-right:max(14px,env(safe-area-inset-right))}
+  header{padding-top:env(safe-area-inset-top)}
+  .modal__box{max-height:min(86dvh,760px);overflow:auto}
   /* người dùng bấm Tab: luôn thấy vòng Highlight, kể cả khi CSS đè outline */
   :focus-visible{outline:3px solid var(--red);outline-offset:2px}
   /* tôn trọng chế độ "giảm chuyển động" của hệ điều hành */
@@ -785,7 +802,7 @@
             <span class="order__total__calc" id="orderTotalCalc">49k × 0 người</span>
           </div>
           <div class="order__field--wide order__submit">
-            <button class="btn btn--primary" id="submitOrder" type="submit">🧾 Đặt mâm (tạo đơn hàng)</button>
+            <button class="btn btn--primary" id="submitOrder" type="submit">🧾 Tạo đơn hàng</button>
             <span class="order__submitMsg" id="orderSubmitMsg" role="status" aria-live="polite"></span>
           </div>
         </div>
@@ -798,11 +815,11 @@
           <span class="hint" id="ordersCount">0 đơn</span>
         </div>
         <div class="orders__list" id="ordersList"></div>
-        <p class="orders__empty" id="ordersEmpty">Chưa có đơn nào. Chọn mâm theo ngày rồi bấm “Đặt mâm”.</p>
+        <p class="orders__empty" id="ordersEmpty">Chưa có đơn nào. Chọn mâm theo ngày rồi bấm “Tạo đơn hàng”.</p>
       </section>
 
       <div class="actions">
-        <button class="btn" id="copyBtn" type="button">Sao chép lộ trình thực đơn</button>
+        <button class="btn" id="copyBtn" type="button">Sao chép đơn hàng</button>
         <span class="note" id="note"></span>
         <span class="inbox-sep" aria-hidden="true">➞</span>
         <button class="btn" id="inboxBtn" type="button">Mở inbox</button>
@@ -813,16 +830,16 @@
         <div class="saved__title">⏳ BẠN TIẾT KIỆM ĐƯỢC</div>
         <p class="saved__now"><span id="savedNow"></span></p>
         <div class="saved__macro">
-          <div><span class="saved__emoji">📅</span><span class="saved__val" id="savedWeek">0</span><span class="saved__unit">tuần này</span></div>
-          <div><span class="saved__emoji">🗓️</span><span class="saved__val" id="savedMonth">0</span><span class="saved__unit">tháng này</span></div>
-          <div><span class="saved__emoji">📆</span><span class="saved__val" id="savedYear">0</span><span class="saved__unit">năm này</span></div>
+          <div><span class="saved__emoji">📅</span><span class="saved__val" id="savedWeek">0</span><span class="saved__unit">mỗi tuần này</span></div>
+          <div><span class="saved__emoji">🗓️</span><span class="saved__val" id="savedMonth">0</span><span class="saved__unit">nếu đặt cả tháng</span></div>
+          <div><span class="saved__emoji">📆</span><span class="saved__val" id="savedYear">0</span><span class="saved__unit">nếu đặt cả năm</span></div>
         </div>
         <div class="saved__tier">
           <div class="saved__tier-head">🕰️ Với <strong id="savedWeekTime">0</strong> mỗi tuần ấy, bạn có thể:</div>
           <ul class="saved__list" id="savedWeekList"></ul>
         </div>
         <div class="saved__tier">
-          <div class="saved__tier-head">🎁 Với <strong id="savedYearTime">0</strong> mỗi năm (≈ <span id="savedYearDays">0</span> ngày đi chợ, nghĩ món), bạn có thể:</div>
+          <div class="saved__tier-head">🎁 Đặt như thế này <strong>mỗi tuần</strong> thì mỗi năm bạn có <strong id="savedYearTime">0</strong> (<span id="savedYearDays">0</span> không phải đi chợ, nghĩ món), tức là:</div>
           <ul class="saved__list" id="savedYearList"></ul>
         </div>
         <p class="saved__cta">
@@ -846,7 +863,7 @@
         <div class="qa__item">
           <h4>Đặt hàng Mâm Cơm thế nào?</h4>
           <p>Giữ và <strong>kéo món</strong> trong menu vào các ngày bạn muốn ăn trong tuần, sau đó nhập thông tin và ấn
-          <strong>“Sao chép lộ trình thực đơn”</strong>, rồi dán thẳng vào chat của Mâm Cơm trên Instagram, Facebook hay TikTok.<br>
+          <strong>“Sao chép đơn hàng”</strong>, rồi dán thẳng vào chat của Mâm Cơm trên Instagram, Facebook hay TikTok.<br>
           Nhận đủ thông tin, Mâm Cơm chuẩn bị đầy đủ và <strong>ship đến tận nhà</strong> cho bạn.</p>
         </div>
         <div class="qa__item">
@@ -1368,6 +1385,11 @@
         dayBodyEls.forEach(function(b){
           b.classList.toggle("drop-over", b === target);
         });
+        // Kéo món trên điện thoại: chạm gần mép trên/dưới màn hình → tự cuộn
+        // để khách kéo được xuống mini-calendar dù chưa cuộn tay.
+        var vh = window.innerHeight, y = ev.clientY, EDGE = 64;
+        if(y < EDGE) window.scrollBy(0, -Math.max(3, (EDGE - y) * 0.32));
+        else if(y > vh - EDGE) window.scrollBy(0, Math.max(3, (y - (vh - EDGE)) * 0.32));
       }
     };
     var finish = function(ev){
@@ -1625,7 +1647,7 @@
     });
     updateTileBadges();
 
-    noteEl.textContent = "Sao chép lộ trình và Dán vào inbox";
+    noteEl.textContent = "Sao chép đơn hàng và dán vào inbox";
     updateSavings();
     updateOrderTotal();
   }
@@ -1856,7 +1878,7 @@
   });
 
   // ================= ORDER CARDS (thẻ đơn hàng) =================
-  // Mỗi lần bấm "Đặt mâm" tạo một đơn có: ID, trạng thái, danh sách món,
+  // Mỗi lần bấm "Tạo đơn hàng" tạo một đơn có: ID, trạng thái, danh sách món,
   // lịch trình theo ngày, ghi chú. Đơn lưu ở localStorage (thiết bị này) và
   // đồng bộ lên bảng `orders` của Supabase khi bảng này tồn tại.
   var ORDERS_KEY = "mamcom.orders.v1";
@@ -2276,22 +2298,23 @@
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   });
-  var WEEK_IDEAS = [
-    { min: 0,   text: "uống một ly cà phê thật chậm", img: "☕" },
+  // Mỗi hoạt động có thời lượng thật (phút) → số lần được tính TỶ LỆ:
+  // số tiết kiệm ÷ thời lượng hoạt động. Không còn "39 giờ chỉ được 1 buổi spa".
+  var WEEK_ACTS = [
+    { min: 30,  text: "uống một ly cà phê thật chậm", img: "☕" },
     { min: 45,  text: "đọc một chương sách", img: "📖" },
-    { min: 90,  text: "đi bơi một buổi", img: "🏊" },
-    { min: 135, text: "tập một buổi gym", img: "🏋️" },
-    { min: 180, text: "xem trọn một bộ phim", img: "🎬" },
-    { min: 270, text: "một buổi chiều thảnh thơi với gia đình", img: "🧺" }
+    { min: 60,  text: "một buổi đi bơi / tập gym", img: "🏊" },
+    { min: 120, text: "xem trọn một bộ phim", img: "🎬" },
+    { min: 180, text: "một buổi chiều thảnh thơi với gia đình", img: "🧺" }
   ];
-  var YEAR_IDEAS = [
-    { min: 600,    text: "đọc trọn 4 cuốn sách", img: "📚" },
-    { min: 1800,   text: "một buổi spa, tự thưởng cho mình", img: "💆" },
-    { min: 2880,   text: "chơi trọn cả 2 ngày cuối tuần", img: "🏖️" },
-    { min: 4320,   text: "một chuyến du lịch gia đình 3 ngày", img: "🧳" },
-    { min: 5760,   text: "4 ngày nghỉ phép miễn phí", img: "✈️" },
-    { min: 10080,  text: "một chuyến du lịch xa 7 ngày", img: "🌏" },
-    { min: 14400,  text: "trọn một tháng tự do hoàn toàn", img: "🎉" }
+  // Mốc "một năm" chỉ tính ở quy mô NGÀY trở lên — cộng dồn theo buổi nhỏ
+  // sẽ ra những con số vô lý kiểu "91 buổi chiều".
+  var YEAR_ACTS = [
+    { min: 1440, text: "một ngày trọn vẹn không phải nghĩ món", img: "☀️" },
+    { min: 2880, text: "hai ngày cuối tuần chỉ để ở nhà", img: "🧺" },
+    { min: 4320, text: "một chuyến du lịch gia đình 3 ngày", img: "🏖️" },
+    { min: 10080,text: "một chuyến du lịch xa 7 ngày", img: "🌏" },
+    { min: 20160,text: "một tháng ở nhà thảnh thơi, không vào bếp", img: "💆" }
   ];
   function fmtDuration(mins){
     if(mins <= 0) return "0 phút";
@@ -2300,19 +2323,28 @@
     if(m) out += (out ? " " : "") + m + " phút";
     return out;
   }
-  function fillIdeaList(listEl, ideas, thresholdMin){
-    var picked = ideas.filter(function(i){ return thresholdMin >= i.min; });
-    if(picked.length === 0) picked = ideas.slice(0, 1);
-    picked = picked.slice(-3);
+  // Liệt kê số lần KHÁCH THỰC SỰ đổi được từ số phút đã tiết kiệm.
+  // Không ép tối thiểu 1 lần — nếu thời gian tiết kiệm chưa đủ cho một
+  // chuyến 7 ngày thì không được hứa hẹn 1 lần.
+  function fillCountList(listEl, acts, totalMin){
+    var rows = acts
+      .map(function(a){ return { a: a, n: Math.floor(totalMin / a.min) }; })
+      .filter(function(r){ return r.n >= 1; })
+      .sort(function(p, q){ return q.n - p.n; })
+      .slice(0, 4);
     listEl.innerHTML = "";
-    picked.forEach(function(i){
+    if(!rows.length){
+      var days = Math.max(1, Math.round(totalMin / 1440));
+      rows = [{ a: { text: "ngày không phải đi chợ, nghĩ món", img: "☀️" }, n: days }];
+    }
+    rows.forEach(function(r){
       var li = document.createElement("li");
       var img = document.createElement("span");
       img.className = "idea__img";
-      img.textContent = i.img || "⏱️";
+      img.textContent = r.a.img || "⏱️";
       var txt = document.createElement("span");
       txt.className = "idea__txt";
-      txt.textContent = i.text;
+      txt.textContent = "≈ " + r.n + " lần " + r.a.text;
       li.appendChild(img);
       li.appendChild(txt);
       listEl.appendChild(li);
@@ -2334,9 +2366,12 @@
     document.getElementById("savedYear").textContent = fmtDuration(yearMin);
     document.getElementById("savedWeekTime").textContent = fmtDuration(weekMin);
     document.getElementById("savedYearTime").textContent = fmtDuration(yearMin);
-    document.getElementById("savedYearDays").textContent = Math.round(yearMin / 1440);
-    fillIdeaList(document.getElementById("savedWeekList"), WEEK_IDEAS, weekMin);
-    fillIdeaList(document.getElementById("savedYearList"), YEAR_IDEAS, yearMin);
+    var daysPerYear = Math.round(yearMin / 1440);
+    document.getElementById("savedYearDays").textContent = daysPerYear >= 1
+      ? "≈ " + daysPerYear + " ngày"
+      : "≈ " + fmtDuration(yearMin);
+    fillCountList(document.getElementById("savedWeekList"), WEEK_ACTS, weekMin);
+    fillCountList(document.getElementById("savedYearList"), YEAR_ACTS, yearMin);
   }
 
   // ================= copy =================
@@ -2490,20 +2525,30 @@
     addMeals: function(n){
       if(USE_SUPABASE){
         var add = Math.max(0, n);
-        // Read-modify-write. At the expected ~50-peak the race window is tiny;
-        // a lost counter increment only affects the display number, never data.
-        return SUPABASE.from("state").select("value").eq("key","meals").single()
-          .then(function(st){
-            var row = st && st.data;
-            var cur = (row && row.value != null) ? parseInt(row.value, 10) : 23; // chưa có dòng thì khởi điểm mặc định 23
-            var next = cur + add;
-            return SUPABASE.from("state")
-              .upsert({ key:"meals", value:String(next) }, { onConflict:"key" })
-              .select("value")
-              .single()
-              .then(function(res){
-                if(res.error) throw res.error;
-                return next;
+        // Cộng dồn NGUYÊN TỬ trong Postgres (function increment_meals) —
+        // hai khách bấm "Sao chép đơn hàng" cùng lúc không bị mất lượt cộng.
+        return SUPABASE.rpc("increment_meals", { p_n: add })
+          .then(function(res){
+            if(res.error) throw res.error;
+            var v = res.data;
+            if(v == null) throw new Error("no value");
+            return parseInt(v, 10);
+          })
+          .catch(function(){
+            // Dự phòng: chưa tạo function trên Supabase → read-modify-write.
+            return SUPABASE.from("state").select("value").eq("key","meals").single()
+              .then(function(st){
+                var row = st && st.data;
+                var cur = (row && row.value != null) ? parseInt(row.value, 10) : 23; // chưa có dòng thì khởi điểm mặc định 23
+                var next = cur + add;
+                return SUPABASE.from("state")
+                  .upsert({ key:"meals", value:String(next) }, { onConflict:"key" })
+                  .select("value")
+                  .single()
+                  .then(function(res2){
+                    if(res2.error) throw res2.error;
+                    return next;
+                  });
               });
           });
       }
@@ -2677,13 +2722,8 @@
       var neu = document.createElement("div");
       neu.className = "flip__card flip__new";
       var changed = (prevDigits[i] !== undefined && prevDigits[i] !== d);
-      var dig = document.createElement("img");
-      dig.src = "assets/flip-digits/" + d + "-alpha.png";
-      dig.alt = d;
-      var digOld = dig.cloneNode(false);
-      digOld.src = "assets/flip-digits/" + (changed ? prevDigits[i] : d) + "-alpha.png";
-      old.appendChild(digOld);
-      neu.appendChild(dig);
+      old.textContent = changed ? prevDigits[i] : d;
+      neu.textContent = d;
       tile.appendChild(old);
       tile.appendChild(neu);
       flipboxEl.appendChild(tile);
@@ -2697,19 +2737,16 @@
     if(mealsSpanEl) mealsSpanEl.textContent = n;
   }
 
-  // Số mâm đã KHỚP (counted) trên thiết bị này — để sao chép lại đơn
-  // không đổi không cộng dồn lần 2. Chỉ giữ tăng, không giảm.
-  var COUNTED_KEY = "mamcom.counted.v1";
+  // Mỗi lần khách bấm "Sao chép đơn hàng", bộ đếm chung cộng thêm đúng số
+  // mâm của đơn vừa đặt (vd đặt 2 mâm → +2). Số mới được lưu vào backend
+  // (Supabase state.key='meals') để MỌI khách truy cập đều thấy con số thật.
   function bumpMeals(){
-    var total = totalTraysAllWeeks();          // khách đã đặt CẢ HAI TUẦN
-    var last = 0;
-    try{ last = parseInt(localStorage.getItem(COUNTED_KEY) || "0", 10) || 0; }catch(e){}
-    var add = total - last;                     // chỉ phần CHƯA được đếm
-    if(add <= 0){ try{ localStorage.setItem(COUNTED_KEY, String(total)); }catch(e){} return; }
-    try{ localStorage.setItem(COUNTED_KEY, String(total)); }catch(e){}
+    var add = totalTraysAllWeeks();            // số mâm của đơn khách vừa đặt
+    if(add <= 0) return;
     var target = currentMeals + add;
     renderFlip(target);
-    // Cộng dồn vào bộ đếm chung (Supabase, hoặc máy chủ cục bộ): chỉ tăng.
+    // Giả lập (optimistic): nếu backend trả về số mới → đồng bộ chính xác
+    // (mình + các lượt của khách khác trong lúc chờ).
     sharedStore.addMeals(add).then(function(next){
       if(typeof next === "number") renderFlip(next);
     }).catch(function(){ /* backend offline — giữ số đếm cục bộ */ });
