@@ -81,42 +81,59 @@ alter table public.comments enable row level security;
 alter table public.dishes   enable row level security;
 alter table public.orders   enable row level security;
 
+-- Mỗi policy được XOÁ trước rồi tạo lại, để file này chạy lại nhiều lần
+-- không báo lỗi "policy already exists".
 -- state: anon can read + upsert the counter row. A read-modify-write upsert
 -- fires both an INSERT and an UPDATE, so allow both (no ON CONFLICT clause in
 -- policies — that's insert-statement syntax, not RLS syntax).
+drop policy if exists "state anon read" on public.state;
 create policy "state anon read" on public.state
   for select to anon, public using (true);
+drop policy if exists "state anon insert" on public.state;
 create policy "state anon insert" on public.state
   for insert to anon, public with check (true);
+drop policy if exists "state anon update" on public.state;
 create policy "state anon update" on public.state
   for update to anon, public using (true) with check (true);
 
 -- comments: anon can read + insert; delete is allowed (owner flow) —
 -- keep the delete open to anon so the existing ✕ button works without auth.
+drop policy if exists "comments anon read" on public.comments;
 create policy "comments anon read" on public.comments
   for select to anon, public using (true);
+drop policy if exists "comments anon insert" on public.comments;
 create policy "comments anon insert" on public.comments
   for insert to anon, public with check (true);
+drop policy if exists "comments anon delete" on public.comments;
 create policy "comments anon delete" on public.comments
   for delete to anon, public using (true);
 
 -- dishes: anon can read + upsert the 6 slots (separate INSERT + UPDATE
 -- policies; the app upserts with onConflict=slot, so a row insert OR
 -- conflict-update must both succeed).
+drop policy if exists "dishes anon read" on public.dishes;
 create policy "dishes anon read" on public.dishes
   for select to anon, public using (true);
+drop policy if exists "dishes anon insert" on public.dishes;
 create policy "dishes anon insert" on public.dishes
   for insert to anon, public with check (slot between 1 and 6);
+drop policy if exists "dishes anon update" on public.dishes;
 create policy "dishes anon update" on public.dishes
   for update to anon, public using (slot between 1 and 6) with check (slot between 1 and 6);
 
 -- orders: anon can read + insert their own order; owner can update status.
+drop policy if exists "orders anon read" on public.orders;
 create policy "orders anon read" on public.orders
   for select to anon, public using (true);
+drop policy if exists "orders anon insert" on public.orders;
 create policy "orders anon insert" on public.orders
   for insert to anon, public with check (true);
+drop policy if exists "orders anon update" on public.orders;
 create policy "orders anon update" on public.orders
   for update to anon, public using (true) with check (true);
+drop policy if exists "orders anon delete" on public.orders;
+create policy "orders anon delete" on public.orders
+  for delete to anon, public using (true);
 
 -- ============================================================
 -- Storage — dish-images bucket (public read, anon upload)
@@ -125,9 +142,11 @@ insert into storage.buckets (id, name, public)
 values ('dish-images', 'dish-images', true)
 on conflict (id) do nothing;
 
+drop policy if exists "dish-images public read" on storage.objects;
 create policy "dish-images public read" on storage.objects
   for select to anon, public
   using (bucket_id = 'dish-images');
+drop policy if exists "dish-images anon upload" on storage.objects;
 create policy "dish-images anon upload" on storage.objects
   for insert to anon, public
   with check (bucket_id = 'dish-images' and (owner is null));
