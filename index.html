@@ -463,33 +463,26 @@
   .inbox-sep{color:var(--ink);font-size:18px;line-height:1;opacity:.55;user-select:none}
 
   /* ============ FLIP MEALS COUNTER ============ */
-  .flipbox{display:flex;gap:10px;align-items:stretch;justify-content:center}
-  /* Vỏ thẻ lật: đỏ sẫm, có viền vàng, để con số bên trong nổi hẳn lên */
+  .flipbox{display:flex;gap:6px;align-items:stretch;justify-content:center}
+  /* Thẻ số theo ngôn ngữ thiết kế của trang: nền trắng --card, viền --line,
+     bóng --shadow, chữ --red — giống hệt các ô món, ô lịch. */
   .flip{
-    position:relative;width:62px;height:76px;overflow:hidden;
+    position:relative;width:56px;height:64px;overflow:hidden;
     perspective:320px;
-    padding:5px;
-    background:linear-gradient(180deg,#ff4b3c 0%,var(--red) 42%,var(--red-dark) 100%);
-    border:2px solid var(--yellow);
-    border-radius:16px;
-    box-shadow:
-      0 10px 22px rgba(80,6,2,.45),
-      0 0 0 3px rgba(255,255,4,.18),
-      inset 0 1px 0 rgba(255,255,255,.35),
-      inset 0 -3px 8px rgba(0,0,0,.30);
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
   }
-  /* Mặt thẻ giấy trắng: số đỏ đậm, to, KHÔNG có đường ngăn ở giữa */
+  /* mặt số: không đường ngăn, chữ đỏ đậm đúng màu theme */
   .flip__card{
-    position:absolute;inset:5px;
-    border-radius:9px;
+    position:absolute;inset:0;
     display:flex;align-items:center;justify-content:center;
     transform-origin:center;
     backface-visibility:hidden;
-    background:#fffdf7;
-    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-    font-size:48px;font-weight:900;line-height:1;color:#9c0f07;
+    background:var(--card);
+    font-size:36px;font-weight:800;line-height:1;color:var(--red);
     font-variant-numeric:tabular-nums;
-    letter-spacing:-2px;
     -webkit-user-select:none;user-select:none;
   }
   /* Old digit is hidden at rest; it only folds away during a flip so the two
