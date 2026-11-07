@@ -18,3 +18,4 @@ supabase/.temp/
 # Thư mục rỗng sinh nhầm, có .git riêng
 mamcom/
 .vercel
+.env*
