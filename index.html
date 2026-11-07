@@ -80,10 +80,10 @@
   .menu__hint{padding:10px 16px 0;font-size:15px;font-weight:400;color:var(--red);margin:0}
 
   .menu{
-    list-style:none;margin:0;padding:10px;
+    list-style:none;margin:0;padding:8px;
     display:grid;
-    grid-template-columns:1fr;   /* 1 CỘT DỌC DUY NHẤT (desktop + mobile) */
-    gap:10px;
+    grid-template-columns:repeat(3,1fr);   /* 3 MÓN 1 HÀNG — gọn, dễ kéo thả */
+    gap:8px;
   }
   .tile{
     position:relative;
@@ -95,9 +95,10 @@
     user-select:none;
     transition:border-color .15s,box-shadow .15s,transform .05s;
     touch-action:manipulation;
-    display:flex;flex-direction:row;align-items:center;gap:8px;
-    padding:5px 6px;
-    min-height:52px;
+    display:flex;flex-direction:column;align-items:stretch;gap:0;
+    padding:0;
+    min-height:0;
+    box-shadow:0 1px 3px rgba(140,30,20,.06);
   }
   /* Kéo thả trên màn cảm ứng cần touch-action:none (chỉ trên thiết bị
   coarse — chuột vẫn dùng HTML5 drag như cũ, cuộn trang không bị ảnh hưởng). */
@@ -110,48 +111,51 @@
   .tile.is-dragging{opacity:.45}
   /* "Mảnh" (ghost) khi kéo món bằng ngón tay, đi theo con trỏ */
   .tile.drag-ghost{
-    position:fixed;left:0;top:0;z-index:130;width:62px;height:62px;
+    position:fixed;left:0;top:0;z-index:130;width:54px;height:54px;
     transform:translate(-50%,-50%);pointer-events:none;opacity:.95;
-    display:flex;align-items:center;justify-content:center;font-size:28px;
+    display:flex;align-items:center;justify-content:center;font-size:26px;
     background:var(--yellow-soft);overflow:hidden;
+    border-radius:12px;
     box-shadow:0 6px 18px rgba(140,30,20,.35);
   }
   .tile.drag-ghost img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .tile__media{
-    position:relative;flex:0 0 48px;height:48px;   /* ảnh gọn, dễ kéo trên máy */
+    position:relative;width:100%;aspect-ratio:1/1;height:auto;   /* ảnh vuông gọn */
     background:var(--yellow-soft);
     display:flex;align-items:center;justify-content:center;
-    font-size:24px;
-    border-radius:10px;
+    font-size:22px;
+    border-radius:0;
     overflow:hidden;
   }
   /* Ảnh bé + bấm vào xem to (lightbox): tên món có chỗ hiện đủ */
   .tile__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
   .tile__name{
     flex:1 1 auto;min-width:0;
-    padding:2px 4px;
+    padding:5px 6px 6px;
     background:#fff;
-    font-size:13px;font-weight:700;text-align:left;line-height:1.3;
-    /* Tên hiện ĐỦ (không cắt dòng) — ảnh tự co lại cho tên dài */
+    font-size:11.5px;font-weight:700;text-align:center;line-height:1.25;
+    color:var(--ink);
+    /* Tên hiện ĐỦ (không cắt dòng) — ô co lại cho tên dài */
     overflow:hidden;word-wrap:break-word;
   }
   .tile__badge{
-    position:absolute;bottom:2px;left:2px;z-index:1;
-    background:rgba(255,255,255,.92);
-    border-radius:7px;
+    position:absolute;top:3px;left:3px;z-index:1;
+    background:rgba(255,255,255,.94);
+    border-radius:999px;
     padding:1px 6px;
-    font-size:9.5px;font-weight:700;color:var(--red);
+    font-size:9px;font-weight:800;color:var(--red);
     display:none;
     align-items:center;
+    box-shadow:0 1px 3px rgba(140,30,20,.2);
   }
   .tile.has-dish .tile__badge{display:flex}
   .tile__edit{
     position:absolute;top:3px;right:3px;z-index:1;
-    width:28px;height:28px;
+    width:24px;height:24px;
     border:0;border-radius:8px;
     background:rgba(255,255,255,.95);
     box-shadow:0 1px 3px rgba(140,30,20,.15);
-    color:var(--red);font-size:14px;cursor:pointer;
+    color:var(--red);font-size:13px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;padding:0;
   }
   .tile__edit:hover{background:var(--yellow);color:#574800}
@@ -250,64 +254,66 @@
   .weekbar__label{font-size:11px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
   .btn.btn--week{background:var(--yellow);color:#574800;border:1px solid #e6e07a;padding:8px 14px;font-size:13px}
   .btn.btn--week:hover{filter:brightness(.95)}
-  .week{display:grid;gap:10px}
+  .week{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}   /* 3 Ô 1 HÀNG */
   .day{
     background:var(--card);
     border:1px solid var(--line);
     border-radius:var(--radius);
     box-shadow:var(--shadow);
     overflow:hidden;
+    display:flex;flex-direction:column;
   }
   .day__head{
     display:flex;align-items:center;justify-content:space-between;
-    gap:8px;flex-wrap:wrap;
-    padding:7px 11px;
+    gap:6px;flex-wrap:wrap;
+    padding:6px 8px;
     border-bottom:1px solid var(--line);
     background:linear-gradient(180deg,#fff,var(--bg));
   }
-  .day__name{font-size:13.5px;font-weight:800;color:var(--red)}
-  .day__date{font-size:10.5px;font-weight:700;color:var(--muted);margin-left:6px}
+  .day__name{font-size:12.5px;font-weight:800;color:var(--red)}
+  .day__date{font-size:10px;font-weight:700;color:var(--muted);margin-left:5px}
   .day__count{
-    font-size:11px;font-weight:700;color:var(--muted);
+    font-size:10.5px;font-weight:700;color:var(--muted);
     background:#fff;border:1px solid var(--line);
-    padding:1px 8px;border-radius:999px;min-width:26px;text-align:center;
+    padding:1px 7px;border-radius:999px;min-width:22px;text-align:center;
   }
   .day__count.has{background:var(--yellow);color:#574800;border-color:#e6e07a}
   .day__body{
-    min-height:44px;
-    padding:6px 9px;
-    display:flex;flex-wrap:wrap;gap:5px;
+    flex:1 1 auto;
+    min-height:56px;
+    padding:6px 7px;
+    display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;
     transition:background .15s;
   }
   .day__body.drop-over{background:var(--yellow-soft)}
   .day__empty{
-    font-size:12px;color:var(--muted);
-    padding:4px 3px;flex:1 1 100%;
+    font-size:11px;color:var(--muted);
+    padding:4px 2px;flex:1 1 100%;
   }
 
   .chip{
-    display:inline-flex;align-items:center;gap:7px;
+    display:inline-flex;align-items:center;gap:5px;
     max-width:100%;
     background:#fff;
     border:1px solid var(--line);
     border-radius:999px;
-    padding:5px 6px 5px 5px;
-    font-size:13px;font-weight:600;
+    padding:3px 4px 3px 3px;
+    font-size:11.5px;font-weight:600;
   }
   /* tên món dài phải co lại được, nếu không nút ✕ bị đẩy ra ngoài ô ngày */
   .chip__label{min-width:0;overflow-wrap:anywhere}
   .chip__media{
-    width:26px;height:26px;flex:0 0 auto;
+    width:22px;height:22px;flex:0 0 auto;
     border-radius:50%;overflow:hidden;
     background:var(--yellow-soft);
     display:flex;align-items:center;justify-content:center;
-    font-size:15px;
+    font-size:13px;
   }
   .chip__media img{width:100%;height:100%;object-fit:cover;display:block}
   .chip__x{
     border:0;background:var(--red-soft);color:var(--red);
-    width:20px;height:20px;border-radius:50%;
-    font-size:14px;line-height:1;cursor:pointer;
+    width:19px;height:19px;border-radius:50%;
+    font-size:12.5px;line-height:1;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
     padding:0;transition:background .15s,color .15s;
     flex:0 0 auto;
@@ -457,22 +463,31 @@
   .inbox-sep{color:var(--ink);font-size:18px;line-height:1;opacity:.55;user-select:none}
 
   /* ============ FLIP MEALS COUNTER ============ */
-  .flipbox{display:flex;gap:7px;align-items:stretch;justify-content:center}
+  .flipbox{display:flex;gap:8px;align-items:stretch;justify-content:center}
   .flip{
-    position:relative;width:46px;height:58px;overflow:hidden;
-    perspective:220px;
-    background:linear-gradient(180deg,#8f130e 0%,#5d0a06 100%);
-    border:2px solid #ffe14d;border-radius:10px;
-    box-shadow:0 4px 12px rgba(0,0,0,.28), inset 0 -6px 10px rgba(0,0,0,.25);
+    position:relative;width:52px;height:64px;overflow:hidden;
+    perspective:260px;
+    background:linear-gradient(180deg,var(--red) 0%,var(--red-dark) 100%);
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:14px;
+    box-shadow:0 6px 16px rgba(143,19,14,.30), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  /* vệt "lật" ở đáy thẻ — gợi ý đồng hồ lật cơ khí */
+  .flip::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:5px;
+    background:var(--yellow);opacity:.85;
+    box-shadow:0 -1px 0 rgba(0,0,0,.2);
+    z-index:3;
   }
   .flip__card{
     position:absolute;inset:0;
     display:flex;align-items:center;justify-content:center;
     transform-origin:center;
     backface-visibility:hidden;
-    font-family:Impact,"Arial Black","Helvetica Neue",system-ui,sans-serif;
-    font-size:38px;font-weight:900;line-height:1;color:var(--yellow);
-    text-shadow:0 2px 0 rgba(0,0,0,.35);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:34px;font-weight:800;line-height:1;color:#fff;
+    font-variant-numeric:tabular-nums;
+    text-shadow:0 2px 4px rgba(93,10,6,.45);
     -webkit-user-select:none;user-select:none;
   }
   /* Old digit is hidden at rest; it only folds away during a flip so the two
@@ -488,8 +503,9 @@
   @keyframes flipOld{from{opacity:1;transform:rotateX(0)}to{opacity:1;transform:rotateX(-90deg)}}
   @keyframes flipNew{from{transform:rotateX(-90deg)}to{transform:rotateX(0)}}
   .flipwrap{display:grid;justify-items:center;margin:16px auto 0}
-  .flip-label{margin-top:9px;font-size:12.5px;font-weight:700;color:var(--yellow);text-align:center;line-height:1.35}
-  .flip-label b{color:#fff}
+  .flip-label{margin-top:10px;font-size:12.5px;font-weight:700;color:var(--red);text-align:center;line-height:1.4}
+  .flip-label b{color:var(--red-dark)}
+  .flip-label #mealsCount{color:var(--red);font-weight:800}
   #orderTotal{color:#157a3a}
 
   /* ============ REVIEWS ============ */
@@ -623,27 +639,27 @@
   /* ============ RESPONSIVE ============ */
   @media (max-width:820px){
     .board{grid-template-columns:1fr}
-    .menu{grid-template-columns:1fr}
   }
   @media (max-width:560px){
-    .menu{grid-template-columns:1fr;gap:8px;padding:8px}
+    .menu{grid-template-columns:repeat(3,1fr);gap:6px;padding:6px}
     .wrap{padding:18px 14px calc(32px + env(safe-area-inset-bottom))}
     h1{font-size:20px}
     /* Món gọn để kéo dễ trên điện thoại (mục 1): ảnh nhỏ, tên đủ đọc */
-    .tile__name{font-size:13px;line-height:1.25}
-    .tile__media{flex:0 0 44px;height:44px;font-size:22px;border-radius:9px}
-    .tile{padding:4px 5px;min-height:48px}
-    .tile__edit{width:30px;height:30px;font-size:15px}
-    /* 1 cột dọc duy nhất, đúng yêu cầu: mọi thẻ xếp theo hàng dọc */
-    .week{grid-template-columns:1fr;gap:8px}
-    .day__head{padding:7px 9px}
-    .day__name{font-size:12.5px}
-    .day__count{font-size:10px;padding:1px 6px;min-width:22px}
-    .day__body{min-height:0;padding:6px 7px;gap:5px}
-    .day__empty{font-size:11.5px;padding:3px 2px}
-    .chip{font-size:12px;gap:5px;padding:4px 5px 4px 4px}
-    .chip__media{width:22px;height:22px;font-size:13px}
-    .chip__x{width:22px;height:22px;font-size:13px}   /* chạm được dễ hơn (iOS) */
+    .tile__name{font-size:10.5px;line-height:1.22;padding:4px 3px 5px}
+    .tile__media{font-size:19px}
+    .tile__edit{width:22px;height:22px;font-size:12px;border-radius:7px}
+    .tile__badge{font-size:8.5px;padding:1px 5px}
+    /* 3 ô 1 hàng, đúng yêu cầu: lịch tuần gọn lại */
+    .week{grid-template-columns:repeat(3,1fr);gap:6px}
+    .day__head{padding:5px 6px;gap:4px}
+    .day__name{font-size:11px}
+    .day__date{font-size:9px;margin-left:3px}
+    .day__count{font-size:9.5px;padding:1px 5px;min-width:18px}
+    .day__body{min-height:0;padding:4px 5px;gap:3px}
+    .day__empty{font-size:10px;padding:2px 1px}
+    .chip{font-size:10.5px;gap:3px;padding:2px 3px;border-radius:9px}
+    .chip__media{width:17px;height:17px;font-size:10px;border-radius:5px}
+    .chip__x{width:18px;height:18px;font-size:11px;border-radius:6px}   /* chạm được dễ hơn (iOS) */
     .order{margin-top:10px;padding:10px 12px}
     .order__grid{grid-template-columns:1fr;gap:8px}
     .btn{padding:12px 14px}                            /* nút cao đủ cho ngón tay */
@@ -1896,7 +1912,12 @@
     try{
       var raw = localStorage.getItem(ORDERS_KEY);
       var arr = raw ? JSON.parse(raw) : [];
-      return Array.isArray(arr) ? arr : [];
+      if(!Array.isArray(arr)) return [];
+      // Đơn cũ (trước khi có mã số) → gán mã số theo thứ tự thời gian
+      arr.forEach(function(o){
+        if(o && !(parseInt(o.code,10) > 0)) o.code = nextOrderCode(arr);
+      });
+      return arr;
     }catch(e){ return []; }
   }
   function saveOrders(list){
@@ -1907,6 +1928,15 @@
     var p = function(n){ return (n < 10 ? "0" : "") + n; };
     return "MC" + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + "-" +
            p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+  }
+  // Mã đơn hiển thị: số thứ tự đơn giản (1, 2, 3...) thay cho chuỗi MC2026...
+  function nextOrderCode(list){
+    var max = 0;
+    (list || []).forEach(function(o){
+      var c = parseInt(o && o.code, 10);
+      if(isFinite(c) && c > max) max = c;
+    });
+    return max + 1;
   }
   // Gom món + lịch trình từ cả hai tuần (tuần này + tuần sau).
   function collectOrderContent(){
@@ -1959,11 +1989,12 @@
       created_at: new Date().toISOString()
     };
     var list = loadOrders();
+    order.code = nextOrderCode(list);
     list.unshift(order);
     saveOrders(list);
     renderOrders(list);
     sharedStore.saveOrder(order).catch(function(){});
-    setOrderMsg("✓ Đã tạo đơn " + order.id, true);
+    setOrderMsg("✓ Đã tạo đơn #" + order.code, true);
   }
   function setOrderMsg(msg, ok){
     if(!orderMsgEl) return;
@@ -1982,9 +2013,6 @@
       return Math.floor(h / 24) + " ngày trước";
     }catch(e){ return ""; }
   }
-  function statusClass(st){
-    return st === "pending" ? "" : " is-" + st;
-  }
   function renderOrders(list){
     if(!ordersListEl) return;
     ordersListEl.innerHTML = "";
@@ -1992,7 +2020,16 @@
     var mine = list.filter(function(o){ return !o.visitor_id || o.visitor_id === visitorId(); });
     var show = mine.length ? mine : list;
     if(ordersEmptyEl) ordersEmptyEl.hidden = show.length > 0;
-    if(ordersCountEl) ordersCountEl.textContent = show.length + " đơn";
+    if(ordersCountEl) ordersCountEl.textContent = show.length ? "1 đơn mới nhất" : "0 đơn";
+    // Chỉ hiện đơn mới nhất
+    var newest = show.slice().sort(function(a,b){
+      var ta = Date.parse(a.created_at || 0) || 0;
+      var tb = Date.parse(b.created_at || 0) || 0;
+      if(tb !== ta) return tb - ta;
+      return (parseInt(b.code,10)||0) - (parseInt(a.code,10)||0);
+    })[0];
+    if(!newest) return;
+    show = [newest];
     show.forEach(function(o){
       var card = document.createElement("article");
       card.className = "ordercard";
@@ -2001,14 +2038,12 @@
       top.className = "ordercard__top";
       var idEl = document.createElement("span");
       idEl.className = "ordercard__id";
-      idEl.textContent = "Mã đơn: " + o.id;
-      var badge = document.createElement("span");
-      badge.className = "ordercard__badge" + statusClass(o.status);
-      badge.textContent = STATUS_VI[o.status] || o.status;
+      var code = parseInt(o.code, 10);
+      idEl.textContent = isFinite(code) && code > 0 ? ("Đơn #" + code) : ("Đơn #" + nextOrderCode(loadOrders()));
       var when = document.createElement("span");
       when.className = "ordercard__when";
       when.textContent = fmtTimeAgo(o.created_at);
-      top.appendChild(idEl); top.appendChild(badge); top.appendChild(when);
+      top.appendChild(idEl); top.appendChild(when);
       card.appendChild(top);
 
       function row(label, value){
@@ -2290,31 +2325,51 @@
     updateWeekBar();
     setArmed(-1);
     render();
-    // đưa khách về đúng ranh giới giữa bảng ngày (calendar) và menu —
-    // tức đầu mục tuần (weekbar), không phải khung thông tin/mini-calendar.
-    var weekBar = document.querySelector(".weekbar");
-    if(weekBar){
-      var y = weekBar.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
+    // Nhảy về đúng RANH GIỚI giữa "Mâm" và "Mini calender" (lịch tuần).
+    // Desktop: hai phần nằm cạnh nhau → cuộn tới đầu khối lịch.
+    // Mobile: hai phần xếp dọc → cuộn tới chỗ chúng tiếp giáp nhau.
+    var board = document.querySelector(".board");
+    var panel = board ? board.querySelector(".panel") : null;
+    var cols = board ? getComputedStyle(board).gridTemplateColumns : "";
+    var oneCol = cols && cols.indexOf(" ") === -1;
+    var target = null;
+    if(oneCol && panel){
+      target = panel.getBoundingClientRect().bottom + window.pageYOffset;
+      window.scrollTo({ top: target - window.innerHeight * 0.3, behavior: "smooth" });
+    }else{
+      // Desktop: "Mâm" và "Mini calender" nằm cạnh nhau → cuộn tới đầu khối
+      // để đầu cả hai phần cùng nằm ngay dưới thanh trên cùng.
+      var weekEl = document.getElementById("week");
+      var anchor = board || weekEl;
+      if(anchor){
+        target = anchor.getBoundingClientRect().top + window.pageYOffset;
+        window.scrollTo({ top: Math.max(0, target - 12), behavior: "smooth" });
+      }
     }
   });
   // Mỗi hoạt động có thời lượng thật (phút) → số lần được tính TỶ LỆ:
   // số tiết kiệm ÷ thời lượng hoạt động. Không còn "39 giờ chỉ được 1 buổi spa".
   var WEEK_ACTS = [
-    { min: 30,  text: "uống một ly cà phê thật chậm", img: "☕" },
-    { min: 45,  text: "đọc một chương sách", img: "📖" },
-    { min: 60,  text: "một buổi đi bơi / tập gym", img: "🏊" },
-    { min: 120, text: "xem trọn một bộ phim", img: "🎬" },
-    { min: 180, text: "một buổi chiều thảnh thơi với gia đình", img: "🧺" }
+    { min: 45,  cat:"nghi",   text: "buổi tối ngồi yên bên gia đình, không phải nghĩ bữa ăn", img:"🛋️" },
+    { min: 240, cat:"nghi",   text: "một ngày nghỉ trọn vẹn, không cần vào bếp", img:"🌤️" },
+    { min: 60,  cat:"khoe",   text: "một buổi đi bơi hoặc tập gym buổi sáng", img:"🏊" },
+    { min: 90,  cat:"khoe",   text: "một buổi khám sức khoẻ đầy đủ", img:"🩺" },
+    { min: 120, cat:"gia",    text: "một buổi cà phê lâu hơn với gia đình", img:"☕" },
+    { min: 180, cat:"gia",    text: "một buổi chiều đi chơi cùng gia đình", img:"🧺" },
+    { min: 45,  cat:"so",     text: "đọc được vài chương sách yêu thích", img:"📖" },
+    { min: 150, cat:"so",     text: "một buổi tập nhạc, vẽ hoặc làm vườn", img:"🎨" }
   ];
   // Mốc "một năm" chỉ tính ở quy mô NGÀY trở lên — cộng dồn theo buổi nhỏ
   // sẽ ra những con số vô lý kiểu "91 buổi chiều".
   var YEAR_ACTS = [
-    { min: 1440, text: "một ngày trọn vẹn không phải nghĩ món", img: "☀️" },
-    { min: 2880, text: "hai ngày cuối tuần chỉ để ở nhà", img: "🧺" },
-    { min: 4320, text: "một chuyến du lịch gia đình 3 ngày", img: "🏖️" },
-    { min: 10080,text: "một chuyến du lịch xa 7 ngày", img: "🌏" },
-    { min: 20160,text: "một tháng ở nhà thảnh thơi, không vào bếp", img: "💆" }
+    { min: 1440,  cat:"nghi", text: "một ngày trọn vẹn không phải nghĩ món", img:"☀️" },
+    { min: 10080, cat:"nghi", text: "một tuần nghỉ ngơi tại nhà, không mở bếp", img:"🛋️" },
+    { min: 2880,  cat:"gia",  text: "hai ngày cuối tuần chỉ để ở nhà với gia đình", img:"🧺" },
+    { min: 4320,  cat:"gia",  text: "một chuyến du lịch gia đình 3 ngày", img:"🏖️" },
+    { min: 4320,  cat:"khoe", text: "một đợt chăm sóc sức khoẻ 3 ngày", img:"🩺" },
+    { min: 14400, cat:"khoe", text: "10 ngày tập thể dục đều đặn, ăn uống đúng lịch", img:"💪" },
+    { min: 7200,  cat:"so",   text: "5 ngày theo đuổi sở thích yêu thích", img:"🎨" },
+    { min: 20160, cat:"so",   text: "hai tuần làm sở thích mà không bị cắt ngang", img:"🎹" }
   ];
   function fmtDuration(mins){
     if(mins <= 0) return "0 phút";
@@ -2327,24 +2382,49 @@
   // Không ép tối thiểu 1 lần — nếu thời gian tiết kiệm chưa đủ cho một
   // chuyến 7 ngày thì không được hứa hẹn 1 lần.
   function fillCountList(listEl, acts, totalMin){
-    var rows = acts
-      .map(function(a){ return { a: a, n: Math.floor(totalMin / a.min) }; })
-      .filter(function(r){ return r.n >= 1; })
-      .sort(function(p, q){ return q.n - p.n; })
-      .slice(0, 4);
+    // Chỉ lấy hoạt động thời lượng ≤ tổng thời gian đã tiết kiệm (không hứa hẹn vượt quá),
+    // và bảo đảm mỗi nhóm nghỉ / sức khoẻ / gia đình / sở thích đều có mặt.
+    var cats = ["nghi","khoe","gia","so"];
+    var all = acts
+      .map(function(a){ return { a:a, n:Math.floor(totalMin / a.min) }; })
+      .filter(function(r){ return r.n >= 1; });
+    var picked = [], seen = {};
+    cats.forEach(function(c){
+      var best = null;
+      all.forEach(function(r){ if(r.a.cat !== c) return; if(!best || r.n > best.n) best = r; });
+      if(best){ picked.push(best); seen[c] = true; }
+    });
+    all.forEach(function(r){
+      if(picked.length >= 6) return;
+      if(picked.indexOf(r) >= 0) return;
+      if(seen[r.a.cat]){
+        var first = picked.filter(function(p){ return p.a.cat === r.a.cat; })[0];
+        if(first && r.n >= first.n) picked.push(r);
+      }else{
+        picked.push(r); seen[r.a.cat] = true;
+      }
+    });
+    picked.sort(function(p, q){ return q.n - p.n; });
     listEl.innerHTML = "";
-    if(!rows.length){
-      var days = Math.max(1, Math.round(totalMin / 1440));
-      rows = [{ a: { text: "ngày không phải đi chợ, nghĩ món", img: "☀️" }, n: days }];
+    if(!picked.length){
+      var li0 = document.createElement("li");
+      var i0 = document.createElement("span");
+      i0.className = "idea__img";
+      i0.textContent = "⏳";
+      var t0 = document.createElement("span");
+      t0.className = "idea__txt";
+      t0.textContent = "Chưa đủ thời gian cho một hoạt động trọn vẹn — hãy thêm vài mâm nữa.";
+      li0.appendChild(i0); li0.appendChild(t0); listEl.appendChild(li0);
+      return;
     }
-    rows.forEach(function(r){
+    picked.forEach(function(r){
       var li = document.createElement("li");
       var img = document.createElement("span");
       img.className = "idea__img";
       img.textContent = r.a.img || "⏱️";
       var txt = document.createElement("span");
       txt.className = "idea__txt";
-      txt.textContent = "≈ " + r.n + " lần " + r.a.text;
+      txt.textContent = "≈ " + r.n + " lần " + r.a.text + " (" + fmtDuration(r.n * r.a.min) + ")";
       li.appendChild(img);
       li.appendChild(txt);
       listEl.appendChild(li);
@@ -2358,9 +2438,10 @@
     var monthMin = weekMin * 4;
     var yearMin = weekMin * 52;
     document.getElementById("savedNow").innerHTML =
-      "Mỗi bữa Mâm Cơm giúp bạn bớt <strong>45 phút</strong> đi chợ và nghĩ món — " +
-      meals + " bữa đã chọn × 45 phút = <strong>" + fmtDuration(weekMin) + "</strong> ngay tuần này, " +
-      "không phải đứng trước tủ lạnh hỏi “hôm nay ăn gì”.";
+      "Mỗi bữa Mâm Cơm giúp bạn bớt <strong>45 phút</strong> đi chợ, nghĩ món và đứng bếp — " +
+      meals + " bữa đã chọn × 45 phút = <strong>" + fmtDuration(weekMin) + "</strong> ngay tuần này. " +
+      "Đấy là " + Math.floor(weekMin / 60) + " giờ rảnh thực sự để nghỉ ngơi, chăm sóc sức khoẻ, " +
+      "ở bên gia đình và theo đuổi sở thích — những thứ vốn dành cho ngày bận rộn nhất.";
     document.getElementById("savedWeek").textContent = fmtDuration(weekMin);
     document.getElementById("savedMonth").textContent = fmtDuration(monthMin);
     document.getElementById("savedYear").textContent = fmtDuration(yearMin);
@@ -3106,6 +3187,7 @@
         }else{
           mine.push({
             id:r.id, status:r.status || "pending",
+            code: nextOrderCode(mine),
             people:r.people || "", phone:r.phone || "", address:r.address || "",
             note:r.note || "", date:r.date || "", time:r.time || "",
             products:r.products || [], schedule:r.schedule || [],
@@ -3113,6 +3195,10 @@
           });
           changed = true;
         }
+      });
+      // Đơn cũ lưu trước khi có mã số → gán mã số cho chúng
+      mine.forEach(function(o){
+        if(!(parseInt(o.code,10) > 0)){ o.code = nextOrderCode(mine); changed = true; }
       });
       if(changed){
         mine.sort(function(a,b){ return String(b.created_at||"").localeCompare(String(a.created_at||"")); });
