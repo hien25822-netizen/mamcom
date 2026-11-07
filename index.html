@@ -171,12 +171,17 @@
     font-size:10.5px;font-weight:700;color:var(--muted);
     text-transform:uppercase;letter-spacing:.4px;
   }
-  .editor input{
+  .editor input, .editor textarea{
     border:1px solid var(--line);border-radius:8px;
     padding:8px 10px;font-size:13px;width:100%;
     background:#fff;color:var(--ink);
+    font-family:inherit;line-height:1.35;
   }
-  .editor input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+  .editor textarea{resize:vertical;min-height:44px}
+  .editor input:focus, .editor textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+  .editor__status{font-size:11.5px;font-weight:700;min-height:15px;color:var(--muted);word-wrap:break-word}
+  .editor__status.is-ok{color:#1c7a3d}
+  .editor__status.is-err{color:var(--red)}
   .editor__upload{display:flex;align-items:center;gap:8px;margin:4px 0 8px}
   .editor__upload button{
     border:0;background:var(--red);color:#fff;font-weight:700;
@@ -208,9 +213,18 @@
     color:var(--red);font-size:22px;font-weight:800;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
   }
+  .lightbox__info{
+    position:absolute;bottom:18px;left:0;right:0;padding:0 20px;text-align:center;
+    color:#fff;
+  }
   .lightbox__name{
-    position:absolute;bottom:18px;left:0;right:0;text-align:center;
-    color:#fff;font-size:14px;font-weight:700;letter-spacing:.2px;
+    font-size:15px;font-weight:800;letter-spacing:.2px;
+    text-shadow:0 2px 8px rgba(0,0,0,.6);
+  }
+  .lightbox__desc{
+    margin:6px auto 0;font-size:13px;font-weight:500;line-height:1.5;
+    opacity:.92;max-width:640px;
+    text-shadow:0 2px 8px rgba(0,0,0,.6);
   }
   .editor-actions{display:flex;gap:8px}
   .editor-actions button{
@@ -748,7 +762,7 @@
       <!-- owner-only shared editor -->
       <div class="editor" id="editor" hidden>
         <div class="editor__title">Chỉnh sửa món: <span id="editorDishName"></span></div>
-        <label>Tên món<input data-f="name" type="text" maxlength="40"></label>
+        <label>Tên món<textarea data-f="name" rows="2" maxlength="80" placeholder="vd: Gà chiên mắm thơm, kèm cơm rang"></textarea></label>
         <label>Ảnh món (URL — có thể dùng, hoặc tải lên từ máy)<input data-f="img" type="url" placeholder="https://... hoặc để trống"></label>
         <div class="editor__upload">
           <button type="button" data-act="upload">📷 Tải ảnh từ máy</button>
@@ -757,6 +771,8 @@
         </div>
         <div class="editor__preview" id="editorPreview"><img id="editorPreviewImg" alt=""></div>
         <label>Emoji dự phòng (khi không có ảnh)<input data-f="emoji" type="text" maxlength="8"></label>
+        <label>Mô tả món (hiện khi khách chạm vào ảnh)<textarea data-f="description" rows="3" maxlength="200" placeholder="Nguyên liệu, vị, gia đình..."></textarea></label>
+        <div class="editor__status" id="editorStatus"></div>
         <div class="editor-actions">
           <button data-act="save" type="button">Lưu thay đổi</button>
           <button data-act="cancel" type="button">Hủy</button>
@@ -959,7 +975,10 @@
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true">
   <button class="lightbox__close" type="button" aria-label="Đóng" id="lightboxClose">✕</button>
   <img class="lightbox__img" id="lightboxImg" alt="">
-  <div class="lightbox__name" id="lightboxName"></div>
+  <div class="lightbox__info">
+    <div class="lightbox__name" id="lightboxName"></div>
+    <div class="lightbox__desc" id="lightboxDesc" hidden></div>
+  </div>
 </div>
 
 <!-- PIN MODAL -->
@@ -1139,7 +1158,9 @@
   // plan keyed by the specific week (so each week keeps its own dishes)
   var PLAN_KEY = "mamcom.plan.v1";
   function defaultMenu(){
-    return DEFAULT_DISHES.map(function(d){ return { name:d.name, emoji:d.emoji, img:d.img }; });
+    return DEFAULT_DISHES.map(function(d){
+      return { name:d.name, emoji:d.emoji, img:d.img, description:d.description || "" };
+    });
   }
   function loadMenu(){
     try{
@@ -1152,7 +1173,8 @@
             return {
               name:d.name.trim(),
               emoji: String(d.emoji || "🍽️").slice(0, 8),
-              img: String(d.img || "").trim()
+              img: String(d.img || "").trim(),
+              description: String(d.description || "").trim().slice(0, 200)
             };
           });
         }
@@ -1167,7 +1189,9 @@
   function saveMenu(menu){
     cacheMenuLocal(menu);
     // When Supabase is configured, publish the menu (shared) — no-op otherwise.
-    if(USE_SUPABASE) sharedStore.saveMenu(menu).catch(function(e){ /* best effort */ });
+    // The promise is returned so the caller can show save/upload failures.
+    if(USE_SUPABASE) return sharedStore.saveMenu(menu);
+    return Promise.resolve({ ok:true });
   }
   // Hydrate the shared menu from Supabase on load (falls back to the local
   // cache / defaults, so a slow or absent backend never blanks the page).
@@ -1178,11 +1202,21 @@
         // Menu giống hệt bản đang có → không dựng lại, tránh giật UI mỗi 20s.
         var same = menu.length === DISHES.length && menu.every(function(d, i){
           var cur = DISHES[i] || {};
-          return d.name === cur.name && d.emoji === cur.emoji && d.img === cur.img;
+          return d.name === cur.name && d.emoji === cur.emoji && d.img === cur.img &&
+                 (d.description || "") === (cur.description || "");
         });
         if(same) return;
-        DISHES = menu;
-        cacheMenuLocal(menu);
+        // Không ghi đè ảnh chủ vừa tải lên (còn là data:URL, chờ upload xong):
+        // nếu không, poll 20s sẽ xoá ảnh mới trước khi lưu lên Supabase.
+        var merged = menu.map(function(d, i){
+          var cur = DISHES[i] || {};
+          if(String(cur.img || "").indexOf("data:") === 0) {
+            d = { name:d.name, emoji:d.emoji, img:cur.img, description:d.description || "" };
+          }
+          return d;
+        });
+        DISHES = merged;
+        cacheMenuLocal(merged);
         // Đồng bộ nền không được đóng bảng sửa món đang mở (chủ đang gõ).
         rebuildAll({ keepEditor: true });
       }
@@ -1282,14 +1316,19 @@
   var lightbox = document.getElementById("lightbox");
   var lightboxImg = document.getElementById("lightboxImg");
   var lightboxName = document.getElementById("lightboxName");
+  var lightboxDesc = document.getElementById("lightboxDesc");
   var lightboxClose = document.getElementById("lightboxClose");
   var lightboxReturnFocus = null;
-  function showLightbox(src, name){
+  function showLightbox(src, name, description){
     // Nhớ chỗ vừa bấm để trả tiêu điểm về đó khi đóng (tránh mất vị trí bàn phím).
     lightboxReturnFocus = document.activeElement;
-    lightboxImg.src = src;
+    lightboxImg.src = src || "";
     lightboxImg.alt = name || "";
+    lightboxImg.hidden = !src;
     lightboxName.textContent = name || "";
+    var desc = String(description || "").trim();
+    lightboxDesc.textContent = desc;
+    lightboxDesc.hidden = !desc;
     lightbox.hidden = false;
     syncScrollLock();
     lightboxClose.focus();
@@ -1297,6 +1336,9 @@
   function closeLightbox(){
     lightbox.hidden = true;
     lightboxImg.src = "";
+    lightboxImg.hidden = false;
+    lightboxDesc.textContent = "";
+    lightboxDesc.hidden = true;
     syncScrollLock();
     if(lightboxReturnFocus && typeof lightboxReturnFocus.focus === "function"){
       lightboxReturnFocus.focus();
@@ -1351,6 +1393,11 @@
     var addEmoji = function(){
       var em = document.createElement("span");
       em.textContent = dish.emoji || "🍽️";
+      em.title = "Xem chi tiết " + dish.name;
+      em.addEventListener("click", function(e){
+        e.stopPropagation();
+        showLightbox(dish.img || "", dish.name, dish.description);
+      });
       wrap.appendChild(em);
     };
     if(dish.img){
@@ -1361,7 +1408,7 @@
       img.addEventListener("error", function(){ img.remove(); addEmoji(); });
       img.addEventListener("click", function(e){
         e.stopPropagation();
-        showLightbox(dish.img, dish.name);
+        showLightbox(dish.img, dish.name, dish.description);
       });
       wrap.appendChild(img);
     } else {
@@ -1683,7 +1730,9 @@
     editorEl.querySelector('[data-f="name"]').value = d.name;
     editorEl.querySelector('[data-f="img"]').value = d.img;
     editorEl.querySelector('[data-f="emoji"]').value = d.emoji;
+    editorEl.querySelector('[data-f="description"]').value = d.description || "";
     editorFile.value = "";
+    setEditorStatus("", "");
     refreshEditorPreview();
     editorEl.hidden = false;
     editorEl.querySelector('[data-f="name"]').focus();
@@ -1692,6 +1741,12 @@
   var editorFile    = document.getElementById("editorFile");
   var editorPreview = document.getElementById("editorPreview");
   var editorPreviewImg = document.getElementById("editorPreviewImg");
+  var editorStatus  = document.getElementById("editorStatus");
+
+  function setEditorStatus(text, kind){
+    editorStatus.textContent = text || "";
+    editorStatus.className = "editor__status" + (kind ? " is-" + kind : "");
+  }
 
   function refreshEditorPreview(){
     var v = editorEl.querySelector('[data-f="img"]').value.trim();
@@ -1744,8 +1799,35 @@
       d.img = editorEl.querySelector('[data-f="img"]').value.trim();
       var em = editorEl.querySelector('[data-f="emoji"]').value.trim();
       d.emoji = em || "🍽️";
-      saveMenu(DISHES);
-      rebuildAll();
+      d.description = editorEl.querySelector('[data-f="description"]').value.trim();
+      var saveBtn = e.target;
+      saveBtn.disabled = true;
+      setEditorStatus("Đang lưu…", "");
+      saveMenu(DISHES).then(function(res){
+        saveBtn.disabled = false;
+        // Cập nhật lại bản local bằng URL ảnh public (bỏ data:URL) để không
+        // upload lại lần nữa và không làm đầy localStorage.
+        if(res && res.rows){
+          res.rows.forEach(function(r, i){
+            if(DISHES[i]){
+              DISHES[i].img = r.img;
+              DISHES[i].description = r.description;
+            }
+          });
+          cacheMenuLocal(DISHES);
+        }
+        if(res && res.uploadsFailed && res.uploadsFailed.length){
+          setEditorStatus("Lỗi: " + res.uploadsFailed.length +
+            " ảnh không tải được — tên + mô tả đã lưu, hãy bấm lại «Tải ảnh từ máy» để thử ảnh.", "err");
+        } else {
+          setEditorStatus("Đã lưu — mọi người vào web sẽ thấy thay đổi.", "ok");
+        }
+        rebuildAll({ keepEditor: true });
+      }).catch(function(err){
+        saveBtn.disabled = false;
+        setEditorStatus("Lỗi khi lưu: " + ((err && err.message) || err) +
+          ". Ảnh/tên đã giữ sẵn trên máy này.", "err");
+      });
     } else if(act === "cancel"){
       closeEditor();
     }
@@ -2691,7 +2773,7 @@
     // resolves a 6-dish array, or null when there is nothing to load yet
     loadMenu: function(){
       if(!USE_SUPABASE) return Promise.resolve(null);
-      return SUPABASE.from("dishes").select("slot, name, emoji, img").order("slot")
+      return SUPABASE.from("dishes").select("slot, name, emoji, img, description").order("slot")
         .then(function(r){
           if(r.error) throw r.error;
           var rows = r.data || [];
@@ -2699,7 +2781,8 @@
           return rows.map(function(d){
             return { name:String(d.name||"").trim(),
                      emoji:String(d.emoji||"🍽️").slice(0,8),
-                     img:String(d.img||"").trim() };
+                     img:String(d.img||"").trim(),
+                     description:String(d.description||"").trim().slice(0,200) };
           });
         });
     },
@@ -2707,23 +2790,36 @@
     // writes the shared 6-dish menu. Any first-time data-URL photo is pushed
     // to Supabase Storage and stored as its public URL so every guest sees the
     // same image (localStorage only ever keeps the local preview).
+    // Một ảnh lỗi KHÔNG được làm hỏng cả lần ghi: các món khác vẫn lưu bình thường.
     saveMenu: function(dishes){
-      if(!USE_SUPABASE) return Promise.resolve();
+      if(!USE_SUPABASE) return Promise.resolve({ ok:true, uploadsFailed:[] });
       var now = new Date().toISOString();
-      var jobs = dishes.map(function(d){
+      var uploadsFailed = [];
+      var jobs = dishes.map(function(d, i){
         var img = String(d.img || "");
+        var rest = { name:d.name, emoji:d.emoji, description:String(d.description||"").trim().slice(0,200) };
         if(img.indexOf("data:") === 0){
           return sharedStore.uploadImage(dataUrlToBlob(img), img).then(function(publicUrl){
-            return { name:d.name, emoji:d.emoji, img:publicUrl };
+            return { name:rest.name, emoji:rest.emoji, description:rest.description, img:publicUrl };
+          }).catch(function(){
+            // Upload fail → không đưa data:URL (quá dài, riêng thiết bị) lên chung;
+            // bỏ trống để khách thấy emoji, tên + mô tả vẫn được lưu bình thường.
+            uploadsFailed.push(i + 1);
+            return { name:rest.name, emoji:rest.emoji, description:rest.description, img:"" };
           });
         }
-        return Promise.resolve({ name:d.name, emoji:d.emoji, img:img });
+        return Promise.resolve({ name:rest.name, emoji:rest.emoji, description:rest.description, img:img });
       });
       return Promise.all(jobs).then(function(norm){
         var rows = norm.map(function(r, i){
-          return { slot:i+1, name:r.name, emoji:r.emoji, img:r.img, updated_at:now };
+          return { slot:i+1, name:r.name, emoji:r.emoji, img:r.img,
+                   description:r.description, updated_at:now };
         });
-        return SUPABASE.from("dishes").upsert(rows, { onConflict:"slot" });
+        return SUPABASE.from("dishes").upsert(rows, { onConflict:"slot" })
+          .then(function(res){
+            if(res.error) throw res.error;
+            return { ok:true, uploadsFailed:uploadsFailed, rows:rows };
+          });
       });
     },
 
@@ -2781,7 +2877,9 @@
         .upload(path, file, { contentType: file.type || "image/jpeg", upsert: false })
         .then(function(res){
           if(res.error) throw res.error;
-          var pub = SUPABASE.storage.from("dish-images").getPublicUrl(res.path).data;
+          // supabase-js v2 trả về path trong res.data.path (res.path là undefined).
+          var objectPath = (res.data && res.data.path) || res.path;
+          var pub = SUPABASE.storage.from("dish-images").getPublicUrl(objectPath).data;
           return pub.publicUrl;
         });
     }

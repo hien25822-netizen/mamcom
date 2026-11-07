@@ -41,6 +41,7 @@ create table if not exists public.dishes (
   name       text not null check (char_length(trim(name)) between 1 and 80),
   emoji      text not null default '🍽️',
   img        text not null default '',   -- empty, a data:URL, or a Storage public URL
+  description text not null default '',  -- mô tả ngắn, hiện khi khách chạm ảnh món
   updated_at timestamptz not null default now()
 );
 
