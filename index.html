@@ -1175,9 +1175,16 @@
     if(!USE_SUPABASE) return;
     sharedStore.loadMenu().then(function(menu){
       if(Array.isArray(menu) && menu.length === 6){
+        // Menu giống hệt bản đang có → không dựng lại, tránh giật UI mỗi 20s.
+        var same = menu.length === DISHES.length && menu.every(function(d, i){
+          var cur = DISHES[i] || {};
+          return d.name === cur.name && d.emoji === cur.emoji && d.img === cur.img;
+        });
+        if(same) return;
         DISHES = menu;
         cacheMenuLocal(menu);
-        rebuildAll();
+        // Đồng bộ nền không được đóng bảng sửa món đang mở (chủ đang gõ).
+        rebuildAll({ keepEditor: true });
       }
     }).catch(function(){ /* offline — keep the local menu */ });
   }
@@ -1748,11 +1755,11 @@
     editing = -1;
   }
 
-  function rebuildAll(){
+  function rebuildAll(opts){
     buildMenu();
     buildWeek();
     setArmed(-1);
-    closeEditor();
+    if(!opts || !opts.keepEditor) closeEditor();
     render();
   }
 
