@@ -463,31 +463,52 @@
   .inbox-sep{color:var(--ink);font-size:18px;line-height:1;opacity:.55;user-select:none}
 
   /* ============ FLIP MEALS COUNTER ============ */
-  .flipbox{display:flex;gap:8px;align-items:stretch;justify-content:center}
+  .flipbox{display:flex;gap:10px;align-items:stretch;justify-content:center}
+  /* Vỏ thẻ lật: đỏ sẫm, có viền vàng, để con số bên trong nổi hẳn lên */
   .flip{
-    position:relative;width:52px;height:64px;overflow:hidden;
-    perspective:260px;
-    background:linear-gradient(180deg,var(--red) 0%,var(--red-dark) 100%);
-    border:1px solid rgba(255,255,255,.35);
+    position:relative;width:58px;height:72px;overflow:hidden;
+    perspective:320px;
+    padding:5px;
+    background:linear-gradient(180deg,#ff4b3c 0%,var(--red) 42%,var(--red-dark) 100%);
+    border:1px solid rgba(255,255,4,.65);
     border-radius:14px;
-    box-shadow:0 6px 16px rgba(143,19,14,.30), inset 0 1px 0 rgba(255,255,255,.25);
+    box-shadow:
+      0 10px 22px rgba(80,6,2,.45),
+      0 0 0 3px rgba(255,255,4,.10),
+      inset 0 1px 0 rgba(255,255,255,.35),
+      inset 0 -3px 8px rgba(0,0,0,.30);
   }
-  /* vệt "lật" ở đáy thẻ — gợi ý đồng hồ lật cơ khí */
+  /* rãnh giữa hai nửa thẻ — giống bảng lật cơ khí */
+  .flip::before{
+    content:"";position:absolute;left:5px;right:5px;top:50%;
+    height:3px;margin-top:-1.5px;
+    background:#5d0a05;opacity:.85;
+    border-radius:2px;z-index:6;pointer-events:none;
+  }
+  /* vệt vàng ở đáy vỏ thẻ — điểm nhấn cho theme */
   .flip::after{
-    content:"";position:absolute;left:0;right:0;bottom:0;height:5px;
-    background:var(--yellow);opacity:.85;
-    box-shadow:0 -1px 0 rgba(0,0,0,.2);
+    content:"";position:absolute;left:5px;right:5px;bottom:5px;height:3px;
+    background:var(--yellow);opacity:.9;
+    border-radius:0 0 4px 4px;
     z-index:3;
   }
+  /* mặt thẻ giấy: nền kem sáng, số đỏ đậm — tương phản mạnh, dễ đọc */
   .flip__card{
-    position:absolute;inset:0;
+    position:absolute;inset:5px;
+    border-radius:9px;
     display:flex;align-items:center;justify-content:center;
     transform-origin:center;
     backface-visibility:hidden;
+    background:
+      linear-gradient(180deg,
+        #fffdf6 0%, #fff4dd 47%,
+        #ffe6c2 51%, #fffaf0 100%);
+    border:1px solid rgba(120,20,10,.20);
     font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-    font-size:34px;font-weight:800;line-height:1;color:#fff;
+    font-size:42px;font-weight:900;line-height:1;color:#a81209;
     font-variant-numeric:tabular-nums;
-    text-shadow:0 2px 4px rgba(93,10,6,.45);
+    letter-spacing:-1px;
+    text-shadow:0 1px 0 rgba(255,255,255,.9), 0 2px 3px rgba(140,30,20,.22);
     -webkit-user-select:none;user-select:none;
   }
   /* Old digit is hidden at rest; it only folds away during a flip so the two
@@ -503,9 +524,9 @@
   @keyframes flipOld{from{opacity:1;transform:rotateX(0)}to{opacity:1;transform:rotateX(-90deg)}}
   @keyframes flipNew{from{transform:rotateX(-90deg)}to{transform:rotateX(0)}}
   .flipwrap{display:grid;justify-items:center;margin:16px auto 0}
-  .flip-label{margin-top:10px;font-size:12.5px;font-weight:700;color:var(--red);text-align:center;line-height:1.4}
-  .flip-label b{color:var(--red-dark)}
-  .flip-label #mealsCount{color:var(--red);font-weight:800}
+  .flip-label{margin-top:12px;font-size:13.5px;font-weight:800;color:var(--yellow);text-align:center;line-height:1.45;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+  .flip-label b{color:var(--yellow)}
+  .flip-label #mealsCount{color:var(--yellow);font-weight:900;font-size:16px}
   #orderTotal{color:#157a3a}
 
   /* ============ REVIEWS ============ */
