@@ -464,24 +464,23 @@
 
   /* ============ FLIP MEALS COUNTER ============ */
   .flipbox{display:flex;gap:6px;align-items:stretch;justify-content:center}
-  /* Thẻ số theo ngôn ngữ thiết kế của trang: nền trắng --card, viền --line,
-     bóng --shadow, chữ --red — giống hệt các ô món, ô lịch. */
+  /* Thẻ số: nền đen, chữ vàng #ffff04 — tương phản tối đa, nổi bật nhất trang */
   .flip{
     position:relative;width:56px;height:64px;overflow:hidden;
     perspective:320px;
-    background:var(--card);
-    border:1px solid var(--line);
+    background:#111;
+    border:1px solid rgba(255,255,4,.4);
     border-radius:var(--radius);
     box-shadow:var(--shadow);
   }
-  /* mặt số: không đường ngăn, chữ đỏ đậm đúng màu theme */
+  /* mặt số: không đường ngăn, chữ vàng to, đậm */
   .flip__card{
     position:absolute;inset:0;
     display:flex;align-items:center;justify-content:center;
     transform-origin:center;
     backface-visibility:hidden;
-    background:var(--card);
-    font-size:36px;font-weight:800;line-height:1;color:var(--red);
+    background:#111;
+    font-size:36px;font-weight:800;line-height:1;color:var(--yellow);
     font-variant-numeric:tabular-nums;
     -webkit-user-select:none;user-select:none;
   }
