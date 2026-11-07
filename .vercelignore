@@ -1,0 +1,13 @@
+# Local-only backend — không deploy lên Vercel (Supabase đã thay thế)
+server.py
+server_dev.py
+mamcom.db
+mamcom.db-shm
+mamcom.db-wal
+
+# Công cụ phát triển
+.claude/
+.specify/
+supabase/
+recipe/
+index.mamcom.bak.html

@@ -22,12 +22,16 @@ Kế hoạch tuần của khách (món nào ngày nào) và PIN chủ vẫn **ri
 
 ---
 
-## 1. Tạo dự án Supabase (Singapore)
+## 1. Tạo dự án Supabase
 
 1. Vào [supabase.com](https://supabase.com) → **New project**.
-2. Đặt tên (vd `mamcom`), chọn **Region: Singapore (ap-southeast-1)** — gần Việt
-   Nam nhất, latency thấp.
+2. Đặt tên (vd `mamcom`), chọn region gần Việt Nam nhất.
 3. Chờ ~1–2 phút cho provision xong.
+
+> **Dự án `mamcom` hiện tại nằm ở Central EU (Frankfurt)** — ref
+> `sdlpldhldyyytkbpujdk`. Đây là project đã được nối vào `index.html`, nên không
+> đổi region sau khi đã có dữ liệu. Latency từ Việt Nam cao hơn so với Singapore,
+> nhưng với quy mô hiện tại (~50 người đồng thời) vẫn hoàn toàn ổn.
 
 ## 2. Chạy `schema.sql` một lần
 
@@ -35,7 +39,13 @@ Kế hoạch tuần của khách (món nào ngày nào) và PIN chủ vẫn **ri
 - Dán toàn bộ nội dung [`supabase/schema.sql`](supabase/schema.sql) rồi **Run**.
 - Kết quả: các bảng `state` (counter), `comments` (đánh giá), `rate_limits` (chống
   spam), `dishes` (thực đơn 6 món), bucket Storage `dish-images` (public), RLS, và
-  dữ liệu seed (counter = 27, 2 đánh giá, 6 món mặc định).
+  dữ liệu seed.
+
+> Hoặc chạy từ CLI (đã link sẵn vào project):
+> ```bash
+> supabase db query --linked -f supabase/schema.sql
+> supabase db query --linked -f supabase/migrations/20261107000000_increment_meals.sql
+> ```
 
 ## 3. Cấu hình `index.html`
 
@@ -101,8 +111,13 @@ như thiết kế (app dùng anon key, không có Supabase Auth).
 2. Vào [vercel.com](https://vercel.com) → **Add New Project** → import repo
    `mamcom`.
 3. Vercel tự nhận ra `vercel.json` — không cần framework (plain static).
-   Giữ Region **Singapore** (mặc định hay đổi) để gần Supabase.
+   `.vercelignore` loại `server.py` / `mamcom.db` / `supabase/` khỏi bản deploy.
 4. **Deploy**. Sau đó URL dạng `https://mamcom-xxxx.vercel.app` sẽ mở web.
+
+> Hoặc deploy từ CLI (cần `vercel login` trước):
+> ```bash
+> vercel --prod          # hoặc: npx vercel@latest --prod
+> ```
 
 > Mỗi lần sửa `index.html` (vd sửa thực đơn, UI) → `git push` → Vercel tự
 > redeploy. `server.py`, `mamcom.db`, `assets/` không được deploy (Vercel chỉ
