@@ -112,7 +112,16 @@ như thiết kế (app dùng anon key, không có Supabase Auth).
    `mamcom`.
 3. Vercel tự nhận ra `vercel.json` — không cần framework (plain static).
    `.vercelignore` loại `server.py` / `mamcom.db` / `supabase/` khỏi bản deploy.
-4. **Deploy**. Sau đó URL dạng `https://mamcom-xxxx.vercel.app` sẽ mở web.
+4. **Deploy**. Web đang chạy ở **`https://mamcomvn.vercel.app`** — đây là *domain
+   production* của project `mamcom` nên tự chuyển sang bản deploy mới nhất mỗi
+   khi có deploy (link GitHub đã bật, `git push` lên `main` là tự redeploy).
+   Domain cũ `https://mamcom-zeta.vercel.app` chỉ còn là redirect 308 sang domain
+   mới.
+
+> ⚠️ **Không dùng `vercel alias set` cho domain chính.** Lệnh đó tạo *alias cứng*
+> ghim vào đúng một deployment → không tự cập nhật khi deploy lại, web sẽ bị
+> "đứng hình" ở bản cũ. Muốn đổi domain thì dùng
+> `vercel domains add <domain> mamcom` (domain production, đi theo deploy).
 
 > Hoặc deploy từ CLI (cần `vercel login` trước):
 > ```bash

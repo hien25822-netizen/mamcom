@@ -449,11 +449,14 @@
   }
   .ordercard__statusSel:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
   .order__submit{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:2px}
+  .order__guide{width:100%;margin:0 0 2px;font-size:12.5px;line-height:1.55;color:var(--muted);font-weight:500}
+  .order__send{width:100%;justify-content:center;background:var(--yellow);color:#574800}
+  .order__send:disabled{opacity:.45;cursor:not-allowed;filter:none}
+  .order__needTray{width:100%;margin:0;font-size:12px;font-weight:700;color:var(--red)}
   .order__submitMsg{font-size:12px;font-weight:700;color:var(--red)}
   .order__submitMsg.is-ok{color:#1f6b1f}
 
   /* ============ FOOTER ============ */
-  .actions{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
   .btn{
     border:0;border-radius:10px;padding:11px 18px;
     font-size:14px;font-weight:700;cursor:pointer;
@@ -467,14 +470,8 @@
     background:#fff;color:var(--ink);
     border:1px solid var(--line);
   }
-  #copyBtn{background:var(--yellow);color:#574800}
-  #copyBtn:hover{filter:brightness(.95)}
   .btn--ghost:hover{background:var(--red-soft);filter:none}
   .btn.is-ok{background:var(--yellow);color:#574800}
-  .note{font-size:12px;color:var(--yellow)}
-  #inboxBtn{background:#000;color:var(--yellow);border:1px solid #000}
-  #inboxBtn:hover{background:#222;filter:none}
-  .inbox-sep{color:var(--ink);font-size:18px;line-height:1;opacity:.55;user-select:none}
 
   /* ============ FLIP MEALS COUNTER ============ */
   .flipbox{display:flex;gap:6px;align-items:stretch;justify-content:center}
@@ -828,49 +825,34 @@
             <span class="order__total__calc" id="orderTotalCalc">49k × 0 người</span>
           </div>
           <div class="order__field--wide order__submit">
-            <button class="btn btn--primary" id="submitOrder" type="submit">🧾 Tạo đơn hàng</button>
+            <p class="order__guide">Bấm nút bên dưới: nội dung đơn tự được sao chép và tự động mở Instagram của Mâm Cơm tự. Bạn chỉ việc DÁN vào khung nhắn tin là xong.</p>
+            <button class="btn btn--primary order__send" id="orderInboxBtn" type="button">📋 Sao chép và Dán vào Inbox</button>
+            <p class="order__needTray" id="orderNeedTray">Hãy kéo ít nhất 1 mâm vào lịch trước khi đặt</p>
             <span class="order__submitMsg" id="orderSubmitMsg" role="status" aria-live="polite"></span>
           </div>
         </div>
       </form>
-
-      <!-- ORDER CARDS -->
-      <section class="orders" id="ordersBox">
-        <div class="orders__head">
-          <span>🧾 Đơn hàng của bạn</span>
-          <span class="hint" id="ordersCount">0 đơn</span>
-        </div>
-        <div class="orders__list" id="ordersList"></div>
-        <p class="orders__empty" id="ordersEmpty">Chưa có đơn nào. Chọn mâm theo ngày rồi bấm “Tạo đơn hàng”.</p>
-      </section>
-
-      <div class="actions">
-        <button class="btn" id="copyBtn" type="button">Sao chép đơn hàng</button>
-        <span class="note" id="note"></span>
-        <span class="inbox-sep" aria-hidden="true">➞</span>
-        <button class="btn" id="inboxBtn" type="button">Mở inbox</button>
-      </div>
 
       <!-- TIME SAVED -->
       <div class="saved" id="savedBox" hidden>
         <div class="saved__title">⏳ BẠN TIẾT KIỆM ĐƯỢC</div>
         <p class="saved__now"><span id="savedNow"></span></p>
         <div class="saved__macro">
-          <div><span class="saved__emoji">📅</span><span class="saved__val" id="savedWeek">0</span><span class="saved__unit">mỗi tuần này</span></div>
+          <div><span class="saved__emoji">📅</span><span class="saved__val" id="savedWeek">0</span><span class="saved__unit" id="savedWeekUnit">với 0 mâm đã chọn</span></div>
           <div><span class="saved__emoji">🗓️</span><span class="saved__val" id="savedMonth">0</span><span class="saved__unit">nếu đặt cả tháng</span></div>
           <div><span class="saved__emoji">📆</span><span class="saved__val" id="savedYear">0</span><span class="saved__unit">nếu đặt cả năm</span></div>
         </div>
         <div class="saved__tier">
-          <div class="saved__tier-head">🕰️ Với <strong id="savedWeekTime">0</strong> mỗi tuần ấy, bạn có thể:</div>
+          <div class="saved__tier-head">🕰️ Mỗi tuần, chỉ với <strong id="savedWeekTime">0</strong>, bạn có thể:</div>
           <ul class="saved__list" id="savedWeekList"></ul>
         </div>
         <div class="saved__tier">
-          <div class="saved__tier-head">🎁 Đặt như thế này <strong>mỗi tuần</strong> thì mỗi năm bạn có <strong id="savedYearTime">0</strong> (<span id="savedYearDays">0</span> không phải đi chợ, nghĩ món), tức là:</div>
+          <div class="saved__tier-head">🎁 Nếu đặt như thế này cả năm, bạn có <strong id="savedYearTime">0</strong> — khoảng <span id="savedYearDays">0</span> ngày không phải nghĩ đến việc ăn uống:</div>
           <ul class="saved__list" id="savedYearList"></ul>
         </div>
         <p class="saved__cta">
-          Mâm Cơm lo 85% việc cực nhọc, để bạn tận hưởng việc nấu nướng trọn vẹn nhất.
-          <button class="saved__cta-btn" id="ctaBtn" type="button">Chọn thêm mâm để tiết kiệm được nhiều thời gian hơn cho cả tuần ↑</button>
+          Bớt một gánh lo mỗi ngày. Mâm Cơm lo phần còn lại.
+          <button class="saved__cta-btn" id="ctaBtn" type="button">Chọn thêm mâm để ngày của bạn nhẹ nhàng hơn ↑</button>
         </p>
       </div>
 
@@ -889,7 +871,7 @@
         <div class="qa__item">
           <h4>Đặt hàng Mâm Cơm thế nào?</h4>
           <p>Giữ và <strong>kéo món</strong> trong menu vào các ngày bạn muốn ăn trong tuần, sau đó nhập thông tin và ấn
-          <strong>“Sao chép đơn hàng”</strong>, rồi dán thẳng vào chat của Mâm Cơm trên Instagram, Facebook hay TikTok.<br>
+          <strong>“Sao chép và Dán vào Inbox”</strong> — nội dung đơn tự được sao chép và trang Mâm Cơm trên Instagram tự mở ra, bạn chỉ việc dán thẳng vào khung nhắn tin.<br>
           Nhận đủ thông tin, Mâm Cơm chuẩn bị đầy đủ và <strong>ship đến tận nhà</strong> cho bạn.</p>
         </div>
         <div class="qa__item">
@@ -1304,9 +1286,9 @@
   var menuEl   = document.getElementById("menu");
   var weekEl   = document.getElementById("week");
   var editorEl = document.getElementById("editor");
-  var copyBtn  = document.getElementById("copyBtn");
-  var inboxBtn = document.getElementById("inboxBtn");
-  var noteEl   = document.getElementById("note");
+  var orderInboxBtn = document.getElementById("orderInboxBtn");
+  var orderNeedTrayEl = document.getElementById("orderNeedTray");
+  var orderMsgEl    = document.getElementById("orderSubmitMsg");
   var pinModal = document.getElementById("pinModal");
 
   var armed = -1;        // dish index armed via tap (mobile)
@@ -1711,7 +1693,7 @@
     });
     updateTileBadges();
 
-    noteEl.textContent = "Sao chép đơn hàng và dán vào inbox";
+    updateOrderInboxBtn();
     updateSavings();
     updateOrderTotal();
   }
@@ -1970,26 +1952,17 @@
     try{ localStorage.setItem(INFO_KEY, JSON.stringify(data)); }catch(e){}
   }
   var orderForm = document.getElementById("orderForm");
-  orderForm.addEventListener("submit", function(e){ e.preventDefault(); submitOrder(); });
   orderFields.forEach(function(f){
     var el = document.getElementById(f.id);
     el.addEventListener("input", function(){ saveOrder(); updateOrderTotal(); });
   });
 
-  // ================= ORDER CARDS (thẻ đơn hàng) =================
-  // Mỗi lần bấm "Tạo đơn hàng" tạo một đơn có: ID, trạng thái, danh sách món,
-  // lịch trình theo ngày, ghi chú. Đơn lưu ở localStorage (thiết bị này) và
-  // đồng bộ lên bảng `orders` của Supabase khi bảng này tồn tại.
+  // ================= ORDER CARDS (thẻ đơn hàng) — ĐÃ ẨN =================
+  // UI "Đơn hàng của bạn" đã bỏ khỏi web. Đơn KHÔNG còn được tạo mới, nhưng
+  // dữ liệu cũ vẫn được giữ nguyên: các hàm load/save/sync bên dưới vẫn
+  // đọc & ghi localStorage + đồng bộ với bảng `orders` của Supabase, nên không
+  // có dữ liệu nào bị mất.
   var ORDERS_KEY = "mamcom.orders.v1";
-  var ORDER_STATUSES = ["pending","confirmed","preparing","done","cancelled"];
-  var STATUS_VI = {
-    pending:"Chờ xác nhận", confirmed:"Đã xác nhận", preparing:"Đang chuẩn bị",
-    done:"Hoàn tất", cancelled:"Đã hủy"
-  };
-  var ordersListEl  = document.getElementById("ordersList");
-  var ordersEmptyEl = document.getElementById("ordersEmpty");
-  var ordersCountEl = document.getElementById("ordersCount");
-  var orderMsgEl    = document.getElementById("orderSubmitMsg");
 
   function loadOrders(){
     try{
@@ -2006,12 +1979,6 @@
   function saveOrders(list){
     try{ localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); }catch(e){}
   }
-  function makeOrderId(){
-    var d = new Date();
-    var p = function(n){ return (n < 10 ? "0" : "") + n; };
-    return "MC" + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + "-" +
-           p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
-  }
   // Mã đơn hiển thị: số thứ tự đơn giản (1, 2, 3...) thay cho chuỗi MC2026...
   function nextOrderCode(list){
     var max = 0;
@@ -2021,200 +1988,11 @@
     });
     return max + 1;
   }
-  // Gom món + lịch trình từ cả hai tuần (tuần này + tuần sau).
-  function collectOrderContent(){
-    var products = [], schedule = [];
-    [0, 1].forEach(function(off){
-      var p = weekPlanAt(off);
-      var dates = mondayOfDateKey(off);
-      DAYS.forEach(function(dayName, i){
-        var idxs = (p[i] || []);
-        if(!idxs.length) return;
-        var names = idxs.map(function(x){
-          var d = DISHES[x];
-          return d ? d.name : "";
-        }).filter(Boolean);
-        if(!names.length) return;
-        names.forEach(function(n){ if(products.indexOf(n) < 0) products.push(n); });
-        schedule.push({
-          week: weekName(off),
-          range: weekRange(off),
-          day: dayName,
-          date: fmtDate(dates[i]),
-          dishes: names
-        });
-      });
-    });
-    return { products: products, schedule: schedule };
-  }
-  function submitOrder(){
-    var content = collectOrderContent();
-    if(!content.schedule.length){
-      setOrderMsg("Bạn chưa chọn mâm nào. Hãy kéo món vào các ngày trước khi đặt.", false);
-      return;
-    }
-    var people = parseNum(document.getElementById("cPeople").value);
-    var mams = totalTraysAllWeeks();
-    var totalK = PRICE_PER_MAM * mams * people;
-    var order = {
-      id: makeOrderId(),
-      status: "pending",
-      people: document.getElementById("cPeople").value,
-      phone:  document.getElementById("cPhone").value,
-      address:document.getElementById("cAddress").value,
-      date:   document.getElementById("cDate").value,
-      time:   document.getElementById("cTime").value,
-      note:   document.getElementById("cNote").value,
-      products: content.products,
-      schedule: content.schedule,
-      total: totalK,
-      visitor_id: visitorId(),
-      created_at: new Date().toISOString()
-    };
-    var list = loadOrders();
-    order.code = nextOrderCode(list);
-    list.unshift(order);
-    saveOrders(list);
-    renderOrders(list);
-    sharedStore.saveOrder(order).catch(function(){});
-    setOrderMsg("✓ Đã tạo đơn #" + order.code, true);
-  }
   function setOrderMsg(msg, ok){
     if(!orderMsgEl) return;
     orderMsgEl.textContent = msg;
     orderMsgEl.classList.toggle("is-ok", !!ok);
   }
-  function fmtTimeAgo(iso){
-    try{
-      var t = new Date(iso).getTime();
-      if(!isFinite(t)) return "";
-      var mins = Math.floor((Date.now() - t) / 60000);
-      if(mins < 1) return "vừa xong";
-      if(mins < 60) return mins + " phút trước";
-      var h = Math.floor(mins / 60);
-      if(h < 24) return h + " giờ trước";
-      return Math.floor(h / 24) + " ngày trước";
-    }catch(e){ return ""; }
-  }
-  function renderOrders(list){
-    if(!ordersListEl) return;
-    ordersListEl.innerHTML = "";
-    list = list || loadOrders();
-    var mine = list.filter(function(o){ return !o.visitor_id || o.visitor_id === visitorId(); });
-    var show = mine.length ? mine : list;
-    if(ordersEmptyEl) ordersEmptyEl.hidden = show.length > 0;
-    if(ordersCountEl) ordersCountEl.textContent = show.length ? "1 đơn mới nhất" : "0 đơn";
-    // Chỉ hiện đơn mới nhất
-    var newest = show.slice().sort(function(a,b){
-      var ta = Date.parse(a.created_at || 0) || 0;
-      var tb = Date.parse(b.created_at || 0) || 0;
-      if(tb !== ta) return tb - ta;
-      return (parseInt(b.code,10)||0) - (parseInt(a.code,10)||0);
-    })[0];
-    if(!newest) return;
-    show = [newest];
-    show.forEach(function(o){
-      var card = document.createElement("article");
-      card.className = "ordercard";
-
-      var top = document.createElement("div");
-      top.className = "ordercard__top";
-      var idEl = document.createElement("span");
-      idEl.className = "ordercard__id";
-      var code = parseInt(o.code, 10);
-      idEl.textContent = isFinite(code) && code > 0 ? ("Đơn #" + code) : ("Đơn #" + nextOrderCode(loadOrders()));
-      var when = document.createElement("span");
-      when.className = "ordercard__when";
-      when.textContent = fmtTimeAgo(o.created_at);
-      top.appendChild(idEl); top.appendChild(when);
-      card.appendChild(top);
-
-      function row(label, value){
-        var r = document.createElement("div");
-        r.className = "ordercard__row";
-        var l = document.createElement("span");
-        l.className = "ordercard__label";
-        l.textContent = label;
-        var v = document.createElement("span");
-        v.className = "ordercard__value";
-        v.textContent = value;
-        r.appendChild(l); r.appendChild(v);
-        card.appendChild(r);
-      }
-      row("Số người", o.people || "—");
-      row("Điện thoại", o.phone || "—");
-      row("Địa chỉ", o.address || "—");
-      row("Ngày nhận", (o.date || "—") + (o.time ? " · " + o.time : ""));
-
-      // danh sách sản phẩm
-      var pr = document.createElement("div");
-      pr.className = "ordercard__row";
-      var pl = document.createElement("span");
-      pl.className = "ordercard__label";
-      pl.textContent = "Món ăn";
-      var pu = document.createElement("ul");
-      pu.className = "ordercard__list";
-      (o.products || []).forEach(function(n){
-        var li = document.createElement("li");
-        li.textContent = n;
-        pu.appendChild(li);
-      });
-      pr.appendChild(pl); pr.appendChild(pu);
-      card.appendChild(pr);
-
-      // lịch trình
-      var sr = document.createElement("div");
-      sr.className = "ordercard__row";
-      var sl = document.createElement("span");
-      sl.className = "ordercard__label";
-      sl.textContent = "Lịch trình";
-      var sv = document.createElement("div");
-      sv.className = "ordercard__sched";
-      (o.schedule || []).forEach(function(s){
-        var line = document.createElement("div");
-        var b = document.createElement("b");
-        b.textContent = s.day + " " + (s.date || "");
-        line.appendChild(b);
-        line.appendChild(document.createTextNode(" — " + (s.dishes || []).join(", ")));
-        sv.appendChild(line);
-      });
-      sr.appendChild(sl); sr.appendChild(sv);
-      card.appendChild(sr);
-
-      row("Ghi chú", o.note || "—");
-
-      var foot = document.createElement("div");
-      foot.className = "ordercard__foot";
-      var tot = document.createElement("span");
-      tot.className = "ordercard__total";
-      tot.textContent = o.total ? o.total + "k" : "—";
-      foot.appendChild(tot);
-      // Chủ cửa hàng đổi được trạng thái; khách chỉ xem.
-      if(isOwner()){
-        var sel = document.createElement("select");
-        sel.className = "ordercard__statusSel";
-        ORDER_STATUSES.forEach(function(s){
-          var op = document.createElement("option");
-          op.value = s;
-          op.textContent = STATUS_VI[s];
-          if(s === o.status) op.selected = true;
-          sel.appendChild(op);
-        });
-        sel.addEventListener("change", function(){
-          o.status = sel.value;
-          var all = loadOrders();
-          all.forEach(function(x){ if(x.id === o.id) x.status = o.status; });
-          saveOrders(all);
-          sharedStore.updateOrderStatus(o.id, o.status).catch(function(){});
-          renderOrders(all);
-        });
-        foot.appendChild(sel);
-      }
-      card.appendChild(foot);
-      ordersListEl.appendChild(card);
-    });
-  }
-
   // ================= delivery date / time picker popups =================
   function fmtDM(d){
     var p = function(n){ return n < 10 ? "0" + n : "" + n; };
@@ -2514,26 +2292,28 @@
     });
   }
   function updateSavings(){
-    var meals = plan.reduce(function(a, arr){ return a + arr.length; }, 0);
+    // Số mâm tính trên CẢ HAI TUẦN (tuần này + tuần sau) — khớp với dòng
+    // "Tổng tiền" và bộ đếm chung.
+    var meals = totalTraysAllWeeks();
     if(meals === 0){ savedBox.hidden = true; return; }
     savedBox.hidden = false;
     var weekMin = meals * MIN_PER_MEAL;
     var monthMin = weekMin * 4;
     var yearMin = weekMin * 52;
     document.getElementById("savedNow").innerHTML =
-      "Mỗi bữa Mâm Cơm giúp bạn bớt <strong>45 phút</strong> đi chợ, nghĩ món và đứng bếp — " +
-      meals + " bữa đã chọn × 45 phút = <strong>" + fmtDuration(weekMin) + "</strong> ngay tuần này. " +
-      "Đấy là " + Math.floor(weekMin / 60) + " giờ rảnh thực sự để nghỉ ngơi, chăm sóc sức khoẻ, " +
-      "ở bên gia đình và theo đuổi sở thích — những thứ vốn dành cho ngày bận rộn nhất.";
+      "Mỗi bữa Mâm Cơm giúp bạn bớt khoảng <strong>45 phút</strong> đi chợ, nghĩ món và đứng bếp. " +
+      "Với <strong>" + meals + " mâm</strong> bạn đã chọn, bạn có thêm <strong>" + fmtDuration(weekMin) + "</strong> " +
+      "thời gian rảnh — để nghỉ ngơi, ở bên gia đình, hay đơn giản là có thêm một khoảng lặng cho riêng mình.";
     document.getElementById("savedWeek").textContent = fmtDuration(weekMin);
+    document.getElementById("savedWeekUnit").textContent = "với " + meals + " mâm đã chọn";
     document.getElementById("savedMonth").textContent = fmtDuration(monthMin);
     document.getElementById("savedYear").textContent = fmtDuration(yearMin);
     document.getElementById("savedWeekTime").textContent = fmtDuration(weekMin);
     document.getElementById("savedYearTime").textContent = fmtDuration(yearMin);
     var daysPerYear = Math.round(yearMin / 1440);
     document.getElementById("savedYearDays").textContent = daysPerYear >= 1
-      ? "≈ " + daysPerYear + " ngày"
-      : "≈ " + fmtDuration(yearMin);
+      ? daysPerYear + " ngày"
+      : fmtDuration(yearMin);
     fillCountList(document.getElementById("savedWeekList"), WEEK_ACTS, weekMin);
     fillCountList(document.getElementById("savedYearList"), YEAR_ACTS, yearMin);
   }
@@ -2568,38 +2348,46 @@
     return lines.join("\n");
   }
   function flashCopy(msg){
-    var original = copyBtn.textContent;
-    copyBtn.textContent = msg;
-    copyBtn.classList.add("is-ok");
+    if(!orderInboxBtn) return;
+    var original = orderInboxBtn.getAttribute("data-label") || orderInboxBtn.textContent;
+    orderInboxBtn.setAttribute("data-label", original);
+    orderInboxBtn.textContent = msg;
+    orderInboxBtn.classList.add("is-ok");
     setTimeout(function(){
-      copyBtn.textContent = original;
-      copyBtn.classList.remove("is-ok");
+      orderInboxBtn.textContent = original;
+      orderInboxBtn.classList.remove("is-ok");
     }, 1600);
   }
-  async function copyText(){
-    var text = buildText();
-    try{
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        await navigator.clipboard.writeText(text);
-      } else {
-        var ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-      flashCopy("Đã sao chép ✓");
-      bumpMeals();
-    } catch(err){
-      flashCopy("Không sao chép được");
+  // Dán nội dung vào clipboard; trả về true nếu thành công.
+  function writeClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(text).then(function(){ return true; });
     }
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try{ ok = document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+    return Promise.resolve(ok);
   }
-  copyBtn.addEventListener("click", copyText);
 
-  // ================= "Mở inbox" (mở trang chủ Instagram của Mâm Cơm) =================
+  // ---- "Sao chép và Dán vào Inbox" ----
+  // Một nút duy nhất ở cuối mục "Thông tin khách": sao chép toàn bộ thông tin
+  // đơn VÀ mở trang Instagram của Mâm Cơm. Khách chỉ việc dán vào khung nhắn tin.
+  // Nút chỉ mở khi khách đã kéo ít nhất 1 mâm vào lịch (render() gọi hàm này
+  // mỗi lần kéo/thêm/bớt món).
+  function updateOrderInboxBtn(){
+    if(!orderInboxBtn) return;
+    var hasTray = totalTraysAllWeeks() > 0;
+    orderInboxBtn.disabled = !hasTray;
+    if(orderNeedTrayEl) orderNeedTrayEl.hidden = hasTray;
+  }
+
+  // "Mở inbox" (mở trang chủ Instagram của Mâm Cơm).
   // Trang web KHÔNG THỂ mở thẳng vào hộp thư (DM thread) của một tài khoản khác
   // (Instagram chặn điều này). Nút mở thẳng TRANG CHỦ profile Mâm Cơm:
   //   https://www.instagram.com/mamcomvn/
@@ -2617,7 +2405,48 @@
       window.open(INBOX_LINK, "_blank", "noopener");
     }
   }
-  inboxBtn.addEventListener("click", openInbox);
+
+  // ---- Bộ đếm chỉ cộng MỘT LẦN cho cùng một nội dung đơn ----
+  // Khách bấm nhiều lần với đơn KHÔNG đổi (cùng mâm + cùng thông tin) thì bộ đếm
+  // số mâm không tăng thêm. Dấu vết lưu ở localStorage, chỉ là thiết bị này.
+  var BUMPED_KEY = "mamcom.bumped.v1";
+  function orderFingerprint(){
+    var parts = [];
+    [0, 1].forEach(function(off){
+      var p = weekPlanAt(off);
+      parts.push(DAYS.map(function(_, i){ return (p[i] || []).join("."); }).join("|"));
+    });
+    orderFields.forEach(function(f){
+      var el = document.getElementById(f.id);
+      parts.push(el ? String(el.value).trim() : "");
+    });
+    return parts.join("\n");
+  }
+  function bumpMealsOnce(){
+    var fp = orderFingerprint();
+    var last = "";
+    try{ last = localStorage.getItem(BUMPED_KEY) || ""; }catch(e){}
+    if(last === fp) return;                 // đơn không đổi → không cộng thêm
+    try{ localStorage.setItem(BUMPED_KEY, fp); }catch(e){}
+    bumpMeals();
+  }
+
+  function handleOrderInbox(){
+    if(!orderInboxBtn || orderInboxBtn.disabled) return;
+    // Mở Instagram TRONG gesture chuột (đồng bộ) để không bị trình duyệt chặn.
+    openInbox();
+    writeClipboard(buildText()).then(function(ok){
+      if(ok){
+        flashCopy("Đã sao chép ✓ — Dán vào khung nhắn tin");
+        bumpMealsOnce();
+      }else{
+        flashCopy("Không sao chép được");
+      }
+    }).catch(function(){
+      flashCopy("Không sao chép được");
+    });
+  }
+  if(orderInboxBtn) orderInboxBtn.addEventListener("click", handleOrderInbox);
 
   // ================= shared data layer (Supabase ↔ local) =================
   // One abstraction so the rest of the app never touches a backend directly.
@@ -3236,7 +3065,6 @@
   // server fetch below refreshes both once the backend is reachable.
   renderFlip(parseInt(mealsSpanEl ? mealsSpanEl.textContent : "23", 10) || currentMeals);
   renderReviews([]);
-  renderOrders(loadOrders());
   loadServerState();
   loadSharedMenu();
   syncOrdersFromServer();
@@ -3302,7 +3130,6 @@
       if(changed){
         mine.sort(function(a,b){ return String(b.created_at||"").localeCompare(String(a.created_at||"")); });
         saveOrders(mine);
-        renderOrders(mine);
       }
     }).catch(function(){ /* bảng orders chưa tồn tại — giữ bản local */ });
   }
