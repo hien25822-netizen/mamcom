@@ -449,7 +449,12 @@
   }
   .ordercard__statusSel:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
   .order__submit{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:2px}
-  .order__guide{width:100%;margin:0 0 2px;font-size:12.5px;line-height:1.55;color:var(--muted);font-weight:500}
+  .order__guide{
+    width:100%;margin:0 0 4px;padding:9px 11px 9px 13px;
+    font-size:12.5px;line-height:1.55;color:var(--ink);font-weight:700;
+    background:#FFF7E0;border-left:4px solid var(--red);border-radius:9px;
+  }
+  .order__guide b{color:var(--red);font-weight:800}
   .order__send{width:100%;justify-content:center;background:var(--yellow);color:#574800}
   .order__send:disabled{opacity:.45;cursor:not-allowed;filter:none}
   .order__needTray{width:100%;margin:0;font-size:12px;font-weight:700;color:var(--red)}
@@ -825,7 +830,7 @@
             <span class="order__total__calc" id="orderTotalCalc">49k × 0 người</span>
           </div>
           <div class="order__field--wide order__submit">
-            <p class="order__guide">Bấm nút bên dưới: nội dung đơn tự được sao chép và tự động mở Instagram của Mâm Cơm tự. Bạn chỉ việc DÁN vào khung nhắn tin là xong.</p>
+            <p class="order__guide">Hãy bấm nút👇, hệ thống sẽ tự copy đơn và tự động mở Instagram để bạn <b>DÁN vào inbox</b>!</p>
             <button class="btn btn--primary order__send" id="orderInboxBtn" type="button">📋 Sao chép và Dán vào Inbox</button>
             <p class="order__needTray" id="orderNeedTray">Hãy kéo ít nhất 1 mâm vào lịch trước khi đặt</p>
             <span class="order__submitMsg" id="orderSubmitMsg" role="status" aria-live="polite"></span>
@@ -847,11 +852,11 @@
           <ul class="saved__list" id="savedWeekList"></ul>
         </div>
         <div class="saved__tier">
-          <div class="saved__tier-head">🎁 Nếu đặt như thế này cả năm, bạn có <strong id="savedYearTime">0</strong> — khoảng <span id="savedYearDays">0</span> ngày không phải nghĩ đến việc ăn uống:</div>
+          <div class="saved__tier-head">🎁 Nếu đặt như thế này cả năm, bạn có thêm <strong id="savedYearTime">0</strong> — đủ để:</div>
           <ul class="saved__list" id="savedYearList"></ul>
         </div>
         <p class="saved__cta">
-          Bớt một gánh lo mỗi ngày. Mâm Cơm lo phần còn lại.
+          Hãy chăm sóc bản thân nhiều hơn, để Mâm Cơm lo việc khó khăn nhất.
           <button class="saved__cta-btn" id="ctaBtn" type="button">Chọn thêm mâm để ngày của bạn nhẹ nhàng hơn ↑</button>
         </p>
       </div>
@@ -871,7 +876,7 @@
         <div class="qa__item">
           <h4>Đặt hàng Mâm Cơm thế nào?</h4>
           <p>Giữ và <strong>kéo món</strong> trong menu vào các ngày bạn muốn ăn trong tuần, sau đó nhập thông tin và ấn
-          <strong>“Sao chép và Dán vào Inbox”</strong> — nội dung đơn tự được sao chép và trang Mâm Cơm trên Instagram tự mở ra, bạn chỉ việc dán thẳng vào khung nhắn tin.<br>
+          <strong>“Sao chép và Dán vào Inbox”</strong> — nội dung đơn tự được sao chép và khung nhắn tin Mâm Cơm trên Instagram tự mở ra, bạn chỉ việc dán thẳng vào đó.<br>
           Nhận đủ thông tin, Mâm Cơm chuẩn bị đầy đủ và <strong>ship đến tận nhà</strong> cho bạn.</p>
         </div>
         <div class="qa__item">
@@ -2208,29 +2213,30 @@
       }
     }
   });
-  // Mỗi hoạt động có thời lượng thật (phút) → số lần được tính TỶ LỆ:
-  // số tiết kiệm ÷ thời lượng hoạt động. Không còn "39 giờ chỉ được 1 buổi spa".
+  // Mỗi hoạt động là một điều BÌNH DỊ mà khách dễ hình dung ngay.
+  // Số lần = tổng thời gian tiết kiệm ÷ thời lượng hoạt động.
+  // "text" viết dạng cụm ĐỘNG TỪ để đi sau "N lần" cho tự nhiên.
   var WEEK_ACTS = [
-    { min: 45,  cat:"nghi",   text: "buổi tối ngồi yên bên gia đình, không phải nghĩ bữa ăn", img:"🛋️" },
-    { min: 240, cat:"nghi",   text: "một ngày nghỉ trọn vẹn, không cần vào bếp", img:"🌤️" },
-    { min: 60,  cat:"khoe",   text: "một buổi đi bơi hoặc tập gym buổi sáng", img:"🏊" },
-    { min: 90,  cat:"khoe",   text: "một buổi khám sức khoẻ đầy đủ", img:"🩺" },
-    { min: 120, cat:"gia",    text: "một buổi cà phê lâu hơn với gia đình", img:"☕" },
-    { min: 180, cat:"gia",    text: "một buổi chiều đi chơi cùng gia đình", img:"🧺" },
-    { min: 45,  cat:"so",     text: "đọc được vài chương sách yêu thích", img:"📖" },
-    { min: 150, cat:"so",     text: "một buổi tập nhạc, vẽ hoặc làm vườn", img:"🎨" }
+    { min: 45,  cat:"nghi",   text: "ngủ thêm buổi sáng, không phải dậy sớm nấu ăn", img:"🌅" },
+    { min: 240, cat:"nghi",   text: "nghỉ trọn một ngày, không cần vào bếp", img:"🛋️" },
+    { min: 60,  cat:"khoe",   text: "đi bơi hoặc tập gym", img:"🏊" },
+    { min: 90,  cat:"khoe",   text: "dạo bước nhẹ nhàng sau bữa tối", img:"🚶" },
+    { min: 120, cat:"gia",    text: "cà phê nói chuyện với gia đình", img:"☕" },
+    { min: 2880, cat:"gia",   text: "dành trọn một ngày cuối tuần cho gia đình", img:"🧺" },
+    { min: 45,  cat:"so",     text: "đọc một chương sách bạn muốn đọc lâu nay", img:"📖" },
+    { min: 150, cat:"so",     text: "vẽ, tập nhạc hoặc làm vườn", img:"🎨" }
   ];
-  // Mốc "một năm" chỉ tính ở quy mô NGÀY trở lên — cộng dồn theo buổi nhỏ
-  // sẽ ra những con số vô lý kiểu "91 buổi chiều".
+  // Mốc "một năm" tính theo những việc lớn, dễ thấy: chuyến đi, cuối tuần,
+  // không có mốc "không phải nghĩ món" khách chẳng quan tâm.
   var YEAR_ACTS = [
-    { min: 1440,  cat:"nghi", text: "một ngày trọn vẹn không phải nghĩ món", img:"☀️" },
-    { min: 10080, cat:"nghi", text: "một tuần nghỉ ngơi tại nhà, không mở bếp", img:"🛋️" },
-    { min: 2880,  cat:"gia",  text: "hai ngày cuối tuần chỉ để ở nhà với gia đình", img:"🧺" },
-    { min: 4320,  cat:"gia",  text: "một chuyến du lịch gia đình 3 ngày", img:"🏖️" },
-    { min: 4320,  cat:"khoe", text: "một đợt chăm sóc sức khoẻ 3 ngày", img:"🩺" },
-    { min: 14400, cat:"khoe", text: "10 ngày tập thể dục đều đặn, ăn uống đúng lịch", img:"💪" },
-    { min: 7200,  cat:"so",   text: "5 ngày theo đuổi sở thích yêu thích", img:"🎨" },
-    { min: 20160, cat:"so",   text: "hai tuần làm sở thích mà không bị cắt ngang", img:"🎹" }
+    { min: 2880,  cat:"nghi", text: "nghỉ trọn cuối tuần", img:"🌤️" },
+    { min: 10080, cat:"nghi", text: "ở nhà một tuần, không cần mở bếp", img:"🛋️" },
+    { min: 4320,  cat:"gia",  text: "đi du lịch cùng gia đình 3 ngày", img:"🏖️" },
+    { min: 1440,  cat:"gia",  text: "về thăm ba mẹ trọn một ngày", img:"🏡" },
+    { min: 4320,  cat:"khoe", text: "tập thể thao hoặc khám sức khoẻ", img:"🩺" },
+    { min: 14400, cat:"khoe", text: "tập thể dục đều đặn mỗi sáng", img:"💪" },
+    { min: 7200,  cat:"so",   text: "làm điều mình yêu thích, không phải lo bữa ăn", img:"🎨" },
+    { min: 20160, cat:"so",   text: "dành sở thích của riêng mình", img:"🎹" }
   ];
   function fmtDuration(mins){
     if(mins <= 0) return "0 phút";
@@ -2310,10 +2316,6 @@
     document.getElementById("savedYear").textContent = fmtDuration(yearMin);
     document.getElementById("savedWeekTime").textContent = fmtDuration(weekMin);
     document.getElementById("savedYearTime").textContent = fmtDuration(yearMin);
-    var daysPerYear = Math.round(yearMin / 1440);
-    document.getElementById("savedYearDays").textContent = daysPerYear >= 1
-      ? daysPerYear + " ngày"
-      : fmtDuration(yearMin);
     fillCountList(document.getElementById("savedWeekList"), WEEK_ACTS, weekMin);
     fillCountList(document.getElementById("savedYearList"), YEAR_ACTS, yearMin);
   }
@@ -2387,23 +2389,12 @@
     if(orderNeedTrayEl) orderNeedTrayEl.hidden = hasTray;
   }
 
-  // "Mở inbox" (mở trang chủ Instagram của Mâm Cơm).
-  // Trang web KHÔNG THỂ mở thẳng vào hộp thư (DM thread) của một tài khoản khác
-  // (Instagram chặn điều này). Nút mở thẳng TRANG CHỦ profile Mâm Cơm:
-  //   https://www.instagram.com/mamcomvn/
-  // — khách chỉ cần thêm 1 lần chạm "Nhắn tin" là tới inbox.
-  // (Điện thoại đã cài app Instagram, trình duyệt/app link thường tự mở
-  //   thẳng vào app tại trang này; nếu không thì hiện trang web.)
-  var INBOX_LINK = "https://www.instagram.com/mamcomvn/";
+  // "Mở inbox" — link ig.me/m/mamcomvn mở THẲNG khung nhắn tin Mâm Cơm
+  // (mở app Instagram trên điện thoại, mở hộp thư trên web).
+  // Chuyển hướng tại tab HIỆN TẠI: không bao giờ bị trình duyệt chặn popup.
+  var INBOX_LINK = "https://ig.me/m/mamcomvn";
   function openInbox(){
-    var isTouch = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
-    if(isTouch){
-      // Điện thoại: chuyển hướng luôn tại tab hiện tại (rời được web này).
-      window.location.href = INBOX_LINK;
-    } else {
-      // Desktop: mở tab mới, không mất trang.
-      window.open(INBOX_LINK, "_blank", "noopener");
-    }
+    window.location.href = INBOX_LINK;
   }
 
   // ---- Bộ đếm chỉ cộng MỘT LẦN cho cùng một nội dung đơn ----
@@ -2431,10 +2422,15 @@
     bumpMeals();
   }
 
+  var orderInboxBusy = false;
   function handleOrderInbox(){
     if(!orderInboxBtn || orderInboxBtn.disabled) return;
-    // Mở Instagram TRONG gesture chuột (đồng bộ) để không bị trình duyệt chặn.
-    openInbox();
+    if(orderInboxBusy) return;
+    orderInboxBusy = true;
+    // Thứ tự: COPY TRƯỚC → báo "đã sao chép" → chờ một nhịp ngắn cho lệnh
+    // cộng bộ đếm kịp gửi đi → mới rời trang sang Instagram. Nếu chuyển
+    // hướng ngay ở đầu thì clipboard và request Supabase có thể bị huỷ
+    // giữa chừng khi trang bắt đầu tải trang mới.
     writeClipboard(buildText()).then(function(ok){
       if(ok){
         flashCopy("Đã sao chép ✓ — Dán vào khung nhắn tin");
@@ -2442,8 +2438,10 @@
       }else{
         flashCopy("Không sao chép được");
       }
+      setTimeout(openInbox, 1000);
     }).catch(function(){
       flashCopy("Không sao chép được");
+      setTimeout(openInbox, 1000);
     });
   }
   if(orderInboxBtn) orderInboxBtn.addEventListener("click", handleOrderInbox);
