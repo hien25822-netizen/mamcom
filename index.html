@@ -487,6 +487,14 @@
     background:#FFF7E0;border-left:4px solid var(--red);border-radius:9px;
   }
   .order__guide b{color:var(--red);font-weight:800}
+  .order__guide .pdown{display:inline-block;animation:pdownBob 1.2s ease-in-out infinite}
+  @keyframes pdownBob{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(4px)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .order__guide .pdown{animation:none}
+  }
   .order__send{width:100%;justify-content:center;background:var(--yellow);color:#574800}
   .order__send:disabled{opacity:.45;cursor:not-allowed;filter:none}
   .order__needTray{width:100%;margin:0;font-size:12px;font-weight:700;color:var(--red)}
@@ -872,7 +880,7 @@
             <span class="order__total__calc" id="orderTotalCalc">49k × 0 người</span>
           </div>
           <div class="order__field--wide order__submit">
-            <p class="order__guide">Hãy bấm nút👇, hệ thống sẽ tự copy đơn và tự động mở Instagram để bạn <b>DÁN vào inbox</b>!</p>
+            <p class="order__guide">Bấm nút bên dưới<span class="pdown">👇</span>, hệ thống sẽ tự copy đơn và tự động mở Instagram để bạn <b>DÁN vào inbox</b>!</p>
             <button class="btn btn--primary order__send" id="orderInboxBtn" type="button">📋 Sao chép và Dán vào Inbox</button>
             <p class="order__needTray" id="orderNeedTray">Hãy kéo ít nhất 1 mâm vào lịch trước khi đặt</p>
             <span class="order__submitMsg" id="orderSubmitMsg" role="status" aria-live="polite"></span>
@@ -1672,9 +1680,16 @@
     dayBodyEls.forEach(function(b){ b.classList.remove("drop-over"); });
   }
 
+  // Rung phản hồi khi thêm mâm (chỉ có trên điện thoại — desktop im lặng).
+  function buzzTray(){
+    try{
+      if(navigator.vibrate) navigator.vibrate(80);
+    }catch(e){}
+  }
   function addDish(dayIndex, dishIndex){
     plan[dayIndex].push(dishIndex);
     savePlan();
+    buzzTray();
     render();
   }
   function removeDish(dayIndex, position){
@@ -2466,11 +2481,17 @@
     if(shown >= 100){
       progHint.textContent = "Ấn “Sao chép và Dán vào inbox” để gửi đơn nhé!";
     }else if(!hasTray){
+      // Bỏ hết mâm (kể cả khi đã điền thông tin) → quay lại câu kéo mâm.
       progHint.textContent = "Kéo ít nhất 1 mâm vào lịch để bắt đầu nhé!";
+    }else if(filled > 0){
+      // Đã chạm ít nhất 1 ô thông tin → nhắc điền tiếp, giữ nguyên tới 100%.
+      progHint.textContent = "Hãy điền “Thông tin khách” nha!";
     }else{
-      var left = PROG_FIELDS.length - filled;
-      progHint.textContent = "Đã điền " + filled + "/" + PROG_FIELDS.length +
-        " ô thông tin — còn " + left + " ô để đặt mâm xong nhé!";
+      // Có mâm, chưa chạm ô nào → trái tim theo số mâm (1→7, ≥8 giữ 🫀).
+      var hearts = ["❤️", "💖", "💗", "💕", "💝", "❤️‍🔥", "🫀"];
+      var n = totalTraysAllWeeks();
+      var heart = hearts[Math.min(n, hearts.length) - 1];
+      progHint.textContent = "Lựa chọn tuyệt vời " + heart + ", gì nữa khum";
     }
   }
 
