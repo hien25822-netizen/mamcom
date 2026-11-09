@@ -2632,6 +2632,10 @@
     // fingerprint nên bấm lại cũng không cộng trùng.
     try{ bumpMealsOnce(); }catch(e){}
     openInbox();
+    // Cờ chống bấm đôi chỉ cần sống ~2s (đủ cho nhánh fallback timer 1.8s).
+    // Nếu trang không rời đi (desktop / webview in-app mở tab mới) thì cờ
+    // phải mở lại — không set vĩnh viễn, nếu không nút chết sau cú click đầu.
+    setTimeout(function(){ orderInboxBusy = false; }, 2000);
   }
   if(orderInboxBtn) orderInboxBtn.addEventListener("click", handleOrderInbox);
 
