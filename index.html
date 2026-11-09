@@ -2502,12 +2502,46 @@
     if(orderNeedTrayEl) orderNeedTrayEl.hidden = hasTray;
   }
 
-  // "Mở inbox" — link ig.me/m/mamcomvn mở THẲNG khung nhắn tin Mâm Cơm
-  // (mở app Instagram trên điện thoại, mở hộp thư trên web).
+  // "Mở inbox" — ưu tiên MỞ APP INSTAGRAM trên điện thoại (URL Scheme), mở
+  // thẳng màn hình nhắn tin với Mâm Cơm, không qua tab web (tab web bắt khách
+  // phải đăng nhập lại → mất thời gian và dễ bỏ).
+  //   - Có app   → instagram://direct_share?username=mamcomvn
+  //   - Chưa cài → tự lùi về web ig.me/m/mamcomvn sau 2.5s.
   // Chuyển hướng tại tab HIỆN TẠI: không bao giờ bị trình duyệt chặn popup.
-  var INBOX_LINK = "https://ig.me/m/mamcomvn";
+  var INBOX_LINK    = "https://ig.me/m/mamcomvn";
+  var INBOX_APP_LINK = "instagram://direct_share?username=mamcomvn";
+  var inboxFallbackTimer = null;
+
+  function clearInboxFallback(){
+    if(inboxFallbackTimer){
+      clearTimeout(inboxFallbackTimer);
+      inboxFallbackTimer = null;
+    }
+  }
+  // App đã mở → trang bị nền (hidden) → huỷ fallback, không lùi về web nữa.
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden) clearInboxFallback();
+  });
+  window.addEventListener("pagehide", clearInboxFallback);
+
+  function isMobileDevice(){
+    if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return true;
+    // iPadOS 13+ báo userAgent như Mac — dò qua cảm ứng.
+    return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+  }
+
   function openInbox(){
-    window.location.href = INBOX_LINK;
+    clearInboxFallback();
+    if(!isMobileDevice()){
+      window.location.href = INBOX_LINK;
+      return;
+    }
+    try{ window.location.href = INBOX_APP_LINK; }catch(e){}
+    // Chưa mở được app (không cài / bị chặn) → lùi về bản web.
+    inboxFallbackTimer = setTimeout(function(){
+      inboxFallbackTimer = null;
+      if(!document.hidden) window.location.href = INBOX_LINK;
+    }, 2500);
   }
 
   // ---- Bộ đếm chỉ cộng MỘT LẦN cho cùng một nội dung đơn ----
