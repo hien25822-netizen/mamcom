@@ -777,7 +777,14 @@
 <noscript>
   <style>#splash{display:none!important}</style>
   <p style="background:#fff8e6;border:1px solid #e6d9a8;padding:12px;border-radius:10px;margin:12px">
-    Mâm Cơm cần bật JavaScript để chạy. Vui lòng bật lại JavaScript trong trình duyệt rồi tải lại trang.
+    Mâm Cơm cần bật JavaScript để chạy.
+  </p>
+  <p style="background:#fff8e6;border:1px solid #e6d9a8;padding:12px;border-radius:10px;margin:12px">
+    Nếu bạn đang mở link này <b>bên trong app Instagram/Facebook</b>, hãy
+    bấm menu <b>⋯ (ba chấm)</b> hoặc biểu tượng <b>cửa sổ</b> góc màn hình
+    rồi chọn <b>"Mở trong trình duyệt" / "Open in Safari (Chrome)"</b> —
+    sau đó tải lại trang. Nếu đã ở trình duyệt mà vẫn thấy thông báo này,
+    vui lòng bật lại JavaScript rồi tải lại trang.
   </p>
 </noscript>
 <div class="wrap">
@@ -2425,16 +2432,29 @@
     if(navigator.clipboard && navigator.clipboard.writeText){
       return navigator.clipboard.writeText(text).then(function(){ return true; });
     }
+    return Promise.resolve(copyNow(text));
+  }
+  // Copy ĐỒNG BỘ (textarea + execCommand). Cần cho nút "Sao chép và Dán":
+  // iOS chỉ cho mở URL Scheme (instagram://) khi còn "user gesture" — mà
+  // promise/setTimeout sẽ mất gesture đó. Copy đồng bộ giữ được gesture.
+  function copyNow(text){
     var ta = document.createElement("textarea");
     ta.value = text;
+    ta.setAttribute("readonly", "");
     ta.style.position = "fixed";
+    ta.style.top = "0";
+    ta.style.left = "0";
+    ta.style.width = "1px";
+    ta.style.height = "1px";
     ta.style.opacity = "0";
     document.body.appendChild(ta);
+    ta.focus();
     ta.select();
+    ta.setSelectionRange(0, ta.value.length);
     var ok = false;
     try{ ok = document.execCommand("copy"); }catch(e){}
     document.body.removeChild(ta);
-    return Promise.resolve(ok);
+    return ok;
   }
 
   // ---- "Sao chép và Dán vào Inbox" ----
@@ -2502,14 +2522,21 @@
     if(orderNeedTrayEl) orderNeedTrayEl.hidden = hasTray;
   }
 
-  // "Mở inbox" — ưu tiên MỞ APP INSTAGRAM trên điện thoại (URL Scheme), mở
-  // thẳng màn hình nhắn tin với Mâm Cơm, không qua tab web (tab web bắt khách
-  // phải đăng nhập lại → mất thời gian và dễ bỏ).
-  //   - Có app   → instagram://direct_share?username=mamcomvn
-  //   - Chưa cài → tự lùi về web ig.me/m/mamcomvn sau 2.5s.
-  // Chuyển hướng tại tab HIỆN TẠI: không bao giờ bị trình duyệt chặn popup.
-  var INBOX_LINK    = "https://ig.me/m/mamcomvn";
-  var INBOX_APP_LINK = "instagram://direct_share?username=mamcomvn";
+  // "Mở inbox" — 3 nhánh:
+  //   1. Trình duyệt TRONG APP (webview của Instagram/Facebook/…) → mở thẳng
+  //      https://ig.me/m/mamcomvn: webview đã có session đăng nhập của app →
+  //      mở khung DM không phải đăng nhập lại. (URL Scheme bị chặn trong
+  //      webview, không dùng được.)
+  //   2. Trình duyệt THƯỜNG trên điện thoại (Safari/Chrome) → thử mở APP
+  //      bằng URL Scheme instagram://direct_message?username=mamcomvn (gọi
+  //      đồng bộ trong cú bấm để iOS không bỏ qua vì mất user gesture).
+  //      App mở được → trang vào nền, huỷ timer. Không mở được (chưa cài /
+  //      bị chặn) → sau 1.8s lùi về ig.me: link này Instagram APP nhận
+  //      được (App Link) sẽ mở thẳng khung nhắn tin; nếu mở bằng web thì
+  //      cũng ra đúng ô nhắn (đăng nhập 1 lần).
+  //   3. Desktop → https://ig.me/m/mamcomvn (bản web, tab hiện tại).
+  var INBOX_WEB_LINK = "https://ig.me/m/mamcomvn";
+  var INBOX_APP_LINK = "instagram://direct_message?username=mamcomvn";
   var inboxFallbackTimer = null;
 
   function clearInboxFallback(){
@@ -2518,7 +2545,7 @@
       inboxFallbackTimer = null;
     }
   }
-  // App đã mở → trang bị nền (hidden) → huỷ fallback, không lùi về web nữa.
+  // App đã mở → trang vào nền (hidden) → huỷ fallback, không lùi về web nữa.
   document.addEventListener("visibilitychange", function(){
     if(document.hidden) clearInboxFallback();
   });
@@ -2529,19 +2556,35 @@
     // iPadOS 13+ báo userAgent như Mac — dò qua cảm ứng.
     return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
   }
+  // Webview của Meta (Instagram/Facebook) và WhatsApp: UA có các từ khoá này.
+  function isInAppBrowser(){
+    return /Instagram|FBAV|FB_IOS|FBAN|MSGR|WhatsApp/i.test(navigator.userAgent || "");
+  }
 
   function openInbox(){
     clearInboxFallback();
-    if(!isMobileDevice()){
-      window.location.href = INBOX_LINK;
+    if(!isMobileDevice() || isInAppBrowser()){
+      window.location.href = INBOX_WEB_LINK;
       return;
     }
-    try{ window.location.href = INBOX_APP_LINK; }catch(e){}
-    // Chưa mở được app (không cài / bị chặn) → lùi về bản web.
+    // Thử mở app bằng anchor CHỮA (click đồng bộ trong cú bấm → iOS vẫn coi
+    // là user gesture). Dùng anchor thay vì location.href: nếu scheme không
+    // tồn tại (chưa cài app), iOS chỉ im lặng mà trang SỐNG → timer bên dưới
+    // kịp đưa khách về bản web. (location.href sang scheme chết trên iOS sẽ
+    // "giết" luôn tab → timer không chạy, khách kẹt trang trắng.)
+    try{
+      var a = document.createElement("a");
+      a.href = INBOX_APP_LINK;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }catch(e){}
+    // App không mở được (chưa cài / bị chặn) → lùi về bản web.
     inboxFallbackTimer = setTimeout(function(){
       inboxFallbackTimer = null;
-      if(!document.hidden) window.location.href = INBOX_LINK;
-    }, 2500);
+      if(!document.hidden) window.location.href = INBOX_WEB_LINK;
+    }, 1800);
   }
 
   // ---- Bộ đếm chỉ cộng MỘT LẦN cho cùng một nội dung đơn ----
@@ -2574,22 +2617,21 @@
     if(!orderInboxBtn || orderInboxBtn.disabled) return;
     if(orderInboxBusy) return;
     orderInboxBusy = true;
-    // Thứ tự: COPY TRƯỚC → báo "đã sao chép" → chờ một nhịp ngắn cho lệnh
-    // cộng bộ đếm kịp gửi đi → mới rời trang sang Instagram. Nếu chuyển
-    // hướng ngay ở đầu thì clipboard và request Supabase có thể bị huỷ
-    // giữa chừng khi trang bắt đầu tải trang mới.
-    writeClipboard(buildText()).then(function(ok){
-      if(ok){
-        flashCopy("Đã sao chép ✓ — Dán vào khung nhắn tin");
-        bumpMealsOnce();
-      }else{
-        flashCopy("Không sao chép được");
-      }
-      setTimeout(openInbox, 1000);
-    }).catch(function(){
-      flashCopy("Không sao chép được");
-      setTimeout(openInbox, 1000);
-    });
+    // iOS chỉ cho mở URL Scheme (instagram://) khi còn "user gesture" của
+    // cú bấm — promise/setTimeout sẽ mất gesture đó nên app không mở.
+    // Vì vậy: COPY và MỞ APP phải chạy ĐỒNG BỘ ngay trong cú bấm.
+    var text = buildText();
+    var ok = false;
+    try{ ok = copyNow(text); }catch(e){}
+    if(!ok && navigator.clipboard && navigator.clipboard.writeText){
+      // Clipboard API (Chrome) — bất đồng bộ nhưng vẫn trong gesture.
+      navigator.clipboard.writeText(text).catch(function(){});
+    }
+    flashCopy(ok ? "Đã sao chép ✓ — Dán vào khung nhắn tin" : "Không sao chép được");
+    // Cộng bộ đếm: gửi ngay, không chờ (trang sắp rời đi). localStorage đã ghi
+    // fingerprint nên bấm lại cũng không cộng trùng.
+    try{ bumpMealsOnce(); }catch(e){}
+    openInbox();
   }
   if(orderInboxBtn) orderInboxBtn.addEventListener("click", handleOrderInbox);
 
