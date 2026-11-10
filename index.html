@@ -2522,21 +2522,19 @@
     if(orderNeedTrayEl) orderNeedTrayEl.hidden = hasTray;
   }
 
-  // "Mở inbox" — 3 nhánh:
-  //   1. Trình duyệt TRONG APP (webview của Instagram/Facebook/…) → mở thẳng
-  //      https://ig.me/m/mamcomvn: webview đã có session đăng nhập của app →
-  //      mở khung DM không phải đăng nhập lại. (URL Scheme bị chặn trong
-  //      webview, không dùng được.)
-  //   2. Trình duyệt THƯỜNG trên điện thoại (Safari/Chrome) → thử mở APP
-  //      bằng URL Scheme instagram://direct_message?username=mamcomvn (gọi
-  //      đồng bộ trong cú bấm để iOS không bỏ qua vì mất user gesture).
-  //      App mở được → trang vào nền, huỷ timer. Không mở được (chưa cài /
-  //      bị chặn) → sau 1.8s lùi về ig.me: link này Instagram APP nhận
-  //      được (App Link) sẽ mở thẳng khung nhắn tin; nếu mở bằng web thì
-  //      cũng ra đúng ô nhắn (đăng nhập 1 lần).
-  //   3. Desktop → https://ig.me/m/mamcomvn (bản web, tab hiện tại).
+  // "Mở inbox" — 2 nhánh:
+  //   1. Trình duyệt THƯỜNG TRÊN ĐIỆN THOẠI (Safari/Chrome, kể cả các
+  //      webview in-app không dò được qua UA) → thử mở APP bằng URL Scheme
+  //      instagram://user?username=mamcomvn (branch CÓ TÀI LIỆU chính thức
+  //      của Meta; branch direct_message cũ không ổn định). Gọi đồng bộ
+  //      trong cú bấm để iOS không bỏ qua vì mất user gesture. App mở
+  //      được → trang vào nền, huỷ timer. Không mở được (chưa cài / bị
+  //      chặn trong webview) → sau 2.2s lùi về ig.me; trong webview của
+  //      app Meta, link này mở thẳng khung DM (webview đã có session
+  //      đăng nhập), không phải đăng nhập lại.
+  //   2. Desktop → https://ig.me/m/mamcomvn (bản web, tab hiện tại).
   var INBOX_WEB_LINK = "https://ig.me/m/mamcomvn";
-  var INBOX_APP_LINK = "instagram://direct_message?username=mamcomvn";
+  var INBOX_APP_LINK = "instagram://user?username=mamcomvn";
   var inboxFallbackTimer = null;
 
   function clearInboxFallback(){
@@ -2556,14 +2554,15 @@
     // iPadOS 13+ báo userAgent như Mac — dò qua cảm ứng.
     return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
   }
-  // Webview của Meta (Instagram/Facebook) và WhatsApp: UA có các từ khoá này.
-  function isInAppBrowser(){
-    return /Instagram|FBAV|FB_IOS|FBAN|MSGR|WhatsApp/i.test(navigator.userAgent || "");
-  }
+  // Không dò webview qua UA (khối cũ) nữa: webview của Instagram dùng
+  // system WebView, UA không có marker Meta → dò bằng regex sẽ sót. Thay
+  // vào đó, mọi thiết bị di động đều thử scheme trước; webview bị chặn
+  // scheme thì timer 2.2s sẽ đưa về ig.me và mở khung DM ngay trong
+  // webview (đã có session đăng nhập).
 
   function openInbox(){
     clearInboxFallback();
-    if(!isMobileDevice() || isInAppBrowser()){
+    if(!isMobileDevice()){
       window.location.href = INBOX_WEB_LINK;
       return;
     }
@@ -2584,7 +2583,7 @@
     inboxFallbackTimer = setTimeout(function(){
       inboxFallbackTimer = null;
       if(!document.hidden) window.location.href = INBOX_WEB_LINK;
-    }, 1800);
+    }, 2200);
   }
 
   // ---- Bộ đếm chỉ cộng MỘT LẦN cho cùng một nội dung đơn ----
