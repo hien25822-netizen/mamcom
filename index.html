@@ -14,40 +14,61 @@
     --red-dark: #b81710;
     --red-soft: #fdf2f1;
     --red-tint: rgba(218, 36, 28, 0.08);
+    --red-glow: rgba(218, 36, 28, 0.22);
     --yellow: #ffff04;
     --yellow-hover: #faea00;
     --yellow-soft: #fffde0;
     --yellow-tint: rgba(255, 255, 4, 0.22);
+    --yellow-glow: rgba(255, 255, 4, 0.45);
     --black: #000000;
     --ink: #111111;
     --ink-light: #444444;
     --muted: #766d69;
     --white: #ffffff;
     --bg: #faf8f5;
-    --card: #ffffff;
+    --card: rgba(255, 255, 255, 0.82);
     --line: #ebe5df;
     --line-subtle: #f4efea;
     --green: #157a3a;
     --green-soft: #eaf6ee;
-    --radius: 16px;
-    --radius-sm: 10px;
+    
+    /* iOS Glassmorphism Design Tokens */
+    --glass-bg: rgba(255, 255, 255, 0.78);
+    --glass-bg-subtle: rgba(255, 255, 255, 0.62);
+    --glass-bg-card: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.85);
+    --glass-border-subtle: rgba(235, 229, 223, 0.7);
+    --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+    --glass-shadow: 0 10px 32px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    --glass-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+    
+    --radius: 20px;
+    --radius-sm: 12px;
+    --radius-xs: 8px;
     --radius-pill: 9999px;
     --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.04);
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-    --shadow: 0 4px 18px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
-    --shadow-lg: 0 14px 40px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03);
-    --shadow-red: 0 6px 20px rgba(218, 36, 28, 0.22);
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+    --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.07), 0 2px 6px rgba(0, 0, 0, 0.03);
+    --shadow-red: 0 8px 24px rgba(218, 36, 28, 0.25);
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: var(--bg);
+    background-color: #faf8f5;
+    background-image:
+      radial-gradient(1000px 700px at 10% 8%, rgba(255, 255, 4, 0.09) 0%, transparent 55%),
+      radial-gradient(900px 650px at 90% 25%, rgba(218, 36, 28, 0.06) 0%, transparent 50%),
+      radial-gradient(850px 850px at 25% 85%, rgba(255, 255, 4, 0.07) 0%, transparent 60%),
+      radial-gradient(750px 600px at 85% 92%, rgba(218, 36, 28, 0.06) 0%, transparent 50%);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
   }
   .wrap {
     max-width: 1100px;
@@ -55,26 +76,30 @@
     padding: 24px 18px 48px;
   }
 
-  /* ---- THANH TIẾN TRÌNH ĐẶT MÂM (Sticky Top) ---- */
+  /* ---- THANH TIẾN TRÌNH ĐẶT MÂM (iOS Dynamic Island Glassmorphism) ---- */
   .prog {
     position: sticky;
-    top: 12px;
+    top: 10px;
     z-index: 60;
     width: 100%;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1.5px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(24px) saturate(190%);
+    -webkit-backdrop-filter: blur(24px) saturate(190%);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.05),
+                0 1px 2px rgba(0, 0, 0, 0.02),
+                inset 0 1px 2px rgba(255, 255, 255, 1);
     padding: 12px 18px;
     margin-bottom: 22px;
-    transition: box-shadow .2s, border-color .2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .prog:hover {
-    border-color: rgba(218, 36, 28, 0.3);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(218, 36, 28, 0.35);
+    box-shadow: 0 14px 40px rgba(218, 36, 28, 0.09),
+                inset 0 1px 2px rgba(255, 255, 255, 1);
   }
   .prog__row {
     display: flex;
@@ -86,7 +111,8 @@
     min-width: 0;
     height: 9px;
     border-radius: var(--radius-pill);
-    background: #eae4de;
+    background: rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.02);
     overflow: hidden;
   }
   .prog__fill {
@@ -94,6 +120,7 @@
     width: 0;
     border-radius: var(--radius-pill);
     background: linear-gradient(90deg, var(--red), #ff483f);
+    box-shadow: 0 0 12px rgba(218, 36, 28, 0.4);
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .prog__pct {
@@ -129,6 +156,7 @@
     margin: 0 auto;
     cursor: pointer;
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.06));
   }
   .logo:hover { transform: scale(1.04); }
   .logo:active { transform: scale(0.97); }
@@ -152,8 +180,8 @@
     perspective: 320px;
     background: var(--black);
     border: 2px solid var(--black);
-    border-radius: 12px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.15);
   }
   .flip__card {
     position: absolute;
@@ -205,13 +233,16 @@
     position: fixed; inset: 0; z-index: 90;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 14px;
-    background: var(--bg); text-align: center; padding: 24px;
+    background: rgba(250, 248, 245, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    text-align: center; padding: 24px;
     transition: opacity .3s ease;
   }
   .splash.hide { opacity: 0; pointer-events: none; }
-  .splash__logo { width: 150px; max-width: 60%; height: auto; display: block; }
+  .splash__logo { width: 150px; max-width: 60%; height: auto; display: block; filter: drop-shadow(0 6px 16px rgba(0,0,0,.08)); }
   .splash__hello { font-size: 17px; font-weight: 800; color: var(--ink); margin: 0; }
-  .splash__bar { width: 180px; max-width: 70%; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; }
+  .splash__bar { width: 180px; max-width: 70%; height: 6px; border-radius: 99px; background: rgba(0,0,0,.07); overflow: hidden; }
   .splash__bar__fill {
     width: 30%; height: 100%; border-radius: 99px;
     background: linear-gradient(90deg, var(--red), var(--yellow));
@@ -228,22 +259,31 @@
     align-items: start;
   }
 
-  /* ---- MENU (Square Tiles) ---- */
+  /* ---- MENU (Square Tiles - iOS Glassmorphism) ---- */
   .panel {
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 22px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.04),
+                inset 0 1px 1px rgba(255, 255, 255, 1);
     overflow: hidden;
-    transition: box-shadow .2s;
+    transition: box-shadow .25s ease, border-color .25s ease;
+  }
+  .panel:hover {
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06),
+                inset 0 1px 1px rgba(255, 255, 255, 1);
   }
   .panel__head {
     padding: 14px 18px;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid rgba(235, 229, 223, 0.7);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .panel__head h2 {
     font-size: 16px;
@@ -255,10 +295,11 @@
     font-size: 11.5px;
     font-weight: 700;
     color: var(--ink-light);
-    background: var(--bg);
-    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(235, 229, 223, 0.8);
     padding: 2px 9px;
     border-radius: var(--radius-pill);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
   }
   .menu__hint {
     padding: 12px 18px 4px;
@@ -277,26 +318,33 @@
   }
   .tile {
     position: relative;
-    border: 1.5px solid var(--line);
-    border-radius: 14px;
-    background: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     overflow: hidden;
     cursor: grab;
     user-select: none;
-    transition: border-color .18s, box-shadow .18s, transform .12s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 0.2s ease;
     touch-action: manipulation;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    box-shadow: var(--shadow-xs);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03),
+                inset 0 1px 1px rgba(255, 255, 255, 1);
   }
   @media (pointer: coarse) {
     .tile { touch-action: none; }
   }
   .tile:hover {
-    border-color: var(--red);
-    box-shadow: 0 6px 18px rgba(218, 36, 28, 0.12);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    border-color: rgba(218, 36, 28, 0.45);
+    box-shadow: 0 14px 32px rgba(218, 36, 28, 0.12),
+                0 2px 6px rgba(0, 0, 0, 0.03),
+                inset 0 1px 1px rgba(255, 255, 255, 1);
   }
   .tile:active {
     cursor: grabbing;
@@ -304,7 +352,7 @@
   }
   .tile.is-armed {
     border-color: var(--red);
-    box-shadow: 0 0 0 3px rgba(218, 36, 28, 0.25);
+    box-shadow: 0 0 0 3px rgba(218, 36, 28, 0.25), 0 8px 24px rgba(218, 36, 28, 0.18);
   }
   .tile.is-dragging {
     opacity: 0.45;
@@ -312,15 +360,15 @@
   }
   .tile.drag-ghost {
     position: fixed; left: 0; top: 0; z-index: 130;
-    width: 60px; height: 60px;
+    width: 64px; height: 64px;
     transform: translate(-50%, -50%);
     pointer-events: none; opacity: 0.95;
     display: flex; align-items: center; justify-content: center;
     font-size: 28px;
     background: var(--yellow-soft);
     border: 2px solid var(--black);
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
     overflow: hidden;
   }
   .tile.drag-ghost img {
@@ -330,7 +378,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1/1;
-    background: #fdfaf6;
+    background: rgba(250, 248, 245, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -348,20 +396,20 @@
   .tile__name {
     flex: 1 1 auto;
     min-width: 0;
-    padding: 6px 7px 7px;
-    background: #ffffff;
+    padding: 7px 8px 8px;
+    background: rgba(255, 255, 255, 0.9);
     font-size: 12px;
     font-weight: 700;
     text-align: center;
     line-height: 1.3;
     color: var(--ink);
-    border-top: 1px solid var(--line-subtle);
+    border-top: 1px solid rgba(235, 229, 223, 0.6);
     overflow: hidden;
     word-wrap: break-word;
   }
   .tile__badge {
     position: absolute;
-    top: 4px; left: 4px; z-index: 1;
+    top: 5px; left: 5px; z-index: 1;
     background: var(--yellow);
     border: 1.5px solid var(--black);
     border-radius: var(--radius-pill);
@@ -371,16 +419,18 @@
     color: var(--black);
     display: none;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   }
   .tile.has-dish .tile__badge { display: flex; }
   .tile__edit {
     position: absolute;
-    top: 4px; right: 4px; z-index: 1;
+    top: 5px; right: 5px; z-index: 1;
     width: 24px; height: 24px;
-    border: 1px solid var(--line);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     color: var(--red);
     font-size: 12px;
@@ -408,9 +458,9 @@
     text-transform: uppercase; letter-spacing: .4px;
   }
   .editor input, .editor textarea {
-    border: 1.5px solid var(--line); border-radius: 10px;
+    border: 1.5px solid var(--line); border-radius: 12px;
     padding: 8px 10px; font-size: 13px; width: 100%;
-    background: #fff; color: var(--ink);
+    background: rgba(255, 255, 255, 0.85); color: var(--ink);
     font-family: inherit; line-height: 1.35;
   }
   .editor textarea { resize: vertical; min-height: 44px; }
@@ -436,25 +486,28 @@
   .editor__preview.has img { display: block; }
   .tile__media img, .chip__media img { cursor: zoom-in; }
 
-  /* LIGHTBOX */
+  /* LIGHTBOX (iOS Glass Modal) */
   .lightbox {
     position: fixed; inset: 0; z-index: 120;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     display: flex; align-items: center; justify-content: center; padding: 24px;
     cursor: zoom-out;
   }
   .lightbox[hidden] { display: none; }
   .lightbox__img {
     max-width: min(90vw, 720px); max-height: 78vh; object-fit: contain;
-    background: #fff; border-radius: 14px; box-shadow: 0 16px 60px rgba(0, 0, 0, 0.6);
+    background: #fff; border-radius: 18px; box-shadow: 0 20px 70px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   .lightbox__close {
     position: absolute; top: 18px; right: 18px; width: 42px; height: 42px;
-    border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     color: var(--red); font-size: 22px; font-weight: 800; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
   }
   .lightbox__info {
     position: absolute; bottom: 18px; left: 0; right: 0; padding: 0 20px; text-align: center;
@@ -514,7 +567,7 @@
   }
   .link-btn:hover { color: var(--red); }
 
-  /* ---- WEEK SECTION ---- */
+  /* ---- WEEK SECTION (iOS Glassmorphism) ---- */
   .weekbar {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     margin-bottom: 12px;
@@ -527,7 +580,10 @@
     font-size: 15px; font-weight: 800; color: var(--black);
   }
   .btn.btn--week {
-    background: var(--white); color: var(--black);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--black);
     border: 1.5px solid var(--black); box-shadow: 0 2px 0 var(--black);
     padding: 7px 15px; font-size: 12.5px; font-weight: 800;
     border-radius: var(--radius-pill); cursor: pointer; transition: all .15s;
@@ -544,23 +600,27 @@
     gap: 10px;
   }
   .day {
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    border-radius: 14px;
-    box-shadow: var(--shadow-xs);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03),
+                inset 0 1px 1px rgba(255, 255, 255, 0.95);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: border-color .2s, box-shadow .2s;
   }
   .day:hover {
-    border-color: rgba(218, 36, 28, 0.3);
-    box-shadow: var(--shadow-sm);
+    border-color: rgba(218, 36, 28, 0.35);
+    box-shadow: 0 8px 24px rgba(218, 36, 28, 0.08), inset 0 1px 1px rgba(255, 255, 255, 1);
   }
   .day__head {
     display: flex; align-items: center; justify-content: space-between;
     gap: 6px; flex-wrap: wrap; padding: 8px 10px;
-    border-bottom: 1px solid var(--line-subtle); background: #faf8f6;
+    border-bottom: 1px solid rgba(235, 229, 223, 0.7);
+    background: rgba(250, 248, 245, 0.7);
   }
   .day__name {
     font-size: 12.5px; font-weight: 800; color: var(--black);
@@ -570,12 +630,13 @@
   }
   .day__count {
     font-size: 10.5px; font-weight: 800; color: var(--muted);
-    background: #ffffff; border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9); border: 1px solid var(--line);
     padding: 1px 7px; border-radius: var(--radius-pill);
     min-width: 22px; text-align: center;
   }
   .day__count.has {
     background: var(--red); color: #ffffff; border-color: var(--red);
+    box-shadow: 0 2px 6px rgba(218, 36, 28, 0.3);
   }
   .day__body {
     flex: 1 1 auto; min-height: 62px; padding: 7px 8px;
@@ -592,16 +653,19 @@
     padding: 6px 4px; flex: 1 1 100%;
   }
 
-  /* ---- CHIP MÓN ĂN ---- */
+  /* ---- CHIP MÓN ĂN (iOS Glass Pill) ---- */
   .chip {
     display: inline-flex; align-items: center; gap: 6px;
-    max-width: 100%; background: #ffffff;
-    border: 1px solid var(--line); border-radius: var(--radius-pill);
+    max-width: 100%; background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(235, 229, 223, 0.9);
+    border-radius: var(--radius-pill);
     padding: 3px 6px 3px 3px; font-size: 11.5px; font-weight: 600;
-    color: var(--black); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: border-color .15s;
+    color: var(--black); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: border-color .15s, transform .12s;
   }
-  .chip:hover { border-color: var(--red); }
+  .chip:hover { border-color: var(--red); transform: scale(1.02); }
   .chip__label { min-width: 0; overflow-wrap: anywhere; }
   .chip__media {
     width: 22px; height: 22px; flex: 0 0 auto;
@@ -620,18 +684,21 @@
   .chip__x::after { content: ""; position: absolute; inset: -10px; }
   .chip__x:hover { background: var(--red); color: #ffffff; }
 
-  /* ---- FORM ĐẶT HÀNG & THÔNG TIN KHÁCH ---- */
+  /* ---- FORM ĐẶT HÀNG & THÔNG TIN KHÁCH (iOS Glass Sheet) ---- */
   .order {
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(24px) saturate(190%);
+    -webkit-backdrop-filter: blur(24px) saturate(190%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 22px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05),
+                inset 0 1px 2px rgba(255, 255, 255, 1);
+    padding: 20px 22px;
     margin-top: 14px;
   }
   .order__head {
     font-size: 15px; font-weight: 800; color: var(--red);
-    margin: 0 0 12px; display: flex; align-items: center; gap: 6px;
+    margin: 0 0 14px; display: flex; align-items: center; gap: 6px;
   }
   .order__grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
@@ -642,16 +709,22 @@
   }
   .order__field input,
   .order__field textarea {
-    border: 1.5px solid var(--line); border-radius: 12px;
-    padding: 10px 12px; font-size: 15px; font-weight: 600;
-    background: #ffffff; color: var(--ink); font-family: inherit;
+    border: 1.5px solid rgba(220, 214, 206, 0.75);
+    border-radius: 14px;
+    padding: 11px 14px; font-size: 15px; font-weight: 600;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--ink); font-family: inherit;
     width: 100%; box-sizing: border-box;
     transition: border-color .15s, box-shadow .15s, background .15s;
   }
   .order__field input:focus,
   .order__field textarea:focus {
-    outline: none; border-color: var(--red);
-    box-shadow: 0 0 0 3px rgba(218, 36, 28, 0.15);
+    outline: none;
+    background: #ffffff;
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(218, 36, 28, 0.12), 0 2px 10px rgba(218, 36, 28, 0.06);
   }
   .order__field input::placeholder,
   .order__field textarea::placeholder {
@@ -665,9 +738,13 @@
 
   .order__total {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    margin-top: 12px; padding: 12px 16px;
-    background: var(--yellow-soft); border: 1.5px solid var(--yellow);
-    border-radius: 12px; font-size: 14px; font-weight: 800; color: var(--black);
+    margin-top: 12px; padding: 13px 18px;
+    background: linear-gradient(135deg, rgba(255, 255, 4, 0.22), rgba(255, 255, 4, 0.08));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 255, 4, 0.65);
+    border-radius: 16px; font-size: 14px; font-weight: 800; color: var(--black);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.9);
   }
   .order__total strong {
     color: var(--red); font-size: 18px; font-weight: 900;
@@ -680,9 +757,15 @@
     display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 6px;
   }
   .order__guide {
-    width: 100%; margin: 0 0 4px; padding: 10px 14px;
+    width: 100%; margin: 0 0 4px; padding: 11px 15px;
     font-size: 12.5px; line-height: 1.55; color: var(--ink); font-weight: 600;
-    background: #fffdf0; border-left: 4px solid var(--red); border-radius: 8px;
+    background: rgba(255, 253, 235, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-left: 4px solid var(--red); border-radius: 10px;
+    border-top: 1px solid rgba(255, 255, 4, 0.3);
+    border-right: 1px solid rgba(235, 229, 223, 0.7);
+    border-bottom: 1px solid rgba(235, 229, 223, 0.7);
   }
   .order__guide b { color: var(--red); font-weight: 800; }
   .order__guide .pdown { display: inline-block; animation: pdownBob 1.2s ease-in-out infinite; }
@@ -698,14 +781,15 @@
     width: 100%; justify-content: center;
     background: var(--yellow); color: var(--black);
     font-weight: 800; font-size: 15px; padding: 14px 20px;
-    border: 2px solid var(--black); border-radius: 12px;
-    box-shadow: 0 4px 0 var(--black); cursor: pointer;
+    border: 2px solid var(--black); border-radius: 14px;
+    box-shadow: 0 4px 0 var(--black), 0 8px 20px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
     transition: transform .1s, box-shadow .1s, background .15s;
   }
   .order__send:hover:not(:disabled) {
     background: var(--yellow-hover);
     transform: translateY(-1px);
-    box-shadow: 0 5px 0 var(--black);
+    box-shadow: 0 5px 0 var(--black), 0 10px 24px rgba(0, 0, 0, 0.12);
   }
   .order__send:active:not(:disabled) {
     transform: translateY(3px);
@@ -723,45 +807,63 @@
     color: var(--red); text-align: center;
   }
   .order__submitMsg.is-ok {
-    color: var(--black); background: var(--yellow-soft);
-    border: 1.5px solid var(--yellow); border-radius: 10px;
+    color: var(--black); background: rgba(255, 253, 224, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid var(--yellow); border-radius: 12px;
     padding: 10px 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
   }
   .order__submitMsg.is-ok b { color: var(--red); }
 
-  /* 2 Button mở app Instagram và TikTok */
+  /* ---- 2 BUTTON MỞ APP INSTAGRAM & TIKTOK (CÙNG 1 HÀNG NGANG TRÊN CẢ DESKTOP & MOBILE) ---- */
   .order__social-apps {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    width: 100%; margin-top: 10px;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
   }
   .order__app-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    gap: 9px; padding: 13px 16px; border-radius: 12px;
-    font-size: 14px; font-weight: 800; text-decoration: none;
-    color: #ffffff !important; cursor: pointer; user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 10px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    color: #ffffff !important;
+    cursor: pointer;
+    user-select: none;
     transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s, filter 0.15s;
-    -webkit-tap-highlight-color: transparent; text-align: center;
-    min-height: 48px; box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    text-align: center;
+    min-height: 48px;
+    box-sizing: border-box;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .order__app-btn:active { transform: scale(0.97); }
   .order__app-icon { flex: 0 0 20px; width: 20px; height: 20px; display: block; }
   .order__app-btn--ig {
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    box-shadow: 0 4px 14px rgba(220, 39, 67, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    box-shadow: 0 6px 18px rgba(220, 39, 67, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.35);
   }
   .order__app-btn--ig:hover {
     filter: brightness(1.08); transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(220, 39, 67, 0.45);
+    box-shadow: 0 8px 24px rgba(220, 39, 67, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.6);
   }
   .order__app-btn--tiktok {
-    background: #010101;
-    box-shadow: -2px -2px 0px #25F4EE, 2px 2px 0px #FE2C55, 0 4px 14px rgba(0, 0, 0, 0.25);
-    border: 1px solid #222222;
+    background: #000000;
+    box-shadow: -2px -2px 0px #25F4EE, 2px 2px 0px #FE2C55, 0 6px 18px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
   .order__app-btn--tiktok:hover {
     filter: brightness(1.15); transform: translateY(-2px);
-    box-shadow: -3px -3px 0px #25F4EE, 3px 3px 0px #FE2C55, 0 8px 20px rgba(0, 0, 0, 0.35);
+    box-shadow: -3px -3px 0px #25F4EE, 3px 3px 0px #FE2C55, 0 10px 24px rgba(0, 0, 0, 0.4);
   }
   .order__social-apps.is-highlight {
     animation: socialPulse 0.45s ease-in-out 2;
@@ -773,7 +875,7 @@
 
   /* ---- BUTTONS ---- */
   .btn {
-    border: 0; border-radius: 12px; padding: 11px 18px;
+    border: 0; border-radius: 14px; padding: 11px 18px;
     font-size: 14px; font-weight: 700; cursor: pointer;
     background: var(--red); color: #ffffff;
     transition: filter .15s, transform .08s, box-shadow .15s;
@@ -783,7 +885,10 @@
   .btn:hover { filter: brightness(1.08); }
   .btn:active { transform: translateY(1px); }
   .btn--ghost {
-    background: #ffffff; color: var(--ink);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--ink);
     border: 1.5px solid var(--line); box-shadow: none;
   }
   .btn--ghost:hover {
@@ -791,19 +896,24 @@
   }
   .btn.is-ok { background: var(--yellow); color: var(--black); border: 1.5px solid var(--black); }
 
-  /* ---- DATE & TIME PICKER POPUPS ---- */
+  /* ---- DATE & TIME PICKER POPUPS (iOS Sheet Glassmorphism) ---- */
   .picker {
     position: fixed; inset: 0; z-index: 100; display: none;
     align-items: center; justify-content: center;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     padding: 16px;
   }
   .picker.show { display: flex; }
   .picker__box {
-    background: var(--card); border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
-    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18),
+                inset 0 1px 2px rgba(255, 255, 255, 1);
+    border: 1px solid rgba(255, 255, 255, 0.95);
     width: 100%; max-width: 320px; padding: 18px;
     animation: modalPop .22s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
@@ -820,7 +930,7 @@
   .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .cal__wd { text-align: center; font-size: 10.5px; font-weight: 800; color: var(--muted); padding: 0 0 3px; }
   .cal__day {
-    border: 1px solid var(--line); background: #ffffff; border-radius: 8px;
+    border: 1px solid rgba(235, 229, 223, 0.8); background: rgba(255, 255, 255, 0.85); border-radius: 10px;
     padding: 7px 0; font: inherit; font-size: 13px; font-weight: 700; color: var(--ink); cursor: pointer;
     transition: all .15s;
   }
@@ -834,7 +944,7 @@
   .cal__blank { padding: 7px 0; }
   .times { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; max-height: 46vh; overflow-y: auto; }
   .times button {
-    border: 1px solid var(--line); background: #ffffff; color: var(--ink);
+    border: 1px solid rgba(235, 229, 223, 0.8); background: rgba(255, 255, 255, 0.85); color: var(--ink);
     font: inherit; font-size: 13px; font-weight: 700; padding: 10px 0; border-radius: 10px; cursor: pointer;
     transition: all .15s;
   }
@@ -844,10 +954,15 @@
     box-shadow: var(--shadow-red);
   }
 
-  /* ---- ORDER CARDS (Owner Only) ---- */
+  /* ---- ORDER CARDS (Owner Only - iOS Glass) ---- */
   .orders {
-    background: var(--card); border: 1.5px solid var(--line); border-radius: var(--radius);
-    box-shadow: var(--shadow); padding: 14px 16px; margin-top: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 22px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 1);
+    padding: 16px 18px; margin-top: 14px;
   }
   .orders__head {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
@@ -856,8 +971,9 @@
   .orders__list { display: grid; grid-template-columns: 1fr; gap: 10px; }
   .orders__empty { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
   .ordercard {
-    border: 1px solid var(--line); border-left: 4px solid var(--red); border-radius: 12px;
-    background: #ffffff; padding: 11px 13px; display: grid; gap: 8px; box-shadow: var(--shadow-xs);
+    border: 1px solid rgba(235, 229, 223, 0.8); border-left: 4px solid var(--red); border-radius: 14px;
+    background: rgba(255, 255, 255, 0.9); padding: 12px 14px; display: grid; gap: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
   }
   .ordercard__top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
   .ordercard__id { font-size: 13px; font-weight: 800; color: var(--ink); letter-spacing: .3px; }
@@ -886,10 +1002,16 @@
   }
   .ordercard__statusSel:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
 
-  /* ---- REVIEWS ---- */
+  /* ---- REVIEWS (iOS Glassmorphism) ---- */
   .rev {
-    margin-top: 14px; background: var(--card); border: 1.5px solid var(--line);
-    border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px;
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 22px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 1);
+    padding: 18px 20px;
   }
   .rev__head { font-size: 15px; font-weight: 800; letter-spacing: .4px; color: var(--red); margin-bottom: 8px; }
   .rev__sum { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
@@ -899,8 +1021,8 @@
   .rev__filter { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 4px 0 12px; }
   .rev__filter__lbl { font-size: 12px; font-weight: 800; color: var(--ink-light); margin-right: 2px; }
   .rev__filter button {
-    border: 1px solid var(--line); background: #ffffff; color: var(--ink);
-    font: inherit; font-size: 12px; font-weight: 700; padding: 4px 12px;
+    border: 1px solid rgba(235, 229, 223, 0.8); background: rgba(255, 255, 255, 0.85); color: var(--ink);
+    font: inherit; font-size: 12px; font-weight: 700; padding: 5px 13px;
     border-radius: var(--radius-pill); cursor: pointer; transition: all .15s;
   }
   .rev__filter button:hover { border-color: var(--black); }
@@ -915,16 +1037,16 @@
   .rev__pick button.on { filter: none; transform: scale(1.15); }
   .rev__form textarea {
     width: 100%; min-height: 58px; resize: vertical; font: inherit; font-size: 14px;
-    color: var(--ink); background: #ffffff; border: 1.5px solid var(--line);
-    border-radius: 12px; padding: 10px 12px; box-sizing: border-box;
+    color: var(--ink); background: rgba(255, 255, 255, 0.85); border: 1.5px solid var(--line);
+    border-radius: 14px; padding: 11px 13px; box-sizing: border-box;
     transition: border-color .15s, box-shadow .15s;
   }
   .rev__form textarea:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(218, 36, 28, 0.15); }
   .rev__row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
   .rev__row input {
     flex: 1; min-width: 0; font: inherit; font-size: 14px; color: var(--ink);
-    background: #ffffff; border: 1.5px solid var(--line); border-radius: 10px;
-    padding: 8px 12px; box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.85); border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 9px 12px; box-sizing: border-box;
   }
   .rev__row input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(218, 36, 28, 0.15); }
   .rev__lbl { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; }
@@ -938,7 +1060,11 @@
   .rev__submit:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 1px 0 var(--black); }
   .rev__name { font-size: 12px; font-weight: 800; color: var(--red); margin-top: 3px; }
   .rev__list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  .rev__item { border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; background: #faf8f6; }
+  .rev__item {
+    border: 1px solid rgba(235, 229, 223, 0.8); border-radius: 14px;
+    padding: 12px 14px; background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  }
   .rev__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: var(--muted); font-weight: 700; }
   .rev__meta time { margin-right: auto; }
   .rev__body { font-size: 13px; color: var(--ink); line-height: 1.5; white-space: pre-wrap; }
@@ -947,70 +1073,165 @@
   .rev__adminbtn.is-on { color: var(--green); }
   .rev__empty { font-size: 12.5px; color: var(--muted); font-weight: 600; padding: 4px 0; }
 
-  /* ---- TIME SAVED ---- */
+  /* ---- TIME SAVED (BẠN TIẾT KIỆM ĐƯỢC - iOS Glassmorphism Health/Dashboard) ---- */
   .saved {
-    margin-top: 14px; background: var(--card); border: 1.5px solid var(--line);
-    border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px;
+    margin-top: 16px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(24px) saturate(190%);
+    -webkit-backdrop-filter: blur(24px) saturate(190%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 22px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05),
+                inset 0 1px 2px rgba(255, 255, 255, 1);
+    padding: 22px;
   }
-  .saved__title { font-size: 14px; font-weight: 800; letter-spacing: .4px; color: var(--red); margin-bottom: 8px; }
-  .saved__now { margin: 0 0 12px; font-size: 13.5px; font-weight: 500; color: var(--ink); line-height: 1.55; }
-  .saved__now strong { color: var(--red); font-weight: 800; }
-  .saved__macro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-  .saved__macro > div {
-    background: var(--yellow-soft); border: 1px solid var(--yellow); border-radius: 12px;
-    padding: 10px 12px; display: grid; gap: 2px; justify-items: start;
+  .saved__header { margin-bottom: 12px; }
+  .saved__title {
+    font-size: 15px; font-weight: 900; letter-spacing: .5px;
+    color: var(--red); margin: 0 0 3px; display: flex; align-items: center; gap: 6px;
   }
-  .saved__emoji { font-size: 16px; line-height: 1; }
-  .saved__val { font-size: 18px; font-weight: 900; color: var(--red); }
+  .saved__subtitle { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+  .saved__now {
+    margin: 0 0 16px; font-size: 13.5px; font-weight: 500;
+    color: var(--ink); line-height: 1.6;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(235, 229, 223, 0.7);
+    border-radius: 14px; padding: 12px 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+  .saved__now strong, .saved__now b { color: var(--red); font-weight: 800; }
+  .saved__macro {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-bottom: 16px;
+  }
+  .saved__stat-card {
+    background: rgba(255, 253, 224, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 255, 4, 0.6);
+    border-radius: 16px; padding: 12px 14px;
+    display: grid; gap: 3px; justify-items: start;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .saved__stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(218, 36, 28, 0.08);
+  }
+  .saved__stat-card--highlight {
+    background: linear-gradient(135deg, rgba(255, 253, 224, 0.9), rgba(255, 240, 240, 0.9));
+    border-color: rgba(218, 36, 28, 0.4);
+  }
+  .saved__emoji { font-size: 18px; line-height: 1; }
+  .saved__val { font-size: 19px; font-weight: 900; color: var(--red); }
   .saved__unit { font-size: 11px; font-weight: 700; color: var(--ink-light); }
+  
   .saved__tier {
-    background: #ffffff; border: 1px solid var(--line); border-radius: 12px;
-    padding: 12px 14px; margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 18px; padding: 14px 16px; margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
   }
-  .saved__tier-head { font-size: 13px; font-weight: 600; color: var(--ink); margin: 0 0 6px; line-height: 1.45; }
-  .saved__tier-head strong { color: var(--red); font-weight: 800; }
-  .saved__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  .saved__list li { display: flex; align-items: center; gap: 10px; font-size: 13px; line-height: 1.4; color: var(--ink); }
+  .saved__tier-head {
+    font-size: 13.5px; font-weight: 700; color: var(--black);
+    margin: 0 0 10px; line-height: 1.45; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .saved__tier-head strong {
+    color: var(--red); font-weight: 900; background: rgba(218, 36, 28, 0.08);
+    padding: 1px 8px; border-radius: var(--radius-pill);
+  }
+  .saved__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+  .saved__list li {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(235, 229, 223, 0.7);
+    border-radius: 14px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .saved__list li:hover {
+    transform: translateX(3px);
+    border-color: rgba(218, 36, 28, 0.35);
+  }
   .saved__list .idea__img {
-    flex: 0 0 auto; width: 40px; height: 40px; border-radius: 11px;
-    background: var(--red-soft); border: 1px solid var(--line);
+    flex: 0 0 40px; width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 4, 0.25), rgba(218, 36, 28, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.9);
     display: grid; place-items: center; font-size: 20px; line-height: 1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   }
   .saved__list .idea__txt { flex: 1; min-width: 0; }
-  .saved__cta { font-size: 13px; line-height: 1.6; color: var(--ink); margin: 12px 0 0; font-weight: 500; }
+  .saved__list .idea__heading {
+    font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.35;
+  }
+  .saved__list .idea__heading b { color: var(--red); font-weight: 800; }
+  .saved__list .idea__time { font-size: 11.5px; font-weight: 600; color: var(--muted); }
+  .saved__list .idea__sub {
+    font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.4;
+  }
+  .saved__item-empty {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px dashed var(--line) !important;
+    font-size: 12.5px; color: var(--muted);
+  }
+  .saved__cta-wrap {
+    margin-top: 14px; padding-top: 12px;
+    border-top: 1px dashed rgba(218, 36, 28, 0.2);
+  }
+  .saved__cta {
+    font-size: 13px; line-height: 1.6; color: var(--ink); margin: 0 0 10px; font-weight: 500;
+  }
+  .saved__cta strong { color: var(--red); font-weight: 800; }
   .saved__cta-btn {
     border: 1.5px solid var(--black); background: var(--yellow); color: var(--black);
-    font: inherit; font-weight: 800; padding: 8px 18px; border-radius: var(--radius-pill);
-    cursor: pointer; margin-top: 8px; display: inline-block;
-    box-shadow: 0 2px 0 var(--black); transition: all .15s;
+    font: inherit; font-size: 13.5px; font-weight: 800; padding: 10px 20px;
+    border-radius: var(--radius-pill); cursor: pointer; display: inline-block;
+    box-shadow: 0 3px 0 var(--black); transition: all .15s;
   }
-  .saved__cta-btn:hover { background: var(--yellow-hover); transform: translateY(-1px); box-shadow: 0 3px 0 var(--black); }
+  .saved__cta-btn:hover {
+    background: var(--yellow-hover); transform: translateY(-1px); box-shadow: 0 4px 0 var(--black);
+  }
+  .saved__cta-btn:active {
+    transform: translateY(2px); box-shadow: 0 1px 0 var(--black);
+  }
 
-  /* ---- Q&A ---- */
+  /* ---- Q&A (iOS Glassmorphism) ---- */
   .qa {
-    margin-top: 14px; background: var(--card); border: 1.5px solid var(--line);
-    border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px;
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 22px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 1);
+    padding: 18px 20px;
   }
   .qa__head { font-size: 15px; font-weight: 800; color: var(--red); margin: 0 0 12px; }
-  .qa__item { padding: 10px 0; border-top: 1px solid var(--line-subtle); }
+  .qa__item { padding: 10px 0; border-top: 1px solid rgba(235, 229, 223, 0.7); }
   .qa__item:first-of-type { border-top: 0; padding-top: 0; }
   .qa__item h4 { font-size: 13.5px; font-weight: 800; color: var(--black); margin: 0 0 4px; }
   .qa__item p { font-size: 13px; line-height: 1.55; color: var(--ink-light); margin: 0; }
   .qa__item strong { color: var(--red); }
 
-  /* ---- PIN MODAL ---- */
+  /* ---- PIN MODAL (iOS Sheet Glassmorphism) ---- */
   .modal {
     position: fixed; inset: 0; z-index: 100;
     display: none; align-items: center; justify-content: center;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     padding: 16px;
   }
   .modal.show { display: flex; }
   .modal__box {
-    background: var(--card); border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
-    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18),
+                inset 0 1px 2px rgba(255, 255, 255, 1);
+    border: 1px solid rgba(255, 255, 255, 0.95);
     width: 100%; max-width: 340px; padding: 20px;
     animation: modalPop .22s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
@@ -1033,25 +1254,27 @@
   .modal__foot { display: flex; gap: 8px; margin-top: 14px; }
   .modal__foot .btn { flex: 1; justify-content: center; padding: 11px; }
 
-  /* ---- RESPONSIVE ---- */
+  /* ---- RESPONSIVE MEDIA QUERIES ---- */
   @media (max-width: 820px) {
     .board { grid-template-columns: 1fr; }
     .wrap { padding: 18px 14px 36px; }
   }
   @media (max-width: 560px) {
-    .prog { top: 6px; padding: 10px 14px; margin-bottom: 16px; border-radius: 13px; }
+    .prog { top: 6px; padding: 10px 14px; margin-bottom: 16px; border-radius: 16px; }
     .prog__pct { font-size: 13px; }
     .prog__hint { font-size: 12px; }
     .logo { width: 140px; }
-    .flip { width: 48px; height: 56px; }
+    .flip { width: 48px; height: 56px; border-radius: 12px; }
     .flip__card { font-size: 30px; }
     .menu { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px 8px 10px; }
     .wrap { padding: 14px 10px calc(28px + env(safe-area-inset-bottom)); }
+    .tile { border-radius: 14px; }
     .tile__name { font-size: 11px; line-height: 1.25; padding: 5px 4px 6px; }
     .tile__media { font-size: 20px; }
     .tile__edit { width: 22px; height: 22px; font-size: 12px; border-radius: 7px; }
     .tile__badge { font-size: 8.5px; padding: 1px 5px; }
     .week { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .day { border-radius: 14px; }
     .day__head { padding: 5px 7px; gap: 4px; }
     .day__name { font-size: 11px; }
     .day__date { font-size: 9px; margin-left: 2px; }
@@ -1061,11 +1284,56 @@
     .chip { font-size: 11px; gap: 4px; padding: 2px 4px 2px 2px; }
     .chip__media { width: 18px; height: 18px; font-size: 10px; }
     .chip__x { width: 18px; height: 18px; font-size: 11px; }
-    .order { margin-top: 10px; padding: 12px 14px; }
+    .order { margin-top: 10px; padding: 14px 14px; border-radius: 18px; }
     .order__grid { grid-template-columns: 1fr; gap: 10px; }
-    .order__social-apps { grid-template-columns: 1fr; gap: 9px; }
-    .order__app-btn { padding: 12px 14px; font-size: 13.5px; }
-    .btn { padding: 12px 16px; }
+    
+    /* ĐẢM BẢO 2 BUTTON INSTAGRAM VÀ TIKTOK NẰM CHUNG 1 HÀNG NGANG TRÊN ĐIỆN THOẠI */
+    .order__social-apps {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 8px !important;
+      width: 100% !important;
+    }
+    .order__app-btn {
+      padding: 10px 6px !important;
+      font-size: 11.5px !important;
+      gap: 5px !important;
+      min-height: 44px !important;
+      border-radius: 12px !important;
+    }
+    .order__app-icon {
+      width: 17px !important;
+      height: 17px !important;
+      flex-shrink: 0 !important;
+    }
+    .order__app-btn span {
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+    .btn { padding: 12px 16px; border-radius: 12px; }
+    .saved { padding: 16px 14px; border-radius: 18px; }
+    .saved__macro { gap: 6px; }
+    .saved__stat-card { padding: 10px 8px; border-radius: 12px; }
+    .saved__val { font-size: 16px; }
+    .saved__tier { padding: 12px 12px; border-radius: 14px; }
+    .saved__list li { padding: 8px 10px; gap: 9px; }
+    .saved__list .idea__img { width: 36px; height: 36px; font-size: 18px; border-radius: 10px; }
+  }
+
+  @media (max-width: 375px) {
+    .order__social-apps {
+      gap: 6px !important;
+    }
+    .order__app-btn {
+      padding: 9px 4px !important;
+      font-size: 10.5px !important;
+      gap: 4px !important;
+    }
+    .order__app-icon {
+      width: 15px !important;
+      height: 15px !important;
+    }
   }
 
   @supports (-webkit-touch-callout: none) {
@@ -1265,25 +1533,43 @@
 
       <!-- TIME SAVED -->
       <div class="saved" id="savedBox" hidden>
-        <div class="saved__title">⏳ BẠN TIẾT KIỆM ĐƯỢC</div>
+        <div class="saved__header">
+          <div class="saved__title">⏳ BẠN TIẾT KIỆM ĐƯỢC</div>
+          <div class="saved__subtitle">Thời gian là món quà vô giá — Mâm Cơm xin trao lại cho bạn</div>
+        </div>
         <p class="saved__now"><span id="savedNow"></span></p>
         <div class="saved__macro">
-          <div><span class="saved__emoji">📅</span><span class="saved__val" id="savedWeek">0</span><span class="saved__unit" id="savedWeekUnit">với 0 mâm đã chọn</span></div>
-          <div><span class="saved__emoji">🗓️</span><span class="saved__val" id="savedMonth">0</span><span class="saved__unit">nếu đặt cả tháng</span></div>
-          <div><span class="saved__emoji">📆</span><span class="saved__val" id="savedYear">0</span><span class="saved__unit">nếu đặt cả năm</span></div>
+          <div class="saved__stat-card">
+            <span class="saved__emoji">📅</span>
+            <span class="saved__val" id="savedWeek">0</span>
+            <span class="saved__unit" id="savedWeekUnit">với 0 mâm đã chọn</span>
+          </div>
+          <div class="saved__stat-card">
+            <span class="saved__emoji">🗓️</span>
+            <span class="saved__val" id="savedMonth">0</span>
+            <span class="saved__unit">nếu đặt cả tháng</span>
+          </div>
+          <div class="saved__stat-card saved__stat-card--highlight">
+            <span class="saved__emoji">🎁</span>
+            <span class="saved__val" id="savedYear">0</span>
+            <span class="saved__unit">nếu đặt cả năm</span>
+          </div>
         </div>
         <div class="saved__tier">
-          <div class="saved__tier-head">🕰️ Mỗi tuần, chỉ với <strong id="savedWeekTime">0</strong>, bạn có thể:</div>
+          <div class="saved__tier-head">✨ Mỗi tuần, với <strong id="savedWeekTime">0</strong> thảnh thơi, bạn có thể:</div>
           <ul class="saved__list" id="savedWeekList"></ul>
         </div>
         <div class="saved__tier">
-          <div class="saved__tier-head">🎁 Nếu đặt như thế này cả năm, bạn có thêm <strong id="savedYearTime">0</strong> — đủ để:</div>
+          <div class="saved__tier-head">🌟 Duy trì cả năm, bạn nhận lại tới <strong id="savedYearTime">0</strong> tự do — đủ để:</div>
           <ul class="saved__list" id="savedYearList"></ul>
         </div>
-        <p class="saved__cta">
-          Hãy chăm sóc bản thân nhiều hơn, để Mâm Cơm lo việc khó khăn nhất.
-          <button class="saved__cta-btn" id="ctaBtn" type="button">Chọn thêm mâm để ngày của bạn nhẹ nhàng hơn ↑</button>
-        </p>
+        <div class="saved__cta-wrap">
+          <p class="saved__cta">
+            Cuộc sống quá ngắn để dành hàng giờ mỗi ngày quanh quẩn bên khói bếp và chén bát.<br>
+            <strong>Hãy chăm sóc bản thân nhiều hơn, việc nấu cơm ngon cứ để Mâm Cơm lo!</strong>
+          </p>
+          <button class="saved__cta-btn" id="ctaBtn" type="button">✨ Chọn thêm mâm để nhân đôi thời gian rảnh ↑</button>
+        </div>
       </div>
 
       <!-- Q&A -->
@@ -2652,27 +2938,26 @@
   // Số lần = tổng thời gian tiết kiệm ÷ thời lượng hoạt động.
   // "text" viết dạng cụm ĐỘNG TỪ để đi sau "N lần" cho tự nhiên.
   var WEEK_ACTS = [
-    { min: 45,  cat:"nghi",   text: "ngủ thêm buổi sáng, không phải dậy sớm nấu ăn", img:"🌅" },
-    { min: 240, cat:"nghi",   text: "nghỉ trọn một ngày, không cần vào bếp", img:"🛋️" },
-    { min: 60,  cat:"khoe",   text: "đi bơi hoặc tập gym", img:"🏊" },
-    { min: 90,  cat:"khoe",   text: "dạo bước nhẹ nhàng sau bữa tối", img:"🚶" },
-    { min: 120, cat:"gia",    text: "cà phê nói chuyện với gia đình", img:"☕" },
-    { min: 2880, cat:"gia",   text: "dành trọn một ngày cuối tuần cho gia đình", img:"🧺" },
-    { min: 45,  cat:"so",     text: "đọc một chương sách bạn muốn đọc lâu nay", img:"📖" },
-    { min: 150, cat:"so",     text: "vẽ, tập nhạc hoặc làm vườn", img:"🎨" }
+    { min: 60,  cat:"khoe", title: "Tập Gym, Yoga hoặc Chạy bộ", desc: "Rèn luyện sức khỏe, giữ vóc dáng săn chắc và nạp lại năng lượng tươi mới", img: "🧘‍♀️" },
+    { min: 45,  cat:"nghi", title: "Thảnh thơi ngủ nướng buổi sáng", desc: "Không còn cảnh tất bật dậy sớm đi chợ hay đứng bếp nấu ăn vội vã", img: "🌅" },
+    { min: 90,  cat:"gia",  title: "Cà phê & Hẹn hò thảnh thơi", desc: "Buổi tối dạo phố hoặc nhâm nhi tách cà phê lãng mạn cùng người thương", img: "☕" },
+    { min: 45,  cat:"so",   title: "Đọc xong những trang sách hay", desc: "Nuôi dưỡng tâm hồn và bồi dưỡng tư duy mà ngày thường quá bận để làm", img: "📖" },
+    { min: 60,  cat:"gia",  title: "Trọn vẹn chơi đùa cùng con cái", desc: "Dạy con học, đọc truyện và lắng nghe con mà không bị việc bếp chia trí", img: "🧸" },
+    { min: 120, cat:"nghi", title: "Thư thái thưởng thức phim điện ảnh", desc: "Xem trọn bộ phim hay cùng bắp rang mà không phải lo dọn rửa bát đũa", img: "🎬" },
+    { min: 60,  cat:"so",   title: "Chăm sóc bản thân & Skincare chuyên sâu", desc: "Ngâm bồn nước ấm, thư giãn tinh thần và tái tạo vẻ ngoài rạng rỡ", img: "🧖‍♀️" },
+    { min: 90,  cat:"khoe", title: "Đi bộ dạo mát hít thở khí trời", desc: "Tận hưởng làn gió mát lành buổi tối giúp giấc ngủ sâu và ngon hơn", img: "🚶" }
   ];
-  // Mốc "một năm" tính theo những việc lớn, dễ thấy: chuyến đi, cuối tuần,
-  // không có mốc "không phải nghĩ món" khách chẳng quan tâm.
+
   var YEAR_ACTS = [
-    { min: 2880,  cat:"nghi", text: "nghỉ trọn cuối tuần", img:"🌤️" },
-    { min: 10080, cat:"nghi", text: "ở nhà một tuần, không cần mở bếp", img:"🛋️" },
-    { min: 4320,  cat:"gia",  text: "đi du lịch cùng gia đình 3 ngày", img:"🏖️" },
-    { min: 1440,  cat:"gia",  text: "về thăm ba mẹ trọn một ngày", img:"🏡" },
-    { min: 4320,  cat:"khoe", text: "tập thể thao hoặc khám sức khoẻ", img:"🩺" },
-    { min: 14400, cat:"khoe", text: "tập thể dục đều đặn mỗi sáng", img:"💪" },
-    { min: 7200,  cat:"so",   text: "làm điều mình yêu thích, không phải lo bữa ăn", img:"🎨" },
-    { min: 20160, cat:"so",   text: "dành sở thích của riêng mình", img:"🎹" }
+    { min: 4320,  cat:"gia",  title: "Kỳ nghỉ dưỡng du lịch cùng gia đình (3 ngày 2 đêm)", desc: "Cùng người thân tận hưởng biển xanh, cát trắng và gắn kết yêu thương sâu sắc", img: "🏖️" },
+    { min: 1800,  cat:"gia",  title: "Chuyến dã ngoại cắm trại cuối tuần trọn vẹn", desc: "Picnic bên hồ nước trong lành, hòa mình cùng thiên nhiên để xả stress", img: "⛺" },
+    { min: 9000,  cat:"so",   title: "Chinh phục 1 ngoại ngữ mới hoặc chứng chỉ giá trị", desc: "Nâng tầm sự nghiệp và mở rộng cơ hội thăng tiến mà lâu nay chưa có thời gian học", img: "🎓" },
+    { min: 3600,  cat:"so",   title: "Đọc trọn bộ 15-20 cuốn sách tinh hoa", desc: "Tích lũy kho tàng tri thức đồ sộ để tự tin dẫn đầu và làm giàu vốn sống", img: "📚" },
+    { min: 7200,  cat:"khoe", title: "Chuyển hóa hoàn toàn vóc dáng với 120 buổi tập", desc: "Sở hữu thân hình thon gọn, cơ thể dẻo dai tràn đầy sinh lực", img: "💪" },
+    { min: 2880,  cat:"gia",  title: "Những ngày về thăm ba mẹ sum vầy", desc: "Bên cạnh đấng sinh thành, trò chuyện sum vầy ấm áp mà bấy lâu bận rộn bỏ lỡ", img: "🏡" },
+    { min: 14400, cat:"nghi", title: "Trút bỏ hoàn toàn 365 ngày áp lực nấu nướng & dọn rửa", desc: "Không còn stress chợ búa giờ tan tầm, không dầu mỡ — tâm trí luôn nhẹ nhõm hạnh phúc", img: "🌿" }
   ];
+
   function fmtDuration(mins){
     if(mins <= 0) return "0 phút";
     var h = Math.floor(mins / 60), m = mins % 60;
@@ -2680,79 +2965,81 @@
     if(m) out += (out ? " " : "") + m + " phút";
     return out;
   }
-  // Liệt kê số lần KHÁCH THỰC SỰ đổi được từ số phút đã tiết kiệm.
-  // Không ép tối thiểu 1 lần — nếu thời gian tiết kiệm chưa đủ cho một
-  // chuyến 7 ngày thì không được hứa hẹn 1 lần.
-  function fillCountList(listEl, acts, totalMin){
-    // Chỉ lấy hoạt động thời lượng ≤ tổng thời gian đã tiết kiệm (không hứa hẹn vượt quá),
-    // và bảo đảm mỗi nhóm nghỉ / sức khoẻ / gia đình / sở thích đều có mặt.
-    var cats = ["nghi","khoe","gia","so"];
+
+  function fillCountList(listEl, acts, totalMin, isYear){
+    var cats = ["khoe", "gia", "so", "nghi"];
     var all = acts
-      .map(function(a){ return { a:a, n:Math.floor(totalMin / a.min) }; })
+      .map(function(a){ return { a: a, n: Math.floor(totalMin / a.min) }; })
       .filter(function(r){ return r.n >= 1; });
+    
     var picked = [], seen = {};
     cats.forEach(function(c){
       var best = null;
-      all.forEach(function(r){ if(r.a.cat !== c) return; if(!best || r.n > best.n) best = r; });
+      all.forEach(function(r){
+        if(r.a.cat !== c) return;
+        if(!best || r.n > best.n) best = r;
+      });
       if(best){ picked.push(best); seen[c] = true; }
     });
     all.forEach(function(r){
-      if(picked.length >= 6) return;
-      if(picked.indexOf(r) >= 0) return;
-      if(seen[r.a.cat]){
-        var first = picked.filter(function(p){ return p.a.cat === r.a.cat; })[0];
-        if(first && r.n >= first.n) picked.push(r);
-      }else{
-        picked.push(r); seen[r.a.cat] = true;
-      }
+      if(picked.length >= 4) return;
+      if(picked.indexOf(r) < 0) picked.push(r);
     });
-    picked.sort(function(p, q){ return q.n - p.n; });
+
     listEl.innerHTML = "";
     if(!picked.length){
       var li0 = document.createElement("li");
-      var i0 = document.createElement("span");
-      i0.className = "idea__img";
-      i0.textContent = "⏳";
-      var t0 = document.createElement("span");
-      t0.className = "idea__txt";
-      t0.textContent = "Chưa đủ thời gian cho một hoạt động trọn vẹn — hãy thêm vài mâm nữa.";
-      li0.appendChild(i0); li0.appendChild(t0); listEl.appendChild(li0);
+      li0.className = "saved__item-empty";
+      li0.innerHTML = '<span class="idea__img">⏳</span><div class="idea__txt"><div class="idea__heading">Chưa đủ thời gian cho hoạt động này</div><div class="idea__sub">Chỉ cần chọn thêm 1-2 mâm nữa, bạn sẽ thấy ngay lượng thời gian rảnh quý báu được trao lại!</div></div>';
+      listEl.appendChild(li0);
       return;
     }
+
     picked.forEach(function(r){
       var li = document.createElement("li");
       var img = document.createElement("span");
       img.className = "idea__img";
       img.textContent = r.a.img || "⏱️";
-      var txt = document.createElement("span");
+
+      var txt = document.createElement("div");
       txt.className = "idea__txt";
-      txt.textContent = "≈ " + r.n + " lần " + r.a.text + " (" + fmtDuration(r.n * r.a.min) + ")";
+      var countStr = r.n > 1 ? ("<b>" + r.n + " lần</b> ") : "<b>1 lần</b> ";
+      var timeTotal = fmtDuration(r.n * r.a.min);
+      txt.innerHTML = '<div class="idea__heading">' + countStr + r.a.title + ' <span class="idea__time">(' + timeTotal + ')</span></div>' +
+                      '<div class="idea__sub">' + r.a.desc + '</div>';
+
       li.appendChild(img);
       li.appendChild(txt);
       listEl.appendChild(li);
     });
   }
+
   function updateSavings(){
-    // Số mâm tính trên CẢ HAI TUẦN (tuần này + tuần sau) — khớp với dòng
-    // "Tổng tiền" và bộ đếm chung.
     var meals = totalTraysAllWeeks();
     if(meals === 0){ savedBox.hidden = true; return; }
     savedBox.hidden = false;
     var weekMin = meals * MIN_PER_MEAL;
     var monthMin = weekMin * 4;
     var yearMin = weekMin * 52;
+
+    var weekHours = (weekMin / 60).toFixed(1).replace(".0", "");
+    var yearHours = Math.round(yearMin / 60);
+    var yearDays = (yearMin / (60 * 24)).toFixed(1).replace(".0", "");
+
     document.getElementById("savedNow").innerHTML =
-      "Mỗi bữa Mâm Cơm giúp bạn bớt khoảng <strong>45 phút</strong> đi chợ, nghĩ món và đứng bếp. " +
-      "Với <strong>" + meals + " mâm</strong> bạn đã chọn, bạn có thêm <strong>" + fmtDuration(weekMin) + "</strong> " +
-      "thời gian rảnh — để nghỉ ngơi, ở bên gia đình, hay đơn giản là có thêm một khoảng lặng cho riêng mình.";
+      "Mỗi bữa ăn hàng ngày thường ngốn của bạn khoảng <b>45 phút</b> để suy nghĩ món, đi chợ, nấu nướng và dọn rửa. " +
+      "Với <b>" + meals + " mâm</b> bạn đã chọn, Mâm Cơm trao lại cho bạn <strong>" + fmtDuration(weekMin) + "</strong> thảnh thơi mỗi tuần " +
+      "— tích lũy tương đương <strong>" + yearHours + " giờ rảnh (" + yearDays + " ngày trọn vẹn)</strong> mỗi năm! " +
+      "Hãy dùng khoảng thời gian quý giá ấy để làm những điều tuyệt vời nhất cho bản thân và gia đình ❤️";
+
     document.getElementById("savedWeek").textContent = fmtDuration(weekMin);
     document.getElementById("savedWeekUnit").textContent = "với " + meals + " mâm đã chọn";
     document.getElementById("savedMonth").textContent = fmtDuration(monthMin);
     document.getElementById("savedYear").textContent = fmtDuration(yearMin);
     document.getElementById("savedWeekTime").textContent = fmtDuration(weekMin);
     document.getElementById("savedYearTime").textContent = fmtDuration(yearMin);
-    fillCountList(document.getElementById("savedWeekList"), WEEK_ACTS, weekMin);
-    fillCountList(document.getElementById("savedYearList"), YEAR_ACTS, yearMin);
+    fillCountList(document.getElementById("savedWeekList"), WEEK_ACTS, weekMin, false);
+    fillCountList(document.getElementById("savedYearList"), YEAR_ACTS, yearMin, true);
   }
 
   // ================= copy =================
