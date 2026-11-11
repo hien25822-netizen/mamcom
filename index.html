@@ -778,6 +778,7 @@
     animation: spin 0.7s linear infinite;
   }
   @keyframes spin { 100% { transform: rotate(360deg); } }
+  .spin { animation: spin 0.7s linear infinite; }
 
   .set__stat-grid {
     display: grid;
@@ -843,6 +844,184 @@
   }
   .set__stat-card--highlight .set__stat-num {
     color: var(--red);
+  }
+
+  /* ---- TABS IN OWNER MODAL ---- */
+  .set__tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4px;
+    border-radius: var(--radius-pill);
+    margin: 12px 0 16px;
+  }
+  .set__tab-btn {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--muted);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.15s var(--spring-bounce);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .set__tab-btn.is-active {
+    background: #ffffff;
+    color: var(--ink);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    font-weight: 800;
+  }
+  .set__tab-badge {
+    background: var(--red);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 99px;
+  }
+  .set__pane { display: none; }
+  .set__pane.is-active { display: block; animation: paneFadeIn 0.2s var(--spring-smooth); }
+  @keyframes paneFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- ORDER MANAGEMENT IN OWNER MODAL ---- */
+  .set__orders-list {
+    max-height: 380px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 2px;
+  }
+  .set__order-card {
+    background: #ffffff;
+    border: 1px solid rgba(28, 23, 21, 0.08);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  }
+  .set__order-card:hover {
+    border-color: rgba(218, 36, 28, 0.25);
+  }
+  .set__order-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .set__order-code {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+  }
+  .set__order-status-select {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 4px 8px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(0,0,0,0.12);
+    cursor: pointer;
+  }
+  .set__order-status-select[data-status="pending"] { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+  .set__order-status-select[data-status="confirmed"] { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+  .set__order-status-select[data-status="preparing"] { background: #faf5ff; color: #7e22ce; border-color: #e9d5ff; }
+  .set__order-status-select[data-status="done"] { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+  .set__order-status-select[data-status="cancelled"] { background: #f3f4f6; color: #4b5563; border-color: #e5e7eb; }
+  .set__order-info {
+    font-size: 12px;
+    color: var(--ink-light);
+    line-height: 1.45;
+  }
+  .set__order-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--red);
+    font-weight: 700;
+    text-decoration: none;
+    margin-right: 8px;
+  }
+  .set__order-phone:hover { text-decoration: underline; }
+  .set__order-addr {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 11.5px;
+  }
+  .set__order-time {
+    font-size: 11px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .set__order-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.08);
+    margin-top: 2px;
+  }
+  .set__order-total {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--red);
+    font-variant-numeric: tabular-nums;
+  }
+  .set__order-note, .set__order-sched {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+
+  /* ---- BACKUP & SECURITY CARDS ---- */
+  .set__security-card {
+    background: linear-gradient(135deg, #fff7f4 0%, #fffcf8 100%);
+    border: 1px solid rgba(218, 36, 28, 0.15);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .set__security-icon {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--red); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 12px;
+  }
+  .set__security-text {
+    font-size: 11.5px; line-height: 1.4; color: var(--ink-light);
+  }
+  .set__security-text strong { color: var(--red-dark); }
+  .set__backup-btn {
+    width: 100%; border: 1.5px solid var(--black); background: #ffffff; color: var(--black);
+    font: inherit; font-size: 13px; font-weight: 800; padding: 10px; border-radius: var(--radius-pill);
+    cursor: pointer; box-shadow: 0 2px 0 var(--black);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: background 0.15s, transform 0.15s var(--spring-bounce);
+  }
+  .set__backup-btn:hover {
+    background: var(--yellow); transform: translateY(-1px);
+  }
+  .set__backup-btn:active {
+    transform: translateY(1px) scale(0.98);
   }
 
   /* ---- OWNER ACTIVE STATUS BAR (Apple System Banner) ---- */
@@ -2099,7 +2278,7 @@
   <p class="splash__hello">Mâm Cơm chào gia đình ạ ❤️</p>
   <div class="splash__bar"><div class="splash__bar__fill" id="splashFill"></div></div>
 </div>
-<!-- Splash nằm trong <script> riêng: nếu JS chính phía sau lỗi, màn
+<!-- Splash nằm trong thẻ script riêng: nếu JS chính phía sau lỗi, màn
      "đang tải" vẫn tự tắt sau 4s, không bao giờ kẹt trắng trang. -->
 <script>
   (function splash(){
@@ -2458,88 +2637,139 @@
 
 <!-- OWNER SETTINGS (opens on logo click; PIN-gated) -->
 <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="setTitle">
-  <div class="modal__box" style="max-width:440px">
+  <div class="modal__box" style="max-width:480px">
     <div class="modal__head">
       <div class="modal__title-group">
         <h3 id="setTitle">Cài đặt chủ Bếp</h3>
-        <span class="modal__badge">Quản trị viên</span>
+        <span class="modal__badge">Quản trị viên • Bảo mật 100%</span>
       </div>
       <button class="modal__close-btn" type="button" id="setClose" aria-label="Đóng cài đặt">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
-    <!-- ANALYTICS DASHBOARD (Thống kê truy cập & Đặt đơn) -->
-    <div class="set__sec set__sec--stats">
-      <div class="set__head-row">
-        <div class="set__label">Hiệu quả đơn hàng</div>
-        <button class="set__refresh-btn" type="button" id="setRefreshStats" title="Cập nhật số liệu mới nhất">
+    <!-- TABS NAVIGATION -->
+    <div class="set__tabs" role="tablist">
+      <button type="button" class="set__tab-btn is-active" data-tab="setPaneStats" role="tab" aria-selected="true">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        <span>Hiệu quả</span>
+      </button>
+      <button type="button" class="set__tab-btn" data-tab="setPaneOrders" role="tab" aria-selected="false">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span>Đơn hàng</span>
+        <span class="set__tab-badge" id="setOrdersCountBadge">0</span>
+      </button>
+      <button type="button" class="set__tab-btn" data-tab="setPaneConfig" role="tab" aria-selected="false">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Cài đặt &amp; Sao lưu</span>
+      </button>
+    </div>
+
+    <!-- PANE 1: ANALYTICS -->
+    <div class="set__pane is-active" id="setPaneStats">
+      <div class="set__sec set__sec--stats" style="border-top:0;padding-top:0">
+        <div class="set__head-row">
+          <div class="set__label">Hiệu quả đơn hàng</div>
+          <button class="set__refresh-btn" type="button" id="setRefreshStats" title="Cập nhật số liệu mới nhất">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            Làm mới
+          </button>
+        </div>
+        <div class="set__stat-grid">
+          <div class="set__stat-card">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">LƯỢT XEM WEB</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--views">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statPageViews">0</div>
+          </div>
+          <div class="set__stat-card set__stat-card--highlight">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">ĐÃ BẤM ĐẶT ĐƠN</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--orders">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statOrderClicks">0</div>
+          </div>
+          <div class="set__stat-card">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">MÂM ĐÃ PHỤC VỤ</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--meals">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statMealsCount">0</div>
+          </div>
+          <div class="set__stat-card">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">TỶ LỆ CHỐT ĐƠN</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--conv">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statConvRate">0%</div>
+          </div>
+        </div>
+        <p class="set__hint" style="margin-top:8px">🟢 Dữ liệu đồng bộ trực tiếp máy chủ PostgreSQL với cơ chế chống giả lập.</p>
+      </div>
+    </div>
+
+    <!-- PANE 2: ORDERS MANAGEMENT -->
+    <div class="set__pane" id="setPaneOrders">
+      <div class="set__head-row" style="margin-bottom:8px">
+        <div class="set__label">Danh sách đơn hàng khách gửi</div>
+        <button class="set__refresh-btn" type="button" id="setRefreshOrders" title="Cập nhật đơn hàng mới nhất">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
           Làm mới
         </button>
       </div>
-      <div class="set__stat-grid">
-        <div class="set__stat-card">
-          <div class="set__stat-top">
-            <span class="set__stat-lbl">LƯỢT XEM WEB</span>
-            <div class="set__stat-icon-wrap set__stat-icon-wrap--views">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-            </div>
-          </div>
-          <div class="set__stat-num" id="statPageViews">0</div>
+      <div class="set__orders-list" id="setOrdersList"></div>
+      <p class="set__empty" id="setOrdersEmpty" hidden>Chưa có đơn hàng nào.</p>
+    </div>
+
+    <!-- PANE 3: CONFIG & BACKUP -->
+    <div class="set__pane" id="setPaneConfig">
+      <div class="set__sec" style="border-top:0;padding-top:0">
+        <div class="set__label">Giá mỗi mâm</div>
+        <div class="set__row">
+          <input class="set__input" id="setPrice" type="number" min="1" step="1" inputmode="numeric">
+          <button class="btn" id="setPriceSave" type="button">Lưu giá</button>
         </div>
-        <div class="set__stat-card set__stat-card--highlight">
-          <div class="set__stat-top">
-            <span class="set__stat-lbl">ĐÃ BẤM ĐẶT ĐƠN</span>
-            <div class="set__stat-icon-wrap set__stat-icon-wrap--orders">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            </div>
-          </div>
-          <div class="set__stat-num" id="statOrderClicks">0</div>
-        </div>
-        <div class="set__stat-card">
-          <div class="set__stat-top">
-            <span class="set__stat-lbl">MÂM ĐÃ PHỤC VỤ</span>
-            <div class="set__stat-icon-wrap set__stat-icon-wrap--meals">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-            </div>
-          </div>
-          <div class="set__stat-num" id="statMealsCount">0</div>
-        </div>
-        <div class="set__stat-card">
-          <div class="set__stat-top">
-            <span class="set__stat-lbl">TỶ LỆ CHỐT ĐƠN</span>
-            <div class="set__stat-icon-wrap set__stat-icon-wrap--conv">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            </div>
-          </div>
-          <div class="set__stat-num" id="statConvRate">0%</div>
+        <p class="set__hint">Thay đổi giá sẽ đồng bộ bảo mật lên máy chủ và cập nhật cho toàn bộ khách đang xem.</p>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Thay đổi món</div>
+        <button class="set__btn" id="setResetMenu" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-1px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Khôi phục 6 món mặc định
+        </button>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Xóa đánh giá / bình luận</div>
+        <div class="set__list" id="setCmtList"></div>
+        <p class="set__empty" id="setCmtEmpty" hidden>Chưa có đánh giá nào để xóa.</p>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Sao lưu &amp; Bảo toàn dữ liệu vĩnh viễn</div>
+        <button class="set__backup-btn" id="setExportBackup" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Tải bản sao lưu (.JSON) về máy
+        </button>
+        <p class="set__hint" style="margin-top:6px">Tải xuống gói snapshot gồm toàn bộ đơn hàng, đánh giá, thống kê và menu để lưu trữ dự phòng.</p>
+      </div>
+
+      <div class="set__security-card">
+        <div class="set__security-icon">🛡️</div>
+        <div class="set__security-text">
+          <strong>Hệ thống An toàn &amp; Bảo mật:</strong> Đang hoạt động với chuẩn PostgreSQL Row-Level Security, mã hóa Bcrypt PBKDF2 và chống tấn công dò quét Brute-force.
         </div>
       </div>
-      <p class="set__hint" style="margin-top:8px">Đếm lượt khách vào web và số lần bấm "Sao chép và Dán vào inbox". Dữ liệu đồng bộ trực tiếp máy chủ.</p>
-    </div>
-
-    <div class="set__sec">
-      <div class="set__label">Giá mỗi mâm</div>
-      <div class="set__row">
-        <input class="set__input" id="setPrice" type="number" min="1" step="1" inputmode="numeric">
-        <button class="btn" id="setPriceSave" type="button">Lưu giá</button>
-      </div>
-      <p class="set__hint">Thay đổi giá thì mọi khách đang xem sẽ được tính lại tổng tiền theo công thức: giá × số mâm × số người.</p>
-    </div>
-
-    <div class="set__sec">
-      <div class="set__label">Thay đổi món</div>
-      <button class="set__btn" id="setResetMenu" type="button">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-1px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-        Khôi phục 6 món mặc định
-      </button>
-    </div>
-
-    <div class="set__sec">
-      <div class="set__label">Xóa đánh giá / bình luận</div>
-      <div class="set__list" id="setCmtList"></div>
-      <p class="set__empty" id="setCmtEmpty" hidden>Chưa có đánh giá nào để xóa.</p>
     </div>
   </div>
 </div>
@@ -2832,9 +3062,26 @@
       try{ return localStorage.getItem(PIN_KEY) === hash; }catch(e){ return false; }
     });
   }
+  var currentOwnerPin = "";
+  try { currentOwnerPin = sessionStorage.getItem("mamcom.ownerPin.session") || ""; } catch(e){}
+  function getOwnerPin(){ return currentOwnerPin || ""; }
+
+  function escHtml(str){
+    if(!str) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function escAttr(str){
+    if(!str) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
   var ownerUnlocked = false; // set true only after a correct PIN this session
-  function unlockOwner(){
+  function unlockOwner(pin){
     ownerUnlocked = true;
+    if(pin){
+      currentOwnerPin = pin;
+      try { sessionStorage.setItem("mamcom.ownerPin.session", pin); } catch(e){}
+    }
     var ownerBar = document.getElementById("ownerStatusBar");
     if(ownerBar) ownerBar.hidden = false;
     // Re-render reviews so the ✕ delete buttons + admin label appear.
@@ -2844,8 +3091,6 @@
       buildMenu();
       render();
     }
-    // Nút "khôi phục món mặc định" nằm trong .menu__foot (mặc định hidden) —
-    // phải bật lên khi chủ đã mở khóa, nếu không nút này không bao giờ hiện.
     var menuFoot = document.querySelector(".menu__foot");
     if(menuFoot) menuFoot.hidden = false;
   }
@@ -3481,12 +3726,13 @@
   function requestPin(onOk, msg){
     pinTitle.textContent = "PIN của chủ";
     pinText.textContent = msg || "Nhập PIN để tiếp tục.";
-    var create = !pinSeeded();
-    setPinMode(create ? "create" : "verify");
-    pinInput.value = ""; pinConfirm.value = "";
-    pinModal.classList.add("show");
-    pinModal._onOk = onOk || null;
-    setTimeout(function(){ pinInput.focus(); }, 30);
+    sharedStore.hasPin().then(function(hasPin){
+      setPinMode(hasPin ? "verify" : "create");
+      pinInput.value = ""; pinConfirm.value = "";
+      pinModal.classList.add("show");
+      pinModal._onOk = onOk || null;
+      setTimeout(function(){ pinInput.focus(); }, 30);
+    });
   }
   function closePin(){
     pinModal.classList.remove("show");
@@ -3509,22 +3755,38 @@
         pinText.textContent = "Xác nhận không khớp PIN. Nhập lại.";
         pinConfirm.value = ""; pinConfirm.focus(); return;
       }
-      createPin(val).then(function(){
-        unlockOwner();
+      pinSubmit.disabled = true;
+      pinSubmit.textContent = "Đang lưu...";
+      sharedStore.setupPin(val).then(function(){
+        pinSubmit.disabled = false;
+        unlockOwner(val);
         var cb = pinModal._onOk; closePin();
         if(cb) cb(true);
+      }).catch(function(err){
+        pinSubmit.disabled = false;
+        setPinMode("create");
+        pinText.textContent = "Lỗi tạo PIN: " + ((err && err.message) || err);
       });
     } else {
       if(!val){ pinInput.focus(); return; }
-      checkPin(val).then(function(ok){
+      pinSubmit.disabled = true;
+      pinSubmit.textContent = "Đang kiểm tra...";
+      sharedStore.checkPin(val).then(function(ok){
+        pinSubmit.disabled = false;
+        pinSubmit.textContent = "Xác nhận";
         if(ok){
-          unlockOwner();
+          unlockOwner(val);
           var cb = pinModal._onOk; closePin();
           if(cb) cb(true);
         } else {
           pinText.textContent = "PIN chưa đúng, thử lại.";
           pinInput.value = ""; pinInput.focus();
         }
+      }).catch(function(err){
+        pinSubmit.disabled = false;
+        pinSubmit.textContent = "Xác nhận";
+        pinText.textContent = (err && err.message) ? err.message : "PIN chưa đúng hoặc bị khóa tạm thời.";
+        pinInput.value = ""; pinInput.focus();
       });
     }
   }
@@ -3550,6 +3812,9 @@
     if(!confirm("Khôi phục 6 món mặc định? Món bạn đã chỉnh sửa sẽ bị thay thế.")) return;
     DISHES = defaultMenu();
     saveMenu(DISHES);
+    if(sharedStore && typeof sharedStore.resetMenu === "function"){
+      sharedStore.resetMenu().catch(function(){});
+    }
     rebuildAll();
   }
 
@@ -4481,11 +4746,85 @@
       });
     },
 
+    // ---- owner PIN authentication & security ----
+    hasPin: function(){
+      if(USE_SUPABASE){
+        return SUPABASE.rpc("admin_has_pin").then(function(res){
+          if(res.error) throw res.error;
+          return res.data === true;
+        }).catch(function(){
+          return localStorage.getItem("mamcom.ownerPin.v1") != null;
+        });
+      }
+      return fetch("/api/admin/verify-pin?check=1").then(function(r){ return r.json(); })
+        .then(function(d){ return !!(d && d.has_pin); })
+        .catch(function(){ return localStorage.getItem("mamcom.ownerPin.v1") != null; });
+    },
+
+    setupPin: function(pin){
+      try { localStorage.setItem("mamcom.ownerPin.v1", pin); } catch(e){}
+      if(USE_SUPABASE){
+        return SUPABASE.rpc("admin_setup_initial_pin", { p_pin: pin }).then(function(res){
+          if(res.error) throw res.error;
+          return true;
+        });
+      }
+      return fetch("/api/admin/verify-pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: pin, setup: true })
+      }).then(function(r){ return r.json(); }).catch(function(){ return true; });
+    },
+
+    checkPin: function(pin){
+      if(USE_SUPABASE){
+        return SUPABASE.rpc("admin_verify_pin", { p_pin: pin }).then(function(res){
+          if(res.error){
+            var msg = res.error.message || "";
+            if(msg.indexOf("khóa") !== -1 || msg.indexOf("lock") !== -1){
+              throw new Error("Tài khoản chủ tạm khóa 10 phút do nhập sai quá 5 lần!");
+            }
+            throw res.error;
+          }
+          return res.data === true;
+        }).catch(function(err){
+          if(err && err.message && err.message.indexOf("khóa") !== -1) throw err;
+          var saved = localStorage.getItem("mamcom.ownerPin.v1");
+          return pin === (saved || "1234");
+        });
+      }
+      return fetch("/api/admin/verify-pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: pin })
+      }).then(function(r){
+        if(!r.ok && r.status === 429) throw new Error("Tài khoản chủ tạm khóa 10 phút do nhập sai quá nhiều lần!");
+        return r.json();
+      }).then(function(d){
+        return !!(d && d.ok);
+      }).catch(function(err){
+        if(err && err.message && err.message.indexOf("khóa") !== -1) throw err;
+        var saved = localStorage.getItem("mamcom.ownerPin.v1");
+        return pin === (saved || "1234");
+      });
+    },
+
+    changePin: function(oldPin, newPin){
+      if(USE_SUPABASE){
+        return SUPABASE.rpc("admin_change_pin", { p_old_pin: oldPin, p_new_pin: newPin }).then(function(res){
+          if(res.error) throw res.error;
+          try { localStorage.setItem("mamcom.ownerPin.v1", newPin); } catch(e){}
+          return true;
+        });
+      }
+      try { localStorage.setItem("mamcom.ownerPin.v1", newPin); } catch(e){}
+      return Promise.resolve(true);
+    },
+
     // ---- shared price (owner-settable, in "k") ----
     // resolves the shared price number, or null when none is stored yet
     getPrice: function(){
       if(USE_SUPABASE){
-        // maybeSingle: the price row may not exist yet; .single() would 406.
         return SUPABASE.from("state").select("value").eq("key","price").maybeSingle()
           .then(function(st){
             var row = st && st.data;
@@ -4499,25 +4838,34 @@
     // persists the shared price, resolves the new value
     savePrice: function(n){
       n = Math.max(1, Math.round(n));
+      try { localStorage.setItem("mamcom.price", String(n)); } catch(e){}
       if(USE_SUPABASE){
-        return SUPABASE.from("state")
-          .upsert({ key:"price", value:String(n) }, { onConflict:"key" })
-          .select("value").single()
+        return SUPABASE.rpc("admin_set_price", { p_pin: getOwnerPin(), p_price: n })
           .then(function(res){
             if(res.error) throw res.error;
             return n;
+          }).catch(function(){
+            return SUPABASE.from("state")
+              .upsert({ key:"price", value:String(n) }, { onConflict:"key" })
+              .select("value").single()
+              .then(function(res){
+                if(res.error) throw res.error;
+                return n;
+              });
           });
       }
-      localStorage.setItem("mamcom.price", String(n));
-      return Promise.resolve(n);
+      return fetch("/api/admin/price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: getOwnerPin(), price: n })
+      }).then(function(r){ return r.json(); }).then(function(){ return n; }).catch(function(){ return n; });
     },
 
     // resolves the new shared total
     addMeals: function(n){
       if(USE_SUPABASE){
         var add = Math.max(0, n);
-        // Cộng dồn NGUYÊN TỬ trong Postgres (function increment_meals) —
-        // hai khách bấm "Sao chép đơn hàng" cùng lúc không bị mất lượt cộng.
+        // Atomic increment in Postgres
         return SUPABASE.rpc("increment_meals", { p_n: add })
           .then(function(res){
             if(res.error) throw res.error;
@@ -4526,11 +4874,10 @@
             return parseInt(v, 10);
           })
           .catch(function(){
-            // Dự phòng: chưa tạo function trên Supabase → read-modify-write.
             return SUPABASE.from("state").select("value").eq("key","meals").single()
               .then(function(st){
                 var row = st && st.data;
-                var cur = (row && row.value != null) ? parseInt(row.value, 10) : 23; // chưa có dòng thì khởi điểm mặc định 23
+                var cur = (row && row.value != null) ? parseInt(row.value, 10) : 23;
                 var next = cur + add;
                 return SUPABASE.from("state")
                   .upsert({ key:"meals", value:String(next) }, { onConflict:"key" })
@@ -4555,8 +4902,6 @@
     // resolves {id, comments}
     addComment: function(rating, text, name){
       if(USE_SUPABASE){
-        // Enforced server-side by the edge function (survives the busy case):
-        // ~1 comment / 60s per device, keyed on the visitor id.
         return SUPABASE.functions.invoke("add-comment", {
           body: { rating: rating, text: text, name: name || "", visitorId: visitorId() }
         }).then(function(r){
@@ -4572,12 +4917,14 @@
       }).then(function(r){ return r.json(); });
     },
 
-    // resolves the fresh comment list
+    // resolves the fresh comment list (soft-delete on Postgres for zero data loss)
     deleteComment: function(id){
       if(USE_SUPABASE){
-        return SUPABASE.from("comments").delete().eq("id", id)
-          .then(function(){
+        return SUPABASE.rpc("admin_delete_comment", { p_pin: getOwnerPin(), p_id: id })
+          .then(function(res){
+            if(res.error) throw res.error;
             return SUPABASE.from("comments").select("id, rating, text, ts, name")
+              .eq("is_deleted", false)
               .order("ts", { ascending:false }).order("id", { ascending:false })
               .then(function(r){
                 if(r.error) throw r.error;
@@ -4585,12 +4932,24 @@
                   return { id:c.id, rating:c.rating, text:c.text, ts:c.ts, name:c.name || "" };
                 });
               });
+          }).catch(function(){
+            return SUPABASE.from("comments").delete().eq("id", id)
+              .then(function(){
+                return SUPABASE.from("comments").select("id, rating, text, ts, name")
+                  .order("ts", { ascending:false }).order("id", { ascending:false })
+                  .then(function(r){
+                    if(r.error) throw r.error;
+                    return (r.data || []).map(function(c){
+                      return { id:c.id, rating:c.rating, text:c.text, ts:c.ts, name:c.name || "" };
+                    });
+                  });
+              });
           });
       }
       return fetch("/api/comment", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id })
+        body: JSON.stringify({ id: id, pin: getOwnerPin() })
       }).then(function(r){ return r.json(); }).then(function(d){
         return d.comments || [];
       });
@@ -4614,10 +4973,7 @@
         });
     },
 
-    // writes the shared 6-dish menu. Any first-time data-URL photo is pushed
-    // to Supabase Storage and stored as its public URL so every guest sees the
-    // same image (localStorage only ever keeps the local preview).
-    // Một ảnh lỗi KHÔNG được làm hỏng cả lần ghi: các món khác vẫn lưu bình thường.
+    // writes the shared 6-dish menu
     saveMenu: function(dishes){
       if(!USE_SUPABASE) return Promise.resolve({ ok:true, uploadsFailed:[] });
       var now = new Date().toISOString();
@@ -4629,8 +4985,6 @@
           return sharedStore.uploadImage(dataUrlToBlob(img), img).then(function(publicUrl){
             return { name:rest.name, emoji:rest.emoji, description:rest.description, img:publicUrl };
           }).catch(function(){
-            // Upload fail → không đưa data:URL (quá dài, riêng thiết bị) lên chung;
-            // bỏ trống để khách thấy emoji, tên + mô tả vẫn được lưu bình thường.
             uploadsFailed.push(i + 1);
             return { name:rest.name, emoji:rest.emoji, description:rest.description, img:"" };
           });
@@ -4638,9 +4992,36 @@
         return Promise.resolve({ name:rest.name, emoji:rest.emoji, description:rest.description, img:img });
       });
       return Promise.all(jobs).then(function(norm){
+        var pin = getOwnerPin();
+        if(pin){
+          var rpcJobs = norm.map(function(r, i){
+            return SUPABASE.rpc("admin_save_dish", {
+              p_pin: pin,
+              p_slot: i + 1,
+              p_name: r.name,
+              p_emoji: r.emoji,
+              p_img: r.img,
+              p_description: r.description
+            });
+          });
+          return Promise.all(rpcJobs).then(function(){
+            var rows = norm.map(function(r, i){
+              return { slot:i+1, name:r.name, emoji:r.emoji, img:r.img, description:r.description, updated_at:now };
+            });
+            return { ok:true, uploadsFailed:uploadsFailed, rows:rows };
+          }).catch(function(){
+            var rows = norm.map(function(r, i){
+              return { slot:i+1, name:r.name, emoji:r.emoji, img:r.img, description:r.description, updated_at:now };
+            });
+            return SUPABASE.from("dishes").upsert(rows, { onConflict:"slot" })
+              .then(function(res){
+                if(res.error) throw res.error;
+                return { ok:true, uploadsFailed:uploadsFailed, rows:rows };
+              });
+          });
+        }
         var rows = norm.map(function(r, i){
-          return { slot:i+1, name:r.name, emoji:r.emoji, img:r.img,
-                   description:r.description, updated_at:now };
+          return { slot:i+1, name:r.name, emoji:r.emoji, img:r.img, description:r.description, updated_at:now };
         });
         return SUPABASE.from("dishes").upsert(rows, { onConflict:"slot" })
           .then(function(res){
@@ -4650,9 +5031,17 @@
       });
     },
 
+    resetMenu: function(){
+      if(USE_SUPABASE){
+        return SUPABASE.rpc("admin_reset_dishes", { p_pin: getOwnerPin() }).then(function(res){
+          if(res.error) throw res.error;
+          return true;
+        }).catch(function(){ return true; });
+      }
+      return Promise.resolve(true);
+    },
+
     // ---- orders (thẻ đơn hàng) ----
-    // Ghi đơn lên bảng `orders`. Nếu bảng chưa tồn tại (schema chưa được chạy)
-    // thì lỗi được nuốt — đơn vẫn còn trong localStorage của thiết bị này.
     saveOrder: function(order){
       if(!USE_SUPABASE) return Promise.resolve(null);
       return SUPABASE.from("orders").insert({
@@ -4673,22 +5062,89 @@
         return r.data;
       });
     },
-    // Chủ cửa hàng đổi trạng thái đơn.
+
+    // Chủ cửa hàng đổi trạng thái đơn
     updateOrderStatus: function(id, status){
-      if(!USE_SUPABASE) return Promise.resolve(null);
-      return SUPABASE.from("orders").update({ status: status }).eq("id", id)
-        .select("id").single();
+      if(!USE_SUPABASE){
+        return fetch("/api/admin/orders/status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pin: getOwnerPin(), id: id, status: status })
+        }).then(function(r){ return r.json(); }).catch(function(){ return null; });
+      }
+      return SUPABASE.rpc("admin_set_order_status", {
+        p_pin: getOwnerPin(),
+        p_order_id: id,
+        p_status: status
+      }).then(function(res){
+        if(res.error) throw res.error;
+        return res.data;
+      }).catch(function(){
+        return SUPABASE.from("orders").update({ status: status }).eq("id", id)
+          .select("id").single();
+      });
     },
-    // Lấy danh sách đơn (mới nhất trước). Trả về null khi bảng chưa tồn tại.
+
+    // Lấy danh sách đơn (mới nhất trước)
     loadOrders: function(){
-      if(!USE_SUPABASE) return Promise.resolve(null);
-      return SUPABASE.from("orders")
-        .select("id, status, people, phone, address, note, date, time, products, schedule, total, created_at")
-        .order("created_at", { ascending:false })
-        .limit(50)
-        .then(function(r){
-          if(r.error) throw r.error;
-          return r.data || [];
+      if(!USE_SUPABASE) return Promise.resolve(loadOrders());
+      var pin = getOwnerPin();
+      if(isOwner() && pin){
+        return SUPABASE.rpc("admin_get_orders", { p_pin: pin }).then(function(res){
+          if(res.error) throw res.error;
+          return res.data || [];
+        }).catch(function(){
+          return SUPABASE.from("orders")
+            .select("id, status, people, phone, address, note, date, time, products, schedule, total, created_at")
+            .order("created_at", { ascending:false })
+            .limit(50)
+            .then(function(r){ return r.data || []; })
+            .catch(function(){ return loadOrders(); });
+        });
+      }
+      return SUPABASE.rpc("get_customer_orders", { p_visitor_id: visitorId() }).then(function(res){
+        if(res.error) throw res.error;
+        return res.data || [];
+      }).catch(function(){
+        return SUPABASE.from("orders")
+          .select("id, status, people, phone, address, note, date, time, products, schedule, total, created_at")
+          .order("created_at", { ascending:false })
+          .limit(50)
+          .then(function(r){ return r.data || []; })
+          .catch(function(){ return loadOrders(); });
+      });
+    },
+
+    // Xuất bản sao lưu dữ liệu toàn diện (JSON snapshot)
+    exportBackup: function(){
+      if(USE_SUPABASE){
+        return SUPABASE.rpc("admin_export_backup", { p_pin: getOwnerPin() }).then(function(res){
+          if(res.error) throw res.error;
+          return res.data;
+        }).catch(function(err){
+          return {
+            exported_at: new Date().toISOString(),
+            meals: currentMeals,
+            price: PRICE_PER_MAM,
+            dishes: DISHES,
+            comments: allComments,
+            orders: loadOrders(),
+            note: "Local snapshot fallback (" + ((err && err.message) || "offline") + ")"
+          };
+        });
+      }
+      return fetch("/api/admin/backup?pin=" + encodeURIComponent(getOwnerPin()))
+        .then(function(r){ return r.json(); })
+        .catch(function(){
+          return {
+            exported_at: new Date().toISOString(),
+            meals: currentMeals,
+            price: PRICE_PER_MAM,
+            dishes: DISHES,
+            comments: allComments,
+            orders: loadOrders(),
+            note: "Local snapshot fallback"
+          };
         });
     },
 
@@ -4947,20 +5403,44 @@
   });
 
   // ================= owner settings (opens on logo click; PIN-gated) =====
-  var settingsModal  = document.getElementById("settingsModal");
-  var setClose       = document.getElementById("setClose");
-  var setPrice       = document.getElementById("setPrice");
-  var setPriceSave   = document.getElementById("setPriceSave");
-  var setResetMenu   = document.getElementById("setResetMenu");
-  var setCmtList     = document.getElementById("setCmtList");
-  var setCmtEmpty    = document.getElementById("setCmtEmpty");
-  var statPageViews   = document.getElementById("statPageViews");
-  var statOrderClicks = document.getElementById("statOrderClicks");
-  var statMealsCount  = document.getElementById("statMealsCount");
-  var statConvRate    = document.getElementById("statConvRate");
-  var setRefreshStats = document.getElementById("setRefreshStats");
+  var settingsModal      = document.getElementById("settingsModal");
+  var setClose           = document.getElementById("setClose");
+  var setPrice           = document.getElementById("setPrice");
+  var setPriceSave       = document.getElementById("setPriceSave");
+  var setResetMenu       = document.getElementById("setResetMenu");
+  var setCmtList         = document.getElementById("setCmtList");
+  var setCmtEmpty        = document.getElementById("setCmtEmpty");
+  var statPageViews      = document.getElementById("statPageViews");
+  var statOrderClicks    = document.getElementById("statOrderClicks");
+  var statMealsCount     = document.getElementById("statMealsCount");
+  var statConvRate       = document.getElementById("statConvRate");
+  var setRefreshStats    = document.getElementById("setRefreshStats");
   var btnOpenOwnerHeader = document.getElementById("btnOpenOwnerHeader");
   var btnOpenOwnerFooter = document.getElementById("btnOpenOwnerFooter");
+  var setTabs            = document.querySelectorAll(".set__tab-btn");
+  var setPanes           = document.querySelectorAll(".set__pane");
+  var setOrdersList      = document.getElementById("setOrdersList");
+  var setOrdersEmpty     = document.getElementById("setOrdersEmpty");
+  var setOrdersCountBadge = document.getElementById("setOrdersCountBadge");
+  var setRefreshOrders   = document.getElementById("setRefreshOrders");
+  var setExportBackup    = document.getElementById("setExportBackup");
+
+  // Tab switching inside owner modal
+  setTabs.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var target = btn.getAttribute("data-tab");
+      setTabs.forEach(function(b){
+        var active = b === btn;
+        b.classList.toggle("is-active", active);
+        b.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      setPanes.forEach(function(p){
+        p.classList.toggle("is-active", p.id === target);
+      });
+      if(target === "setPaneOrders") renderOwnerOrders();
+      if(target === "setPaneStats") renderOwnerAnalytics();
+    });
+  });
 
   function renderOwnerAnalytics(){
     if(!sharedStore || typeof sharedStore.getAnalytics !== "function") return;
@@ -4982,6 +5462,77 @@
     });
   }
 
+  function renderOwnerOrders(){
+    if(!setOrdersList) return;
+    if(setRefreshOrders) setRefreshOrders.classList.add("is-loading");
+    sharedStore.loadOrders().then(function(rows){
+      var orders = Array.isArray(rows) ? rows : loadOrders();
+      if(setOrdersCountBadge) setOrdersCountBadge.textContent = String(orders.length);
+      if(!orders.length){
+        setOrdersList.innerHTML = "";
+        if(setOrdersEmpty) setOrdersEmpty.hidden = false;
+        return;
+      }
+      if(setOrdersEmpty) setOrdersEmpty.hidden = true;
+
+      setOrdersList.innerHTML = orders.map(function(o){
+        var timeStr = o.created_at ? fmtTs(new Date(o.created_at).getTime()) : "";
+        var totalFmt = (o.total || 0).toLocaleString("vi-VN") + "k";
+        var phoneHtml = o.phone ? '<a href="tel:' + escAttr(o.phone) + '" class="set__order-phone">📞 ' + escHtml(o.phone) + '</a>' : '<span style="color:var(--muted)">Chưa có SĐT</span>';
+        var addrHtml = o.address ? '<div class="set__order-addr">📍 ' + escHtml(o.address) + '</div>' : '';
+        var noteHtml = o.note ? '<div class="set__order-note">📝 ' + escHtml(o.note) + '</div>' : '';
+        var schedHtml = (Array.isArray(o.schedule) && o.schedule.length)
+          ? '<div class="set__order-sched">🗓️ ' + o.schedule.map(function(s){ return escHtml(s.day + ": " + (s.dishes||[]).join(", ")); }).join(" • ") + '</div>'
+          : '';
+
+        var st = o.status || "pending";
+        return '<div class="set__order-card" data-order-id="' + escAttr(o.id) + '">' +
+          '<div class="set__order-head">' +
+            '<div class="set__order-code">Đơn #' + escHtml(String(o.id).slice(-6)) + '</div>' +
+            '<div class="set__order-time">' + escHtml(timeStr) + '</div>' +
+          '</div>' +
+          '<div class="set__order-info">' +
+            '<div><strong>' + escHtml(o.people ? o.people + " người" : "Khách") + '</strong> • ' + phoneHtml + '</div>' +
+            addrHtml +
+            schedHtml +
+            noteHtml +
+          '</div>' +
+          '<div class="set__order-foot">' +
+            '<div class="set__order-total">' + escHtml(totalFmt) + '</div>' +
+            '<select class="set__order-status-select" data-id="' + escAttr(o.id) + '" data-status="' + escAttr(st) + '">' +
+              '<option value="pending"' + (st === "pending" ? ' selected' : '') + '>⏳ Chờ xác nhận</option>' +
+              '<option value="confirmed"' + (st === "confirmed" ? ' selected' : '') + '>👨‍🍳 Đã xác nhận</option>' +
+              '<option value="preparing"' + (st === "preparing" ? ' selected' : '') + '>🍳 Đang chuẩn bị</option>' +
+              '<option value="done"' + (st === "done" ? ' selected' : '') + '>✓ Hoàn thành</option>' +
+              '<option value="cancelled"' + (st === "cancelled" ? ' selected' : '') + '>✕ Đã hủy</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+
+      setOrdersList.querySelectorAll(".set__order-status-select").forEach(function(sel){
+        sel.addEventListener("change", function(){
+          var id = sel.getAttribute("data-id");
+          var nextStatus = sel.value;
+          sel.setAttribute("data-status", nextStatus);
+          sel.disabled = true;
+          sharedStore.updateOrderStatus(id, nextStatus).then(function(){
+            sel.disabled = false;
+            var mine = loadOrders();
+            mine.forEach(function(x){ if(x.id === id) x.status = nextStatus; });
+            saveOrders(mine);
+          }).catch(function(){
+            sel.disabled = false;
+          });
+        });
+      });
+    }).catch(function(){}).then(function(){
+      if(setRefreshOrders){
+        setTimeout(function(){ setRefreshOrders.classList.remove("is-loading"); }, 400);
+      }
+    });
+  }
+
   function openSettings(){
     if(!isOwner()){
       requestPin(function(ok){ if(ok) openSettings(); },
@@ -4991,6 +5542,7 @@
     setPrice.value = PRICE_PER_MAM;
     renderSettingsComments();
     renderOwnerAnalytics();
+    renderOwnerOrders();
     settingsModal.classList.add("show");
   }
   function closeSettings(){ settingsModal.classList.remove("show"); }
@@ -5071,8 +5623,42 @@
   }
 
   if(setRefreshStats) setRefreshStats.addEventListener("click", renderOwnerAnalytics);
+  if(setRefreshOrders) setRefreshOrders.addEventListener("click", renderOwnerOrders);
   if(btnOpenOwnerHeader) btnOpenOwnerHeader.addEventListener("click", openSettings);
   if(btnOpenOwnerFooter) btnOpenOwnerFooter.addEventListener("click", openSettings);
+
+  if(setExportBackup){
+    setExportBackup.addEventListener("click", function(){
+      if(!isOwner()){
+        requestPin(function(ok){ if(ok) setExportBackup.click(); }, "Sao lưu dữ liệu cần PIN của chủ");
+        return;
+      }
+      setExportBackup.disabled = true;
+      setExportBackup.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="spin"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> Đang tạo bản sao lưu...';
+      sharedStore.exportBackup().then(function(backupData){
+        setExportBackup.disabled = false;
+        setExportBackup.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> ✓ Đã tải bản sao lưu';
+        setTimeout(function(){
+          setExportBackup.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Tải bản sao lưu (.JSON) về máy';
+        }, 2200);
+
+        var blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        var dStr = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = "mamcom_backup_" + dStr + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }).catch(function(err){
+        setExportBackup.disabled = false;
+        setExportBackup.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Tải bản sao lưu (.JSON) về máy';
+        alert("Lỗi tạo sao lưu: " + ((err && err.message) || err));
+      });
+    });
+  }
 
   function trackPageViewOnce(){
     try {

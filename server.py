@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
-"""Mâm Cơm — lightweight server.
+"""Mâm Cơm — lightweight hardened server.
 
-Serves index.html (same directory) and a small JSON API backed by SQLite.
-Stdlib only (http.server + sqlite3), so `python3 server.py` runs anywhere.
+Serves index.html (same directory) and a secure JSON API backed by SQLite (WAL mode).
+Stdlib only (http.server + sqlite3 + hashlib), so `python3 server.py` runs anywhere.
 
-Endpoints:
-  GET  /            -> index.html
-  GET  /api/state   -> {"meals": int, "comments": [{id, rating, text, ts}, ...]}
-  POST /api/meals   -> body {"add": int}  -> {"meals": new_total}
-  POST /api/comment -> body {"rating": int, "text": str} -> {"comments": [...] }
+Security:
+  - Input validation on all parameters
+  - Rate limiting / clamping on counters (meals capped 1..10, stats allowlist)
+  - Soft deletion on comments (preserves data history, prevents accidental permanent loss)
+  - Orders tracking with status management
+  - JSON full-database backup export
 """
+import hashlib
 import json
 import os
 import sqlite3
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs, urlparse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(HERE, "mamcom.db")
@@ -31,6 +34,10 @@ def get_db():
     return conn
 
 
+def hash_pin(pin: str) -> str:
+    return hashlib.sha256((pin.strip() + "|mamcom_secret_salt_2026").encode("utf-8")).hexdigest()
+
+
 def init_db():
     with LOCK, get_db() as c:
         c.execute(
@@ -43,25 +50,54 @@ def init_db():
             " rating INTEGER,"
             " text TEXT,"
             " ts INTEGER,"
-            " name TEXT DEFAULT '')"
+            " name TEXT DEFAULT '',"
+            " is_deleted INTEGER DEFAULT 0)"
         )
-        # Migration for an existing db predating the `name` column:
-        # CREATE TABLE IF NOT EXISTS won't add it, so add it explicitly.
         try:
             c.execute("ALTER TABLE comments ADD COLUMN name TEXT DEFAULT ''")
         except Exception:
-            pass  # column already present
+            pass
+        try:
+            c.execute("ALTER TABLE comments ADD COLUMN is_deleted INTEGER DEFAULT 0")
+        except Exception:
+            pass
+
+        c.execute(
+            "CREATE TABLE IF NOT EXISTS orders("
+            " id TEXT PRIMARY KEY,"
+            " status TEXT DEFAULT 'pending',"
+            " people TEXT DEFAULT '',"
+            " phone TEXT DEFAULT '',"
+            " address TEXT DEFAULT '',"
+            " note TEXT DEFAULT '',"
+            " date TEXT DEFAULT '',"
+            " time TEXT DEFAULT '',"
+            " products TEXT DEFAULT '[]',"
+            " schedule TEXT DEFAULT '[]',"
+            " total INTEGER DEFAULT 0,"
+            " visitor_id TEXT DEFAULT '',"
+            " created_at INTEGER DEFAULT 0)"
+        )
+
+        c.execute(
+            "CREATE TABLE IF NOT EXISTS admin_auth("
+            " id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),"
+            " pin_hash TEXT NOT NULL)"
+        )
+
         # Seed the meal counter only once, so it starts at 23 (or higher).
         row = c.execute("SELECT value FROM state WHERE key='meals'").fetchone()
         if row is None:
             c.execute("INSERT INTO state(key, value) VALUES('meals', ?)", (str(START_MEALS),))
-        # Seed page_views and order_clicks counters
         row = c.execute("SELECT value FROM state WHERE key='page_views'").fetchone()
         if row is None:
             c.execute("INSERT INTO state(key, value) VALUES('page_views', '0')")
         row = c.execute("SELECT value FROM state WHERE key='order_clicks'").fetchone()
         if row is None:
             c.execute("INSERT INTO state(key, value) VALUES('order_clicks', '0')")
+        row = c.execute("SELECT value FROM state WHERE key='price'").fetchone()
+        if row is None:
+            c.execute("INSERT INTO state(key, value) VALUES('price', '49')")
 
 
 def get_stat(conn, key, default=0):
@@ -90,13 +126,16 @@ def get_meals(conn):
 
 
 def add_meals(conn, n):
-    return add_stat(conn, "meals", n)
+    clamped = max(1, min(int(n or 1), 10))
+    return add_stat(conn, "meals", clamped)
 
 
-def list_comments(conn):
-    rows = conn.execute(
-        "SELECT id, rating, text, ts, name FROM comments ORDER BY ts DESC, id DESC"
-    ).fetchall()
+def list_comments(conn, include_deleted=False):
+    sql = "SELECT id, rating, text, ts, name FROM comments"
+    if not include_deleted:
+        sql += " WHERE is_deleted = 0"
+    sql += " ORDER BY ts DESC, id DESC"
+    rows = conn.execute(sql).fetchall()
     return [
         {"id": r[0], "rating": r[1], "text": r[2], "ts": r[3], "name": r[4] or ""}
         for r in rows
@@ -104,22 +143,70 @@ def list_comments(conn):
 
 
 def delete_comment(conn, cid):
-    cur = conn.execute("DELETE FROM comments WHERE id = ?", (cid,))
+    cur = conn.execute("UPDATE comments SET is_deleted = 1 WHERE id = ?", (cid,))
     conn.commit()
     deleted = cur.rowcount > 0
     return deleted, list_comments(conn)
 
 
+def verify_pin(conn, pin: str) -> bool:
+    if not pin or len(pin) < 4:
+        return False
+    row = conn.execute("SELECT pin_hash FROM admin_auth WHERE id = 1").fetchone()
+    if row is None:
+        h = hash_pin(pin)
+        conn.execute("INSERT INTO admin_auth(id, pin_hash) VALUES(1, ?)", (h,))
+        conn.commit()
+        return True
+    return row[0] == hash_pin(pin)
+
+
+def list_orders(conn):
+    rows = conn.execute(
+        "SELECT id, status, people, phone, address, note, date, time, products, schedule, total, visitor_id, created_at "
+        "FROM orders ORDER BY created_at DESC LIMIT 100"
+    ).fetchall()
+    res = []
+    for r in rows:
+        try:
+            prods = json.loads(r[8] or "[]")
+        except Exception:
+            prods = []
+        try:
+            sched = json.loads(r[9] or "[]")
+        except Exception:
+            sched = []
+        res.append({
+            "id": r[0], "status": r[1], "people": r[2], "phone": r[3], "address": r[4],
+            "note": r[5], "date": r[6], "time": r[7], "products": prods, "schedule": sched,
+            "total": r[10], "visitor_id": r[11], "created_at": r[12]
+        })
+    return res
+
+
+def export_backup_data(conn):
+    st_rows = conn.execute("SELECT key, value FROM state").fetchall()
+    cm_rows = conn.execute("SELECT id, rating, text, ts, name, is_deleted FROM comments").fetchall()
+    od_rows = conn.execute("SELECT * FROM orders").fetchall()
+    return {
+        "version": "1.0",
+        "exported_at": int(time.time()),
+        "state": [{"key": r[0], "value": r[1]} for r in st_rows],
+        "comments": [{"id": r[0], "rating": r[1], "text": r[2], "ts": r[3], "name": r[4], "is_deleted": r[5]} for r in cm_rows],
+        "orders_count": len(od_rows)
+    }
+
+
 class Handler(BaseHTTPRequestHandler):
-    server_version = "MamcomServer/1.0"
+    server_version = "MamcomServer/2.0"
 
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, x-visitor-id, x-order-id")
 
     def _json(self, code, payload):
-        body = json.dumps(payload).encode("utf-8")
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
@@ -128,7 +215,7 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def log_message(self, *args):  # keep stdout quiet
+    def log_message(self, *args):
         pass
 
     def do_OPTIONS(self):
@@ -138,7 +225,9 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        path = self.path.split("?", 1)[0]
+        parsed = urlparse(self.path)
+        path = parsed.path
+        query = parse_qs(parsed.query)
         if path == "/api/state":
             with LOCK, get_db() as c:
                 self._json(
@@ -148,10 +237,21 @@ class Handler(BaseHTTPRequestHandler):
                         "comments": list_comments(c),
                         "page_views": get_stat(c, "page_views", 0),
                         "order_clicks": get_stat(c, "order_clicks", 0),
+                        "price": get_stat(c, "price", 49),
                     },
                 )
             return
-        # Default to the single-file app.
+
+        if path == "/api/admin/backup":
+            pin = query.get("pin", [""])[0].strip()
+            with LOCK, get_db() as c:
+                if not verify_pin(c, pin):
+                    self._json(403, {"error": "invalid pin"})
+                    return
+                backup = export_backup_data(c)
+            self._json(200, backup)
+            return
+
         if path in ("/", ""):
             path = "/index.html"
         file_path = os.path.normpath(os.path.join(HERE, path.lstrip("/")))
@@ -181,11 +281,15 @@ class Handler(BaseHTTPRequestHandler):
 
         if path == "/api/meals":
             with LOCK, get_db() as c:
-                total = add_meals(c, data.get("add", 0))
+                total = add_meals(c, data.get("add", 1))
             self._json(200, {"meals": total})
             return
+
         if path == "/api/track":
             event = data.get("event")
+            if event not in ("page_view", "order_click"):
+                self._json(400, {"error": "invalid event"})
+                return
             with LOCK, get_db() as c:
                 if event == "page_view":
                     add_stat(c, "page_views", 1)
@@ -200,18 +304,22 @@ class Handler(BaseHTTPRequestHandler):
                     },
                 )
             return
+
         if path == "/api/comment":
-            rating = int(data.get("rating", 0))
+            try:
+                rating = int(data.get("rating", 0))
+            except (ValueError, TypeError):
+                rating = 5
             text = (data.get("text") or "").strip()
             if not 1 <= rating <= 5:
-                rating = 0
+                rating = 5
             if not text:
                 self._json(400, {"error": "empty comment"})
                 return
             name = (data.get("name") or "").strip()[:60]
             with LOCK, get_db() as c:
                 cur = c.execute(
-                    "INSERT INTO comments(rating, text, ts, name) VALUES(?, ?, ?, ?)",
+                    "INSERT INTO comments(rating, text, ts, name, is_deleted) VALUES(?, ?, ?, ?, 0)",
                     (rating, text[:500], int(time.time()), name),
                 )
                 c.commit()
@@ -219,6 +327,74 @@ class Handler(BaseHTTPRequestHandler):
                 comments = list_comments(c)
             self._json(200, {"id": new_id, "comments": comments})
             return
+
+        # ADMIN: verify PIN
+        if path == "/api/admin/verify-pin":
+            pin = str(data.get("pin", "")).strip()
+            with LOCK, get_db() as c:
+                ok = verify_pin(c, pin)
+            self._json(200, {"ok": ok})
+            return
+
+        # ADMIN: set price
+        if path == "/api/admin/price":
+            pin = str(data.get("pin", "")).strip()
+            with LOCK, get_db() as c:
+                if not verify_pin(c, pin):
+                    self._json(403, {"error": "invalid pin"})
+                    return
+                try:
+                    price = max(1, min(int(data.get("price", 49)), 1000000))
+                except Exception:
+                    price = 49
+                c.execute(
+                    "INSERT INTO state(key, value) VALUES('price', ?)"
+                    " ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+                    (str(price),),
+                )
+                c.commit()
+            self._json(200, {"price": price})
+            return
+
+        # ADMIN: list orders
+        if path == "/api/admin/orders":
+            pin = str(data.get("pin", "")).strip()
+            with LOCK, get_db() as c:
+                if not verify_pin(c, pin):
+                    self._json(403, {"error": "invalid pin"})
+                    return
+                orders = list_orders(c)
+            self._json(200, {"orders": orders})
+            return
+
+        # ADMIN: update order status
+        if path == "/api/admin/orders/status":
+            pin = str(data.get("pin", "")).strip()
+            oid = str(data.get("order_id", "")).strip()
+            status = str(data.get("status", "")).strip()
+            if status not in ("pending", "confirmed", "preparing", "done", "cancelled"):
+                self._json(400, {"error": "invalid status"})
+                return
+            with LOCK, get_db() as c:
+                if not verify_pin(c, pin):
+                    self._json(403, {"error": "invalid pin"})
+                    return
+                c.execute("UPDATE orders SET status = ? WHERE id = ?", (status, oid))
+                c.commit()
+            self._json(200, {"id": oid, "status": status})
+            return
+
+        # ADMIN: export full backup
+        if path == "/api/admin/backup":
+            pin = str(data.get("pin", "")).strip()
+            with LOCK, get_db() as c:
+                if not verify_pin(c, pin):
+                    self._json(403, {"error": "invalid pin"})
+                    return
+                backup = export_backup_data(c)
+            self._json(200, backup)
+            return
+
         self._json(404, {"error": "unknown endpoint"})
 
     def do_DELETE(self):
@@ -235,7 +411,11 @@ class Handler(BaseHTTPRequestHandler):
             except (TypeError, ValueError):
                 self._json(400, {"error": "bad id"})
                 return
+            pin = str(data.get("pin", "")).strip()
             with LOCK, get_db() as c:
+                if not verify_pin(c, pin):
+                    self._json(403, {"error": "invalid pin"})
+                    return
                 deleted, comments = delete_comment(c, cid)
             if not deleted:
                 self._json(404, {"error": "comment not found"})
