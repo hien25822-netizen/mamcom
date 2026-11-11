@@ -661,14 +661,65 @@
   .set__empty { font-size: 12px; color: var(--muted); }
   .set__hint { font-size: 11px; color: var(--muted); margin: 4px 0 0; }
 
-  /* ---- ANALYTICS STATS (Owner Dashboard in settings modal) ---- */
+  /* ---- ANALYTICS STATS (Owner Dashboard in settings modal - Apple Design) ---- */
+  .modal__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .modal__title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal__title-group h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .modal__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    background: rgba(218, 36, 28, 0.08);
+    color: var(--red);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .modal__close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .modal__close-btn:hover {
+    background: rgba(0, 0, 0, 0.09);
+    color: var(--ink);
+    transform: scale(1.05);
+  }
+  .modal__close-btn:active {
+    transform: scale(0.95);
+  }
+
   .set__sec--stats {
-    background: linear-gradient(180deg, #fffcf9 0%, #faf6f0 100%);
-    border: 1px solid rgba(226, 218, 210, 0.9);
-    border-radius: var(--radius-md);
+    background: #faf8f5;
+    border: 1px solid rgba(226, 218, 210, 0.85);
+    border-radius: var(--radius-lg);
     padding: 14px 14px 12px !important;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 14px -3px rgba(70, 35, 25, 0.05);
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px -2px rgba(70, 35, 25, 0.03);
   }
   .set__head-row {
     display: flex;
@@ -677,10 +728,18 @@
     gap: 8px;
     margin-bottom: 10px;
   }
+  .set__head-row .set__label {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
   .set__refresh-btn {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     border: 1px solid var(--line);
     background: #ffffff;
     color: var(--ink-light);
@@ -690,20 +749,23 @@
     padding: 4px 10px;
     border-radius: var(--radius-pill);
     cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    transition: all 0.18s var(--spring-bounce);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: all 0.18s cubic-bezier(0.25, 1, 0.5, 1);
   }
   .set__refresh-btn:hover {
     border-color: var(--red);
     color: var(--red);
     background: var(--red-soft);
-    transform: translateY(-1px);
+    transform: translateY(-0.5px);
   }
-  .set__refresh-btn:active { transform: translateY(1px); }
+  .set__refresh-btn:active {
+    transform: scale(0.96);
+  }
   .set__refresh-btn.is-loading svg {
     animation: spin 0.7s linear infinite;
   }
   @keyframes spin { 100% { transform: rotate(360deg); } }
+
   .set__stat-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -711,95 +773,111 @@
   }
   .set__stat-card {
     background: #ffffff;
-    border: 1px solid var(--line-subtle);
-    border-radius: var(--radius-sm);
+    border: 1px solid rgba(28, 23, 21, 0.07);
+    border-radius: 14px;
     padding: 10px 12px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    justify-content: space-between;
+    min-height: 72px;
     position: relative;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-    transition: transform 0.2s var(--spring-bounce), border-color 0.18s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.15s ease;
   }
   .set__stat-card:hover {
-    transform: translateY(-1.5px);
-    border-color: rgba(218, 36, 28, 0.3);
+    border-color: rgba(218, 36, 28, 0.25);
+    transform: translateY(-1px);
   }
   .set__stat-card--highlight {
-    background: linear-gradient(135deg, #fff8f7 0%, #ffffff 100%);
-    border-color: rgba(218, 36, 28, 0.3);
-    box-shadow: 0 4px 14px -2px rgba(218, 36, 28, 0.09);
+    background: #ffffff;
+    border-color: rgba(218, 36, 28, 0.28);
+    box-shadow: 0 2px 8px -1px rgba(218, 36, 28, 0.06);
   }
-  .set__stat-icon {
-    font-size: 14px;
-    line-height: 1;
-    margin-bottom: 2px;
+  .set__stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 4px;
   }
+  .set__stat-lbl {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .set__stat-icon-wrap {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .set__stat-icon-wrap--views { background: #f1f5f9; color: #475569; }
+  .set__stat-icon-wrap--orders { background: #fef2f2; color: #dc2626; }
+  .set__stat-icon-wrap--meals { background: #fffbeb; color: #d97706; }
+  .set__stat-icon-wrap--conv { background: #ecfdf5; color: #059669; }
   .set__stat-num {
     font-size: 24px;
-    font-weight: 900;
+    font-weight: 800;
     color: var(--ink);
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.5px;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
   }
   .set__stat-card--highlight .set__stat-num {
     color: var(--red);
   }
-  .set__stat-lbl {
-    font-size: 10.5px;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
 
-  /* ---- OWNER ACTIVE STATUS BAR ---- */
+  /* ---- OWNER ACTIVE STATUS BAR (Apple System Banner) ---- */
   .owner-status-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    background: linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(255, 251, 235, 0.95));
-    border: 1px solid rgba(245, 158, 11, 0.35);
-    border-radius: var(--radius-md);
-    padding: 9px 16px;
+    background: rgba(254, 243, 199, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius-pill);
+    padding: 7px 16px;
     margin-bottom: 18px;
-    box-shadow: 0 4px 16px -2px rgba(245, 158, 11, 0.15);
-    font-size: 13px;
+    box-shadow: 0 4px 16px -4px rgba(245, 158, 11, 0.12);
+    font-size: 12.5px;
     color: #92400e;
-    animation: barSlideIn 0.3s var(--spring-bounce);
+    animation: barSlideIn 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   }
   @keyframes barSlideIn {
-    from { opacity: 0; transform: translateY(-6px); }
+    from { opacity: 0; transform: translateY(-4px); }
     to { opacity: 1; transform: translateY(0); }
   }
   .owner-status-bar[hidden] { display: none !important; }
   .owner-status-bar__info { display: flex; align-items: center; gap: 8px; }
   .owner-status-bar__dot {
-    width: 8px; height: 8px; border-radius: 50%; background: #16a34a;
+    width: 7px; height: 7px; border-radius: 50%; background: #16a34a;
     box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
-    animation: dotPulse 1.8s infinite;
   }
-  @keyframes dotPulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.25); opacity: 0.7; }
-  }
+  .owner-status-bar__title { font-weight: 600; }
   .owner-status-bar__btn {
+    display: inline-flex;
+    align-items: center;
     border: none;
     background: #da241c;
     color: #ffffff;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: var(--radius-pill);
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(218, 36, 28, 0.25);
-    transition: transform 0.18s var(--spring-bounce), background-color 0.15s ease;
+    box-shadow: 0 2px 6px rgba(218, 36, 28, 0.2);
+    transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.15s ease;
   }
-  .owner-status-bar__btn:hover { background: #b91c1c; transform: scale(1.03); }
-  .owner-status-bar__btn:active { transform: scale(0.97); }
+  .owner-status-bar__btn:hover { background: #b91c1c; }
+  .owner-status-bar__btn:active { transform: scale(0.96); }
 
   /* ---- FOOTER ---- */
   .site-foot {
@@ -1992,9 +2070,12 @@
   <div class="owner-status-bar" id="ownerStatusBar" hidden>
     <div class="owner-status-bar__info">
       <span class="owner-status-bar__dot"></span>
-      <span>👑 <b>Chế độ Quản trị Bếp đang hoạt động</b></span>
+      <span class="owner-status-bar__title">Chế độ Quản trị Bếp đang mở</span>
     </div>
-    <button type="button" class="owner-status-bar__btn" id="btnOpenOwnerHeader">📊 Thống kê & Cài đặt</button>
+    <button type="button" class="owner-status-bar__btn" id="btnOpenOwnerHeader">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;vertical-align:-1px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Thống kê &amp; Cài đặt
+    </button>
   </div>
 
   <div class="board">
@@ -2274,42 +2355,63 @@
 <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="setTitle">
   <div class="modal__box" style="max-width:440px">
     <div class="modal__head">
-      <h3 id="setTitle">⚙️ Cài đặt chủ Mâm Cơm</h3>
-      <button class="link-btn" type="button" id="setClose" style="text-decoration:none">Đóng</button>
+      <div class="modal__title-group">
+        <h3 id="setTitle">Cài đặt chủ Bếp</h3>
+        <span class="modal__badge">Quản trị viên</span>
+      </div>
+      <button class="modal__close-btn" type="button" id="setClose" aria-label="Đóng cài đặt">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
 
     <!-- ANALYTICS DASHBOARD (Thống kê truy cập & Đặt đơn) -->
     <div class="set__sec set__sec--stats">
       <div class="set__head-row">
-        <div class="set__label" style="margin-bottom:0">📊 Thống kê lượng khách & Đặt đơn</div>
+        <div class="set__label">Hiệu quả đơn hàng</div>
         <button class="set__refresh-btn" type="button" id="setRefreshStats" title="Cập nhật số liệu mới nhất">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
           Làm mới
         </button>
       </div>
       <div class="set__stat-grid">
         <div class="set__stat-card">
-          <div class="set__stat-icon">👀</div>
+          <div class="set__stat-top">
+            <span class="set__stat-lbl">LƯỢT XEM WEB</span>
+            <div class="set__stat-icon-wrap set__stat-icon-wrap--views">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+          </div>
           <div class="set__stat-num" id="statPageViews">0</div>
-          <div class="set__stat-lbl">Lượt xem web</div>
         </div>
         <div class="set__stat-card set__stat-card--highlight">
-          <div class="set__stat-icon">🛍️</div>
+          <div class="set__stat-top">
+            <span class="set__stat-lbl">ĐÃ BẤM ĐẶT ĐƠN</span>
+            <div class="set__stat-icon-wrap set__stat-icon-wrap--orders">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+          </div>
           <div class="set__stat-num" id="statOrderClicks">0</div>
-          <div class="set__stat-lbl">Lượt bấm đặt đơn</div>
         </div>
         <div class="set__stat-card">
-          <div class="set__stat-icon">🍚</div>
+          <div class="set__stat-top">
+            <span class="set__stat-lbl">MÂM ĐÃ PHỤC VỤ</span>
+            <div class="set__stat-icon-wrap set__stat-icon-wrap--meals">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            </div>
+          </div>
           <div class="set__stat-num" id="statMealsCount">0</div>
-          <div class="set__stat-lbl">Mâm đã phục vụ</div>
         </div>
         <div class="set__stat-card">
-          <div class="set__stat-icon">🎯</div>
+          <div class="set__stat-top">
+            <span class="set__stat-lbl">TỶ LỆ CHỐT ĐƠN</span>
+            <div class="set__stat-icon-wrap set__stat-icon-wrap--conv">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+          </div>
           <div class="set__stat-num" id="statConvRate">0%</div>
-          <div class="set__stat-lbl">Tỷ lệ chốt đơn</div>
         </div>
       </div>
-      <p class="set__hint" style="margin-top:8px">Đếm lượt khách bấm vào web và số lần bấm "Sao chép và Dán vào inbox". Dữ liệu đồng bộ trực tiếp máy chủ.</p>
+      <p class="set__hint" style="margin-top:8px">Đếm lượt khách vào web và số lần bấm "Sao chép và Dán vào inbox". Dữ liệu đồng bộ trực tiếp máy chủ.</p>
     </div>
 
     <div class="set__sec">
@@ -2323,7 +2425,10 @@
 
     <div class="set__sec">
       <div class="set__label">Thay đổi món</div>
-      <button class="set__btn" id="setResetMenu" type="button">🔁 Khôi phục 6 món mặc định</button>
+      <button class="set__btn" id="setResetMenu" type="button">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-1px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Khôi phục 6 món mặc định
+      </button>
     </div>
 
     <div class="set__sec">
@@ -3870,14 +3975,15 @@
   // Nút chỉ mở khi khách đã kéo ít nhất 1 mâm vào lịch (render() gọi hàm này
   // mỗi lần kéo/thêm/bớt món).
   // ================= THANH TIẾN TRÌNH ĐẶT MÂM =================
-  // Chia 100% thành hai phần:
-  //   52% — đã có ít nhất 1 mâm trong lịch (tuần này HOẶC tuần sau)
-  //   48% — 6 ô thông tin đơn (Số người ăn, Số điện thoại, Ngày nhận, Giờ nhận, Địa chỉ, Ghi chú)
-  //          chia đều, mỗi ô 8%.
+  // Chia 100% thành hai phần logic cân đối:
+  //   50% — đã có ít nhất 1 mâm trong lịch (tuần này HOẶC tuần sau)
+  //   50% — 5 ô thông tin đơn bắt buộc:
+  //          (Số người ăn, Số điện thoại, Ngày nhận, Giờ nhận, Địa chỉ), mỗi ô 10%.
+  //          (Mục "Ghi chú" là tùy chọn nên không tính % vào progress bar).
   // Ô được tính là "đã điền" khi có ≥1 ký tự hoặc đã chọn xong (Ngày / Giờ).
   // Thanh TỤT khi khách xóa mâm hoặc xóa nội dung một ô: phản ánh đúng trạng thái đơn.
-  var PROG_TRAY_PCT = 52;
-  var PROG_FIELDS = ["cPeople", "cPhone", "cDate", "cTime", "cAddress", "cNote"];
+  var PROG_TRAY_PCT = 50;
+  var PROG_FIELDS = ["cPeople", "cPhone", "cDate", "cTime", "cAddress"];
   var progEl   = document.getElementById("prog");
   var progFill = document.getElementById("progFill");
   var progPct  = document.getElementById("progPct");
@@ -3895,10 +4001,10 @@
       var el = document.getElementById(id);
       if(el && String(el.value || "").trim() !== "") filled++;
     });
-    var fieldPct = filled * (48 / PROG_FIELDS.length);
+    var fieldPct = filled * ((100 - PROG_TRAY_PCT) / PROG_FIELDS.length);
     pct += fieldPct;
 
-    var shown = Math.round(pct);
+    var shown = Math.min(100, Math.round(pct));
     progFill.style.width = shown + "%";
     progPct.textContent = shown + "%";
     progPct.classList.remove("pct-bounce");
@@ -4133,14 +4239,20 @@
       if(USE_SUPABASE){
         var dbKey = (eventName === "order_click") ? "order_clicks" : "page_views";
         return SUPABASE.rpc("increment_stat", { p_key: dbKey, p_n: 1 })
+          .then(function(res){
+            if(res.error) throw res.error;
+            var num = parseInt(res.data, 10);
+            return isNaN(num) ? 1 : num;
+          })
           .catch(function(){
             return SUPABASE.from("state").select("value").eq("key", dbKey).maybeSingle()
               .then(function(st){
                 var val = (st && st.data && st.data.value != null) ? parseInt(st.data.value, 10) : 0;
                 var next = val + 1;
-                return SUPABASE.from("state").upsert({ key: dbKey, value: String(next) }, { onConflict: "key" });
+                return SUPABASE.from("state").upsert({ key: dbKey, value: String(next) }, { onConflict: "key" })
+                  .then(function(){ return next; });
               });
-          }).catch(function(){});
+          });
       }
       return fetch("/api/track", {
         method: "POST",
@@ -4158,23 +4270,26 @@
         ]).then(function(res){
           var pv = (res[0] && res[0].data && res[0].data.value != null) ? parseInt(res[0].data.value, 10) : 0;
           var oc = (res[1] && res[1].data && res[1].data.value != null) ? parseInt(res[1].data.value, 10) : 0;
-          var ml = (res[2] && res[2].data && res[2].data.value != null) ? parseInt(res[2].data.value, 10) : 0;
+          var ml = (res[2] && res[2].data && res[2].data.value != null) ? parseInt(res[2].data.value, 10) : currentMeals;
+          if(pv < oc) pv = oc;
           return { page_views: pv, order_clicks: oc, meals: ml };
         }).catch(function(){
           var pv = parseInt(localStorage.getItem("mamcom.stats.page_view") || "0", 10);
           var oc = parseInt(localStorage.getItem("mamcom.stats.order_click") || "0", 10);
+          if(pv < oc) pv = oc;
           return { page_views: pv, order_clicks: oc, meals: currentMeals };
         });
       }
       return fetch("/api/state").then(function(r){ return r.json(); }).then(function(d){
-        return {
-          page_views: (d && typeof d.page_views === "number") ? d.page_views : 0,
-          order_clicks: (d && typeof d.order_clicks === "number") ? d.order_clicks : 0,
-          meals: (d && typeof d.meals === "number") ? d.meals : currentMeals
-        };
+        var pv = (d && typeof d.page_views === "number") ? d.page_views : 0;
+        var oc = (d && typeof d.order_clicks === "number") ? d.order_clicks : 0;
+        var ml = (d && typeof d.meals === "number") ? d.meals : currentMeals;
+        if(pv < oc) pv = oc;
+        return { page_views: pv, order_clicks: oc, meals: ml };
       }).catch(function(){
         var pv = parseInt(localStorage.getItem("mamcom.stats.page_view") || "0", 10);
         var oc = parseInt(localStorage.getItem("mamcom.stats.order_click") || "0", 10);
+        if(pv < oc) pv = oc;
         return { page_views: pv, order_clicks: oc, meals: currentMeals };
       });
     },
@@ -4774,11 +4889,14 @@
 
   function trackPageViewOnce(){
     try {
-      var viewed = sessionStorage.getItem("mamcom.session_view");
-      if(!viewed){
-        sessionStorage.setItem("mamcom.session_view", "1");
+      var last = parseInt(sessionStorage.getItem("mamcom.last_view") || "0", 10);
+      var now = Date.now();
+      // Đếm nếu chưa có trong tab này hoặc lần xem gần nhất cách hơn 15 phút
+      if(!last || (now - last) > 15 * 60 * 1000){
         if(sharedStore && typeof sharedStore.trackEvent === "function"){
-          sharedStore.trackEvent("page_view");
+          sharedStore.trackEvent("page_view").then(function(){
+            try { sessionStorage.setItem("mamcom.last_view", String(now)); } catch(e){}
+          }).catch(function(){});
         }
       }
     } catch(e){}
