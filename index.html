@@ -1082,69 +1082,9 @@
     padding: 22px 24px;
     margin-top: 16px;
   }
-  .order__head-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
   .order__head {
     font-size: 16px; font-weight: 800; color: var(--red);
-    margin: 0; display: flex; align-items: center; gap: 7px;
-  }
-  .order__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--red);
-    font-variant-numeric: tabular-nums;
-    background: var(--red-soft);
-    padding: 2.5px 10px;
-    border-radius: var(--radius-pill);
-    border: 1px solid rgba(218, 36, 28, 0.16);
-    box-shadow: 0 1px 3px rgba(218, 36, 28, 0.05);
-    transition: all 0.25s var(--spring-bounce);
-  }
-  .order__badge.is-complete {
-    background: #e8f8ed;
-    color: #1b7a37;
-    border-color: rgba(27, 122, 55, 0.2);
-  }
-  .order__badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--red);
-    box-shadow: 0 0 6px rgba(218, 36, 28, 0.5);
-  }
-  .order__badge.is-complete .order__badge-dot {
-    background: #1b7a37;
-    box-shadow: 0 0 6px rgba(27, 122, 55, 0.5);
-  }
-  .order__prog-track {
-    width: 100%;
-    height: 6px;
-    border-radius: 99px;
-    background: rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    margin-bottom: 14px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
-  }
-  .order__prog-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 99px;
-    background: linear-gradient(90deg, #da241c 0%, #e62d24 60%, #ff453a 100%);
-    box-shadow: 0 1px 6px rgba(218, 36, 28, 0.35);
-    transition: width 0.38s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .order__badge.is-complete + .order__prog-track .order__prog-fill,
-  .order__prog-fill.is-complete {
-    background: linear-gradient(90deg, #da241c 0%, #ff453a 70%, #ffdf00 100%);
-    box-shadow: 0 0 12px rgba(255, 223, 0, 0.55);
+    margin: 0 0 14px; display: flex; align-items: center; gap: 7px;
   }
   .order__grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
@@ -1207,19 +1147,61 @@
     display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px;
   }
   .order__guide {
-    width: 100%; margin: 0 0 4px; padding: 11px 15px;
-    font-size: 12.5px; line-height: 1.5; color: var(--ink); font-weight: 600;
-    background: rgba(255, 253, 230, 0.9);
-    border-left: 4px solid var(--red); border-radius: 10px;
-    border-top: 1px solid rgba(235, 225, 200, 0.7);
-    border-right: 1px solid rgba(235, 225, 200, 0.7);
-    border-bottom: 1px solid rgba(235, 225, 200, 0.7);
+    width: 100%;
+    margin: 0 0 6px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(226, 216, 206, 0.8);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px -4px rgba(70, 30, 20, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    box-sizing: border-box;
+    transition: all 0.2s ease;
   }
-  .order__guide b { color: var(--red); font-weight: 800; }
-  .order__guide .pdown { display: inline-block; animation: pdownBob 1.2s ease-in-out infinite; }
+  .order__guide-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--red-soft);
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(218, 36, 28, 0.12);
+  }
+  .order__guide-text {
+    flex: 1;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--ink-light);
+    font-weight: 500;
+    letter-spacing: -0.15px;
+  }
+  .order__guide-hl {
+    color: var(--red);
+    font-weight: 800;
+    background: var(--red-soft);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(218, 36, 28, 0.16);
+    box-shadow: 0 1px 2px rgba(218, 36, 28, 0.05);
+    display: inline-block;
+    margin-left: 3px;
+    letter-spacing: -0.1px;
+  }
+  .order__guide .pdown {
+    display: inline-block;
+    margin: 0 3px;
+    animation: pdownBob 1.4s ease-in-out infinite;
+  }
   @keyframes pdownBob {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(3px); }
+    50% { transform: translateY(2.5px); }
   }
   @media (prefers-reduced-motion: reduce) {
     .order__guide .pdown { animation: none; }
@@ -1982,6 +1964,28 @@
     .chip__x { width: 16px; height: 16px; font-size: 10px; }
     .panel, .order, .saved, .qa, .rev, .orders { border-radius: 20px; padding: 16px 14px; }
     .order__grid { grid-template-columns: 1fr; gap: 10px; }
+    .order__guide {
+      padding: 9px 12px !important;
+      gap: 8px !important;
+      border-radius: 12px !important;
+    }
+    .order__guide-icon {
+      width: 24px !important;
+      height: 24px !important;
+      border-radius: 7px !important;
+    }
+    .order__guide-icon svg {
+      width: 13px !important;
+      height: 13px !important;
+    }
+    .order__guide-text {
+      font-size: 11.5px !important;
+      line-height: 1.4 !important;
+    }
+    .order__guide-hl {
+      font-size: 11px !important;
+      padding: 1.5px 6px !important;
+    }
     
     /* 3 NÚT MẠNG XÃ HỘI TRÊN ĐIỆN THOẠI: INSTAGRAM & TIKTOK 1 HÀNG, THREADS HÀNG DƯỚI CÙNG KÍCH CỠ */
     .order__social-apps {
@@ -2153,7 +2157,7 @@
 
     <div class="flipwrap">
       <div class="flipbox" id="flipbox" aria-live="polite"></div>
-      <div class="flip-label"><span id="mealsCount">23</span> mâm cơm gia đình<br>đã được Mâm Cơm chuẩn bị ❤️</div>
+      <div class="flip-label"><span id="mealsCount">23</span> mâm cơm gia đình<br>đã được Mâm Cơm chuẩn bị</div>
     </div>
 
   </header>
@@ -2218,16 +2222,7 @@
 
       <!-- CUSTOMER INFO -->
       <form class="order" id="orderForm" autocomplete="off">
-        <div class="order__head-bar">
-          <h3 class="order__head">Thông tin đơn</h3>
-          <div class="order__badge" id="orderHeadBadge" aria-live="polite">
-            <span class="order__badge-dot"></span>
-            <span id="orderHeadPct">0%</span>
-          </div>
-        </div>
-        <div class="order__prog-track" aria-hidden="true">
-          <div class="order__prog-fill" id="orderHeadFill"></div>
-        </div>
+        <h3 class="order__head">Thông tin đơn</h3>
         <div class="order__grid">
           <label class="order__field">
             <span>Số người ăn</span>
@@ -2258,7 +2253,12 @@
             <span class="order__total__calc" id="orderTotalCalc">49k × 0 người</span>
           </div>
           <div class="order__field--wide order__submit">
-            <p class="order__guide">Bấm nút bên dưới<span class="pdown">👇</span> hệ thống sẽ tự copy đơn, bạn hãy <b>DÁN vào inbox Mâm Cơm nhé</b></p>
+            <div class="order__guide">
+              <span class="order__guide-icon" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              </span>
+              <span class="order__guide-text">Bấm nút bên dưới<span class="pdown">👇</span> hệ thống sẽ tự copy đơn, bạn hãy <b class="order__guide-hl">DÁN vào inbox Mâm Cơm nhé</b></span>
+            </div>
             <button class="btn btn--primary order__send" id="orderInboxBtn" type="button">📋 Sao chép và Dán vào Inbox</button>
             <p class="order__needTray" id="orderNeedTray">Hãy kéo ít nhất 1 mâm vào lịch trước khi đặt</p>
             
@@ -3578,9 +3578,6 @@
   var orderForm = document.getElementById("orderForm");
   var isOrderInputFocused = false;
   var progFocusTimer = null;
-  var orderHeadFill  = document.getElementById("orderHeadFill");
-  var orderHeadPct   = document.getElementById("orderHeadPct");
-  var orderHeadBadge = document.getElementById("orderHeadBadge");
 
   // ================= DYNAMIC VIEWPORT & KEYBOARD TRACKING CHO PROGRESS BAR =================
   // Đảm bảo thanh tiến trình LUÔN LUÔN hiển thị trên màn hình điện thoại ở bất kỳ tình huống nào,
@@ -4198,17 +4195,6 @@
 
     if(progTrack) progTrack.setAttribute("aria-valuenow", String(shown));
 
-    // Đồng bộ với thanh tiến trình trực tiếp trong form "Thông tin đơn"
-    if(orderHeadFill) orderHeadFill.style.width = shown + "%";
-    if(orderHeadPct) orderHeadPct.textContent = shown + "%";
-    if(orderHeadBadge){
-      if(shown >= 100){
-        orderHeadBadge.classList.add("is-complete");
-      }else{
-        orderHeadBadge.classList.remove("is-complete");
-      }
-    }
-
     if(shown >= 100){
       progEl.classList.add("is-complete");
       progHint.textContent = "Ấn “Sao chép và Dán vào inbox” để gửi đơn nhé!";
@@ -4257,6 +4243,7 @@
 
   function openSocialApp(appScheme, webUrl, androidIntent){
     // Tự động sao chép đơn vào clipboard nếu khách đã lên lịch mâm mà chưa ấn copy
+    // (Lưu ý: Không tăng số mâm lật tay ở đây - bảng điểm chỉ tăng khi bấm nút "Sao chép và Dán vào Inbox")
     try{
       if(totalTraysAllWeeks() > 0){
         var text = buildText();
@@ -4264,7 +4251,6 @@
         if(navigator.clipboard && navigator.clipboard.writeText){
           navigator.clipboard.writeText(text).catch(function(){});
         }
-        bumpMealsOnce();
       }
     }catch(e){}
 
