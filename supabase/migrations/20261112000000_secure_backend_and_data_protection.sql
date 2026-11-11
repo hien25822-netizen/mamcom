@@ -111,7 +111,7 @@ CREATE OR REPLACE FUNCTION public.admin_setup_initial_pin(p_pin text)
 RETURNS boolean
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, pg_temp
+SET search_path = public, extensions, pg_temp
 AS $$
 BEGIN
   IF char_length(trim(p_pin)) < 4 THEN
@@ -121,7 +121,7 @@ BEGIN
     RAISE EXCEPTION 'Mã PIN đã được thiết lập trước đó.';
   END IF;
   INSERT INTO public.admin_auth (id, pin_hash, failed_attempts, updated_at)
-  VALUES (1, crypt(trim(p_pin), gen_salt('bf', 10)), 0, now());
+  VALUES (1, extensions.crypt(trim(p_pin), extensions.gen_salt('bf', 8)), 0, now());
   INSERT INTO public.audit_logs (action, details)
   VALUES ('admin_setup_initial_pin', jsonb_build_object('time', now()));
   RETURN true;
@@ -132,7 +132,7 @@ CREATE OR REPLACE FUNCTION public.admin_verify_pin(p_pin text)
 RETURNS boolean
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, pg_temp
+SET search_path = public, extensions, pg_temp
 AS $$
 DECLARE
   v_hash text;
@@ -148,7 +148,7 @@ BEGIN
   IF v_hash IS NULL THEN
     IF char_length(trim(p_pin)) >= 4 THEN
       INSERT INTO public.admin_auth (id, pin_hash, failed_attempts, updated_at)
-      VALUES (1, crypt(trim(p_pin), gen_salt('bf', 10)), 0, now())
+      VALUES (1, extensions.crypt(trim(p_pin), extensions.gen_salt('bf', 8)), 0, now())
       ON CONFLICT (id) DO NOTHING;
       RETURN true;
     ELSE
@@ -160,7 +160,7 @@ BEGIN
     RAISE EXCEPTION 'PIN bị khóa tạm thời do nhập sai nhiều lần. Hãy đợi 10 phút.';
   END IF;
 
-  v_ok := (v_hash = crypt(trim(p_pin), v_hash));
+  v_ok := (v_hash = extensions.crypt(trim(p_pin), v_hash));
 
   IF v_ok THEN
     UPDATE public.admin_auth
@@ -190,7 +190,7 @@ CREATE OR REPLACE FUNCTION public.admin_change_pin(p_old_pin text, p_new_pin tex
 RETURNS boolean
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, pg_temp
+SET search_path = public, extensions, pg_temp
 AS $$
 BEGIN
   IF NOT public.admin_verify_pin(p_old_pin) THEN
@@ -200,7 +200,7 @@ BEGIN
     RAISE EXCEPTION 'Mã PIN mới phải có ít nhất 4 ký tự.';
   END IF;
   UPDATE public.admin_auth
-     SET pin_hash = crypt(trim(p_new_pin), gen_salt('bf', 10)),
+     SET pin_hash = extensions.crypt(trim(p_new_pin), extensions.gen_salt('bf', 8)),
          failed_attempts = 0,
          locked_until = NULL,
          updated_at = now()
