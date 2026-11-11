@@ -55,22 +55,42 @@ def init_db():
         row = c.execute("SELECT value FROM state WHERE key='meals'").fetchone()
         if row is None:
             c.execute("INSERT INTO state(key, value) VALUES('meals', ?)", (str(START_MEALS),))
+        # Seed page_views and order_clicks counters
+        row = c.execute("SELECT value FROM state WHERE key='page_views'").fetchone()
+        if row is None:
+            c.execute("INSERT INTO state(key, value) VALUES('page_views', '0')")
+        row = c.execute("SELECT value FROM state WHERE key='order_clicks'").fetchone()
+        if row is None:
+            c.execute("INSERT INTO state(key, value) VALUES('order_clicks', '0')")
 
 
-def get_meals(conn):
-    row = conn.execute("SELECT value FROM state WHERE key='meals'").fetchone()
-    return int(row[0]) if row else START_MEALS
+def get_stat(conn, key, default=0):
+    row = conn.execute("SELECT value FROM state WHERE key=?", (key,)).fetchone()
+    if row is None:
+        return default
+    try:
+        return int(row[0])
+    except (ValueError, TypeError):
+        return default
 
 
-def add_meals(conn, n):
-    current = get_meals(conn) + max(0, int(n))
+def add_stat(conn, key, n=1):
+    current = get_stat(conn, key, 0) + max(0, int(n))
     conn.execute(
-        "INSERT INTO state(key, value) VALUES('meals', ?)"
+        "INSERT INTO state(key, value) VALUES(?, ?)"
         " ON CONFLICT(key) DO UPDATE SET value=excluded.value",
-        (str(current),),
+        (key, str(current)),
     )
     conn.commit()
     return current
+
+
+def get_meals(conn):
+    return get_stat(conn, "meals", START_MEALS)
+
+
+def add_meals(conn, n):
+    return add_stat(conn, "meals", n)
 
 
 def list_comments(conn):
@@ -123,7 +143,12 @@ class Handler(BaseHTTPRequestHandler):
             with LOCK, get_db() as c:
                 self._json(
                     200,
-                    {"meals": get_meals(c), "comments": list_comments(c)},
+                    {
+                        "meals": get_meals(c),
+                        "comments": list_comments(c),
+                        "page_views": get_stat(c, "page_views", 0),
+                        "order_clicks": get_stat(c, "order_clicks", 0),
+                    },
                 )
             return
         # Default to the single-file app.
@@ -158,6 +183,22 @@ class Handler(BaseHTTPRequestHandler):
             with LOCK, get_db() as c:
                 total = add_meals(c, data.get("add", 0))
             self._json(200, {"meals": total})
+            return
+        if path == "/api/track":
+            event = data.get("event")
+            with LOCK, get_db() as c:
+                if event == "page_view":
+                    add_stat(c, "page_views", 1)
+                elif event == "order_click":
+                    add_stat(c, "order_clicks", 1)
+                self._json(
+                    200,
+                    {
+                        "page_views": get_stat(c, "page_views", 0),
+                        "order_clicks": get_stat(c, "order_clicks", 0),
+                        "meals": get_meals(c),
+                    },
+                )
             return
         if path == "/api/comment":
             rating = int(data.get("rating", 0))
