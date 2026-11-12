@@ -82,7 +82,8 @@ def init_db():
         c.execute(
             "CREATE TABLE IF NOT EXISTS admin_auth("
             " id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),"
-            " pin_hash TEXT NOT NULL)"
+            " pin_hash TEXT NOT NULL,"
+            " last_login_at TEXT)"
         )
 
         # Seed the meal counter only once, so it starts at 23 (or higher).
@@ -158,7 +159,14 @@ def verify_pin(conn, pin: str) -> bool:
         conn.execute("INSERT INTO admin_auth(id, pin_hash) VALUES(1, ?)", (h,))
         conn.commit()
         return True
-    return row[0] == hash_pin(pin)
+    if row[0] == hash_pin(pin):
+        try:
+            conn.execute("UPDATE admin_auth SET last_login_at = ? WHERE id = 1", (str(int(time.time())),))
+            conn.commit()
+        except Exception:
+            pass
+        return True
+    return False
 
 
 def list_orders(conn):

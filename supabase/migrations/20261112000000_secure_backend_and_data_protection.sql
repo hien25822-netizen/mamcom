@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS public.admin_auth (
   pin_hash text NOT NULL,
   failed_attempts int NOT NULL DEFAULT 0,
   locked_until timestamptz,
+  last_login_at timestamptz,
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE public.admin_auth ENABLE ROW LEVEL SECURITY;
@@ -164,7 +165,10 @@ BEGIN
 
   IF v_ok THEN
     UPDATE public.admin_auth
-       SET failed_attempts = 0, locked_until = NULL, updated_at = now()
+       SET failed_attempts = 0,
+           locked_until = NULL,
+           last_login_at = now(),
+           updated_at = now()
      WHERE id = 1;
     RETURN true;
   ELSE
