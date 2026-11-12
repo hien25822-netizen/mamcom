@@ -2847,6 +2847,26 @@
         <p class="set__hint" style="margin-top:6px">Tải xuống gói snapshot gồm toàn bộ đơn hàng, đánh giá, thống kê và menu để lưu trữ dự phòng.</p>
       </div>
 
+      <div class="set__sec">
+        <div class="set__label">Đổi mã PIN Quản trị</div>
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:320px;">
+          <input class="set__input" id="setOldPin" type="password" inputmode="numeric" placeholder="Mã PIN hiện tại">
+          <input class="set__input" id="setNewPin" type="password" inputmode="numeric" placeholder="Mã PIN mới (ít nhất 4 số)">
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button class="btn btn--primary" id="btnDoChangePin" type="button" style="padding:7px 16px;font-size:12.5px;border-radius:10px;">Lưu mã PIN mới</button>
+            <span class="set__hint" id="setPinChangeMsg" style="margin:0;font-weight:600;"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Phiên đăng nhập trên thiết bị</div>
+        <button class="link-btn" id="btnLogoutOwner" type="button" style="color:#da241c;font-weight:700;font-size:13px;">
+          🔒 Đăng xuất khỏi thiết bị này
+        </button>
+        <p class="set__hint" style="margin-top:6px">Khi đăng nhập, hệ thống sẽ tự động ghi nhớ phiên chủ an toàn trên thiết bị này kể cả khi làm mới trang hoặc cập nhật web.</p>
+      </div>
+
       <div class="set__security-card">
         <div class="set__security-icon">🛡️</div>
         <div class="set__security-text">
@@ -3163,7 +3183,10 @@
     ownerUnlocked = true;
     if(pin){
       currentOwnerPin = pin;
-      try { sessionStorage.setItem("mamcom.ownerPin.session", pin); } catch(e){}
+      try {
+        sessionStorage.setItem("mamcom.ownerPin.session", pin);
+        localStorage.setItem("mamcom.ownerPin.session", pin);
+      } catch(e){}
     }
     var ownerBar = document.getElementById("ownerStatusBar");
     if(ownerBar) ownerBar.hidden = false;
@@ -3176,6 +3199,44 @@
     }
     var menuFoot = document.querySelector(".menu__foot");
     if(menuFoot) menuFoot.hidden = false;
+  }
+  function logoutOwner(){
+    ownerUnlocked = false;
+    currentOwnerPin = "";
+    try {
+      sessionStorage.removeItem("mamcom.ownerPin.session");
+      localStorage.removeItem("mamcom.ownerPin.session");
+    } catch(e){}
+    var ownerBar = document.getElementById("ownerStatusBar");
+    if(ownerBar) ownerBar.hidden = true;
+    closeSettings();
+    if(typeof renderReviews === "function") renderReviews(allComments);
+    if(typeof buildMenu === "function" && typeof menuEl !== "undefined"){
+      buildMenu();
+      render();
+    }
+    var menuFoot = document.querySelector(".menu__foot");
+    if(menuFoot) menuFoot.hidden = true;
+  }
+  function tryAutoUnlockOwner(){
+    var savedPin = "";
+    try {
+      savedPin = sessionStorage.getItem("mamcom.ownerPin.session") ||
+                 localStorage.getItem("mamcom.ownerPin.session") || "";
+    } catch(e){}
+    if(!savedPin || savedPin.length < 4) return;
+    // Mở khóa ngay lập tức để chủ thao tác mượt mà không bị trễ khi tải lại trang
+    unlockOwner(savedPin);
+    // Âm thầm kiểm tra lại với PostgreSQL Supabase để bảo mật
+    if(sharedStore && typeof sharedStore.checkPin === "function"){
+      sharedStore.checkPin(savedPin).then(function(ok){
+        if(!ok) logoutOwner();
+      }).catch(function(err){
+        if(err && err.message && (err.message.indexOf("khóa") !== -1 || err.message.indexOf("sai") !== -1)){
+          logoutOwner();
+        }
+      });
+    }
   }
   function isOwner(){ return ownerUnlocked; }
 
@@ -3807,25 +3868,40 @@
   function setPinMode(mode){
     pinMode = mode;
     if(mode === "create"){
-      pinLabel1.textContent = "Tạo PIN";
+      pinTitle.textContent = "Thiết lập PIN chủ";
+      pinLabel1.textContent = "Mã PIN mới";
       pinField2.hidden = false;
-      pinSubmit.textContent = "Tạo PIN";
+      pinSubmit.textContent = "Lưu mã PIN";
     } else {
-      pinLabel1.textContent = "PIN";
+      pinTitle.textContent = "PIN của chủ";
+      pinLabel1.textContent = "Mã PIN";
       pinField2.hidden = true;
       pinSubmit.textContent = "Xác nhận";
     }
   }
 
   function requestPin(onOk, msg){
+    if(isOwner()){
+      if(onOk) onOk(true);
+      return;
+    }
     pinTitle.textContent = "PIN của chủ";
-    pinText.textContent = msg || "Nhập PIN để tiếp tục.";
+    pinText.textContent = msg || "Nhập mã PIN để truy cập Cài đặt chủ Mâm Cơm.";
+    // Luôn hiển thị chế độ xác thực PIN ngay lập tức, không để trễ mạng làm chớp giao diện
+    setPinMode("verify");
+    pinInput.value = ""; pinConfirm.value = "";
+    pinModal.classList.add("show");
+    pinModal._onOk = onOk || null;
+    setTimeout(function(){ pinInput.focus(); }, 40);
+
+    // Chỉ chuyển sang chế độ tạo mới nếu máy chủ xác nhận 100% chưa từng có mã PIN nào
     sharedStore.hasPin().then(function(hasPin){
-      setPinMode(hasPin ? "verify" : "create");
-      pinInput.value = ""; pinConfirm.value = "";
-      pinModal.classList.add("show");
-      pinModal._onOk = onOk || null;
-      setTimeout(function(){ pinInput.focus(); }, 30);
+      if(!hasPin){
+        setPinMode("create");
+        pinText.textContent = "Chưa có mã PIN. Vui lòng thiết lập mã PIN chủ (ít nhất 4 chữ số).";
+      }
+    }).catch(function(){
+      setPinMode("verify");
     });
   }
   function closePin(){
@@ -3843,10 +3919,10 @@
     var val = pinInput.value.trim();
     if(pinMode === "create"){
       if(val.length < 4){
-        pinText.textContent = "PIN phải có ít nhất 4 số."; pinInput.focus(); return;
+        pinText.textContent = "Mã PIN phải có ít nhất 4 chữ số."; pinInput.focus(); return;
       }
       if(val !== pinConfirm.value.trim()){
-        pinText.textContent = "Xác nhận không khớp PIN. Nhập lại.";
+        pinText.textContent = "Xác nhận mã PIN không khớp. Vui lòng nhập lại.";
         pinConfirm.value = ""; pinConfirm.focus(); return;
       }
       pinSubmit.disabled = true;
@@ -3858,8 +3934,15 @@
         if(cb) cb(true);
       }).catch(function(err){
         pinSubmit.disabled = false;
-        setPinMode("create");
-        pinText.textContent = "Lỗi tạo PIN: " + ((err && err.message) || err);
+        var msg = (err && err.message) || String(err);
+        if(msg.indexOf("đã được thiết lập") !== -1){
+          // Máy chủ đã có PIN -> tự động chuyển ngay về chế độ xác nhận PIN
+          setPinMode("verify");
+          pinText.textContent = "Mã PIN đã được lưu an toàn trước đó. Vui lòng nhập mã PIN của bạn:";
+          pinInput.value = ""; pinInput.focus();
+        } else {
+          pinText.textContent = "Lỗi: " + msg;
+        }
       });
     } else {
       if(!val){ pinInput.focus(); return; }
@@ -3873,13 +3956,13 @@
           var cb = pinModal._onOk; closePin();
           if(cb) cb(true);
         } else {
-          pinText.textContent = "PIN chưa đúng, thử lại.";
+          pinText.textContent = "Mã PIN chưa đúng, vui lòng thử lại.";
           pinInput.value = ""; pinInput.focus();
         }
       }).catch(function(err){
         pinSubmit.disabled = false;
         pinSubmit.textContent = "Xác nhận";
-        pinText.textContent = (err && err.message) ? err.message : "PIN chưa đúng hoặc bị khóa tạm thời.";
+        pinText.textContent = (err && err.message) ? err.message : "Mã PIN chưa đúng hoặc tài khoản bị khóa tạm thời.";
         pinInput.value = ""; pinInput.focus();
       });
     }
@@ -4845,21 +4928,31 @@
       if(USE_SUPABASE){
         return SUPABASE.rpc("admin_has_pin").then(function(res){
           if(res.error) throw res.error;
-          return res.data === true;
+          var has = res.data === true;
+          try { localStorage.setItem("mamcom.has_pin", has ? "1" : "0"); } catch(e){}
+          return has;
         }).catch(function(){
-          return localStorage.getItem("mamcom.ownerPin.v1") != null;
+          var cached = localStorage.getItem("mamcom.has_pin");
+          return cached !== "0"; // Mặc định an toàn: máy chủ đã có PIN
         });
       }
       return fetch("/api/admin/verify-pin?check=1").then(function(r){ return r.json(); })
-        .then(function(d){ return !!(d && d.has_pin); })
-        .catch(function(){ return localStorage.getItem("mamcom.ownerPin.v1") != null; });
+        .then(function(d){
+          var has = !!(d && d.has_pin);
+          try { localStorage.setItem("mamcom.has_pin", has ? "1" : "0"); } catch(e){}
+          return has;
+        })
+        .catch(function(){
+          var cached = localStorage.getItem("mamcom.has_pin");
+          return cached !== "0";
+        });
     },
 
     setupPin: function(pin){
-      try { localStorage.setItem("mamcom.ownerPin.v1", pin); } catch(e){}
       if(USE_SUPABASE){
         return SUPABASE.rpc("admin_setup_initial_pin", { p_pin: pin }).then(function(res){
           if(res.error) throw res.error;
+          try { localStorage.setItem("mamcom.has_pin", "1"); } catch(e){}
           return true;
         });
       }
@@ -4867,7 +4960,10 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin: pin, setup: true })
-      }).then(function(r){ return r.json(); }).catch(function(){ return true; });
+      }).then(function(r){ return r.json(); }).then(function(){
+        try { localStorage.setItem("mamcom.has_pin", "1"); } catch(e){}
+        return true;
+      });
     },
 
     checkPin: function(pin){
@@ -4875,16 +4971,12 @@
         return SUPABASE.rpc("admin_verify_pin", { p_pin: pin }).then(function(res){
           if(res.error){
             var msg = res.error.message || "";
-            if(msg.indexOf("khóa") !== -1 || msg.indexOf("lock") !== -1){
+            if(msg.indexOf("khóa") !== -1 || msg.indexOf("lock") !== -1 || msg.indexOf("sai 5 lần") !== -1){
               throw new Error("Tài khoản chủ tạm khóa 10 phút do nhập sai quá 5 lần!");
             }
             throw res.error;
           }
           return res.data === true;
-        }).catch(function(err){
-          if(err && err.message && err.message.indexOf("khóa") !== -1) throw err;
-          var saved = localStorage.getItem("mamcom.ownerPin.v1");
-          return pin === (saved || "1234");
         });
       }
       return fetch("/api/admin/verify-pin", {
@@ -4896,10 +4988,6 @@
         return r.json();
       }).then(function(d){
         return !!(d && d.ok);
-      }).catch(function(err){
-        if(err && err.message && err.message.indexOf("khóa") !== -1) throw err;
-        var saved = localStorage.getItem("mamcom.ownerPin.v1");
-        return pin === (saved || "1234");
       });
     },
 
@@ -4907,11 +4995,19 @@
       if(USE_SUPABASE){
         return SUPABASE.rpc("admin_change_pin", { p_old_pin: oldPin, p_new_pin: newPin }).then(function(res){
           if(res.error) throw res.error;
-          try { localStorage.setItem("mamcom.ownerPin.v1", newPin); } catch(e){}
+          try {
+            sessionStorage.setItem("mamcom.ownerPin.session", newPin);
+            localStorage.setItem("mamcom.ownerPin.session", newPin);
+          } catch(e){}
+          currentOwnerPin = newPin;
           return true;
         });
       }
-      try { localStorage.setItem("mamcom.ownerPin.v1", newPin); } catch(e){}
+      try {
+        sessionStorage.setItem("mamcom.ownerPin.session", newPin);
+        localStorage.setItem("mamcom.ownerPin.session", newPin);
+      } catch(e){}
+      currentOwnerPin = newPin;
       return Promise.resolve(true);
     },
 
@@ -5794,6 +5890,57 @@
   loadSharedMenu();
   syncOrdersFromServer();
   trackPageViewOnce();
+  tryAutoUnlockOwner();
+
+  var btnDoChangePin = document.getElementById("btnDoChangePin");
+  var setOldPin = document.getElementById("setOldPin");
+  var setNewPin = document.getElementById("setNewPin");
+  var setPinChangeMsg = document.getElementById("setPinChangeMsg");
+  if(btnDoChangePin){
+    btnDoChangePin.addEventListener("click", function(){
+      var oldP = (setOldPin ? setOldPin.value : "").trim();
+      var newP = (setNewPin ? setNewPin.value : "").trim();
+      if(!oldP){
+        if(setPinChangeMsg){ setPinChangeMsg.style.color = "#da241c"; setPinChangeMsg.textContent = "Nhập PIN hiện tại"; }
+        if(setOldPin) setOldPin.focus();
+        return;
+      }
+      if(newP.length < 4){
+        if(setPinChangeMsg){ setPinChangeMsg.style.color = "#da241c"; setPinChangeMsg.textContent = "PIN mới cần ≥ 4 số"; }
+        if(setNewPin) setNewPin.focus();
+        return;
+      }
+      btnDoChangePin.disabled = true;
+      btnDoChangePin.textContent = "Đang lưu...";
+      sharedStore.changePin(oldP, newP).then(function(){
+        btnDoChangePin.disabled = false;
+        btnDoChangePin.textContent = "Lưu mã PIN mới";
+        if(setOldPin) setOldPin.value = "";
+        if(setNewPin) setNewPin.value = "";
+        if(setPinChangeMsg){
+          setPinChangeMsg.style.color = "#1d8348";
+          setPinChangeMsg.textContent = "✓ Đã đổi PIN thành công!";
+          setTimeout(function(){ setPinChangeMsg.textContent = ""; }, 4000);
+        }
+      }).catch(function(err){
+        btnDoChangePin.disabled = false;
+        btnDoChangePin.textContent = "Lưu mã PIN mới";
+        if(setPinChangeMsg){
+          setPinChangeMsg.style.color = "#da241c";
+          setPinChangeMsg.textContent = (err && err.message) || "Lỗi đổi PIN";
+        }
+      });
+    });
+  }
+
+  var btnLogoutOwner = document.getElementById("btnLogoutOwner");
+  if(btnLogoutOwner){
+    btnLogoutOwner.addEventListener("click", function(){
+      if(confirm("Bạn có chắc muốn đăng xuất quyền chủ bếp trên thiết bị này?")){
+        logoutOwner();
+      }
+    });
+  }
 
   // ================= real-time sync (đồng bộ thời gian thực) =================
   // Bộ đếm, menu và đơn hàng đều dùng chung Supabase nên nhiều thiết bị có

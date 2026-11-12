@@ -242,6 +242,13 @@ class Handler(BaseHTTPRequestHandler):
                 )
             return
 
+        if path == "/api/admin/verify-pin":
+            with LOCK, get_db() as c:
+                row = c.execute("SELECT pin_hash FROM admin_auth WHERE id = 1").fetchone()
+                has_pin = bool(row and row[0])
+            self._json(200, {"has_pin": has_pin})
+            return
+
         if path == "/api/admin/backup":
             pin = query.get("pin", [""])[0].strip()
             with LOCK, get_db() as c:
@@ -331,7 +338,18 @@ class Handler(BaseHTTPRequestHandler):
         # ADMIN: verify PIN
         if path == "/api/admin/verify-pin":
             pin = str(data.get("pin", "")).strip()
+            is_setup = bool(data.get("setup", False))
             with LOCK, get_db() as c:
+                row = c.execute("SELECT pin_hash FROM admin_auth WHERE id = 1").fetchone()
+                if not row or not row[0]:
+                    if len(pin) >= 4:
+                        h = hash_pin(pin)
+                        c.execute("INSERT OR REPLACE INTO admin_auth(id, pin_hash) VALUES(1, ?)", (h,))
+                        c.commit()
+                        self._json(200, {"ok": True})
+                        return
+                    self._json(400, {"error": "pin must be at least 4 digits"})
+                    return
                 ok = verify_pin(c, pin)
             self._json(200, {"ok": ok})
             return
