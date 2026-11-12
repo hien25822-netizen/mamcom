@@ -356,12 +356,33 @@
     transition: width .25s ease;
   }
 
-  /* ---- BOARD (2 Columns Desktop) ---- */
+  /* ---- BOARD (2 Columns Desktop: Cột trái 360px & Cột trung tâm 1fr) ---- */
   .board {
     display: grid;
     grid-template-columns: 360px 1fr;
     gap: 20px;
     align-items: start;
+  }
+  .board__side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
+  .board__main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
+  .board__side > *,
+  .board__main > * {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .site-foot {
+    grid-column: 1 / -1;
+    width: 100%;
   }
 
   /* ---- MODERN PURE PORCELAIN CARDS (80% Trắng sạch, Viền siêu mảnh, Đổ bóng khuếch tán) ---- */
@@ -2122,7 +2143,21 @@
 
   /* ---- RESPONSIVE MEDIA QUERIES ---- */
   @media (max-width: 820px) {
-    .board { grid-template-columns: 1fr; }
+    .board {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .board__side, .board__main {
+      display: contents;
+    }
+    .panel:not(.calendar-panel) { order: 1; }
+    .calendar-panel             { order: 2; }
+    .order                      { order: 3; }
+    .saved                      { order: 4; }
+    .qa                         { order: 5; }
+    .rev                        { order: 6; }
+    .site-foot                  { order: 7; }
     .wrap { padding: 14px 12px 40px; }
     .saved__breakdown { grid-template-columns: 1fr; }
   }
@@ -2439,9 +2474,10 @@
     </button>
   </div>
 
-  <div class="board">
-    <!-- MENU: square tiles -->
-    <section class="panel">
+    <div class="board">
+    <!-- CỘT BÊN CẠNH TRÁI (Desktop 360px): Mâm 6 món + Câu hỏi thường gặp -->
+    <div class="board__side">
+      <section class="panel">
       <div class="panel__head">
         <h2>Mâm</h2>
         <span class="hint">6 món</span>
@@ -2475,7 +2511,66 @@
     </section>
 
     <!-- LỊCH: Gộp từ "Tuần này" đến 7 ngày trong tuần thành 1 ô "Lịch" đồng bộ -->
-    <section class="panel calendar-panel" id="calendarSection">
+
+      <div class="qa">
+        <h3 class="qa__head">Câu hỏi thường gặp</h3>
+        
+        <details class="qa__item">
+          <summary class="qa__summary">
+            <h4>1 mâm gồm những gì?</h4>
+            <span class="qa__chevron" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </summary>
+          <div class="qa__content">
+            <p>Đầy đủ như trong ảnh và <strong>đúng, kể cả khẩu phần 1 người cũng vậy</strong>.</p>
+          </div>
+        </details>
+
+        <details class="qa__item">
+          <summary class="qa__summary">
+            <h4>Mâm Cơm bán gì?</h4>
+            <span class="qa__chevron" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </summary>
+          <div class="qa__content">
+            <p>Nguyên liệu tươi đã sơ chế sạch, kèm <strong>sốt pha sẵn &amp; công thức</strong> — chỉ 20 phút bật bếp là có mâm cơm nóng hổi!<br>
+            <strong>Mâm Cơm không bán đồ nấu sẵn!</strong></p>
+          </div>
+        </details>
+
+        <details class="qa__item">
+          <summary class="qa__summary">
+            <h4>Đặt hàng Mâm Cơm thế nào?</h4>
+            <span class="qa__chevron" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </summary>
+          <div class="qa__content">
+            <p>Giữ và <strong>kéo món</strong> trong menu vào các ngày bạn muốn ăn trong tuần, sau đó nhập thông tin và ấn
+            <strong>“Sao chép và Dán vào Inbox”</strong> — nội dung đơn tự được sao chép và bạn chỉ việc bấm <strong>Mở Instagram, Tiktok hoặc Threads</strong> để dán thẳng vào inbox Mâm Cơm.<br>
+            Nhận đủ thông tin, Mâm Cơm chuẩn bị đầy đủ và <strong>ship đến tận nhà</strong> cho bạn.</p>
+          </div>
+        </details>
+
+        <details class="qa__item">
+          <summary class="qa__summary">
+            <h4>Khẩu phần chia thế nào?</h4>
+            <span class="qa__chevron" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </summary>
+          <div class="qa__content">
+            <p>Mâm Cơm chia khẩu phần theo số <strong>người ăn</strong> — mỗi người được chia đầy đủ món mặn, món rau và canh, đủ no mà không dư thừa.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- CỘT TRUNG TÂM (Desktop 1fr): Lịch + Thông tin đơn + Tiết kiệm thời gian + Đánh giá của khách -->
+    <div class="board__main">
+      <section class="panel calendar-panel" id="calendarSection">
       <div class="calendar-panel__head panel__head">
         <div class="calendar-panel__title-group">
           <h2>Lịch</h2>
@@ -2490,6 +2585,7 @@
     </section>
 
     <!-- CUSTOMER INFO -->
+
       <form class="order" id="orderForm" autocomplete="off">
         <h3 class="order__head">Thông tin đơn</h3>
         <div class="order__grid">
@@ -2553,6 +2649,7 @@
       </form>
 
       <!-- TIME SAVED -->
+
       <div class="saved" id="savedBox" hidden>
         <div class="saved__header">
           <span class="saved__badge">GIÁ TRỊ THỜI GIAN CỦA BẠN</span>
@@ -2605,62 +2702,6 @@
         </div>
       </div>
 
-      <!-- Q&A -->
-      <div class="qa">
-        <h3 class="qa__head">Câu hỏi thường gặp</h3>
-        
-        <details class="qa__item">
-          <summary class="qa__summary">
-            <h4>1 mâm gồm những gì?</h4>
-            <span class="qa__chevron" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </span>
-          </summary>
-          <div class="qa__content">
-            <p>Đầy đủ như trong ảnh và <strong>đúng, kể cả khẩu phần 1 người cũng vậy</strong>.</p>
-          </div>
-        </details>
-
-        <details class="qa__item">
-          <summary class="qa__summary">
-            <h4>Mâm Cơm bán gì?</h4>
-            <span class="qa__chevron" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </span>
-          </summary>
-          <div class="qa__content">
-            <p>Nguyên liệu tươi đã sơ chế sạch, kèm <strong>sốt pha sẵn &amp; công thức</strong> — chỉ 20 phút bật bếp là có mâm cơm nóng hổi!<br>
-            <strong>Mâm Cơm không bán đồ nấu sẵn!</strong></p>
-          </div>
-        </details>
-
-        <details class="qa__item">
-          <summary class="qa__summary">
-            <h4>Đặt hàng Mâm Cơm thế nào?</h4>
-            <span class="qa__chevron" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </span>
-          </summary>
-          <div class="qa__content">
-            <p>Giữ và <strong>kéo món</strong> trong menu vào các ngày bạn muốn ăn trong tuần, sau đó nhập thông tin và ấn
-            <strong>“Sao chép và Dán vào Inbox”</strong> — nội dung đơn tự được sao chép và bạn chỉ việc bấm <strong>Mở Instagram, Tiktok hoặc Threads</strong> để dán thẳng vào inbox Mâm Cơm.<br>
-            Nhận đủ thông tin, Mâm Cơm chuẩn bị đầy đủ và <strong>ship đến tận nhà</strong> cho bạn.</p>
-          </div>
-        </details>
-
-        <details class="qa__item">
-          <summary class="qa__summary">
-            <h4>Khẩu phần chia thế nào?</h4>
-            <span class="qa__chevron" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </span>
-          </summary>
-          <div class="qa__content">
-            <p>Mâm Cơm chia khẩu phần theo số <strong>người ăn</strong> — mỗi người được chia đầy đủ món mặn, món rau và canh, đủ no mà không dư thừa.</p>
-          </div>
-        </details>
-      </div>
-
       <!-- REVIEWS & RATING -->
       <div class="rev" id="revBox">
         <div class="rev__head">Đánh giá &amp; lời gửi của khách</div>
@@ -2700,9 +2741,10 @@
         </div>
         <ul class="rev__list" id="revList"></ul>
       </div>
-    </section>
+    </div>
 
     <!-- FOOTER: Tinh tế, gọn gàng, có nút mở Quản trị PIN dễ bấm cho mobile -->
+
     <footer class="site-foot">
       <div class="site-foot__brand">
         <span class="site-foot__name">MÂM CƠM</span>
