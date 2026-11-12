@@ -471,48 +471,83 @@
     transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-    /* ---- CATEGORY FILTER BAR (Xuống dòng tự nhiên, không xếp 1 hàng ngang) ---- */
-  .menu__filter-bar {
+    /* ---- CATEGORY FILTER 2 TẦNG (Chính ở trên, Phụ ở dưới, căn lề thẩm mỹ chuẩn Apple) ---- */
+  .menu__filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 12px 14px 6px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    margin-bottom: 4px;
+  }
+  .menu__filter-row {
     display: flex;
     flex-wrap: wrap; /* BẮT BUỘC XUỐNG DÒNG, KHÔNG Ở 1 HÀNG NGANG */
     align-items: center;
     gap: 6px;
-    padding: 0 14px 10px;
-    overflow: visible;
+  }
+  .menu__filter-row--main {
+    gap: 6px;
+  }
+  .menu__filter-row--sub {
+    gap: 5px;
+    padding-top: 1px;
   }
   .menu__filter-btn {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 4px 10px;
+    padding: 5px 11px;
     border-radius: 99px;
     font-size: 11.5px;
     font-weight: 600;
     white-space: nowrap;
-    border: 1px solid var(--cat-border, rgba(0, 0, 0, 0.08));
-    background: var(--cat-bg, #f5f5f7);
-    color: var(--cat-color, #333336);
+    border: 1px solid var(--cat-border, rgba(0, 0, 0, 0.09));
+    background: var(--cat-bg, #f6f6f8);
+    color: var(--cat-color, #2c2c2e);
     cursor: pointer;
-    transition: all 0.18s var(--spring-bounce);
+    transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
     user-select: none;
     -webkit-user-select: none;
+    line-height: 1.25;
   }
   .menu__filter-btn:hover {
     transform: translateY(-1px);
-    border-color: rgba(0, 0, 0, 0.18);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
   .menu__filter-btn:active {
     transform: scale(0.96);
   }
   .menu__filter-btn.is-active {
-    background: #da241c !important;
-    border-color: #da241c !important;
+    background: var(--cat-active-color, #da241c) !important;
+    border-color: var(--cat-active-color, #da241c) !important;
     color: #ffffff !important;
-    box-shadow: 0 3px 10px rgba(218, 36, 28, 0.28);
+    box-shadow: 0 3px 12px rgba(218, 36, 28, 0.28);
   }
   .menu__filter-btn.is-active .menu__filter-count {
-    background: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.3);
     color: #ffffff;
+  }
+  /* Category phụ (Sub-category): thiết kế nhỏ hơn, tinh tế, phân cấp rõ ràng */
+  .menu__filter-btn--sub {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3.5px 9px;
+    border-radius: 99px;
+    background: #fbfbfb;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #48484a;
+  }
+  .menu__filter-btn--sub:hover {
+    background: #f0f0f2;
+    border-color: rgba(0, 0, 0, 0.16);
+  }
+  .menu__filter-btn--sub.is-active {
+    background: #2c2c2e !important;
+    border-color: #2c2c2e !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
   .menu__filter-count {
     font-size: 10px;
@@ -725,7 +760,7 @@
     width: 100%;
     aspect-ratio: 1/1;
     border-radius: 15px; /* Bo góc ảnh bên trong giống card Cafe Lumo */
-    background: rgba(245, 238, 232, 0.8);
+    background: #faf7f2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -737,16 +772,19 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, transparent 60%);
     border-radius: inherit;
   }
   .tile__media img {
     position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; display: block; cursor: zoom-in;
+    object-fit: contain; /* HIỆN ĐẦY ĐỦ KHÔNG BỊ CẮT XÉN */
+    padding: 2px;
+    box-sizing: border-box;
+    display: block; cursor: zoom-in;
     transition: transform 0.32s var(--spring-smooth);
   }
   .tile:hover .tile__media img {
-    transform: scale(1.07);
+    transform: scale(1.05);
   }
   .tile__name {
     flex: 1 1 auto;
@@ -834,10 +872,52 @@
   }
   .editor__upload button:hover { background: var(--red-dark); }
   .editor__hint { font-size: 11px; color: var(--muted); }
+  .editor__field-group { display: grid; gap: 4px; }
+  .editor__color-group { display: grid; gap: 5px; margin-top: 3px; }
+  .editor__color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0 6px;
+  }
+  .editor__color-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    background: var(--swatch-color);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+    padding: 0;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .editor__color-swatch:hover {
+    transform: scale(1.12);
+  }
+  .editor__color-swatch.is-selected {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 2.5px var(--swatch-color), 0 3px 8px rgba(0, 0, 0, 0.25);
+    transform: scale(1.1);
+  }
+  .editor__color-swatch.is-selected::after {
+    content: "✓";
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
   .editor__preview { min-height: 0; margin: 0 0 8px; }
   .editor__preview img {
     max-width: 120px; max-height: 120px; border-radius: 12px;
-    border: 2px solid var(--line); display: none; object-fit: cover;
+    border: 2px solid var(--line); display: none; object-fit: contain;
+    background: #faf7f2;
   }
   .editor__preview.has img { display: block; }
   .tile__media img, .chip__media img { cursor: zoom-in; }
@@ -2525,15 +2605,24 @@
     .panel--menu .panel__head h2 { font-size: 15px !important; }
     .panel--menu .panel__price-badge { font-size: 10px !important; padding: 1.5px 6px !important; }
     .menu__hint { padding: 2px 10px 5px !important; font-size: 11px !important; }
-    .menu__filter-bar {
-      padding: 0 8px 6px !important;
+    .menu__filter-section {
+      padding: 9px 10px 5px !important;
+      gap: 5px !important;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+      margin-bottom: 2px !important;
+    }
+    .menu__filter-row {
       gap: 4px !important;
       flex-wrap: wrap !important;
     }
     .menu__filter-btn {
-      padding: 3px 8px !important;
-      font-size: 10.5px !important;
-      gap: 3.5px !important;
+      padding: 3.5px 8.5px !important;
+      font-size: 11px !important;
+      gap: 4px !important;
+    }
+    .menu__filter-btn--sub {
+      padding: 2.5px 7.5px !important;
+      font-size: 10px !important;
     }
     .menu__filter-count { font-size: 9px !important; padding: 0.5px 3.5px !important; }
     .menu {
@@ -2933,8 +3022,11 @@
         </div>
         <span class="hint">6 món</span>
       </div>
-      <!-- Phân loại món ăn (Category Filter) -->
-      <div class="menu__filter-bar" id="menuFilterBar" role="tablist" aria-label="Lọc món ăn theo loại"></div>
+      <!-- Phân loại món ăn 2 tầng (Category Filter: Chính ở trên, Phụ ở dưới) -->
+      <div class="menu__filter-section" id="menuFilterSection" role="region" aria-label="Bộ lọc món ăn" style="display:none;">
+        <div class="menu__filter-row menu__filter-row--main" id="menuFilterMain" role="tablist" aria-label="Category chính"></div>
+        <div class="menu__filter-row menu__filter-row--sub" id="menuFilterSub" role="tablist" aria-label="Category phụ"></div>
+      </div>
       <p class="menu__hint">Bạn hãy kéo thả "mâm" vào các ngày muốn ăn</p>
       <ul class="menu" id="menu"></ul>
 
@@ -2942,7 +3034,25 @@
       <div class="editor" id="editor" hidden>
         <div class="editor__title">Chỉnh sửa món: <span id="editorDishName"></span></div>
         <label>Tên món<textarea data-f="name" rows="2" maxlength="80" placeholder="vd: Gà chiên mắm thơm, kèm cơm rang"></textarea></label>
-        <label>Phân loại / Từ khóa (Category)<span class="editor__hint"> — Tự nhập các từ khóa phân loại cách nhau bằng dấu phẩy</span><input data-f="categories" type="text" placeholder="Tự nhập từ khóa (vd: Món kho, Canh...)" maxlength="160"></label>
+        <div class="editor__field-group">
+          <label>Category chính (Nhóm món)
+            <span class="editor__hint"> — vd: Cơm nhà, Cơm tây, Món Việt... (chủ tự điền)</span>
+            <input data-f="cat-main" type="text" placeholder="vd: Cơm nhà, Cơm tây..." maxlength="60">
+          </label>
+        </div>
+        <div class="editor__field-group">
+          <label>Category phụ (Thành phần / Kiểu nấu)
+            <span class="editor__hint"> — vd: Heo, Bò, Gà, Canh rau... (cách nhau dấu phẩy)</span>
+            <input data-f="cat-sub" type="text" placeholder="vd: Heo, Bò, Gà, Canh rau..." maxlength="160">
+          </label>
+        </div>
+        <div class="editor__color-group">
+          <label>Màu sắc chủ đạo cho món &amp; phân loại
+            <span class="editor__hint"> — Chọn 1 màu cơ bản để làm nổi bật</span>
+          </label>
+          <div class="editor__color-palette" id="editorColorPalette" role="radiogroup" aria-label="Bảng màu sắc cơ bản"></div>
+          <input type="hidden" data-f="cat-color" value="#DA241C">
+        </div>
         <label>Ảnh món (URL — có thể dùng, hoặc tải lên từ máy)<input data-f="img" type="url" placeholder="https://... hoặc để trống"></label>
         <div class="editor__upload">
           <button type="button" data-act="upload">📷 Tải ảnh từ máy</button>
@@ -3646,7 +3756,7 @@
         var merged = menu.map(function(d, i){
           var cur = DISHES[i] || {};
           if(String(cur.img || "").indexOf("data:") === 0) {
-            d = { name:d.name, emoji:d.emoji, img:cur.img, description:d.description || "" };
+            d = { name:d.name, emoji:d.emoji, img:cur.img, description:d.description || "", categories: d.categories || cur.categories || "" };
           }
           return d;
         });
@@ -3985,104 +4095,212 @@
     window.addEventListener("pointercancel", cancel, true);
   }
 
-    // ================= Category helpers & filter system =================
-  var activeCategory = "all";
+    // ================= Phân loại 2 tầng (Category: Chính ở trên, Phụ ở dưới) & Bảng màu =================
+  var BASE_PALETTE = [
+    { name: "Đỏ Mâm Cơm", color: "#DA241C" },
+    { name: "Cam ấm",     color: "#E65100" },
+    { name: "Vàng nâu",   color: "#D48806" },
+    { name: "Xanh lá",    color: "#2E7D32" },
+    { name: "Xanh dương", color: "#1565C0" },
+    { name: "Tím huế",    color: "#6A1B9A" },
+    { name: "Hồng đào",   color: "#C2185B" },
+    { name: "Xám chì",    color: "#374151" }
+  ];
 
-  function getDishCategories(dish){
-    if(!dish) return [];
-    var c = cleanCategories(dish.categories);
-    if(Array.isArray(c)) return c;
-    if(typeof c === "string" && c.trim()){
-      return c.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+  function parseDishCategory(raw){
+    if(!raw) return { main: "", sub: [], rawSub: "", color: "#DA241C" };
+    if(typeof raw === "object" && raw !== null){
+      var m = String(raw.main || "").trim();
+      var rawS = String(raw.sub || "").trim();
+      var subArr = Array.isArray(raw.sub) ? raw.sub : (rawS ? rawS.split(",").map(function(s){ return s.trim(); }).filter(Boolean) : []);
+      var col = String(raw.color || "#DA241C").trim() || "#DA241C";
+      return { main: m, sub: subArr, rawSub: Array.isArray(raw.sub) ? raw.sub.join(", ") : rawS, color: col };
     }
-    return [];
+    if(typeof raw === "string"){
+      var trimmed = raw.trim();
+      if(!trimmed) return { main: "", sub: [], rawSub: "", color: "#DA241C" };
+      if(trimmed.charAt(0) === "{" && trimmed.charAt(trimmed.length - 1) === "}"){
+        try {
+          var parsed = JSON.parse(trimmed);
+          var m = String(parsed.main || "").trim();
+          var rawS = String(parsed.sub || "").trim();
+          var subArr = Array.isArray(parsed.sub) ? parsed.sub : (rawS ? rawS.split(",").map(function(s){ return s.trim(); }).filter(Boolean) : []);
+          var col = String(parsed.color || "#DA241C").trim() || "#DA241C";
+          return { main: m, sub: subArr, rawSub: Array.isArray(parsed.sub) ? parsed.sub.join(", ") : rawS, color: col };
+        } catch(e){}
+      }
+      // Tương thích ngược: chuỗi văn bản cũ (vd: "Thịt lợn, Canh rau" hoặc "Heo")
+      var parts = trimmed.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+      return { main: "", sub: parts, rawSub: trimmed, color: "#DA241C" };
+    }
+    return { main: "", sub: [], rawSub: "", color: "#DA241C" };
   }
 
-  function getAllCategories(){
-    var map = {};
-    (DISHES || []).forEach(function(d){
-      var cats = getDishCategories(d);
-      cats.forEach(function(c){
-        if(c) map[c] = (map[c] || 0) + 1;
-      });
-    });
-    return map;
+  function serializeDishCategory(main, sub, color){
+    var m = String(main || "").trim();
+    var s = String(sub || "").trim();
+    var c = String(color || "#DA241C").trim() || "#DA241C";
+    if(!m && !s) return "";
+    return JSON.stringify({ main: m, sub: s, color: c });
   }
 
-  function getCategoryMeta(cat){
-    var lower = String(cat || "").toLowerCase();
-    if(lower.indexOf("lợn") !== -1 || lower.indexOf("heo") !== -1 || lower.indexOf("pork") !== -1){
-      return { icon: "🥩", bg: "#fff1f0", border: "#ffccc7", color: "#cf1322" };
-    }
-    if(lower.indexOf("gà") !== -1 || lower.indexOf("chicken") !== -1){
-      return { icon: "🍗", bg: "#fff7e6", border: "#ffd591", color: "#d46b08" };
-    }
-    if(lower.indexOf("bò") !== -1 || lower.indexOf("beef") !== -1){
-      return { icon: "🥩", bg: "#fff0f6", border: "#ffadd2", color: "#c41d7f" };
-    }
-    if(lower.indexOf("cá") !== -1 || lower.indexOf("tôm") !== -1 || lower.indexOf("hải sản") !== -1){
-      return { icon: "🐟", bg: "#e6f7ff", border: "#91d5ff", color: "#096dd9" };
-    }
-    if(lower.indexOf("rau") !== -1 || lower.indexOf("củ") !== -1 || lower.indexOf("canh") !== -1){
-      return { icon: "🥬", bg: "#f6ffed", border: "#b7eb8f", color: "#389e0d" };
-    }
-    if(lower.indexOf("đậu") !== -1 || lower.indexOf("trứng") !== -1){
-      return { icon: "🍳", bg: "#feffe6", border: "#fffb8f", color: "#d48806" };
-    }
-    if(lower.indexOf("mặn") !== -1 || lower.indexOf("kho") !== -1){
-      return { icon: "🥘", bg: "#fff1f0", border: "#ffa39e", color: "#cf1322" };
-    }
-    if(lower.indexOf("xào") !== -1){
-      return { icon: "🥢", bg: "#f9f0ff", border: "#d3adf7", color: "#722ed1" };
-    }
-    return { icon: "🏷️", bg: "#f5f5f7", border: "#e5e5ea", color: "#1d1d1f" };
-  }
-
-  function renderCategoryFilters(){
-    var bar = document.getElementById("menuFilterBar");
-    if(!bar) return;
-    bar.innerHTML = "";
-
-    var catMap = getAllCategories();
-    var catKeys = Object.keys(catMap);
-
-    // Nếu chưa có category nào do chủ tự viết, ẩn thanh filter bar để giải phóng diện tích cho mobile
-    if(catKeys.length === 0){
-      bar.style.display = "none";
-      return;
-    }
-    bar.style.display = "flex";
-
-    // Nút "Tất cả"
-    var allBtn = document.createElement("button");
-    allBtn.type = "button";
-    allBtn.className = "menu__filter-btn" + (activeCategory === "all" ? " is-active" : "");
-    allBtn.innerHTML = '<span>Tất cả</span> <span class="menu__filter-count">' + DISHES.length + '</span>';
-    allBtn.addEventListener("click", function(){
-      activeCategory = "all";
-      renderCategoryFilters();
-      filterMenuDishes();
-    });
-    bar.appendChild(allBtn);
-
-    catKeys.forEach(function(cat){
-      var meta = getCategoryMeta(cat);
+  function renderEditorPalette(selectedColor){
+    var palette = document.getElementById("editorColorPalette");
+    if(!palette) return;
+    palette.innerHTML = "";
+    var current = (selectedColor || "#DA241C").trim().toUpperCase();
+    BASE_PALETTE.forEach(function(item){
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "menu__filter-btn" + (activeCategory === cat ? " is-active" : "");
-      if(activeCategory !== cat){
-        btn.style.setProperty("--cat-bg", meta.bg);
-        btn.style.setProperty("--cat-border", meta.border);
-        btn.style.setProperty("--cat-color", meta.color);
-      }
-      btn.innerHTML = '<span class="menu__filter-icon">' + meta.icon + '</span> <span>' + cat + '</span> <span class="menu__filter-count">' + catMap[cat] + '</span>';
+      var isSel = (item.color.toUpperCase() === current);
+      btn.className = "editor__color-swatch" + (isSel ? " is-selected" : "");
+      btn.style.setProperty("--swatch-color", item.color);
+      btn.title = item.name + " (" + item.color + ")";
+      btn.setAttribute("aria-label", item.name);
+      btn.setAttribute("aria-checked", isSel ? "true" : "false");
+      btn.setAttribute("role", "radio");
+      btn.dataset.color = item.color;
       btn.addEventListener("click", function(){
-        activeCategory = (activeCategory === cat) ? "all" : cat;
+        var hiddenInput = editorEl.querySelector('[data-f="cat-color"]');
+        if(hiddenInput) hiddenInput.value = item.color;
+        renderEditorPalette(item.color);
+      });
+      palette.appendChild(btn);
+    });
+  }
+
+  var activeMainCategory = "all";
+  var activeSubCategory = "all";
+
+  function renderCategoryFilters(){
+    var section = document.getElementById("menuFilterSection");
+    var mainRow = document.getElementById("menuFilterMain");
+    var subRow  = document.getElementById("menuFilterSub");
+    if(!section || !mainRow || !subRow) return;
+
+    var mainMap = {};
+    var allSubMap = {};
+    var totalDishes = (DISHES || []).length;
+
+    (DISHES || []).forEach(function(d){
+      var info = parseDishCategory(d.categories);
+      if(info.main){
+        if(!mainMap[info.main]){
+          mainMap[info.main] = { count: 0, color: info.color || "#DA241C" };
+        }
+        mainMap[info.main].count++;
+        if((!mainMap[info.main].color || mainMap[info.main].color === "#DA241C") && info.color){
+          mainMap[info.main].color = info.color;
+        }
+      }
+      info.sub.forEach(function(s){
+        if(s) allSubMap[s] = (allSubMap[s] || 0) + 1;
+      });
+    });
+
+    var mainKeys = Object.keys(mainMap);
+    var allSubKeys = Object.keys(allSubMap);
+
+    // Nếu món chưa có category chính lẫn phụ nào do chủ tự điền, ẩn toàn bộ thanh lọc
+    if(mainKeys.length === 0 && allSubKeys.length === 0){
+      section.style.display = "none";
+      return;
+    }
+    section.style.display = "flex";
+
+    // ---- HÀNG 1: CATEGORY CHÍNH (ở trên) ----
+    mainRow.innerHTML = "";
+    if(mainKeys.length === 0){
+      mainRow.style.display = "none";
+    } else {
+      mainRow.style.display = "flex";
+
+      // Nút "Tất cả"
+      var allMainBtn = document.createElement("button");
+      allMainBtn.type = "button";
+      allMainBtn.className = "menu__filter-btn" + (activeMainCategory === "all" ? " is-active" : "");
+      var allMainText = document.createElement("span");
+      allMainText.textContent = "Tất cả";
+      var allMainCount = document.createElement("span");
+      allMainCount.className = "menu__filter-count";
+      allMainCount.textContent = totalDishes;
+      allMainBtn.appendChild(allMainText);
+      allMainBtn.appendChild(allMainCount);
+      allMainBtn.addEventListener("click", function(){
+        activeMainCategory = "all";
+        activeSubCategory = "all";
         renderCategoryFilters();
         filterMenuDishes();
       });
-      bar.appendChild(btn);
+      mainRow.appendChild(allMainBtn);
+
+      mainKeys.forEach(function(key){
+        var meta = mainMap[key];
+        var btn = document.createElement("button");
+        btn.type = "button";
+        var isAct = (activeMainCategory === key);
+        btn.className = "menu__filter-btn" + (isAct ? " is-active" : "");
+        var col = meta.color || "#DA241C";
+        if(isAct){
+          btn.style.setProperty("--cat-active-color", col);
+        } else {
+          btn.style.borderColor = col + "44";
+        }
+        var txt = document.createElement("span");
+        txt.textContent = key;
+        var cnt = document.createElement("span");
+        cnt.className = "menu__filter-count";
+        cnt.textContent = meta.count;
+        btn.appendChild(txt);
+        btn.appendChild(cnt);
+        btn.addEventListener("click", function(){
+          activeMainCategory = (activeMainCategory === key) ? "all" : key;
+          activeSubCategory = "all"; // Reset sub khi chuyển category chính
+          renderCategoryFilters();
+          filterMenuDishes();
+        });
+        mainRow.appendChild(btn);
+      });
+    }
+
+    // ---- HÀNG 2: CATEGORY PHỤ (ở dưới category chính) ----
+    subRow.innerHTML = "";
+    var visibleSubMap = {};
+    (DISHES || []).forEach(function(d){
+      var info = parseDishCategory(d.categories);
+      if(activeMainCategory === "all" || info.main === activeMainCategory){
+        info.sub.forEach(function(s){
+          if(s) visibleSubMap[s] = (visibleSubMap[s] || 0) + 1;
+        });
+      }
     });
+
+    var curSubKeys = Object.keys(visibleSubMap);
+    if(curSubKeys.length === 0){
+      subRow.style.display = "none";
+    } else {
+      subRow.style.display = "flex";
+
+      curSubKeys.forEach(function(subKey){
+        var btn = document.createElement("button");
+        btn.type = "button";
+        var isAct = (activeSubCategory === subKey);
+        btn.className = "menu__filter-btn menu__filter-btn--sub" + (isAct ? " is-active" : "");
+        var txt = document.createElement("span");
+        txt.textContent = subKey;
+        var cnt = document.createElement("span");
+        cnt.className = "menu__filter-count";
+        cnt.textContent = visibleSubMap[subKey];
+        btn.appendChild(txt);
+        btn.appendChild(cnt);
+        btn.addEventListener("click", function(){
+          activeSubCategory = (activeSubCategory === subKey) ? "all" : subKey;
+          renderCategoryFilters();
+          filterMenuDishes();
+        });
+        subRow.appendChild(btn);
+      });
+    }
   }
 
   function filterMenuDishes(){
@@ -4092,9 +4310,10 @@
       var idx = parseInt(tile.dataset.dish, 10);
       var d = DISHES[idx];
       if(!d) return;
-      var cats = getDishCategories(d);
-      var match = (activeCategory === "all") || (cats.indexOf(activeCategory) !== -1);
-      tile.style.display = match ? "" : "none";
+      var info = parseDishCategory(d.categories);
+      var matchMain = (activeMainCategory === "all") || (info.main === activeMainCategory);
+      var matchSub = (activeSubCategory === "all") || (info.sub.indexOf(activeSubCategory) !== -1);
+      tile.style.display = (matchMain && matchSub) ? "" : "none";
     });
   }
 
@@ -4384,8 +4603,17 @@
     var d = DISHES[dishIndex];
     editorDishName.textContent = "món #" + (dishIndex+1);
     editorEl.querySelector('[data-f="name"]').value = d.name;
-    var catInput = editorEl.querySelector('[data-f="categories"]');
-    if(catInput) catInput.value = d.categories || "";
+    
+    var catInfo = parseDishCategory(d.categories);
+    var mainInp = editorEl.querySelector('[data-f="cat-main"]');
+    if(mainInp) mainInp.value = catInfo.main || "";
+    var subInp = editorEl.querySelector('[data-f="cat-sub"]');
+    if(subInp) subInp.value = catInfo.rawSub || "";
+    var activeColor = catInfo.color || "#DA241C";
+    var colorInp = editorEl.querySelector('[data-f="cat-color"]');
+    if(colorInp) colorInp.value = activeColor;
+    renderEditorPalette(activeColor);
+
     editorEl.querySelector('[data-f="img"]').value = d.img;
     editorEl.querySelector('[data-f="emoji"]').value = d.emoji;
     editorEl.querySelector('[data-f="description"]').value = d.description || "";
@@ -4456,8 +4684,13 @@
       var d = DISHES[editing];
       var newName = editorEl.querySelector('[data-f="name"]').value.trim();
       if(newName) d.name = newName;
-      var catInp = editorEl.querySelector('[data-f="categories"]');
-      if(catInp) d.categories = catInp.value.trim();
+      var mainInp = editorEl.querySelector('[data-f="cat-main"]');
+      var subInp  = editorEl.querySelector('[data-f="cat-sub"]');
+      var colInp  = editorEl.querySelector('[data-f="cat-color"]');
+      var catMain = (mainInp ? mainInp.value : "").trim();
+      var catSub  = (subInp ? subInp.value : "").trim();
+      var catCol  = (colInp ? colInp.value : "").trim() || "#DA241C";
+      d.categories = serializeDishCategory(catMain, catSub, catCol);
       d.img = editorEl.querySelector('[data-f="img"]').value.trim();
       var em = editorEl.querySelector('[data-f="emoji"]').value.trim();
       d.emoji = em || "🍽️";
