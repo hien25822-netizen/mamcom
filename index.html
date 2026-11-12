@@ -1450,91 +1450,44 @@
     box-sizing: border-box;
     transition: all 0.2s ease;
   }
-  /* Quả bóng đỏ nảy nhanh mô phỏng gia tốc trọng lực Trái Đất (Gravity Physics Bounce) */
+  /* Quả bóng đỏ 2D phẳng nảy nhanh, rơi sâu xuống chỉ nút bên dưới (không shadow) */
   .order__guide-ball-wrap {
     flex-shrink: 0;
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 24px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     position: relative;
-    padding-bottom: 2px;
+    overflow: visible;
   }
   .order__guide-ball {
-    width: 17px;
-    height: 17px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #ff6e68 0%, #da241c 52%, #9e120b 100%);
-    box-shadow: 0 2px 6px rgba(218, 36, 28, 0.4), inset 0 -1.5px 3px rgba(0, 0, 0, 0.25), inset 0 1px 1.5px rgba(255, 255, 255, 0.65);
-    transform-origin: center bottom;
-    animation: gravityBounceBall 0.62s infinite;
+    background-color: #da241c; /* Đỏ 2D đồng màu tuyệt đối với nút bên dưới */
+    box-shadow: none; /* Tuyệt đối không shadow */
+    animation: gravityBounceBall 0.45s infinite;
     will-change: transform;
-  }
-  .order__guide-ball-shadow {
-    width: 13px;
-    height: 3px;
-    background: rgba(20, 5, 5, 0.38);
-    border-radius: 50%;
-    margin-top: 1px;
-    animation: gravityBounceShadow 0.62s infinite;
-    transform-origin: center center;
-    will-change: transform, opacity;
   }
   @keyframes gravityBounceBall {
     0% {
-      /* Đỉnh nảy (Apex): Vận tốc = 0, bóng chuẩn bị rơi */
-      transform: translateY(-9px) scale(1, 1);
-      animation-timing-function: cubic-bezier(0.6, 0.05, 0.9, 0.35); /* Rơi nhanh dần đều theo trọng lực */
+      /* Đỉnh nảy (Apex): Vận tốc = 0, chuẩn bị rơi */
+      transform: translateY(-8px);
+      animation-timing-function: cubic-bezier(0.65, 0.05, 0.95, 0.35); /* Rơi tự do siêu nhanh */
     }
-    38% {
-      /* Đang rơi với tốc độ cực nhanh, bóng giãn nhẹ theo phương thẳng đứng */
-      transform: translateY(1px) scale(0.93, 1.09);
-      animation-timing-function: cubic-bezier(0.9, 0.1, 1, 0.5);
-    }
-    48% {
-      /* Chạm sàn và nén bẹp (Squash): va chạm dứt khoát gây chú ý trực tiếp xuống nút bên dưới */
-      transform: translateY(4.5px) scale(1.26, 0.74);
-      animation-timing-function: cubic-bezier(0.1, 0.8, 0.3, 1);
-    }
-    58% {
-      /* Bật nảy lên (Launch): đàn hồi bung ngược lên */
-      transform: translateY(0.5px) scale(0.88, 1.14);
-      animation-timing-function: cubic-bezier(0.15, 0.7, 0.4, 1);
-    }
-    78% {
-      /* Đi lên chậm dần khi thắng lực hút (Deceleration) */
-      transform: translateY(-6px) scale(0.98, 1.02);
-      animation-timing-function: cubic-bezier(0.2, 0.8, 0.45, 1);
+    28% {
+      /* Rơi sâu xuống dưới (hướng thẳng vào nút bên dưới), rơi chỉ mất 28% thời gian chu kỳ */
+      transform: translateY(13px);
+      animation-timing-function: cubic-bezier(0.18, 0.85, 0.35, 1); /* Bật lên chậm dần */
     }
     100% {
-      /* Về lại đỉnh nảy */
-      transform: translateY(-9px) scale(1, 1);
-    }
-  }
-  @keyframes gravityBounceShadow {
-    0% {
-      transform: scale(0.4);
-      opacity: 0.18;
-      filter: blur(1.5px);
-      animation-timing-function: cubic-bezier(0.6, 0.05, 0.9, 0.35);
-    }
-    48% {
-      transform: scale(1.25);
-      opacity: 0.7;
-      filter: blur(0.5px);
-      animation-timing-function: cubic-bezier(0.1, 0.8, 0.3, 1);
-    }
-    100% {
-      transform: scale(0.4);
-      opacity: 0.18;
-      filter: blur(1.5px);
+      /* Lên lại đỉnh nảy (chiếm 72% thời gian chu kỳ, chậm hơn rõ rệt so với lúc rơi) */
+      transform: translateY(-8px);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .order__guide-ball,
-    .order__guide-ball-shadow {
+    .order__guide-ball {
       animation: none !important;
       transform: none !important;
     }
@@ -1542,7 +1495,7 @@
   .order__guide-text {
     flex: 1;
     font-size: 12.5px;
-    line-height: 1.4;
+    line-height: 1.45;
     color: #555558;
     font-weight: 500;
     letter-spacing: -0.1px;
@@ -1551,12 +1504,14 @@
     color: #da241c;
     font-weight: 700;
     background: transparent;
-    padding: 0;
+    padding: 0 !important;
+    margin: 0 !important;
     border: 0;
     box-shadow: none;
     display: inline;
-    margin-left: 2px;
-    letter-spacing: 0;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
   }
 
   /* Nút đặt hàng: Tone Đỏ Mâm Cơm #DA241C hiện đại, sang trọng, bóng ấm */
@@ -2427,21 +2382,24 @@
     .btn.btn--week { padding: 5px 11px; font-size: 11.5px; }
     .order__grid { grid-template-columns: 1fr; gap: 10px; }
     .order__guide {
-      padding: 9px 12px !important;
-      gap: 8px !important;
+      padding: 8px 12px !important;
+      gap: 9px !important;
       border-radius: 12px !important;
     }
     .order__guide-ball-wrap {
-      width: 24px !important;
-      height: 24px !important;
+      width: 20px !important;
+      height: 22px !important;
     }
     .order__guide-text {
-      font-size: 11.5px !important;
+      font-size: 12px !important;
       line-height: 1.4 !important;
+      letter-spacing: -0.1px !important;
     }
     .order__guide-hl {
-      font-size: 11px !important;
-      padding: 1.5px 6px !important;
+      font-size: inherit !important;
+      line-height: inherit !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
     
     /* 3 NÚT MẠNG XÃ HỘI TRÊN ĐIỆN THOẠI: INSTAGRAM & TIKTOK 1 HÀNG, THREADS HÀNG DƯỚI CÙNG KÍCH CỠ */
@@ -2789,7 +2747,6 @@
             <div class="order__guide">
               <div class="order__guide-ball-wrap" aria-hidden="true">
                 <div class="order__guide-ball"></div>
-                <div class="order__guide-ball-shadow"></div>
               </div>
               <span class="order__guide-text">Bấm nút bên dưới hệ thống sẽ SAO CHÉP đơn, bạn hãy <b class="order__guide-hl">DÁN vào inbox Mâm Cơm nhé</b></span>
             </div>
