@@ -61,6 +61,10 @@ def init_db():
             c.execute("ALTER TABLE comments ADD COLUMN is_deleted INTEGER DEFAULT 0")
         except Exception:
             pass
+        try:
+            c.execute("ALTER TABLE comments ADD COLUMN img TEXT DEFAULT ''")
+        except Exception:
+            pass
 
         c.execute(
             "CREATE TABLE IF NOT EXISTS orders("
@@ -132,13 +136,13 @@ def add_meals(conn, n):
 
 
 def list_comments(conn, include_deleted=False):
-    sql = "SELECT id, rating, text, ts, name FROM comments"
+    sql = "SELECT id, rating, text, ts, name, img FROM comments"
     if not include_deleted:
         sql += " WHERE is_deleted = 0"
     sql += " ORDER BY ts DESC, id DESC"
     rows = conn.execute(sql).fetchall()
     return [
-        {"id": r[0], "rating": r[1], "text": r[2], "ts": r[3], "name": r[4] or ""}
+        {"id": r[0], "rating": r[1], "text": r[2], "ts": r[3], "name": r[4] or "", "img": r[5] or ""}
         for r in rows
     ]
 
@@ -332,10 +336,11 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(400, {"error": "empty comment"})
                 return
             name = (data.get("name") or "").strip()[:60]
+            img = (data.get("img") or "").strip()
             with LOCK, get_db() as c:
                 cur = c.execute(
-                    "INSERT INTO comments(rating, text, ts, name, is_deleted) VALUES(?, ?, ?, ?, 0)",
-                    (rating, text[:500], int(time.time()), name),
+                    "INSERT INTO comments(rating, text, ts, name, img, is_deleted) VALUES(?, ?, ?, ?, ?, 0)",
+                    (rating, text[:500], int(time.time()), name, img),
                 )
                 c.commit()
                 new_id = cur.lastrowid
