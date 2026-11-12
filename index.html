@@ -522,32 +522,235 @@
   .menu__filter-btn.is-active {
     background: var(--cat-active-color, #da241c) !important;
     border-color: var(--cat-active-color, #da241c) !important;
-    color: #ffffff !important;
+    color: var(--cat-text-color, #ffffff) !important;
     box-shadow: 0 3px 12px rgba(218, 36, 28, 0.28);
   }
   .menu__filter-btn.is-active .menu__filter-count {
-    background: rgba(255, 255, 255, 0.3);
-    color: #ffffff;
+    background: rgba(0, 0, 0, 0.16);
+    color: inherit;
   }
-  /* Category phụ (Sub-category): thiết kế nhỏ hơn, tinh tế, phân cấp rõ ràng */
+  /* Category phụ (Sub-category): thiết kế mềm mại, màu sắc nhạt và dịu hơn Category chính */
   .menu__filter-btn--sub {
     font-size: 11px;
     font-weight: 500;
     padding: 3.5px 9px;
     border-radius: 99px;
-    background: #fbfbfb;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    color: #48484a;
+    background: var(--sub-bg, rgba(0, 0, 0, 0.04));
+    border: 1px solid var(--sub-border, rgba(0, 0, 0, 0.12));
+    color: var(--sub-color, #48484a);
+    transition: all 0.16s var(--spring-bounce);
   }
   .menu__filter-btn--sub:hover {
-    background: #f0f0f2;
-    border-color: rgba(0, 0, 0, 0.16);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   }
   .menu__filter-btn--sub.is-active {
-    background: #2c2c2e !important;
-    border-color: #2c2c2e !important;
-    color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: var(--sub-active-bg, rgba(0, 0, 0, 0.14)) !important;
+    border-color: var(--sub-color, #2c2c2e) !important;
+    color: var(--sub-color, #2c2c2e) !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px var(--sub-shadow, rgba(0, 0, 0, 0.14));
+  }
+
+  /* Nút quản lý Category (Chỉ Chủ - có PIN) */
+  .btn-manage-cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2.5px 8px;
+    border-radius: var(--radius-pill);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink);
+    background: #ffffff;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all 0.16s var(--spring-bounce);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  .btn-manage-cat:hover {
+    background: var(--yellow);
+    border-color: var(--black);
+    transform: scale(1.03);
+  }
+  .btn-manage-cat[hidden] {
+    display: none !important;
+  }
+
+  /* Modal Sắp xếp & Cài đặt Category */
+  .modal--cat .modal__box {
+    max-width: 520px;
+    width: 95%;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+  .modal--cat .modal__head {
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+  }
+  .modal--cat .modal__body {
+    padding: 16px 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #fbfbfb;
+  }
+  .cat-manage__section {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+  .cat-manage__section-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 12px;
+  }
+  .cat-manage__section-title span {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .cat-manage__section-title small {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .cat-manage__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cat-manage__item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #f8f8fa;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+  }
+  .cat-manage__item-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .cat-manage__item-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cat-manage__item-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cat-manage__order-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #ffffff;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.14s ease;
+  }
+  .cat-manage__order-btn:hover:not(:disabled) {
+    background: var(--yellow);
+    border-color: var(--black);
+    transform: scale(1.06);
+  }
+  .cat-manage__order-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .cat-manage__color-pickers {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.07);
+  }
+  .cat-manage__picker-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .cat-manage__swatches {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .cat-manage__swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    background: var(--swatch-color);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.12s ease;
+  }
+  .cat-manage__swatch:hover {
+    transform: scale(1.15);
+  }
+  .cat-manage__swatch.is-selected {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 2px var(--swatch-color), 0 2px 6px rgba(0,0,0,0.2);
+    transform: scale(1.1);
+  }
+  .cat-manage__swatch.is-selected::after {
+    content: "✓";
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  }
+  .cat-manage__swatch--text.is-selected::after {
+    color: var(--swatch-mark, #ffffff);
+  }
+  .modal--cat .modal__foot {
+    padding: 12px 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    background: #ffffff;
+  }
+  .cat-manage__status {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green);
   }
   .menu__filter-count {
     font-size: 10px;
@@ -692,7 +895,7 @@
     gap: 9px;
   }
   
-  /* ---- DISH TILES (Thẻ món phong cách Café Lumo Cards) ---- */
+  /* ---- DISH TILES (Thẻ món phong cách Café Lumo Cards — TRÀN VIỀN) ---- */
   .tile {
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.95);
@@ -711,7 +914,7 @@
     flex-direction: column;
     align-items: stretch;
     box-shadow: 0 4px 16px rgba(40, 10, 5, 0.05), var(--glass-specular);
-    padding: 6px;
+    padding: 0; /* TRÀN VIỀN: ảnh trải rộng sát mép trên, trái, phải */
   }
   @media (pointer: coarse) {
     .tile { touch-action: none; }
@@ -759,37 +962,39 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1/1;
-    border-radius: 15px; /* Bo góc ảnh bên trong giống card Cafe Lumo */
-    background: #faf7f2;
+    border-radius: 0; /* Bo góc ăn khớp hoàn toàn với viền thẻ ngoài */
+    background: #f0ede8;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 24px;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
   }
   .tile__media::after {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, transparent 60%);
-    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
   }
   .tile__media img {
     position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: contain; /* HIỆN ĐẦY ĐỦ KHÔNG BỊ CẮT XÉN */
-    padding: 2px;
+    object-fit: cover; /* TRÀN VIỀN: lấp đầy toàn bộ khung ảnh */
+    padding: 0;
+    margin: 0;
     box-sizing: border-box;
     display: block; cursor: zoom-in;
     transition: transform 0.32s var(--spring-smooth);
   }
   .tile:hover .tile__media img {
-    transform: scale(1.05);
+    transform: scale(1.06);
   }
   .tile__name {
     flex: 1 1 auto;
     min-width: 0;
-    padding: 7px 4px 6px;
+    padding: 8px 6px 9px;
     background: transparent;
     font-size: 11.5px;
     font-weight: 700;
@@ -801,11 +1006,11 @@
   }
   .tile__badge {
     position: absolute;
-    top: 9px; left: 9px; z-index: 1;
+    top: 7px; left: 7px; z-index: 1;
     background: var(--yellow);
     border: 1.5px solid var(--black);
     border-radius: var(--radius-pill);
-    padding: 1px 7px;
+    padding: 1.5px 7.5px;
     font-size: 9px;
     font-weight: 800;
     color: var(--black);
@@ -816,14 +1021,14 @@
   .tile.has-dish .tile__badge { display: flex; }
   .tile__edit {
     position: absolute;
-    top: 9px; right: 9px; z-index: 1;
-    width: 24px; height: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
+    top: 7px; right: 7px; z-index: 2;
+    width: 26px; height: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 9px;
     background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
     color: var(--red);
     font-size: 11px;
     cursor: pointer;
@@ -912,6 +1117,25 @@
     font-weight: 800;
     line-height: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+  .editor__color-swatch--text.is-selected::after {
+    color: var(--swatch-mark, #ffffff);
+  }
+  .editor__cat-preview-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 9px 12px;
+    background: #f7f7f9;
+    border-radius: 12px;
+    border: 1px dashed rgba(0, 0, 0, 0.12);
+    margin: 4px 0;
+  }
+  .editor__cat-preview-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   .editor__preview { min-height: 0; margin: 0 0 8px; }
   .editor__preview img {
@@ -2632,19 +2856,30 @@
     }
     .wrap { padding: 12px 8px calc(24px + env(safe-area-inset-bottom)); }
     .tile {
-      border-radius: 12px !important;
-      padding: 3px !important;
+      border-radius: 14px !important;
+      padding: 0 !important;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+      overflow: hidden !important;
     }
     .tile__media {
-      border-radius: 9px !important;
-      aspect-ratio: 16 / 11 !important;
+      border-radius: 0 !important;
+      aspect-ratio: 1 / 1 !important;
       font-size: 22px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+    }
+    .tile__media img {
+      width: 100% !important;
+      height: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      object-fit: cover !important;
     }
     .tile__name {
       font-size: 9.5px !important;
       line-height: 1.22 !important;
-      padding: 3px 2px 2px !important;
+      padding: 4px 4px 5px !important;
       display: -webkit-box !important;
       -webkit-line-clamp: 2 !important;
       -webkit-box-orient: vertical !important;
@@ -3020,7 +3255,10 @@
           <h2>Mâm</h2>
           <span class="panel__price-badge" id="menuPriceBadge">49đ/1 người</span>
         </div>
-        <span class="hint">6 món</span>
+        <div class="panel__head-actions" style="display:flex;align-items:center;gap:8px;">
+          <button type="button" class="btn-manage-cat" id="btnManageCategories" title="Sắp xếp thứ tự &amp; màu sắc Category (chỉ chủ)" hidden>⚙️ Sắp xếp Category</button>
+          <span class="hint">6 món</span>
+        </div>
       </div>
       <!-- Phân loại món ăn 2 tầng (Category Filter: Chính ở trên, Phụ ở dưới) -->
       <div class="menu__filter-section" id="menuFilterSection" role="region" aria-label="Bộ lọc món ăn" style="display:none;">
@@ -3040,6 +3278,20 @@
             <input data-f="cat-main" type="text" placeholder="vd: Cơm nhà, Cơm tây..." maxlength="60">
           </label>
         </div>
+        <div class="editor__color-group">
+          <label>Màu nền Category chính
+            <span class="editor__hint"> — Chọn 1 màu nổi bật</span>
+          </label>
+          <div class="editor__color-palette" id="editorColorPalette" role="radiogroup" aria-label="Bảng màu nền Category chính"></div>
+          <input type="hidden" data-f="cat-color" value="#DA241C">
+        </div>
+        <div class="editor__color-group">
+          <label>Màu chữ Category chính
+            <span class="editor__hint"> — Chọn màu chữ cho nhãn (Trắng, Đen, Vàng...)</span>
+          </label>
+          <div class="editor__color-palette" id="editorTextColorPalette" role="radiogroup" aria-label="Bảng màu chữ Category chính"></div>
+          <input type="hidden" data-f="cat-text-color" value="#FFFFFF">
+        </div>
         <div class="editor__field-group">
           <label>Category phụ (Thành phần / Kiểu nấu)
             <span class="editor__hint"> — vd: Heo, Bò, Gà, Canh rau... (cách nhau dấu phẩy)</span>
@@ -3047,11 +3299,18 @@
           </label>
         </div>
         <div class="editor__color-group">
-          <label>Màu sắc chủ đạo cho món &amp; phân loại
-            <span class="editor__hint"> — Chọn 1 màu cơ bản để làm nổi bật</span>
+          <label>Màu sắc Category phụ
+            <span class="editor__hint"> — Tự động hiển thị ở tông màu nhạt, dịu hơn Category chính</span>
           </label>
-          <div class="editor__color-palette" id="editorColorPalette" role="radiogroup" aria-label="Bảng màu sắc cơ bản"></div>
-          <input type="hidden" data-f="cat-color" value="#DA241C">
+          <div class="editor__color-palette" id="editorSubColorPalette" role="radiogroup" aria-label="Bảng màu Category phụ"></div>
+          <input type="hidden" data-f="cat-sub-color" value="#E65100">
+        </div>
+        <div class="editor__cat-preview-box">
+          <span class="editor__hint">Xem trước nhãn phân loại:</span>
+          <div class="editor__cat-preview-row">
+            <span class="menu__filter-btn is-active" id="editorCatMainPreview">Cơm nhà</span>
+            <span class="menu__filter-btn menu__filter-btn--sub is-active" id="editorCatSubPreview">Heo</span>
+          </div>
         </div>
         <label>Ảnh món (URL — có thể dùng, hoặc tải lên từ máy)<input data-f="img" type="url" placeholder="https://... hoặc để trống"></label>
         <div class="editor__upload">
@@ -3333,6 +3592,44 @@
         </button>
       </div>
     </footer>
+  </div>
+</div>
+
+<!-- MODAL SẮP XẾP & CÀI ĐẶT CATEGORY (CHỈ CHỦ - CÓ PIN) -->
+<div class="modal modal--cat" id="categoryModal" role="dialog" aria-modal="true" aria-labelledby="catModalTitle" hidden>
+  <div class="modal__box">
+    <div class="modal__head">
+      <div class="modal__title-group">
+        <h3 id="catModalTitle">⚙️ Sắp xếp &amp; Cài đặt Category</h3>
+        <span class="modal__badge">Quản trị viên • Chỉ chủ có PIN</span>
+      </div>
+      <button class="modal__close-btn" type="button" id="catModalClose" aria-label="Đóng bảng sắp xếp category">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <!-- Section 1: Category Chính -->
+      <div class="cat-manage__section">
+        <div class="cat-manage__section-title">
+          <span>🏷️ Category Chính (Hàng trên)</span>
+          <small>Bấm ▲ hoặc ▼ để đổi thứ tự; chọn màu nền &amp; màu chữ của nhãn</small>
+        </div>
+        <div class="cat-manage__list" id="catManageMainList"></div>
+      </div>
+      <!-- Section 2: Category Phụ -->
+      <div class="cat-manage__section">
+        <div class="cat-manage__section-title">
+          <span>🔖 Category Phụ (Hàng dưới — màu nhạt hơn)</span>
+          <small>Bấm ▲ hoặc ▼ để đổi thứ tự; màu phụ tự động hiển thị ở sắc độ dịu/nhạt hơn</small>
+        </div>
+        <div class="cat-manage__list" id="catManageSubList"></div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <div class="cat-manage__status" id="catManageStatus"></div>
+      <button type="button" class="btn btn--primary" id="btnSaveCategories" style="background:#da241c;color:#fff;border:none;padding:8px 16px;border-radius:99px;font-weight:700;cursor:pointer;">💾 Lưu thứ tự &amp; màu sắc</button>
+      <button type="button" class="btn btn--secondary" id="catModalCancel" style="background:#f0f0f2;color:#333;border:none;padding:8px 14px;border-radius:99px;font-weight:600;cursor:pointer;">Đóng</button>
+    </div>
   </div>
 </div>
 
@@ -3838,6 +4135,8 @@
     }
     var menuFoot = document.querySelector(".menu__foot");
     if(menuFoot) menuFoot.hidden = false;
+    var btnManageCat = document.getElementById("btnManageCategories");
+    if(btnManageCat) btnManageCat.hidden = false;
   }
   function logoutOwner(){
     ownerUnlocked = false;
@@ -3849,6 +4148,7 @@
     var ownerBar = document.getElementById("ownerStatusBar");
     if(ownerBar) ownerBar.hidden = true;
     closeSettings();
+    if(typeof closeCategoryModal === "function") closeCategoryModal();
     if(typeof renderReviews === "function") renderReviews(allComments);
     if(typeof buildMenu === "function" && typeof menuEl !== "undefined"){
       buildMenu();
@@ -3856,6 +4156,8 @@
     }
     var menuFoot = document.querySelector(".menu__foot");
     if(menuFoot) menuFoot.hidden = true;
+    var btnManageCat = document.getElementById("btnManageCategories");
+    if(btnManageCat) btnManageCat.hidden = true;
   }
   function tryAutoUnlockOwner(){
     var savedPin = "";
@@ -4107,41 +4409,126 @@
     { name: "Xám chì",    color: "#374151" }
   ];
 
+  var TEXT_PALETTE = [
+    { name: "Trắng",      color: "#FFFFFF", mark: "#000000" },
+    { name: "Đen chì",    color: "#1F2937", mark: "#FFFFFF" },
+    { name: "Vàng chanh", color: "#FFFF04", mark: "#000000" },
+    { name: "Đỏ tươi",    color: "#DA241C", mark: "#FFFFFF" },
+    { name: "Xanh lá",    color: "#10B981", mark: "#FFFFFF" },
+    { name: "Xanh biển",  color: "#3B82F6", mark: "#FFFFFF" }
+  ];
+
+  function hexToRgba(hex, alpha){
+    var c = String(hex || "").replace("#", "");
+    if(c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+    if(c.length !== 6) return "rgba(0,0,0," + alpha + ")";
+    var r = parseInt(c.slice(0, 2), 16) || 0;
+    var g = parseInt(c.slice(2, 4), 16) || 0;
+    var b = parseInt(c.slice(4, 6), 16) || 0;
+    return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+  }
+
+  function escapeHtml(str){
+    return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
   function parseDishCategory(raw){
-    if(!raw) return { main: "", sub: [], rawSub: "", color: "#DA241C" };
+    if(!raw) return { main: "", color: "#DA241C", textColor: "#FFFFFF", sub: [], rawSub: "", subColor: "#E65100", subColors: {} };
     if(typeof raw === "object" && raw !== null){
       var m = String(raw.main || "").trim();
       var rawS = String(raw.sub || "").trim();
       var subArr = Array.isArray(raw.sub) ? raw.sub : (rawS ? rawS.split(",").map(function(s){ return s.trim(); }).filter(Boolean) : []);
-      var col = String(raw.color || "#DA241C").trim() || "#DA241C";
-      return { main: m, sub: subArr, rawSub: Array.isArray(raw.sub) ? raw.sub.join(", ") : rawS, color: col };
+      var col = String(raw.color || raw.mainColor || "#DA241C").trim() || "#DA241C";
+      var txtCol = String(raw.textColor || raw.mainTextColor || "#FFFFFF").trim() || "#FFFFFF";
+      var subCol = String(raw.subColor || "#E65100").trim() || "#E65100";
+      var subColors = (raw.subColors && typeof raw.subColors === "object") ? raw.subColors : {};
+      return { main: m, color: col, textColor: txtCol, sub: subArr, rawSub: Array.isArray(raw.sub) ? raw.sub.join(", ") : rawS, subColor: subCol, subColors: subColors };
     }
     if(typeof raw === "string"){
       var trimmed = raw.trim();
-      if(!trimmed) return { main: "", sub: [], rawSub: "", color: "#DA241C" };
+      if(!trimmed) return { main: "", color: "#DA241C", textColor: "#FFFFFF", sub: [], rawSub: "", subColor: "#E65100", subColors: {} };
       if(trimmed.charAt(0) === "{" && trimmed.charAt(trimmed.length - 1) === "}"){
         try {
           var parsed = JSON.parse(trimmed);
           var m = String(parsed.main || "").trim();
           var rawS = String(parsed.sub || "").trim();
           var subArr = Array.isArray(parsed.sub) ? parsed.sub : (rawS ? rawS.split(",").map(function(s){ return s.trim(); }).filter(Boolean) : []);
-          var col = String(parsed.color || "#DA241C").trim() || "#DA241C";
-          return { main: m, sub: subArr, rawSub: Array.isArray(parsed.sub) ? parsed.sub.join(", ") : rawS, color: col };
+          var col = String(parsed.color || parsed.mainColor || "#DA241C").trim() || "#DA241C";
+          var txtCol = String(parsed.textColor || parsed.mainTextColor || "#FFFFFF").trim() || "#FFFFFF";
+          var subCol = String(parsed.subColor || "#E65100").trim() || "#E65100";
+          var subColors = (parsed.subColors && typeof parsed.subColors === "object") ? parsed.subColors : {};
+          return { main: m, color: col, textColor: txtCol, sub: subArr, rawSub: Array.isArray(parsed.sub) ? parsed.sub.join(", ") : rawS, subColor: subCol, subColors: subColors };
         } catch(e){}
       }
       // Tương thích ngược: chuỗi văn bản cũ (vd: "Thịt lợn, Canh rau" hoặc "Heo")
       var parts = trimmed.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
-      return { main: "", sub: parts, rawSub: trimmed, color: "#DA241C" };
+      return { main: "", color: "#DA241C", textColor: "#FFFFFF", sub: parts, rawSub: trimmed, subColor: "#E65100", subColors: {} };
     }
-    return { main: "", sub: [], rawSub: "", color: "#DA241C" };
+    return { main: "", color: "#DA241C", textColor: "#FFFFFF", sub: [], rawSub: "", subColor: "#E65100", subColors: {} };
   }
 
-  function serializeDishCategory(main, sub, color){
+  function serializeDishCategory(main, sub, color, textColor, subColor, subColors){
     var m = String(main || "").trim();
     var s = String(sub || "").trim();
     var c = String(color || "#DA241C").trim() || "#DA241C";
+    var tc = String(textColor || "#FFFFFF").trim() || "#FFFFFF";
+    var sc = String(subColor || "#E65100").trim() || "#E65100";
+    var scs = (subColors && typeof subColors === "object") ? subColors : {};
     if(!m && !s) return "";
-    return JSON.stringify({ main: m, sub: s, color: c });
+    return JSON.stringify({
+      main: m,
+      color: c,
+      textColor: tc,
+      sub: s,
+      subColor: sc,
+      subColors: scs
+    });
+  }
+
+  function loadCategoryConfig(){
+    var cfg = { mainOrder: [], subOrder: [], mainStyles: {}, subStyles: {} };
+    try {
+      var raw = localStorage.getItem("mamcom.categoryConfig.v1");
+      if(raw){
+        var p = JSON.parse(raw);
+        if(p.order){
+          cfg.mainOrder = Array.isArray(p.order.main) ? p.order.main : [];
+          cfg.subOrder = Array.isArray(p.order.sub) ? p.order.sub : [];
+        }
+        if(p.styles){
+          cfg.mainStyles = p.styles.main || {};
+          cfg.subStyles = p.styles.sub || {};
+        }
+      }
+    } catch(e){}
+    (DISHES || []).forEach(function(d){
+      var info = parseDishCategory(d.categories);
+      if(info.main){
+        if(cfg.mainOrder.indexOf(info.main) === -1) cfg.mainOrder.push(info.main);
+        if(!cfg.mainStyles[info.main]){
+          cfg.mainStyles[info.main] = { color: info.color || "#DA241C", textColor: info.textColor || "#FFFFFF" };
+        }
+      }
+      info.sub.forEach(function(s){
+        if(s){
+          if(cfg.subOrder.indexOf(s) === -1) cfg.subOrder.push(s);
+          if(!cfg.subStyles[s]){
+            var sCol = (info.subColors && info.subColors[s]) ? info.subColors[s] : (info.subColor || "#E65100");
+            cfg.subStyles[s] = { color: sCol };
+          }
+        }
+      });
+    });
+    return cfg;
+  }
+
+  function saveCategoryConfig(cfg){
+    try {
+      localStorage.setItem("mamcom.categoryConfig.v1", JSON.stringify({
+        order: { main: cfg.mainOrder, sub: cfg.subOrder },
+        styles: { main: cfg.mainStyles, sub: cfg.subStyles }
+      }));
+    } catch(e){}
   }
 
   function renderEditorPalette(selectedColor){
@@ -4164,13 +4551,92 @@
         var hiddenInput = editorEl.querySelector('[data-f="cat-color"]');
         if(hiddenInput) hiddenInput.value = item.color;
         renderEditorPalette(item.color);
+        updateEditorCatPreviews();
       });
       palette.appendChild(btn);
     });
   }
 
-  var activeMainCategory = "all";
-  var activeSubCategory = "all";
+  function renderEditorTextColorPalette(selectedColor){
+    var palette = document.getElementById("editorTextColorPalette");
+    if(!palette) return;
+    palette.innerHTML = "";
+    var current = (selectedColor || "#FFFFFF").trim().toUpperCase();
+    TEXT_PALETTE.forEach(function(item){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      var isSel = (item.color.toUpperCase() === current);
+      btn.className = "editor__color-swatch editor__color-swatch--text" + (isSel ? " is-selected" : "");
+      btn.style.setProperty("--swatch-color", item.color);
+      btn.style.setProperty("--swatch-mark", item.mark);
+      btn.title = item.name;
+      btn.setAttribute("aria-label", item.name);
+      btn.setAttribute("aria-checked", isSel ? "true" : "false");
+      btn.setAttribute("role", "radio");
+      btn.dataset.color = item.color;
+      btn.addEventListener("click", function(){
+        var hiddenInput = editorEl.querySelector('[data-f="cat-text-color"]');
+        if(hiddenInput) hiddenInput.value = item.color;
+        renderEditorTextColorPalette(item.color);
+        updateEditorCatPreviews();
+      });
+      palette.appendChild(btn);
+    });
+  }
+
+  function renderEditorSubColorPalette(selectedColor){
+    var palette = document.getElementById("editorSubColorPalette");
+    if(!palette) return;
+    palette.innerHTML = "";
+    var current = (selectedColor || "#E65100").trim().toUpperCase();
+    BASE_PALETTE.forEach(function(item){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      var isSel = (item.color.toUpperCase() === current);
+      btn.className = "editor__color-swatch" + (isSel ? " is-selected" : "");
+      btn.style.setProperty("--swatch-color", item.color);
+      btn.title = item.name;
+      btn.setAttribute("aria-label", item.name);
+      btn.setAttribute("aria-checked", isSel ? "true" : "false");
+      btn.setAttribute("role", "radio");
+      btn.dataset.color = item.color;
+      btn.addEventListener("click", function(){
+        var hiddenInput = editorEl.querySelector('[data-f="cat-sub-color"]');
+        if(hiddenInput) hiddenInput.value = item.color;
+        renderEditorSubColorPalette(item.color);
+        updateEditorCatPreviews();
+      });
+      palette.appendChild(btn);
+    });
+  }
+
+  function updateEditorCatPreviews(){
+    var mainPrev = document.getElementById("editorCatMainPreview");
+    var subPrev = document.getElementById("editorCatSubPreview");
+    if(!mainPrev || !subPrev) return;
+    var mainText = (editorEl.querySelector('[data-f="cat-main"]') ? editorEl.querySelector('[data-f="cat-main"]').value : "").trim() || "Cơm nhà";
+    var mainColor = (editorEl.querySelector('[data-f="cat-color"]') ? editorEl.querySelector('[data-f="cat-color"]').value : "").trim() || "#DA241C";
+    var mainTextColor = (editorEl.querySelector('[data-f="cat-text-color"]') ? editorEl.querySelector('[data-f="cat-text-color"]').value : "").trim() || "#FFFFFF";
+    
+    var subTextRaw = (editorEl.querySelector('[data-f="cat-sub"]') ? editorEl.querySelector('[data-f="cat-sub"]').value : "").trim() || "Heo";
+    var firstSub = subTextRaw.split(",")[0].trim() || "Heo";
+    var subColor = (editorEl.querySelector('[data-f="cat-sub-color"]') ? editorEl.querySelector('[data-f="cat-sub-color"]').value : "").trim() || "#E65100";
+
+    mainPrev.textContent = mainText;
+    mainPrev.style.background = mainColor;
+    mainPrev.style.borderColor = mainColor;
+    mainPrev.style.color = mainTextColor;
+
+    subPrev.textContent = firstSub;
+    subPrev.style.background = hexToRgba(subColor, 0.22);
+    subPrev.style.borderColor = subColor;
+    subPrev.style.color = subColor;
+    subPrev.style.fontWeight = "700";
+    subPrev.style.boxShadow = "0 2px 8px " + hexToRgba(subColor, 0.25);
+  }
+
+  var activeMainCategory = null; // null = xem tất cả món (bỏ nút "Tất cả")
+  var activeSubCategory = null;
 
   function renderCategoryFilters(){
     var section = document.getElementById("menuFilterSection");
@@ -4178,23 +4644,32 @@
     var subRow  = document.getElementById("menuFilterSub");
     if(!section || !mainRow || !subRow) return;
 
+    var cfg = loadCategoryConfig();
     var mainMap = {};
     var allSubMap = {};
-    var totalDishes = (DISHES || []).length;
 
     (DISHES || []).forEach(function(d){
       var info = parseDishCategory(d.categories);
       if(info.main){
         if(!mainMap[info.main]){
-          mainMap[info.main] = { count: 0, color: info.color || "#DA241C" };
+          var st = cfg.mainStyles[info.main] || {};
+          mainMap[info.main] = {
+            count: 0,
+            color: st.color || info.color || "#DA241C",
+            textColor: st.textColor || info.textColor || "#FFFFFF"
+          };
         }
         mainMap[info.main].count++;
-        if((!mainMap[info.main].color || mainMap[info.main].color === "#DA241C") && info.color){
-          mainMap[info.main].color = info.color;
-        }
       }
       info.sub.forEach(function(s){
-        if(s) allSubMap[s] = (allSubMap[s] || 0) + 1;
+        if(s){
+          if(!allSubMap[s]){
+            var sSt = cfg.subStyles[s] || {};
+            var sCol = sSt.color || (info.subColors && info.subColors[s]) || info.subColor || "#E65100";
+            allSubMap[s] = { count: 0, color: sCol };
+          }
+          allSubMap[s].count++;
+        }
       });
     });
 
@@ -4208,31 +4683,22 @@
     }
     section.style.display = "flex";
 
-    // ---- HÀNG 1: CATEGORY CHÍNH (ở trên) ----
+    // Sắp xếp thứ tự Category chính theo cấu hình PIN chủ
+    mainKeys.sort(function(a, b){
+      var ia = cfg.mainOrder.indexOf(a);
+      var ib = cfg.mainOrder.indexOf(b);
+      if(ia === -1 && ib === -1) return 0;
+      if(ia === -1) return 1;
+      if(ib === -1) return -1;
+      return ia - ib;
+    });
+
+    // ---- HÀNG 1: CATEGORY CHÍNH (ở trên — KHÔNG CÓ "TẤT CẢ") ----
     mainRow.innerHTML = "";
     if(mainKeys.length === 0){
       mainRow.style.display = "none";
     } else {
       mainRow.style.display = "flex";
-
-      // Nút "Tất cả"
-      var allMainBtn = document.createElement("button");
-      allMainBtn.type = "button";
-      allMainBtn.className = "menu__filter-btn" + (activeMainCategory === "all" ? " is-active" : "");
-      var allMainText = document.createElement("span");
-      allMainText.textContent = "Tất cả";
-      var allMainCount = document.createElement("span");
-      allMainCount.className = "menu__filter-count";
-      allMainCount.textContent = totalDishes;
-      allMainBtn.appendChild(allMainText);
-      allMainBtn.appendChild(allMainCount);
-      allMainBtn.addEventListener("click", function(){
-        activeMainCategory = "all";
-        activeSubCategory = "all";
-        renderCategoryFilters();
-        filterMenuDishes();
-      });
-      mainRow.appendChild(allMainBtn);
 
       mainKeys.forEach(function(key){
         var meta = mainMap[key];
@@ -4241,10 +4707,17 @@
         var isAct = (activeMainCategory === key);
         btn.className = "menu__filter-btn" + (isAct ? " is-active" : "");
         var col = meta.color || "#DA241C";
+        var txtCol = meta.textColor || "#FFFFFF";
         if(isAct){
           btn.style.setProperty("--cat-active-color", col);
+          btn.style.setProperty("--cat-text-color", txtCol);
+          btn.style.background = col;
+          btn.style.color = txtCol;
+          btn.style.borderColor = col;
         } else {
-          btn.style.borderColor = col + "44";
+          btn.style.borderColor = hexToRgba(col, 0.35);
+          btn.style.background = "#f6f6f8";
+          btn.style.color = "#2c2c2e";
         }
         var txt = document.createElement("span");
         txt.textContent = key;
@@ -4254,8 +4727,12 @@
         btn.appendChild(txt);
         btn.appendChild(cnt);
         btn.addEventListener("click", function(){
-          activeMainCategory = (activeMainCategory === key) ? "all" : key;
-          activeSubCategory = "all"; // Reset sub khi chuyển category chính
+          if(activeMainCategory === key){
+            activeMainCategory = null; // Bấm lại thì hủy lọc, hiển thị toàn bộ món
+          } else {
+            activeMainCategory = key;
+          }
+          activeSubCategory = null; // Reset sub khi đổi main
           renderCategoryFilters();
           filterMenuDishes();
         });
@@ -4263,14 +4740,21 @@
       });
     }
 
-    // ---- HÀNG 2: CATEGORY PHỤ (ở dưới category chính) ----
+    // ---- HÀNG 2: CATEGORY PHỤ (ở dưới category chính — màu nhạt hơn) ----
     subRow.innerHTML = "";
     var visibleSubMap = {};
     (DISHES || []).forEach(function(d){
       var info = parseDishCategory(d.categories);
-      if(activeMainCategory === "all" || info.main === activeMainCategory){
+      if(!activeMainCategory || info.main === activeMainCategory){
         info.sub.forEach(function(s){
-          if(s) visibleSubMap[s] = (visibleSubMap[s] || 0) + 1;
+          if(s){
+            if(!visibleSubMap[s]){
+              var sSt = cfg.subStyles[s] || {};
+              var sCol = sSt.color || (info.subColors && info.subColors[s]) || info.subColor || "#E65100";
+              visibleSubMap[s] = { count: 0, color: sCol };
+            }
+            visibleSubMap[s].count++;
+          }
         });
       }
     });
@@ -4281,20 +4765,51 @@
     } else {
       subRow.style.display = "flex";
 
+      curSubKeys.sort(function(a, b){
+        var ia = cfg.subOrder.indexOf(a);
+        var ib = cfg.subOrder.indexOf(b);
+        if(ia === -1 && ib === -1) return 0;
+        if(ia === -1) return 1;
+        if(ib === -1) return -1;
+        return ia - ib;
+      });
+
       curSubKeys.forEach(function(subKey){
+        var meta = visibleSubMap[subKey];
         var btn = document.createElement("button");
         btn.type = "button";
         var isAct = (activeSubCategory === subKey);
         btn.className = "menu__filter-btn menu__filter-btn--sub" + (isAct ? " is-active" : "");
+        var sCol = meta.color || "#E65100";
+
+        // MÀU NHẠT HƠN SO VỚI CATEGORY CHÍNH (Translucent / Pastel tone)
+        if(isAct){
+          btn.style.background = hexToRgba(sCol, 0.22);
+          btn.style.borderColor = sCol;
+          btn.style.color = sCol;
+          btn.style.fontWeight = "700";
+          btn.style.boxShadow = "0 2px 8px " + hexToRgba(sCol, 0.25);
+        } else {
+          btn.style.background = hexToRgba(sCol, 0.08);
+          btn.style.borderColor = hexToRgba(sCol, 0.28);
+          btn.style.color = sCol;
+          btn.style.fontWeight = "500";
+          btn.style.boxShadow = "none";
+        }
+
         var txt = document.createElement("span");
         txt.textContent = subKey;
         var cnt = document.createElement("span");
         cnt.className = "menu__filter-count";
-        cnt.textContent = visibleSubMap[subKey];
+        cnt.textContent = meta.count;
         btn.appendChild(txt);
         btn.appendChild(cnt);
         btn.addEventListener("click", function(){
-          activeSubCategory = (activeSubCategory === subKey) ? "all" : subKey;
+          if(activeSubCategory === subKey){
+            activeSubCategory = null; // Bấm lại thì hủy lọc phụ
+          } else {
+            activeSubCategory = subKey;
+          }
           renderCategoryFilters();
           filterMenuDishes();
         });
@@ -4311,9 +4826,377 @@
       var d = DISHES[idx];
       if(!d) return;
       var info = parseDishCategory(d.categories);
-      var matchMain = (activeMainCategory === "all") || (info.main === activeMainCategory);
-      var matchSub = (activeSubCategory === "all") || (info.sub.indexOf(activeSubCategory) !== -1);
+      var matchMain = (!activeMainCategory || activeMainCategory === "all") || (info.main === activeMainCategory);
+      var matchSub = (!activeSubCategory || activeSubCategory === "all") || (info.sub.indexOf(activeSubCategory) !== -1);
       tile.style.display = (matchMain && matchSub) ? "" : "none";
+    });
+  }
+
+  // ================= MODAL QUẢN LÝ & SẮP XẾP CATEGORY (CHỈ CHỦ - CÓ PIN) =================
+  var categoryModal = document.getElementById("categoryModal");
+  var btnManageCategories = document.getElementById("btnManageCategories");
+  var catModalClose = document.getElementById("catModalClose");
+  var catModalCancel = document.getElementById("catModalCancel");
+  var btnSaveCategories = document.getElementById("btnSaveCategories");
+  var catManageStatus = document.getElementById("catManageStatus");
+  var editingCatConfig = null;
+
+  function openCategoryModal(){
+    if(!isOwner()){
+      requestPin(function(ok){
+        if(ok) openCategoryModal();
+      }, "Cần nhập PIN của chủ để sắp xếp và cài đặt category");
+      return;
+    }
+    if(!categoryModal) return;
+    editingCatConfig = null; // Luôn nạp mới từ cấu hình hiện tại khi mở
+    renderCategoryManagerLists();
+    categoryModal.hidden = false;
+    categoryModal.classList.add("show");
+  }
+
+  function closeCategoryModal(){
+    if(!categoryModal) return;
+    categoryModal.classList.remove("show");
+    categoryModal.hidden = true;
+    if(catManageStatus) catManageStatus.textContent = "";
+  }
+
+  if(btnManageCategories) btnManageCategories.addEventListener("click", openCategoryModal);
+  if(catModalClose) catModalClose.addEventListener("click", closeCategoryModal);
+  if(catModalCancel) catModalCancel.addEventListener("click", closeCategoryModal);
+  if(categoryModal){
+    categoryModal.addEventListener("click", function(e){
+      if(e.target === categoryModal) closeCategoryModal();
+    });
+  }
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && categoryModal && categoryModal.classList.contains("show")){
+      closeCategoryModal();
+    }
+  });
+
+  function renderCategoryManagerLists(){
+    var mainList = document.getElementById("catManageMainList");
+    var subList  = document.getElementById("catManageSubList");
+    if(!mainList || !subList) return;
+
+    if(!editingCatConfig){
+      editingCatConfig = loadCategoryConfig();
+    }
+    var cfg = editingCatConfig;
+
+    // Quét lại DISHES để đảm bảo mọi category hiện có đều xuất hiện trong danh sách
+    (DISHES || []).forEach(function(d){
+      var info = parseDishCategory(d.categories);
+      if(info.main){
+        if(cfg.mainOrder.indexOf(info.main) === -1) cfg.mainOrder.push(info.main);
+        if(!cfg.mainStyles[info.main]){
+          cfg.mainStyles[info.main] = { color: info.color || "#DA241C", textColor: info.textColor || "#FFFFFF" };
+        }
+      }
+      info.sub.forEach(function(s){
+        if(s){
+          if(cfg.subOrder.indexOf(s) === -1) cfg.subOrder.push(s);
+          if(!cfg.subStyles[s]){
+            var sCol = (info.subColors && info.subColors[s]) || info.subColor || "#E65100";
+            cfg.subStyles[s] = { color: sCol };
+          }
+        }
+      });
+    });
+
+    // 1. RENDER CATEGORY CHÍNH (HÀNG TRÊN)
+    mainList.innerHTML = "";
+    if(cfg.mainOrder.length === 0){
+      mainList.innerHTML = '<div style="font-size:12px;color:var(--muted);font-style:italic;padding:8px 4px;">Chưa có Category Chính nào. Bạn có thể thêm vào từng món (bấm ✎ trên món ăn) rồi sắp xếp tại đây.</div>';
+    } else {
+      cfg.mainOrder.forEach(function(name, idx){
+        var st = cfg.mainStyles[name] || { color: "#DA241C", textColor: "#FFFFFF" };
+        var col = st.color || "#DA241C";
+        var txtCol = st.textColor || "#FFFFFF";
+
+        var item = document.createElement("div");
+        item.className = "cat-manage__item";
+
+        var head = document.createElement("div");
+        head.className = "cat-manage__item-head";
+
+        var nameWrap = document.createElement("div");
+        nameWrap.className = "cat-manage__item-name";
+        var previewBadge = document.createElement("span");
+        previewBadge.style.cssText = "display:inline-flex;align-items:center;padding:3.5px 12px;border-radius:99px;font-size:12px;font-weight:700;transition:all .15s ease;";
+        previewBadge.style.background = col;
+        previewBadge.style.color = txtCol;
+        previewBadge.style.border = "1px solid " + col;
+        previewBadge.textContent = name;
+        nameWrap.appendChild(previewBadge);
+        head.appendChild(nameWrap);
+
+        var controls = document.createElement("div");
+        controls.className = "cat-manage__item-controls";
+
+        // Nút lên ▲
+        var upBtn = document.createElement("button");
+        upBtn.type = "button";
+        upBtn.className = "cat-manage__order-btn";
+        upBtn.textContent = "▲";
+        upBtn.title = "Di chuyển lên trước";
+        upBtn.disabled = (idx === 0);
+        upBtn.addEventListener("click", function(){
+          var temp = cfg.mainOrder[idx];
+          cfg.mainOrder[idx] = cfg.mainOrder[idx - 1];
+          cfg.mainOrder[idx - 1] = temp;
+          renderCategoryManagerLists();
+        });
+
+        // Nút xuống ▼
+        var downBtn = document.createElement("button");
+        downBtn.type = "button";
+        downBtn.className = "cat-manage__order-btn";
+        downBtn.textContent = "▼";
+        downBtn.title = "Di chuyển xuống sau";
+        downBtn.disabled = (idx === cfg.mainOrder.length - 1);
+        downBtn.addEventListener("click", function(){
+          var temp = cfg.mainOrder[idx];
+          cfg.mainOrder[idx] = cfg.mainOrder[idx + 1];
+          cfg.mainOrder[idx + 1] = temp;
+          renderCategoryManagerLists();
+        });
+
+        controls.appendChild(upBtn);
+        controls.appendChild(downBtn);
+        head.appendChild(controls);
+        item.appendChild(head);
+
+        // Color Pickers
+        var pickers = document.createElement("div");
+        pickers.className = "cat-manage__color-pickers";
+
+        // Row 1: Màu nền
+        var bgRow = document.createElement("div");
+        bgRow.className = "cat-manage__picker-row";
+        var bgLabel = document.createElement("span");
+        bgLabel.textContent = "Màu nền:";
+        var bgSwatches = document.createElement("div");
+        bgSwatches.className = "cat-manage__swatches";
+
+        BASE_PALETTE.forEach(function(pal){
+          var sw = document.createElement("button");
+          sw.type = "button";
+          var isSel = (pal.color.toUpperCase() === col.toUpperCase());
+          sw.className = "cat-manage__swatch" + (isSel ? " is-selected" : "");
+          sw.style.setProperty("--swatch-color", pal.color);
+          sw.title = pal.name;
+          sw.addEventListener("click", function(){
+            cfg.mainStyles[name].color = pal.color;
+            col = pal.color;
+            previewBadge.style.background = col;
+            previewBadge.style.borderColor = col;
+            Array.from(bgSwatches.children).forEach(function(el){ el.classList.remove("is-selected"); });
+            sw.classList.add("is-selected");
+          });
+          bgSwatches.appendChild(sw);
+        });
+        bgRow.appendChild(bgLabel);
+        bgRow.appendChild(bgSwatches);
+        pickers.appendChild(bgRow);
+
+        // Row 2: Màu chữ
+        var txtRow = document.createElement("div");
+        txtRow.className = "cat-manage__picker-row";
+        var txtLabel = document.createElement("span");
+        txtLabel.textContent = "Màu chữ:";
+        var txtSwatches = document.createElement("div");
+        txtSwatches.className = "cat-manage__swatches";
+
+        TEXT_PALETTE.forEach(function(tpal){
+          var tsw = document.createElement("button");
+          tsw.type = "button";
+          var isSel = (tpal.color.toUpperCase() === txtCol.toUpperCase());
+          tsw.className = "cat-manage__swatch cat-manage__swatch--text" + (isSel ? " is-selected" : "");
+          tsw.style.setProperty("--swatch-color", tpal.color);
+          tsw.style.setProperty("--swatch-mark", tpal.mark);
+          tsw.title = tpal.name;
+          tsw.addEventListener("click", function(){
+            cfg.mainStyles[name].textColor = tpal.color;
+            txtCol = tpal.color;
+            previewBadge.style.color = txtCol;
+            Array.from(txtSwatches.children).forEach(function(el){ el.classList.remove("is-selected"); });
+            tsw.classList.add("is-selected");
+          });
+          txtSwatches.appendChild(tsw);
+        });
+        txtRow.appendChild(txtLabel);
+        txtRow.appendChild(txtSwatches);
+        pickers.appendChild(txtRow);
+
+        item.appendChild(pickers);
+        mainList.appendChild(item);
+      });
+    }
+
+    // 2. RENDER CATEGORY PHỤ (MÀU NHẠT HƠN SO VỚI CATEGORY CHÍNH)
+    subList.innerHTML = "";
+    if(cfg.subOrder.length === 0){
+      subList.innerHTML = '<div style="font-size:12px;color:var(--muted);font-style:italic;padding:8px 4px;">Chưa có Category Phụ nào. Bạn có thể thêm vào từng món (bấm ✎ trên món ăn) rồi sắp xếp tại đây.</div>';
+    } else {
+      cfg.subOrder.forEach(function(subName, sidx){
+        var sSt = cfg.subStyles[subName] || { color: "#E65100" };
+        var sCol = sSt.color || "#E65100";
+
+        var item = document.createElement("div");
+        item.className = "cat-manage__item";
+
+        var head = document.createElement("div");
+        head.className = "cat-manage__item-head";
+
+        var nameWrap = document.createElement("div");
+        nameWrap.className = "cat-manage__item-name";
+        var previewBadge = document.createElement("span");
+        previewBadge.style.cssText = "display:inline-flex;align-items:center;padding:3px 11px;border-radius:99px;font-size:11.5px;font-weight:700;transition:all .15s ease;";
+        previewBadge.style.background = hexToRgba(sCol, 0.22);
+        previewBadge.style.color = sCol;
+        previewBadge.style.border = "1px solid " + sCol;
+        previewBadge.textContent = subName;
+        nameWrap.appendChild(previewBadge);
+        head.appendChild(nameWrap);
+
+        var controls = document.createElement("div");
+        controls.className = "cat-manage__item-controls";
+
+        // Nút lên ▲
+        var upBtn = document.createElement("button");
+        upBtn.type = "button";
+        upBtn.className = "cat-manage__order-btn";
+        upBtn.textContent = "▲";
+        upBtn.title = "Di chuyển lên trước";
+        upBtn.disabled = (sidx === 0);
+        upBtn.addEventListener("click", function(){
+          var temp = cfg.subOrder[sidx];
+          cfg.subOrder[sidx] = cfg.subOrder[sidx - 1];
+          cfg.subOrder[sidx - 1] = temp;
+          renderCategoryManagerLists();
+        });
+
+        // Nút xuống ▼
+        var downBtn = document.createElement("button");
+        downBtn.type = "button";
+        downBtn.className = "cat-manage__order-btn";
+        downBtn.textContent = "▼";
+        downBtn.title = "Di chuyển xuống sau";
+        downBtn.disabled = (sidx === cfg.subOrder.length - 1);
+        downBtn.addEventListener("click", function(){
+          var temp = cfg.subOrder[sidx];
+          cfg.subOrder[sidx] = cfg.subOrder[sidx + 1];
+          cfg.subOrder[sidx + 1] = temp;
+          renderCategoryManagerLists();
+        });
+
+        controls.appendChild(upBtn);
+        controls.appendChild(downBtn);
+        head.appendChild(controls);
+        item.appendChild(head);
+
+        // Picker: Màu phụ (Tự động hiển thị nhạt/dịu)
+        var pickers = document.createElement("div");
+        pickers.className = "cat-manage__color-pickers";
+
+        var subColRow = document.createElement("div");
+        subColRow.className = "cat-manage__picker-row";
+        var subColLabel = document.createElement("span");
+        subColLabel.textContent = "Màu sắc (tự hiển thị nhạt/dịu):";
+        var subSwatches = document.createElement("div");
+        subSwatches.className = "cat-manage__swatches";
+
+        BASE_PALETTE.forEach(function(pal){
+          var sw = document.createElement("button");
+          sw.type = "button";
+          var isSel = (pal.color.toUpperCase() === sCol.toUpperCase());
+          sw.className = "cat-manage__swatch" + (isSel ? " is-selected" : "");
+          sw.style.setProperty("--swatch-color", pal.color);
+          sw.title = pal.name;
+          sw.addEventListener("click", function(){
+            cfg.subStyles[subName].color = pal.color;
+            sCol = pal.color;
+            previewBadge.style.background = hexToRgba(sCol, 0.22);
+            previewBadge.style.borderColor = sCol;
+            previewBadge.style.color = sCol;
+            Array.from(subSwatches.children).forEach(function(el){ el.classList.remove("is-selected"); });
+            sw.classList.add("is-selected");
+          });
+          subSwatches.appendChild(sw);
+        });
+        subColRow.appendChild(subColLabel);
+        subColRow.appendChild(subSwatches);
+        pickers.appendChild(subColRow);
+
+        item.appendChild(pickers);
+        subList.appendChild(item);
+      });
+    }
+  }
+
+  // Lưu thứ tự và màu sắc đã chỉnh sửa
+  if(btnSaveCategories){
+    btnSaveCategories.addEventListener("click", function(){
+      if(!editingCatConfig) editingCatConfig = loadCategoryConfig();
+      var cfg = editingCatConfig;
+
+      btnSaveCategories.disabled = true;
+      btnSaveCategories.textContent = "Đang lưu...";
+      if(catManageStatus) catManageStatus.textContent = "Đang đồng bộ dữ liệu...";
+
+      // Lưu cấu hình toàn cục
+      saveCategoryConfig(cfg);
+
+      // Cập nhật thuộc tính màu sắc trong DISHES để đồng bộ hoàn toàn
+      (DISHES || []).forEach(function(d){
+        var info = parseDishCategory(d.categories);
+        var changed = false;
+        if(info.main && cfg.mainStyles[info.main]){
+          var mst = cfg.mainStyles[info.main];
+          if(mst.color) { info.color = mst.color; changed = true; }
+          if(mst.textColor) { info.textColor = mst.textColor; changed = true; }
+        }
+        if(info.sub && info.sub.length > 0){
+          info.sub.forEach(function(s){
+            if(cfg.subStyles[s] && cfg.subStyles[s].color){
+              if(!info.subColors) info.subColors = {};
+              info.subColors[s] = cfg.subStyles[s].color;
+              info.subColor = cfg.subStyles[s].color;
+              changed = true;
+            }
+          });
+        }
+        if(changed){
+          d.categories = serializeDishCategory(info.main, info.rawSub, info.color, info.textColor, info.subColor, info.subColors);
+        }
+      });
+
+      // Lưu menu lên database Supabase và localStorage
+      saveMenu(DISHES).then(function(){
+        btnSaveCategories.disabled = false;
+        btnSaveCategories.textContent = "💾 Lưu thứ tự & màu sắc";
+        if(catManageStatus){
+          catManageStatus.textContent = "✓ Đã lưu thành công!";
+          catManageStatus.style.color = "#16a34a";
+        }
+        renderCategoryFilters();
+        filterMenuDishes();
+        setTimeout(function(){
+          closeCategoryModal();
+        }, 800);
+      }).catch(function(err){
+        btnSaveCategories.disabled = false;
+        btnSaveCategories.textContent = "💾 Lưu thứ tự & màu sắc";
+        if(catManageStatus){
+          catManageStatus.textContent = "✓ Đã lưu trên thiết bị (" + ((err && err.message) || "ngoại tuyến") + ")";
+          catManageStatus.style.color = "#ea580c";
+        }
+        renderCategoryFilters();
+        filterMenuDishes();
+      });
     });
   }
 
@@ -4391,6 +5274,8 @@
       menuEl.appendChild(li);
     });
     updateTileBadges();
+    var btnManageCat = document.getElementById("btnManageCategories");
+    if(btnManageCat) btnManageCat.hidden = !isOwner();
     renderCategoryFilters();
     filterMenuDishes();
   }
@@ -4614,6 +5499,18 @@
     if(colorInp) colorInp.value = activeColor;
     renderEditorPalette(activeColor);
 
+    var activeTextColor = catInfo.textColor || "#FFFFFF";
+    var textColorInp = editorEl.querySelector('[data-f="cat-text-color"]');
+    if(textColorInp) textColorInp.value = activeTextColor;
+    renderEditorTextColorPalette(activeTextColor);
+
+    var activeSubColor = catInfo.subColor || "#E65100";
+    var subColorInp = editorEl.querySelector('[data-f="cat-sub-color"]');
+    if(subColorInp) subColorInp.value = activeSubColor;
+    renderEditorSubColorPalette(activeSubColor);
+
+    updateEditorCatPreviews();
+
     editorEl.querySelector('[data-f="img"]').value = d.img;
     editorEl.querySelector('[data-f="emoji"]').value = d.emoji;
     editorEl.querySelector('[data-f="description"]').value = d.description || "";
@@ -4677,6 +5574,10 @@
     editorFile.value = "";
   });
   editorEl.querySelector('[data-f="img"]').addEventListener("input", refreshEditorPreview);
+  var mainCatInput = editorEl.querySelector('[data-f="cat-main"]');
+  if(mainCatInput) mainCatInput.addEventListener("input", updateEditorCatPreviews);
+  var subCatInput = editorEl.querySelector('[data-f="cat-sub"]');
+  if(subCatInput) subCatInput.addEventListener("input", updateEditorCatPreviews);
 
   editorEl.addEventListener("click", function(e){
     var act = e.target.dataset && e.target.dataset.act;
@@ -4687,10 +5588,32 @@
       var mainInp = editorEl.querySelector('[data-f="cat-main"]');
       var subInp  = editorEl.querySelector('[data-f="cat-sub"]');
       var colInp  = editorEl.querySelector('[data-f="cat-color"]');
+      var txtColInp = editorEl.querySelector('[data-f="cat-text-color"]');
+      var subColInp = editorEl.querySelector('[data-f="cat-sub-color"]');
       var catMain = (mainInp ? mainInp.value : "").trim();
       var catSub  = (subInp ? subInp.value : "").trim();
       var catCol  = (colInp ? colInp.value : "").trim() || "#DA241C";
-      d.categories = serializeDishCategory(catMain, catSub, catCol);
+      var catTxtCol = (txtColInp ? txtColInp.value : "").trim() || "#FFFFFF";
+      var catSubCol = (subColInp ? subColInp.value : "").trim() || "#E65100";
+
+      d.categories = serializeDishCategory(catMain, catSub, catCol, catTxtCol, catSubCol);
+
+      // Cập nhật cấu hình bộ lọc toàn cục
+      var cfg = loadCategoryConfig();
+      if(catMain){
+        if(cfg.mainOrder.indexOf(catMain) === -1) cfg.mainOrder.push(catMain);
+        cfg.mainStyles[catMain] = { color: catCol, textColor: catTxtCol };
+      }
+      if(catSub){
+        catSub.split(",").forEach(function(s){
+          var subTrimmed = s.trim();
+          if(subTrimmed){
+            if(cfg.subOrder.indexOf(subTrimmed) === -1) cfg.subOrder.push(subTrimmed);
+            cfg.subStyles[subTrimmed] = { color: catSubCol };
+          }
+        });
+      }
+      saveCategoryConfig(cfg);
       d.img = editorEl.querySelector('[data-f="img"]').value.trim();
       var em = editorEl.querySelector('[data-f="emoji"]').value.trim();
       d.emoji = em || "🍽️";
