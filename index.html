@@ -73,11 +73,11 @@
   html { min-height: 100%; }
   html, body { margin: 0; padding: 0; }
   
-  /* ---- Canvas sắc đỏ ấm áp Mâm Cơm (Màu đỏ dịu mắt, cùng tone #DA241C) ---- */
+  /* ---- Canvas sắc đỏ ấm áp Mâm Cơm (Màu đỏ dịu mắt, đậm đà cùng tone #DA241C) ---- */
   body {
     min-height: 100vh;
-    background-color: #fae7e5;
-    background-image: radial-gradient(120% 90% at 50% 0%, #fff0ee 0%, #fae6e4 45%, #f4d3cf 100%);
+    background-color: #f3c2be;
+    background-image: radial-gradient(125% 100% at 50% 0%, #fcdcd8 0%, #f4c2be 48%, #e89f98 100%);
     background-attachment: fixed;
     color: #121212;
     font-family: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -97,26 +97,26 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  /* ---- THANH TIẾN TRÌNH ĐẶT MÂM (Nằm trên cùng sticky, màu vàng nhạt hài hòa cùng các ô) ---- */
+  /* ---- THANH TIẾN TRÌNH ĐẶT MÂM (Nằm trên cùng sticky, màu vàng ấm đậm đà chuẩn nhận diện) ---- */
   .prog {
     position: sticky;
     top: max(8px, env(safe-area-inset-top));
     z-index: 1000;
     width: 100%;
     box-sizing: border-box;
-    background: rgba(255, 253, 226, 0.96);
+    background: rgba(254, 245, 175, 0.96);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1.5px solid #ebd978;
+    border: 1.5px solid #dcb732;
     border-radius: var(--radius-pill);
-    box-shadow: 0 12px 34px -4px rgba(180, 40, 20, 0.12), 0 2px 8px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 12px 34px -4px rgba(180, 40, 20, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04);
     padding: 8px 18px 8px;
     margin: 0 0 20px;
     transition: box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .prog:hover {
-    box-shadow: 0 16px 42px -4px rgba(180, 40, 20, 0.18), 0 4px 12px rgba(0, 0, 0, 0.04);
-    border-color: #dfc85c;
+    box-shadow: 0 16px 42px -4px rgba(180, 40, 20, 0.22), 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-color: #cda21c;
   }
   .prog__row {
     display: flex;
@@ -767,29 +767,29 @@
     width: 100%;
   }
 
-  /* ---- WARM CORN SILK & HONEY GOLD CARDS (Màu vàng nhạt dịu mắt, cùng tone #FFFF04, chuẩn nhận diện Mâm Cơm) ---- */
+  /* ---- WARM CORN SILK & HONEY GOLD CARDS (Màu vàng đậm đà, cùng tone #FFFF04, chuẩn nhận diện Mâm Cơm) ---- */
   .panel, .order, .saved, .qa, .rev, .orders, .calendar-panel {
-    background-color: #fffde2;
-    background-image: linear-gradient(180deg, #fffef2 0%, #fffde2 100%);
-    border: 1.5px solid #ebd978;
+    background-color: #fef5a7;
+    background-image: linear-gradient(180deg, #fffbe0 0%, #fef39c 100%);
+    border: 1.5px solid #dcb732;
     border-radius: 24px;
-    box-shadow: 0 10px 32px -4px rgba(190, 40, 20, 0.09), 0 2px 8px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 10px 32px -4px rgba(180, 40, 20, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
     overflow: hidden;
     transition: box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .panel:hover, .order:hover, .saved:hover, .calendar-panel:hover {
-    box-shadow: 0 18px 46px -6px rgba(190, 40, 20, 0.16), 0 4px 14px rgba(0, 0, 0, 0.05);
-    border-color: #e5cd54;
+    box-shadow: 0 18px 46px -6px rgba(180, 40, 20, 0.20), 0 4px 14px rgba(0, 0, 0, 0.06);
+    border-color: #cda21c;
   }
   .panel__head {
     padding: 16px 20px;
-    border-bottom: 1.5px solid #ebd978;
+    border-bottom: 1.5px solid #dcb732;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #fffac8;
+    background: #fee878;
   }
   .panel__head h2 {
     font-size: 17px;
@@ -807,8 +807,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    border-bottom: 1.5px solid #ebd978;
-    background: #fffac8;
+    border-bottom: 1.5px solid #dcb732;
+    background: #fee878;
   }
   .calendar-panel__title-group {
     display: flex;
@@ -879,7 +879,7 @@
   /* ---- DISH TILES (Thẻ món phong cách Café Lumo Cards — TRÀN VIỀN) ---- */
   .tile {
     position: relative;
-    border: 1.5px solid #ebd978;
+    border: 1.5px solid #dcb732;
     border-radius: var(--radius-lg);
     background: #ffffff;
     overflow: hidden;
@@ -893,7 +893,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    box-shadow: 0 4px 16px rgba(190, 40, 20, 0.06);
+    box-shadow: 0 4px 16px rgba(180, 40, 20, 0.08);
     padding: 0; /* TRÀN VIỀN: ảnh trải rộng sát mép trên, trái, phải */
   }
   .tile, .tile * {
@@ -931,23 +931,33 @@
     transform: scale(0.92);
   }
   .tile.drag-ghost {
-    position: fixed; left: 0; top: 0; z-index: 99999 !important;
-    width: 72px; height: 72px;
+    position: fixed !important;
+    left: 0; top: 0;
+    z-index: 999999 !important;
+    width: 76px; height: 76px;
     transform: translate(-50%, -50%);
     pointer-events: none !important;
-    opacity: 0.94;
+    touch-action: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    opacity: 0.96;
     display: flex; align-items: center; justify-content: center;
     background: #ffffff;
-    border: 2px solid #da241c;
-    border-radius: 16px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    border: 2.5px solid #da241c;
+    border-radius: 18px;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.38), 0 0 0 3px rgba(255, 255, 255, 0.85);
     overflow: hidden;
+    will-change: transform, left, top;
   }
   .tile.drag-ghost, .tile.drag-ghost * {
     pointer-events: none !important;
+    touch-action: none !important;
+    -webkit-user-drag: none !important;
+    user-drag: none !important;
   }
   .tile.drag-ghost img {
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    pointer-events: none !important;
   }
   .tile__zoom {
     position: absolute;
@@ -1012,15 +1022,20 @@
   .tile__name {
     flex: 1 1 auto;
     min-width: 0;
-    padding: 8px 6px 9px;
+    padding: 8px 6px 10px;
     background: transparent;
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 700;
     text-align: center;
     line-height: 1.35;
     color: var(--ink);
     overflow: hidden;
-    word-wrap: break-word;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    min-height: 40px;
   }
   .tile__badge {
     position: absolute;
@@ -1732,7 +1747,7 @@
   }
   .day {
     background: #ffffff;
-    border: 1.5px dashed #ebd978;
+    border: 1.5px dashed #dfbe38;
     border-radius: 16px;
     box-shadow: none;
     overflow: hidden;
@@ -1751,12 +1766,12 @@
   .day__head {
     display: flex; align-items: center; justify-content: space-between;
     gap: 6px; flex-wrap: wrap; padding: 9px 12px;
-    border-bottom: 1px solid #f0e290;
-    background: #fffce0;
+    border-bottom: 1px solid #ebd978;
+    background: #fff4af;
   }
   .day.has-dishes .day__head {
-    background: #fff4d0;
-    border-bottom: 1px solid rgba(218, 36, 28, 0.18);
+    background: #fee678;
+    border-bottom: 1px solid rgba(218, 36, 28, 0.22);
   }
   .day__name {
     font-size: 12.5px; font-weight: 800; color: #121212;
@@ -1916,10 +1931,10 @@
   .order__total {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     margin-top: 14px; padding: 14px 18px;
-    background: #fff8b4;
-    border: 1.5px solid #d8b835;
+    background: #fedb52;
+    border: 1.5px solid #c99818;
     border-radius: 18px; font-size: 14px; font-weight: 700; color: #121212;
-    box-shadow: 0 4px 16px rgba(180, 40, 20, 0.05);
+    box-shadow: 0 4px 16px rgba(180, 40, 20, 0.08);
   }
   .order__total strong {
     color: #da241c; font-size: 22px; font-weight: 900;
@@ -1939,8 +1954,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #fff9d6;
-    border: 1px solid #ebd978;
+    background: #fee878;
+    border: 1.5px solid #dcb732;
     border-radius: 14px;
     box-sizing: border-box;
     overflow: visible;
@@ -2895,16 +2910,18 @@
       object-fit: cover !important;
     }
     .tile__name {
-      font-size: 9.5px !important;
-      line-height: 1.22 !important;
-      padding: 4px 4px 5px !important;
+      font-size: 11px !important;
+      line-height: 1.28 !important;
+      padding: 5px 4px 7px !important;
       display: -webkit-box !important;
-      -webkit-line-clamp: 2 !important;
+      -webkit-line-clamp: 3 !important;
       -webkit-box-orient: vertical !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
-      min-height: 24px !important;
-      max-height: 24px !important;
+      min-height: 42px !important;
+      max-height: 54px !important;
+      word-break: break-word !important;
+      font-weight: 700 !important;
     }
     .tile__edit {
       width: 20px !important;
@@ -4311,84 +4328,57 @@
     return wrap;
   }
 
-  // ================= pointer & touch drag (màn cảm ứng điện thoại) =================
-  // HTML5 drag & drop không chạy trên thiết bị cảm ứng → engine kéo thả cảm ứng
-  // thế hệ mới: hỗ trợ đồng thời Touch Events và Pointer Events, chống gián đoạn Safari,
-  // tự động cuộn màn hình mượt mà (RAF scroller), và highlight chính xác ô ngày.
+  // ================= pointer drag engine (chuột desktop, cảm ứng điện thoại, stylus) =================
   var suppressDayClickUntil = 0;   // chặn click tổng hợp ngay sau khi kéo thả
-  var activeDragSession = null;    // quản lý phiên kéo độc quyền, chống chạm đúp
+  var activeDragSession = null;
+
+  function cleanupAllGhosts(){
+    document.querySelectorAll(".tile.drag-ghost").forEach(function(g){ g.remove(); });
+    document.querySelectorAll(".tile.is-dragging").forEach(function(t){ t.classList.remove("is-dragging"); });
+    clearDropHighlights();
+    setDishHeld(false);
+  }
+
+  // Dọn sạch ghost nếu người dùng chuyển tab hoặc mất focus để không bao giờ bị đơ ảnh
+  window.addEventListener("blur", cleanupAllGhosts);
 
   function makeDragGhost(dish){
     var g = document.createElement("div");
     g.className = "tile drag-ghost";
-    g.style.pointerEvents = "none";
     if(dish.img){
       var img = document.createElement("img");
       img.src = dish.img;
       img.alt = dish.name;
-      img.style.pointerEvents = "none";
+      img.setAttribute("draggable", "false");
       g.appendChild(img);
     } else {
       var em = document.createElement("span");
       em.textContent = dish.emoji || "🍽️";
       em.style.fontSize = "32px";
-      em.style.pointerEvents = "none";
       g.appendChild(em);
     }
     return g;
   }
 
   function startPointerDrag(startEv, li, i){
-    // Desktop dùng chuột → để HTML5 drag (dragstart/dragover/drop) xử lý tự nhiên
-    if(startEv.pointerType === "mouse") return;
-    // Bỏ qua nếu chạm vào nút sửa ✎ hoặc nút zoom ảnh 🔍
+    // Bỏ qua nếu bấm vào nút sửa ✎ của chủ hoặc nút phóng to ảnh 🔍
     if(startEv.target.closest && (startEv.target.closest(".tile__edit") || startEv.target.closest(".tile__zoom"))) return;
 
-    // Nếu đang có phiên kéo chưa dọn dẹp → dọn ngay
+    // Dọn dẹp bất kỳ phiên kéo cũ nào
     if(activeDragSession && activeDragSession.cleanup){
       activeDragSession.cleanup();
     }
+    cleanupAllGhosts();
 
-    var isTouch = !!startEv.touches;
-    var pointerId = (!isTouch && startEv.pointerId !== undefined) ? startEv.pointerId : null;
-
-    var getCoords = function(ev){
-      if(ev.touches && ev.touches.length > 0){
-        return { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
-      }
-      if(ev.changedTouches && ev.changedTouches.length > 0){
-        return { x: ev.changedTouches[0].clientX, y: ev.changedTouches[0].clientY };
-      }
-      return { x: ev.clientX, y: ev.clientY };
-    };
-
-    var startCoords = getCoords(startEv);
-    var startX = startCoords.x, startY = startCoords.y;
+    var pointerId = (startEv.pointerId !== undefined) ? startEv.pointerId : null;
+    var startX = startEv.clientX, startY = startEv.clientY;
     var currentX = startX, currentY = startY;
     var moved = false, ghost = null, autoScrollRaf = null;
 
-    // Pointer capture trên li nếu hỗ trợ
+    // Pointer capture trên li để theo dõi di chuyển mượt mà
     if(pointerId !== null && li.setPointerCapture){
       try { li.setPointerCapture(pointerId); } catch(err){}
     }
-
-    var updateDropHighlight = function(cx, cy){
-      if(ghost) ghost.style.visibility = "hidden";
-      var el = document.elementFromPoint(cx, cy);
-      if(ghost) ghost.style.visibility = "";
-      var targetDay = (el && el.closest) ? el.closest(".day") : null;
-      var targetBody = targetDay ? targetDay.querySelector(".day__body") : null;
-
-      dayBodyEls.forEach(function(b){
-        b.classList.toggle("drop-over", b === targetBody);
-      });
-      if(weekEl){
-        weekEl.querySelectorAll(".day").forEach(function(d){
-          d.classList.toggle("drop-over", d === targetDay);
-        });
-      }
-      return targetDay;
-    };
 
     var stopAutoScroll = function(){
       if(autoScrollRaf){
@@ -4421,56 +4411,62 @@
       }
     };
 
-    var activateDrag = function(cx, cy){
-      if(moved) return;
-      moved = true;
-      ghost = makeDragGhost(DISHES[i]);
-      document.body.appendChild(ghost);
-      ghost.style.left = cx + "px";
-      ghost.style.top = cy + "px";
-      li.classList.add("is-dragging");
-      setArmed(-1);
-      setDishHeld(true);
-      triggerHaptic("drag");
+    var updateDropHighlight = function(cx, cy){
+      // .tile.drag-ghost có pointer-events: none !important nên elementFromPoint xuyên qua thẳng ô ngày
+      var el = document.elementFromPoint(cx, cy);
+      var targetDay = (el && el.closest) ? el.closest(".day") : null;
+      var targetBody = targetDay ? targetDay.querySelector(".day__body") : null;
+
+      dayBodyEls.forEach(function(b){
+        b.classList.toggle("drop-over", b === targetBody);
+      });
+      if(weekEl){
+        weekEl.querySelectorAll(".day").forEach(function(d){
+          d.classList.toggle("drop-over", d === targetDay);
+        });
+      }
+      return targetDay;
     };
 
-    // Giữ nhẹ 160ms là nhấc món lên sẵn sàng kéo
-    var holdTimer = setTimeout(function(){
-      if(!moved){
-        activateDrag(startX, startY);
-      }
-    }, 160);
-
     var onMove = function(ev){
-      var c = getCoords(ev);
-      currentX = c.x;
-      currentY = c.y;
+      // Chỉ nhận event của chính con trỏ này
+      if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
+
+      currentX = ev.clientX;
+      currentY = ev.clientY;
 
       if(!moved){
-        if(Math.hypot(currentX - startX, currentY - startY) > 8){
-          clearTimeout(holdTimer);
-          activateDrag(currentX, currentY);
-        }
-      }
-
-      if(moved){
-        if(ev.cancelable) ev.preventDefault();
-        if(ghost){
+        var dist = Math.hypot(currentX - startX, currentY - startY);
+        if(dist > 5){
+          moved = true;
+          cleanupAllGhosts();
+          ghost = makeDragGhost(DISHES[i]);
+          document.body.appendChild(ghost);
           ghost.style.left = currentX + "px";
           ghost.style.top = currentY + "px";
+          li.classList.add("is-dragging");
+          setArmed(-1);
+          setDishHeld(true);
+          triggerHaptic("drag");
         }
+      }
+
+      if(moved && ghost){
+        if(ev.cancelable) ev.preventDefault();
+        ghost.style.left = currentX + "px";
+        ghost.style.top = currentY + "px";
         updateDropHighlight(currentX, currentY);
         checkAutoScroll();
       }
     };
 
     var onEnd = function(ev){
-      clearTimeout(holdTimer);
-      var c = getCoords(ev);
-      var finalX = (c && !isNaN(c.x)) ? c.x : currentX;
-      var finalY = (c && !isNaN(c.y)) ? c.y : currentY;
+      if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
 
+      var finalX = (ev && typeof ev.clientX === "number") ? ev.clientX : currentX;
+      var finalY = (ev && typeof ev.clientY === "number") ? ev.clientY : currentY;
       var wasMoved = moved;
+
       cleanup();
 
       if(wasMoved){
@@ -4489,7 +4485,6 @@
     };
 
     var onCancel = function(){
-      clearTimeout(holdTimer);
       cleanup();
       clearDropHighlights();
       suppressDayClickUntil = Date.now() + 300;
@@ -4500,27 +4495,19 @@
       if(pointerId !== null && li.releasePointerCapture){
         try { li.releasePointerCapture(pointerId); } catch(err){}
       }
-      window.removeEventListener("pointermove", onMove, { passive: false, capture: true });
+      window.removeEventListener("pointermove", onMove, { passive: false });
       window.removeEventListener("pointerup", onEnd, true);
       window.removeEventListener("pointercancel", onCancel, true);
-      window.removeEventListener("touchmove", onMove, { passive: false, capture: true });
-      window.removeEventListener("touchend", onEnd, true);
-      window.removeEventListener("touchcancel", onCancel, true);
 
-      if(ghost){ ghost.remove(); ghost = null; }
-      li.classList.remove("is-dragging");
-      setDishHeld(false);
+      cleanupAllGhosts();
       activeDragSession = null;
     };
 
     activeDragSession = { cleanup: cleanup };
 
-    window.addEventListener("pointermove", onMove, { passive: false, capture: true });
+    window.addEventListener("pointermove", onMove, { passive: false });
     window.addEventListener("pointerup", onEnd, true);
     window.addEventListener("pointercancel", onCancel, true);
-    window.addEventListener("touchmove", onMove, { passive: false, capture: true });
-    window.addEventListener("touchend", onEnd, true);
-    window.addEventListener("touchcancel", onCancel, true);
   }
 
     // ================= Phân loại 2 tầng (Category: Chính ở trên, Phụ ở dưới) & Bảng màu =================
@@ -5424,7 +5411,7 @@
       var li = document.createElement("li");
       li.className = "tile";
       li.dataset.dish = i;
-      li.draggable = true;
+      li.draggable = false; // Tắt native HTML5 drag để chống đơ và chống xung đột trình duyệt
       li.setAttribute("tabindex","0");
       li.setAttribute("aria-label","Món " + dish.name + " — kéo/chạm vào một ngày trong tuần; chủ bấm ✎ để chỉnh");
 
@@ -5470,26 +5457,10 @@
       name.title = dish.name;
       li.appendChild(name);
 
-      // drag (desktop) — payload is the dish index
-      li.addEventListener("dragstart", function(e){
-        e.dataTransfer.setData("text/plain", String(i));
-        e.dataTransfer.effectAllowed = "copy";
-        li.classList.add("is-dragging");
-        setArmed(-1);
-        setDishHeld(true);
-        triggerHaptic("drag");
-      });
-      li.addEventListener("dragend", function(){
-        li.classList.remove("is-dragging");
-        setDishHeld(false);
-      });
-
-      // kéo bằng ngón tay (mobile) — hỗ trợ cả Pointer Events và Touch Events
+      // Kéo thả toàn diện bằng Pointer Events (chuột desktop, cảm ứng điện thoại, bút stylus)
       li.addEventListener("pointerdown", function(e){ startPointerDrag(e, li, i); });
-      li.addEventListener("touchstart", function(e){ startPointerDrag(e, li, i); }, { passive: false });
 
-      // tap-to-arm (mobile); ignore clicks on the ✎ button và nút zoom 🔍. Bỏ qua click tổng
-      // hợp ngay sau khi vừa kéo thả xong (chống "arm" nhầm).
+      // tap-to-arm: chạm nhẹ chọn món rồi bấm vào ngày trong lịch
       li.addEventListener("click", function(e){
         if(e.target.closest(".tile__edit") || e.target.closest(".tile__zoom")) return;
         if(Date.now() < suppressDayClickUntil) return;
