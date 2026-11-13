@@ -367,6 +367,13 @@
     animation: counterPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   }
+  .counter-card__stat-hl {
+    color: #da241c !important;
+    font-weight: 900;
+    letter-spacing: -0.2px;
+    padding: 0 1px;
+    display: inline;
+  }
   @keyframes counterPop {
     0% { transform: scale(0.88); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
@@ -3556,7 +3563,7 @@
         </div>
         <div class="counter-card__stat" id="counterSavedStat" hidden>
           <span class="counter-card__stat-icon">⏱️</span>
-          <span class="counter-card__stat-text" id="counterSavedStatText">Mâm Cơm đã tiết kiệm được tổng 3.735’ ~63 giờ cho khách hàng</span>
+          <span class="counter-card__stat-text" id="counterSavedStatText">Mâm Cơm tiết kiệm được tổng <span class="counter-card__stat-hl" id="counterSavedStatCalc">83*45'=3.735'=63 giờ</span></span>
         </div>
       </div>
     </div>
@@ -8500,7 +8507,8 @@
     var minsFormatted = formatVnNumber(totalMins);
     var statEl = document.getElementById("counterSavedStatText");
     if(statEl){
-      statEl.textContent = "Mâm Cơm đã tiết kiệm được tổng " + minsFormatted + "’ ~" + hrs + " giờ cho khách hàng";
+      var calcStr = n + "*45'=" + minsFormatted + "'=" + hrs + " giờ";
+      statEl.innerHTML = 'Mâm Cơm tiết kiệm được tổng <span class="counter-card__stat-hl" id="counterSavedStatCalc">' + calcStr + '</span>';
     }
   }
 
