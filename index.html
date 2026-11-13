@@ -73,10 +73,12 @@
   html { min-height: 100%; }
   html, body { margin: 0; padding: 0; }
   
-  /* ---- Canvas gốm sứ thanh sạch hiện đại (80% Pure Porcelain #FAFAFA) ---- */
+  /* ---- Canvas gốm sứ ấm áp Mâm Cơm (Warm Rice Porcelain & Amber Atmosphere) ---- */
   body {
     min-height: 100vh;
-    background-color: #fafafa;
+    background-color: #f7f4ed;
+    background-image: radial-gradient(120% 90% at 50% 0%, #fffbf2 0%, #f7f3eb 50%, #f1eae0 100%);
+    background-attachment: fixed;
     color: #121212;
     font-family: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.5;
@@ -102,18 +104,19 @@
     z-index: 1000;
     width: 100%;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.95);
+    border: 1.5px solid rgba(218, 36, 28, 0.10);
     border-radius: var(--radius-pill);
-    box-shadow: 0 10px 30px -4px rgba(70, 30, 20, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03), var(--glass-specular);
+    box-shadow: 0 12px 34px -4px rgba(180, 50, 30, 0.09), 0 2px 8px rgba(0, 0, 0, 0.03);
     padding: 8px 18px 8px;
     margin: 0 0 20px;
-    transition: box-shadow 0.25s ease;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .prog:hover {
-    box-shadow: 0 16px 36px -4px rgba(218, 36, 28, 0.12), var(--glass-specular);
+    box-shadow: 0 16px 42px -4px rgba(218, 36, 28, 0.14), 0 4px 12px rgba(0, 0, 0, 0.04);
+    border-color: rgba(218, 36, 28, 0.18);
   }
   .prog__row {
     display: flex;
@@ -625,27 +628,35 @@
     gap: 4px;
   }
   .cat-manage__order-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    border: 1px solid var(--line);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
     background: #ffffff;
     color: var(--ink);
     cursor: pointer;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 800;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     transition: all 0.14s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .cat-manage__order-btn:hover:not(:disabled) {
     background: var(--yellow);
     border-color: var(--black);
-    transform: scale(1.06);
+    transform: scale(1.08);
+  }
+  .cat-manage__order-btn:active:not(:disabled) {
+    background: var(--red);
+    color: #ffffff;
+    border-color: var(--red);
+    transform: scale(0.94);
   }
   .cat-manage__order-btn:disabled {
-    opacity: 0.35;
+    opacity: 0.25;
     cursor: not-allowed;
   }
   .cat-manage__color-pickers {
@@ -756,21 +767,24 @@
     width: 100%;
   }
 
-  /* ---- MODERN PURE PORCELAIN CARDS (80% Trắng sạch, Viền siêu mảnh, Đổ bóng khuếch tán) ---- */
+  /* ---- MODERN PURE PORCELAIN CARDS WITH VERMILION ACCENT (Trắng sứ tinh khiết, Viền ấm son đỏ nhẹ, Đổ bóng đa tầng) ---- */
   .panel, .order, .saved, .qa, .rev, .orders, .calendar-panel {
     background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: 1.5px solid rgba(218, 36, 28, 0.09);
     border-radius: 24px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 10px 32px -4px rgba(160, 40, 20, 0.05), 0 2px 8px rgba(0, 0, 0, 0.02);
     overflow: hidden;
-    transition: box-shadow 0.25s ease, transform 0.2s ease;
+    transition: box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .panel:hover, .order:hover, .saved:hover, .calendar-panel:hover {
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 18px 46px -6px rgba(218, 36, 28, 0.12), 0 4px 14px rgba(70, 35, 25, 0.04);
+    border-color: rgba(218, 36, 28, 0.18);
   }
   .panel__head {
     padding: 16px 20px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1.5px solid rgba(218, 36, 28, 0.07);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -792,7 +806,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1.5px solid rgba(218, 36, 28, 0.07);
     background: #ffffff;
   }
   .calendar-panel__title-group {
@@ -1821,24 +1835,29 @@
   }
   .order__field input,
   .order__field textarea {
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
     border-radius: 14px;
     padding: 12px 14px;
     font-size: 16px !important;
     font-weight: 500;
-    background: #f7f7f8;
+    background: #fbf9f6;
     color: #121212;
     font-family: inherit;
     width: 100%; box-sizing: border-box;
-    transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
     line-height: 1.4;
+    scroll-margin-top: 85px;
+    scroll-margin-bottom: 24px;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .order__field input:focus,
   .order__field textarea:focus {
     outline: none;
     background: #ffffff;
     border-color: #da241c;
-    box-shadow: 0 0 0 4px rgba(218, 36, 28, 0.10);
+    box-shadow: 0 0 0 4px rgba(218, 36, 28, 0.12), 0 2px 10px rgba(218, 36, 28, 0.05);
   }
   .order__field input::placeholder,
   .order__field textarea::placeholder {
@@ -1853,10 +1872,10 @@
   .order__total {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     margin-top: 14px; padding: 14px 18px;
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fffdfa;
+    border: 1.5px solid rgba(218, 36, 28, 0.12);
     border-radius: 18px; font-size: 14px; font-weight: 700; color: #121212;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 16px rgba(218, 36, 28, 0.04);
   }
   .order__total strong {
     color: #da241c; font-size: 22px; font-weight: 900;
@@ -3991,6 +4010,7 @@
   // cache / defaults, so a slow or absent backend never blanks the page).
   function loadSharedMenu(){
     if(!USE_SUPABASE) return;
+    if(typeof syncCategoryConfigFromServer === "function") syncCategoryConfigFromServer();
     sharedStore.loadMenu().then(function(menu){
       if(Array.isArray(menu) && menu.length === 6){
         // Menu giống hệt bản đang có → không dựng lại, tránh giật UI mỗi 20s.
@@ -4055,8 +4075,13 @@
     });
   }
   var currentOwnerPin = "";
-  try { currentOwnerPin = sessionStorage.getItem("mamcom.ownerPin.session") || ""; } catch(e){}
   function getOwnerPin(){ return currentOwnerPin || ""; }
+
+  // Xóa sạch session lưu PIN cũ để đảm bảo khi mở web luôn ở trạng thái khóa (chỉ mở khi chủ nhập đúng PIN)
+  try {
+    sessionStorage.removeItem("mamcom.ownerPin.session");
+    localStorage.removeItem("mamcom.ownerPin.session");
+  } catch(e){}
 
   function escHtml(str){
     if(!str) return "";
@@ -4067,15 +4092,11 @@
     return String(str).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  var ownerUnlocked = false; // set true only after a correct PIN this session
+  var ownerUnlocked = false; // Luôn bắt đầu ở chế độ thường (khách), CHỈ mở khóa khi nhập đúng mã PIN
   function unlockOwner(pin){
     ownerUnlocked = true;
     if(pin){
       currentOwnerPin = pin;
-      try {
-        sessionStorage.setItem("mamcom.ownerPin.session", pin);
-        localStorage.setItem("mamcom.ownerPin.session", pin);
-      } catch(e){}
     }
     var ownerBar = document.getElementById("ownerStatusBar");
     if(ownerBar) ownerBar.hidden = false;
@@ -4111,26 +4132,6 @@
     if(menuFoot) menuFoot.hidden = true;
     var btnManageCat = document.getElementById("btnManageCategories");
     if(btnManageCat) btnManageCat.hidden = true;
-  }
-  function tryAutoUnlockOwner(){
-    var savedPin = "";
-    try {
-      savedPin = sessionStorage.getItem("mamcom.ownerPin.session") ||
-                 localStorage.getItem("mamcom.ownerPin.session") || "";
-    } catch(e){}
-    if(!savedPin || savedPin.length < 4) return;
-    // Mở khóa ngay lập tức để chủ thao tác mượt mà không bị trễ khi tải lại trang
-    unlockOwner(savedPin);
-    // Âm thầm kiểm tra lại với PostgreSQL Supabase để bảo mật
-    if(sharedStore && typeof sharedStore.checkPin === "function"){
-      sharedStore.checkPin(savedPin).then(function(ok){
-        if(!ok) logoutOwner();
-      }).catch(function(err){
-        if(err && err.message && (err.message.indexOf("khóa") !== -1 || err.message.indexOf("sai") !== -1)){
-          logoutOwner();
-        }
-      });
-    }
   }
   function isOwner(){ return ownerUnlocked; }
 
@@ -4438,15 +4439,50 @@
     });
   }
 
+  var globalCategoryConfig = null;
+
+  function syncDishesIntoCategoryConfig(cfg){
+    if(!cfg) return;
+    if(!Array.isArray(cfg.mainOrder)) cfg.mainOrder = [];
+    if(!Array.isArray(cfg.subOrder)) cfg.subOrder = [];
+    if(!cfg.mainStyles) cfg.mainStyles = {};
+    if(!cfg.subStyles) cfg.subStyles = {};
+
+    (DISHES || []).forEach(function(d){
+      var info = parseDishCategory(d.categories);
+      if(info.main){
+        var mTrim = info.main.trim();
+        if(mTrim && cfg.mainOrder.indexOf(mTrim) === -1) cfg.mainOrder.push(mTrim);
+        if(!cfg.mainStyles[mTrim]){
+          cfg.mainStyles[mTrim] = { color: info.color || "#DA241C", textColor: info.textColor || "#FFFFFF" };
+        }
+      }
+      info.sub.forEach(function(s){
+        var sTrim = String(s || "").trim();
+        if(sTrim){
+          if(cfg.subOrder.indexOf(sTrim) === -1) cfg.subOrder.push(sTrim);
+          if(!cfg.subStyles[sTrim]){
+            var sCol = (info.subColors && info.subColors[sTrim]) || info.subColor || "#E65100";
+            cfg.subStyles[sTrim] = { color: sCol };
+          }
+        }
+      });
+    });
+  }
+
   function loadCategoryConfig(){
+    if(globalCategoryConfig){
+      syncDishesIntoCategoryConfig(globalCategoryConfig);
+      return globalCategoryConfig;
+    }
     var cfg = { mainOrder: [], subOrder: [], mainStyles: {}, subStyles: {} };
     try {
       var raw = localStorage.getItem("mamcom.categoryConfig.v1");
       if(raw){
         var p = JSON.parse(raw);
         if(p.order){
-          cfg.mainOrder = Array.isArray(p.order.main) ? p.order.main : [];
-          cfg.subOrder = Array.isArray(p.order.sub) ? p.order.sub : [];
+          cfg.mainOrder = Array.isArray(p.order.main) ? p.order.main.map(function(s){ return String(s).trim(); }) : [];
+          cfg.subOrder = Array.isArray(p.order.sub) ? p.order.sub.map(function(s){ return String(s).trim(); }) : [];
         }
         if(p.styles){
           cfg.mainStyles = p.styles.main || {};
@@ -4454,34 +4490,46 @@
         }
       }
     } catch(e){}
-    (DISHES || []).forEach(function(d){
-      var info = parseDishCategory(d.categories);
-      if(info.main){
-        if(cfg.mainOrder.indexOf(info.main) === -1) cfg.mainOrder.push(info.main);
-        if(!cfg.mainStyles[info.main]){
-          cfg.mainStyles[info.main] = { color: info.color || "#DA241C", textColor: info.textColor || "#FFFFFF" };
-        }
-      }
-      info.sub.forEach(function(s){
-        if(s){
-          if(cfg.subOrder.indexOf(s) === -1) cfg.subOrder.push(s);
-          if(!cfg.subStyles[s]){
-            var sCol = (info.subColors && info.subColors[s]) ? info.subColors[s] : (info.subColor || "#E65100");
-            cfg.subStyles[s] = { color: sCol };
-          }
-        }
-      });
-    });
+    syncDishesIntoCategoryConfig(cfg);
+    globalCategoryConfig = cfg;
     return cfg;
   }
 
   function saveCategoryConfig(cfg){
+    globalCategoryConfig = cfg;
     try {
       localStorage.setItem("mamcom.categoryConfig.v1", JSON.stringify({
         order: { main: cfg.mainOrder, sub: cfg.subOrder },
         styles: { main: cfg.mainStyles, sub: cfg.subStyles }
       }));
     } catch(e){}
+    if(sharedStore && typeof sharedStore.saveCategoryConfig === "function"){
+      sharedStore.saveCategoryConfig(cfg).catch(function(){});
+    }
+  }
+
+  function syncCategoryConfigFromServer(){
+    if(!sharedStore || typeof sharedStore.getCategoryConfig !== "function") return;
+    sharedStore.getCategoryConfig().then(function(remoteCfg){
+      if(remoteCfg && remoteCfg.order){
+        var cfg = {
+          mainOrder: Array.isArray(remoteCfg.order.main) ? remoteCfg.order.main.map(function(s){ return String(s).trim(); }) : [],
+          subOrder: Array.isArray(remoteCfg.order.sub) ? remoteCfg.order.sub.map(function(s){ return String(s).trim(); }) : [],
+          mainStyles: (remoteCfg.styles && remoteCfg.styles.main) || {},
+          subStyles: (remoteCfg.styles && remoteCfg.styles.sub) || {}
+        };
+        syncDishesIntoCategoryConfig(cfg);
+        globalCategoryConfig = cfg;
+        try {
+          localStorage.setItem("mamcom.categoryConfig.v1", JSON.stringify({
+            order: { main: cfg.mainOrder, sub: cfg.subOrder },
+            styles: { main: cfg.mainStyles, sub: cfg.subStyles }
+          }));
+        } catch(e){}
+        renderCategoryFilters();
+        filterMenuDishes();
+      }
+    }).catch(function(){});
   }
 
   function renderEditorPalette(selectedColor){
@@ -4638,8 +4686,10 @@
 
     // Sắp xếp thứ tự Category chính theo cấu hình PIN chủ
     mainKeys.sort(function(a, b){
-      var ia = cfg.mainOrder.indexOf(a);
-      var ib = cfg.mainOrder.indexOf(b);
+      var aTrim = String(a || "").trim();
+      var bTrim = String(b || "").trim();
+      var ia = cfg.mainOrder.indexOf(aTrim);
+      var ib = cfg.mainOrder.indexOf(bTrim);
       if(ia === -1 && ib === -1) return 0;
       if(ia === -1) return 1;
       if(ib === -1) return -1;
@@ -4732,8 +4782,10 @@
       subRow.style.display = "flex";
 
       curSubKeys.sort(function(a, b){
-        var ia = cfg.subOrder.indexOf(a);
-        var ib = cfg.subOrder.indexOf(b);
+        var aTrim = String(a || "").trim();
+        var bTrim = String(b || "").trim();
+        var ia = cfg.subOrder.indexOf(aTrim);
+        var ib = cfg.subOrder.indexOf(bTrim);
         if(ia === -1 && ib === -1) return 0;
         if(ia === -1) return 1;
         if(ib === -1) return -1;
@@ -4846,6 +4898,8 @@
     var mainList = document.getElementById("catManageMainList");
     var subList  = document.getElementById("catManageSubList");
     if(!mainList || !subList) return;
+    var modalBody = document.querySelector(".modal--cat .modal__body");
+    var savedScroll = modalBody ? modalBody.scrollTop : 0;
 
     if(!editingCatConfig){
       editingCatConfig = loadCategoryConfig();
@@ -4856,17 +4910,19 @@
     (DISHES || []).forEach(function(d){
       var info = parseDishCategory(d.categories);
       if(info.main){
-        if(cfg.mainOrder.indexOf(info.main) === -1) cfg.mainOrder.push(info.main);
-        if(!cfg.mainStyles[info.main]){
-          cfg.mainStyles[info.main] = { color: info.color || "#DA241C", textColor: info.textColor || "#FFFFFF" };
+        var mTrim = info.main.trim();
+        if(mTrim && cfg.mainOrder.indexOf(mTrim) === -1) cfg.mainOrder.push(mTrim);
+        if(!cfg.mainStyles[mTrim]){
+          cfg.mainStyles[mTrim] = { color: info.color || "#DA241C", textColor: info.textColor || "#FFFFFF" };
         }
       }
       info.sub.forEach(function(s){
-        if(s){
-          if(cfg.subOrder.indexOf(s) === -1) cfg.subOrder.push(s);
-          if(!cfg.subStyles[s]){
-            var sCol = (info.subColors && info.subColors[s]) || info.subColor || "#E65100";
-            cfg.subStyles[s] = { color: sCol };
+        var sTrim = String(s || "").trim();
+        if(sTrim){
+          if(cfg.subOrder.indexOf(sTrim) === -1) cfg.subOrder.push(sTrim);
+          if(!cfg.subStyles[sTrim]){
+            var sCol = (info.subColors && info.subColors[sTrim]) || info.subColor || "#E65100";
+            cfg.subStyles[sTrim] = { color: sCol };
           }
         }
       });
@@ -4890,6 +4946,12 @@
 
         var nameWrap = document.createElement("div");
         nameWrap.className = "cat-manage__item-name";
+        
+        var orderBadge = document.createElement("span");
+        orderBadge.style.cssText = "font-size:11px;font-weight:800;color:var(--muted);background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:6px;margin-right:6px;";
+        orderBadge.textContent = "#" + (idx + 1);
+        nameWrap.appendChild(orderBadge);
+
         var previewBadge = document.createElement("span");
         previewBadge.style.cssText = "display:inline-flex;align-items:center;padding:3.5px 12px;border-radius:99px;font-size:12px;font-weight:700;transition:all .15s ease;";
         previewBadge.style.background = col;
@@ -4909,7 +4971,9 @@
         upBtn.textContent = "▲";
         upBtn.title = "Di chuyển lên trước";
         upBtn.disabled = (idx === 0);
-        upBtn.addEventListener("click", function(){
+        upBtn.addEventListener("click", function(e){
+          e.preventDefault();
+          e.stopPropagation();
           var temp = cfg.mainOrder[idx];
           cfg.mainOrder[idx] = cfg.mainOrder[idx - 1];
           cfg.mainOrder[idx - 1] = temp;
@@ -4923,7 +4987,9 @@
         downBtn.textContent = "▼";
         downBtn.title = "Di chuyển xuống sau";
         downBtn.disabled = (idx === cfg.mainOrder.length - 1);
-        downBtn.addEventListener("click", function(){
+        downBtn.addEventListener("click", function(e){
+          e.preventDefault();
+          e.stopPropagation();
           var temp = cfg.mainOrder[idx];
           cfg.mainOrder[idx] = cfg.mainOrder[idx + 1];
           cfg.mainOrder[idx + 1] = temp;
@@ -5019,6 +5085,12 @@
 
         var nameWrap = document.createElement("div");
         nameWrap.className = "cat-manage__item-name";
+
+        var orderBadge = document.createElement("span");
+        orderBadge.style.cssText = "font-size:11px;font-weight:800;color:var(--muted);background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:6px;margin-right:6px;";
+        orderBadge.textContent = "#" + (sidx + 1);
+        nameWrap.appendChild(orderBadge);
+
         var previewBadge = document.createElement("span");
         previewBadge.style.cssText = "display:inline-flex;align-items:center;padding:3px 11px;border-radius:99px;font-size:11.5px;font-weight:700;transition:all .15s ease;";
         previewBadge.style.background = hexToRgba(sCol, 0.22);
@@ -5038,7 +5110,9 @@
         upBtn.textContent = "▲";
         upBtn.title = "Di chuyển lên trước";
         upBtn.disabled = (sidx === 0);
-        upBtn.addEventListener("click", function(){
+        upBtn.addEventListener("click", function(e){
+          e.preventDefault();
+          e.stopPropagation();
           var temp = cfg.subOrder[sidx];
           cfg.subOrder[sidx] = cfg.subOrder[sidx - 1];
           cfg.subOrder[sidx - 1] = temp;
@@ -5052,7 +5126,9 @@
         downBtn.textContent = "▼";
         downBtn.title = "Di chuyển xuống sau";
         downBtn.disabled = (sidx === cfg.subOrder.length - 1);
-        downBtn.addEventListener("click", function(){
+        downBtn.addEventListener("click", function(e){
+          e.preventDefault();
+          e.stopPropagation();
           var temp = cfg.subOrder[sidx];
           cfg.subOrder[sidx] = cfg.subOrder[sidx + 1];
           cfg.subOrder[sidx + 1] = temp;
@@ -5100,6 +5176,10 @@
         item.appendChild(pickers);
         subList.appendChild(item);
       });
+    }
+
+    if(modalBody && savedScroll > 0){
+      modalBody.scrollTop = savedScroll;
     }
   }
 
@@ -5823,13 +5903,13 @@
         e.preventDefault();
         if(f.id === "cPeople"){
           var next = document.getElementById("cPhone");
-          if(next) next.focus();
+          if(next) next.focus({ preventScroll: true });
         } else if(f.id === "cPhone"){
           var next = document.getElementById("cAddress");
-          if(next) next.focus();
+          if(next) next.focus({ preventScroll: true });
         } else if(f.id === "cAddress"){
           var next = document.getElementById("cNote");
-          if(next) next.focus();
+          if(next) next.focus({ preventScroll: true });
         } else {
           el.blur();
         }
@@ -6343,6 +6423,7 @@
   var progHint = document.getElementById("progHint");
   var progTrack = document.getElementById("progTrack");
 
+  var lastProgShown = -1;
   function updateProgress(){
     if(!progEl) return;
     var pct = 0;
@@ -6360,9 +6441,13 @@
     var shown = Math.min(100, Math.round(pct));
     progFill.style.width = shown + "%";
     progPct.textContent = shown + "%";
-    progPct.classList.remove("pct-bounce");
-    void progPct.offsetWidth;
-    progPct.classList.add("pct-bounce");
+    if(shown !== lastProgShown){
+      lastProgShown = shown;
+      progPct.classList.remove("pct-bounce");
+      requestAnimationFrame(function(){
+        progPct.classList.add("pct-bounce");
+      });
+    }
 
     if(progTrack) progTrack.setAttribute("aria-valuenow", String(shown));
 
@@ -6773,6 +6858,41 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin: getOwnerPin(), price: n })
       }).then(function(r){ return r.json(); }).then(function(){ return n; }).catch(function(){ return n; });
+    },
+
+    // ---- category config (global order & styles) ----
+    getCategoryConfig: function(){
+      if(USE_SUPABASE){
+        return SUPABASE.from("state").select("value").eq("key", "category_config").maybeSingle()
+          .then(function(res){
+            var row = res && res.data;
+            if(row && row.value){
+              try { return JSON.parse(row.value); } catch(e){}
+            }
+            return null;
+          }).catch(function(){ return null; });
+      }
+      return Promise.resolve(null);
+    },
+    saveCategoryConfig: function(cfg){
+      var str = JSON.stringify({
+        order: { main: cfg.mainOrder || [], sub: cfg.subOrder || [] },
+        styles: { main: cfg.mainStyles || {}, sub: cfg.subStyles || {} }
+      });
+      try { localStorage.setItem("mamcom.categoryConfig.v1", str); } catch(e){}
+      if(USE_SUPABASE){
+        var pin = getOwnerPin();
+        if(pin){
+          return SUPABASE.rpc("admin_save_category_config", { p_pin: pin, p_config: str })
+            .then(function(res){
+              if(res.error) throw res.error;
+              return cfg;
+            }).catch(function(){
+              return cfg;
+            });
+        }
+      }
+      return Promise.resolve(cfg);
     },
 
     // resolves the new shared total
@@ -7811,9 +7931,9 @@
   renderReviews([]);
   loadServerState();
   loadSharedMenu();
+  syncCategoryConfigFromServer();
   syncOrdersFromServer();
   trackPageViewOnce();
-  tryAutoUnlockOwner();
 
   var btnDoChangePin = document.getElementById("btnDoChangePin");
   var setOldPin = document.getElementById("setOldPin");
