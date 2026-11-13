@@ -3914,6 +3914,7 @@
           <button class="saved__cta-btn" id="ctaBtn" type="button">✨ Chọn thêm mâm để nhân thêm thời gian rảnh cho mình ↑</button>
         </div>
       </div>
+    </div>
 
       <!-- REVIEWS & RATING (ĐÁNH GIÁ CỦA KHÁCH - Ô ĐỒNG BỘ 100%) -->
       <div class="rev" id="revBox">
@@ -4840,7 +4841,7 @@
     return g;
   }
 
-  // Hit-test day elements by geometry (bounding client rect) with 28px forgiving margin
+  // Hit-test day elements by geometry (bounding client rect) with 36px forgiving margin for fast swipes
   function getDayUnderPoint(x, y){
     if(!weekEl) return null;
     var dayNodes = weekEl.querySelectorAll(".day");
@@ -4851,11 +4852,11 @@
         return dayNodes[d];
       }
     }
-    // 2. Forgiving 28px margin around each day box
+    // 2. Forgiving 36px margin around each day box
     var closest = null, minD = 999999;
     for(var d = 0; d < dayNodes.length; d++){
       var r = dayNodes[d].getBoundingClientRect();
-      if(x >= r.left - 28 && x <= r.right + 28 && y >= r.top - 28 && y <= r.bottom + 28){
+      if(x >= r.left - 36 && x <= r.right + 36 && y >= r.top - 36 && y <= r.bottom + 36){
         var midX = (r.left + r.right) / 2, midY = (r.top + r.bottom) / 2;
         var dist = Math.hypot(x - midX, y - midY);
         if(dist < minD){ minD = dist; closest = dayNodes[d]; }
@@ -4898,6 +4899,7 @@
 
     var startX = startEv.clientX, startY = startEv.clientY;
     var lastX = startX, lastY = startY;
+    var startTime = Date.now();
     var mode = "pending"; // "pending" | "scrolling" | "dragging"
     var ghost = null, autoScrollRaf = null;
     var targetDay = null;
@@ -4932,6 +4934,7 @@
     };
 
     var startDragMode = function(x, y){
+      if(mode === "dragging") return;
       mode = "dragging";
       document.body.classList.add("is-pointer-dragging");
       cleanupAllGhosts();
@@ -4956,23 +4959,19 @@
       lastY = cy;
       var dist = Math.hypot(dx, dy);
 
-      // Ngay khi có dịch chuyển (>= 3px): chặn ngay hành vi mặc định (preventDefault)
-      // để trình duyệt nhúng (pop-in / in-app browser) không bắt lấy cử chỉ vuốt xuống làm tắt sheet/browser
-      if(dist >= 3 && ev.cancelable){
-        ev.preventDefault();
-      }
+      // Chặn mọi hành vi mặc định của trình duyệt để in-app browser pop-in
+      // KHÔNG BAO GIỜ bị kéo tắt kể cả khi người dùng vuốt rất nhanh xuống dưới
+      if(ev.cancelable) ev.preventDefault();
 
-      // Kéo tự do mọi chiều (360 độ: lên, xuống, trái, phải) khi dịch chuyển >= 4px
+      // Kéo nhanh hay chậm: ngay khi có chuyển động >= 2px là bật drag mode ngay
       if(mode === "pending"){
-        if(dist >= 4){
-          if(ev.cancelable) ev.preventDefault();
+        if(dist >= 2){
           startDragMode(cx, cy);
         }
         return;
       }
 
       if(mode === "dragging" && ghost){
-        if(ev.cancelable) ev.preventDefault();
         ghost.style.left = cx + "px";
         ghost.style.top = cy + "px";
         targetDay = getDayUnderPoint(cx, cy);
@@ -4981,8 +4980,10 @@
       }
     };
 
+    // Chặn tuyệt đối touchmove ngay từ pixel đầu tiên trên toàn window và chính li
+    // để loại bỏ hoàn toàn việc in-app browser sheet bắt cử chỉ flick/pull-down
     var blockTouchMove = function(ev){
-      if(mode === "dragging" && ev.cancelable){
+      if(ev.cancelable){
         ev.preventDefault();
       }
     };
@@ -4992,6 +4993,8 @@
 
       var wasDragging = (mode === "dragging");
       var dropDay = targetDay || getDayUnderPoint(lastX, lastY);
+      var totalDist = Math.hypot(lastX - startX, lastY - startY);
+      var duration = Date.now() - startTime;
 
       cleanup();
 
@@ -5004,13 +5007,33 @@
             triggerHaptic("drop");
           }
         }
-        suppressDayClickUntil = Date.now() + 350;
+        suppressDayClickUntil = Date.now() + 400;
+      } else if(totalDist < 5 && duration < 350){
+        // Xử lý tap trực tiếp: chạm vào ảnh mở lightbox, chạm vào thân thẻ để arm
+        var hitMedia = startEv.target.closest && (startEv.target.closest(".tile__media") || startEv.target.closest("img"));
+        if(hitMedia && dish.img){
+          suppressDayClickUntil = Date.now() + 400;
+          showLightbox(dish.img, dish.name, dish.description);
+        } else {
+          suppressDayClickUntil = Date.now() + 400;
+          setArmed(armed === i ? -1 : i);
+        }
       }
     };
 
     var onCancel = function(){
+      var wasDragging = (mode === "dragging");
+      var dropDay = targetDay || getDayUnderPoint(lastX, lastY);
       cleanup();
       clearDropHighlights();
+      // Nếu vuốt nhanh mà browser gửi pointercancel khi ngón tay đang ở trên ngày:
+      if(wasDragging && dropDay){
+        var dayIdx = Number(dropDay.dataset.day);
+        if(dayIdx >= 0 && dayIdx < plan.length){
+          addDish(dayIdx, i);
+          triggerHaptic("drop");
+        }
+      }
       suppressDayClickUntil = Date.now() + 300;
     };
 
@@ -5020,6 +5043,7 @@
       window.removeEventListener("pointerup", onEnd, true);
       window.removeEventListener("pointercancel", onCancel, true);
       window.removeEventListener("touchmove", blockTouchMove, { passive: false });
+      li.removeEventListener("touchmove", blockTouchMove, { passive: false });
       if(pointerId !== null && typeof li.releasePointerCapture === "function"){
         try {
           if(li.hasPointerCapture && li.hasPointerCapture(pointerId)){
@@ -5038,6 +5062,7 @@
     window.addEventListener("pointerup", onEnd, true);
     window.addEventListener("pointercancel", onCancel, true);
     window.addEventListener("touchmove", blockTouchMove, { passive: false });
+    li.addEventListener("touchmove", blockTouchMove, { passive: false });
   }
 
     // ================= Phân loại 2 tầng (Category: Chính ở trên, Phụ ở dưới) & Bảng màu =================
