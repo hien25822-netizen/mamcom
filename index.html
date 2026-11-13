@@ -21,13 +21,13 @@
     --red-tint: rgba(218, 36, 28, 0.08);
     --red-glow: rgba(218, 36, 28, 0.25);
 
-    --yellow: #f59e0b; /* Vàng mật ong & hoàng yến ấm áp — Màu hoàng kim no đủ, hòa quyện tuyệt đẹp với sắc đỏ Mâm Cơm */
-    --yellow-hover: #d97706;
-    --yellow-soft: #fffbeb;
-    --yellow-tint: rgba(245, 158, 11, 0.18);
-    --yellow-glow: rgba(245, 158, 11, 0.4);
-    --yellow-border: #f5c042;
-    --yellow-deep: #b45309;
+    --yellow: #ffff04; /* Vàng #ffff04 nguyên bản thương hiệu Mâm Cơm */
+    --yellow-hover: #e6e600;
+    --yellow-soft: #ffffe0;
+    --yellow-tint: rgba(255, 255, 4, 0.18);
+    --yellow-glow: rgba(255, 255, 4, 0.4);
+    --yellow-border: #ffff04;
+    --yellow-deep: #cca000;
 
     --black: #000000;
     --ink: #1e1917;
@@ -112,16 +112,16 @@
     background: rgba(255, 254, 247, 0.97);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1.5px solid #e5b338;
+    border: 1.5px solid #ffff04;
     border-radius: var(--radius-pill);
-    box-shadow: 0 10px 30px -4px rgba(25, 3, 2, 0.38), 0 2px 8px rgba(229, 179, 56, 0.18);
+    box-shadow: 0 10px 30px -4px rgba(25, 3, 2, 0.38), 0 2px 8px rgba(255, 255, 4, 0.22);
     padding: 8px 18px 8px;
     margin: 0 0 20px;
     transition: box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .prog:hover {
-    box-shadow: 0 14px 38px -4px rgba(25, 3, 2, 0.45), 0 4px 14px rgba(229, 179, 56, 0.25);
-    border-color: #d19e26;
+    box-shadow: 0 14px 38px -4px rgba(25, 3, 2, 0.45), 0 4px 14px rgba(255, 255, 4, 0.3);
+    border-color: #ffff04;
   }
   .prog__row {
     display: flex;
@@ -221,16 +221,16 @@
     padding: 16px 26px 14px;
     background-color: #fffef7;
     background-image: linear-gradient(180deg, #fffef9 0%, #fffcf2 50%, #fff8e7 100%);
-    border: 1.5px solid #e5b338;
+    border: 1.5px solid #ffff04;
     border-radius: 24px;
-    box-shadow: 0 16px 42px -6px rgba(25, 3, 2, 0.45), 0 3px 12px rgba(229, 179, 56, 0.2);
+    box-shadow: 0 16px 42px -6px rgba(25, 3, 2, 0.45), 0 3px 12px rgba(255, 255, 4, 0.22);
     transition: transform 0.22s var(--spring-bounce), box-shadow 0.22s ease;
   }
   .counter-card__glow {
     position: absolute;
     inset: -12px;
     border-radius: 36px;
-    background: radial-gradient(circle, rgba(229, 179, 56, 0.22) 0%, rgba(218, 36, 28, 0.10) 50%, transparent 75%);
+    background: radial-gradient(circle, rgba(255, 255, 4, 0.25) 0%, rgba(218, 36, 28, 0.10) 50%, transparent 75%);
     filter: blur(16px);
     z-index: -1;
     pointer-events: none;
@@ -773,29 +773,29 @@
     width: 100%;
   }
 
-  /* ---- WARM IMPERIAL PORCELAIN & GOLD ACCENT CARDS (Sứ ngà hoàng kim ấm áp, làm nổi bật món ăn & hài hòa với logo) ---- */
+  /* ---- WARM IMPERIAL PORCELAIN & VÀNG #FFFF04 CARDS (Viền & Tiêu đề Vàng #ffff04 sắc nét chuẩn Mâm Cơm) ---- */
   .panel, .order, .saved, .qa, .rev, .orders, .calendar-panel {
     background-color: #fffef7;
     background-image: linear-gradient(180deg, #fffef9 0%, #fffcf2 50%, #fff8e7 100%);
-    border: 1.5px solid #e5b338;
+    border: 1.5px solid #ffff04;
     border-radius: 24px;
-    box-shadow: 0 16px 44px -6px rgba(25, 3, 2, 0.48), 0 3px 14px rgba(229, 179, 56, 0.22);
+    box-shadow: 0 16px 44px -6px rgba(25, 3, 2, 0.48), 0 3px 14px rgba(255, 255, 4, 0.22);
     overflow: hidden;
     transition: box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .panel:hover, .order:hover, .saved:hover, .calendar-panel:hover {
-    box-shadow: 0 20px 52px -6px rgba(25, 3, 2, 0.54), 0 4px 18px rgba(229, 179, 56, 0.3);
-    border-color: #d19e26;
+    box-shadow: 0 20px 52px -6px rgba(25, 3, 2, 0.54), 0 4px 18px rgba(255, 255, 4, 0.3);
+    border-color: #ffff04;
   }
   .panel__head {
-    padding: 16px 20px;
-    border-bottom: 1.5px solid #cca020;
+    padding: 14px 18px;
+    border-bottom: 1.5px solid #d4c800;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(135deg, #fde369 0%, #f6c836 100%);
+    background: #ffff04 !important;
   }
   .panel__head h2 {
     font-size: 17px;
@@ -803,6 +803,7 @@
     margin: 0;
     color: #261109;
     letter-spacing: -0.2px;
+    line-height: 1;
   }
   .calendar-panel {
     margin-bottom: 16px;
@@ -813,8 +814,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    border-bottom: 1.5px solid #cca020;
-    background: linear-gradient(135deg, #fde369 0%, #f6c836 100%);
+    border-bottom: 1.5px solid #d4c800;
+    background: #ffff04 !important;
   }
   .calendar-panel__title-group {
     display: flex;
@@ -867,14 +868,14 @@
     border-radius: var(--radius-pill);
   }
 
-  /* ---- UNIFIED PANEL HEADS & BODIES (Mâm Cơm Warm Amber & Gold Cards) ---- */
+  /* ---- UNIFIED PANEL HEADS & BODIES (Mâm Cơm Vàng #ffff04 đồng nhất 100% với Lịch) ---- */
   .order__head-bar,
   .saved__head-bar,
   .rev__head-bar,
   .qa__head-bar {
     padding: 14px 18px;
-    border-bottom: 1.5px solid #cca020;
-    background: linear-gradient(135deg, #fde369 0%, #f6c836 100%);
+    border-bottom: 1.5px solid #d4c800;
+    background: #ffff04 !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -884,11 +885,12 @@
   .saved__head-bar h2,
   .rev__head-bar h2,
   .qa__head-bar h2 {
-    font-size: 16.5px;
+    font-size: 17px;
     font-weight: 800;
     margin: 0;
     color: #261109;
     letter-spacing: -0.2px;
+    line-height: 1;
   }
   .order__body {
     padding: 16px 18px 20px;
@@ -906,10 +908,11 @@
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
-    transition: background 0.15s ease;
+    transition: opacity 0.15s ease;
   }
   .saved__head-bar:hover {
-    background: linear-gradient(135deg, #feeb84 0%, #f9d24d 100%);
+    background: #ffff04 !important;
+    opacity: 0.94;
   }
   .rev__body {
     padding: 16px 18px 20px;
@@ -1001,7 +1004,7 @@
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
-    touch-action: pan-y;
+    touch-action: none !important;
     transition: transform 0.18s var(--ease-out),
                 box-shadow 0.18s var(--ease-out),
                 border-color 0.15s ease;
@@ -1015,7 +1018,7 @@
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
-    touch-action: pan-y;
+    touch-action: none !important;
   }
   .tile img {
     -webkit-user-drag: none !important;
@@ -2103,17 +2106,17 @@
   .order__total {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     margin-top: 14px; padding: 14px 18px;
-    background: #fedb52;
-    border: 1.5px solid #c99818;
+    background: #ffff04 !important;
+    border: 1.5px solid #d4c800;
     border-radius: 18px; font-size: 14px; font-weight: 700; color: #121212;
-    box-shadow: 0 4px 16px rgba(180, 40, 20, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   }
   .order__total strong {
     color: #da241c; font-size: 22px; font-weight: 900;
     font-variant-numeric: tabular-nums;
   }
   .order__total .order__total__calc {
-    font-size: 12px; font-weight: 700; color: #5d4a18;
+    font-size: 12px; font-weight: 700; color: #121212;
   }
 
   .order__submit {
@@ -2126,8 +2129,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #fee878;
-    border: 1.5px solid #dcb732;
+    background: #ffff04 !important;
+    border: 1.5px solid #d4c800;
     border-radius: 14px;
     box-sizing: border-box;
     overflow: visible;
@@ -3654,7 +3657,6 @@
           <div class="panel__title-group">
             <h2>Câu hỏi thường gặp</h2>
           </div>
-          <span class="hint">Giải đáp nhanh</span>
         </div>
         <div class="qa__body">
         <details class="qa__item">
@@ -3734,7 +3736,6 @@
           <div class="panel__title-group">
             <h2>Thông tin đơn</h2>
           </div>
-          <span class="hint">Bước 2 / 2</span>
         </div>
         <div class="order__body">
           <div class="order__grid">
@@ -3868,7 +3869,6 @@
           <div class="panel__title-group">
             <h2>Đánh giá &amp; lời gửi của khách</h2>
           </div>
-          <span class="hint">Phản hồi thực tế</span>
         </div>
         <div class="rev__body">
           <div class="rev__sum">
@@ -4782,8 +4782,43 @@
     return g;
   }
 
+  // Hit-test day elements by geometry (bounding client rect) with 28px forgiving margin
+  function getDayUnderPoint(x, y){
+    if(!weekEl) return null;
+    var dayNodes = weekEl.querySelectorAll(".day");
+    // 1. Exact box check
+    for(var d = 0; d < dayNodes.length; d++){
+      var r = dayNodes[d].getBoundingClientRect();
+      if(x >= r.left && x <= r.right && y >= r.top && y <= r.bottom){
+        return dayNodes[d];
+      }
+    }
+    // 2. Forgiving 28px margin around each day box
+    var closest = null, minD = 999999;
+    for(var d = 0; d < dayNodes.length; d++){
+      var r = dayNodes[d].getBoundingClientRect();
+      if(x >= r.left - 28 && x <= r.right + 28 && y >= r.top - 28 && y <= r.bottom + 28){
+        var midX = (r.left + r.right) / 2, midY = (r.top + r.bottom) / 2;
+        var dist = Math.hypot(x - midX, y - midY);
+        if(dist < minD){ minD = dist; closest = days[d]; }
+      }
+    }
+    return closest;
+  }
+
+  function highlightDay(targetDay){
+    if(!weekEl) return;
+    weekEl.querySelectorAll(".day").forEach(function(d){
+      var isTarget = (d === targetDay);
+      d.classList.toggle("drop-over", isTarget);
+      var b = d.querySelector(".day__body");
+      if(b) b.classList.toggle("drop-over", isTarget);
+    });
+  }
+
   function startPointerDrag(startEv, li, i){
-    // Bỏ qua nếu bấm vào nút sửa ✎ của chủ hoặc nút phóng to ảnh 🔍
+    // Bỏ qua nếu bấm chuột phải, hoặc bấm vào nút sửa ✎ hoặc nút zoom 🔍
+    if(startEv.button !== undefined && startEv.button !== 0) return;
     if(startEv.target.closest && (startEv.target.closest(".tile__edit") || startEv.target.closest(".tile__zoom"))) return;
 
     // Dọn dẹp bất kỳ phiên kéo cũ nào
@@ -4795,37 +4830,33 @@
     var pointerId = (startEv.pointerId !== undefined) ? startEv.pointerId : null;
     var pointerType = startEv.pointerType || "mouse";
     var isMouse = (pointerType === "mouse");
-    var isTouch = (pointerType === "touch" || pointerType === "pen");
 
     var startX = startEv.clientX, startY = startEv.clientY;
-    var currentX = startX, currentY = startY;
-    var moved = false, ghost = null, autoScrollRaf = null;
-
-    // Trên cảm ứng (mobile touch): KHÔNG dùng timer giữ chỗ vì làm kẹt thao tác vuốt cuộn trang.
-    // Thao tác kéo món CHỈ kích hoạt khi người dùng chủ động vuốt xuống (dy >= 10).
+    var lastX = startX, lastY = startY;
+    var mode = "pending"; // "pending" | "scrolling" | "dragging"
+    var ghost = null, autoScrollRaf = null;
+    var targetDay = null;
 
     var stopAutoScroll = function(){
-      if(autoScrollRaf){
-        cancelAnimationFrame(autoScrollRaf);
-        autoScrollRaf = null;
-      }
+      if(autoScrollRaf){ cancelAnimationFrame(autoScrollRaf); autoScrollRaf = null; }
     };
 
-    var checkAutoScroll = function(){
+    var checkAutoScroll = function(y){
       var vh = window.innerHeight;
-      var EDGE = 80;
+      var EDGE = 75;
       var speed = 0;
-      if(currentY > vh - EDGE){
-        speed = Math.min(20, Math.max(4, (currentY - (vh - EDGE)) * 0.4));
-      } else if(currentY < EDGE && window.scrollY > 0){
-        speed = -Math.min(20, Math.max(4, (EDGE - currentY) * 0.4));
+      if(y > vh - EDGE){
+        speed = Math.min(22, Math.max(5, (y - (vh - EDGE)) * 0.45));
+      } else if(y < EDGE && window.scrollY > 0){
+        speed = -Math.min(22, Math.max(5, (EDGE - y) * 0.45));
       }
       if(speed !== 0){
         if(!autoScrollRaf){
           var step = function(){
-            if(!moved || !ghost){ stopAutoScroll(); return; }
+            if(mode !== "dragging" || !ghost){ stopAutoScroll(); return; }
             window.scrollBy(0, speed);
-            updateDropHighlight(currentX, currentY);
+            targetDay = getDayUnderPoint(lastX, lastY);
+            highlightDay(targetDay);
             autoScrollRaf = requestAnimationFrame(step);
           };
           autoScrollRaf = requestAnimationFrame(step);
@@ -4835,29 +4866,8 @@
       }
     };
 
-    var lastHoveredDay = null;
-    var updateDropHighlight = function(cx, cy){
-      var el = document.elementFromPoint(cx, cy);
-      var targetDay = (el && el.closest) ? el.closest(".day") : null;
-      var targetBody = targetDay ? targetDay.querySelector(".day__body") : null;
-
-      if(targetDay){
-        lastHoveredDay = targetDay;
-      }
-
-      dayBodyEls.forEach(function(b){
-        b.classList.toggle("drop-over", b === targetBody);
-      });
-      if(weekEl){
-        weekEl.querySelectorAll(".day").forEach(function(d){
-          d.classList.toggle("drop-over", d === targetDay);
-        });
-      }
-      return targetDay;
-    };
-
-    var startDragging = function(x, y){
-      moved = true;
+    var startDragMode = function(x, y){
+      mode = "dragging";
       cleanupAllGhosts();
       ghost = makeDragGhost(DISHES[i]);
       document.body.appendChild(ghost);
@@ -4867,85 +4877,67 @@
       setArmed(-1);
       setDishHeld(true);
       triggerHaptic("drag");
-      updateDropHighlight(x, y);
-
-      // Chỉ bắt con trỏ khi phiên kéo ĐÃ THỰC SỰ BẮT ĐẦU
-      if(pointerId !== null && li.setPointerCapture){
-        try { li.setPointerCapture(pointerId); } catch(err){}
-      }
+      targetDay = getDayUnderPoint(x, y);
+      highlightDay(targetDay);
     };
 
     var onMove = function(ev){
       if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
 
-      currentX = ev.clientX;
-      currentY = ev.clientY;
-      var dx = currentX - startX;
-      var dy = currentY - startY;
+      var cx = ev.clientX, cy = ev.clientY;
+      var dx = cx - startX, dy = cy - startY;
+      var deltaY = cy - lastY;
+      lastX = cx;
+      lastY = cy;
 
-      // CHUỘT DESKTOP: Bất kỳ hướng kéo nào >= 4px đều kích hoạt kéo mượt mà vào lịch
-      if(isMouse){
-        if(!moved && Math.hypot(dx, dy) >= 4){
-          startDragging(currentX, currentY);
-        }
-        if(moved && ghost){
-          if(ev.cancelable) ev.preventDefault();
-          ghost.style.left = currentX + "px";
-          ghost.style.top = currentY + "px";
-          updateDropHighlight(currentX, currentY);
-          checkAutoScroll();
+      if(mode === "pending"){
+        if(isMouse){
+          if(Math.hypot(dx, dy) >= 4){
+            startDragMode(cx, cy);
+          }
+        } else {
+          // Touch:
+          if(dy < -8){
+            // Vuốt ngón tay lên trên để cuộn trang xuống
+            mode = "scrolling";
+            window.scrollBy(0, -deltaY);
+          } else if(dy > 6 || (Math.hypot(dx, dy) >= 12 && dy > 0)){
+            // Kéo ngón tay xuống dưới về phía Lịch
+            startDragMode(cx, cy);
+          }
         }
         return;
       }
 
-      // CẢM ỨNG DI ĐỘNG (TOUCH):
-      if(isTouch){
-        if(!moved){
-          // Khách vuốt ngón tay lên trên để xem phần bên dưới web (dy < 0):
-          // TUYỆT ĐỐI KHÔNG CAN THIỆP, HỦY NGAY ĐỂ TRÌNH DUYỆT CUỘN NATIVE 120HZ MƯỢT MÀ!
-          if(dy < 0){
-            cleanup();
-            return;
-          }
+      if(mode === "scrolling"){
+        window.scrollBy(0, -deltaY);
+        return;
+      }
 
-          // Khách chủ động kéo ngón tay xuống dưới về phía lịch tuần (dy >= 10 && dy > Math.abs(dx))
-          if(dy >= 10 && dy > Math.abs(dx)){
-            if(ev.cancelable) ev.preventDefault();
-            startDragging(currentX, currentY);
-          }
-        }
-
-        if(moved && ghost){
-          if(ev.cancelable) ev.preventDefault();
-          var clampedY = Math.max(startY, currentY);
-          ghost.style.left = currentX + "px";
-          ghost.style.top = clampedY + "px";
-          updateDropHighlight(currentX, clampedY);
-          checkAutoScroll();
-        }
+      if(mode === "dragging" && ghost){
+        if(ev.cancelable) ev.preventDefault();
+        ghost.style.left = cx + "px";
+        ghost.style.top = cy + "px";
+        targetDay = getDayUnderPoint(cx, cy);
+        highlightDay(targetDay);
+        checkAutoScroll(cy);
       }
     };
 
     var onEnd = function(ev){
       if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
 
-      var finalX = (ev && typeof ev.clientX === "number" && (ev.clientX !== 0 || currentX === 0)) ? ev.clientX : currentX;
-      var rawY = (ev && typeof ev.clientY === "number" && (ev.clientY !== 0 || currentY === 0)) ? ev.clientY : currentY;
-      var finalY = isTouch ? Math.max(startY, rawY) : rawY;
-      var wasMoved = moved;
-
-      // Xác định ngày mục tiêu trước hoặc ngay khi kết thúc kéo
-      var targetDay = updateDropHighlight(finalX, finalY) || lastHoveredDay;
+      var wasDragging = (mode === "dragging");
+      var dropDay = targetDay || getDayUnderPoint(lastX, lastY);
 
       cleanup();
 
-      if(wasMoved){
+      if(wasDragging){
         clearDropHighlights();
-
-        if(targetDay){
-          var dayIndex = Number(targetDay.dataset.day);
-          if(dayIndex >= 0 && dayIndex < plan.length){
-            addDish(dayIndex, i);
+        if(dropDay){
+          var dayIdx = Number(dropDay.dataset.day);
+          if(dayIdx >= 0 && dayIdx < plan.length){
+            addDish(dayIdx, i);
             triggerHaptic("drop");
           }
         }
@@ -4961,20 +4953,15 @@
 
     var cleanup = function(){
       stopAutoScroll();
-      if(pointerId !== null && li.releasePointerCapture){
-        try { li.releasePointerCapture(pointerId); } catch(err){}
-      }
-      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointermove", onMove, { passive: false });
       window.removeEventListener("pointerup", onEnd, true);
       window.removeEventListener("pointercancel", onCancel, true);
-
       cleanupAllGhosts();
       activeDragSession = null;
     };
 
     activeDragSession = { cleanup: cleanup };
 
-    // TUYỆT ĐỐI KHÔNG GỌI setPointerCapture Ở ĐÂY để cho phép cuộn trang native 120Hz mượt mà khi vuốt lên!
     window.addEventListener("pointermove", onMove, { passive: false });
     window.addEventListener("pointerup", onEnd, true);
     window.addEventListener("pointercancel", onCancel, true);
