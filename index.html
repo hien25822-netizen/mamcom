@@ -36,7 +36,9 @@
     --muted-light: #9c928d;
     --white: #ffffff;
 
-    /* Apple Spring Physics & Motion Curves (Fluid Interface Standard) */
+    /* Emil Kowalski Design Engineering & Apple Motion Physics Tokens */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
     --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     --spring-smooth: cubic-bezier(0.25, 1, 0.5, 1);
     --spring-sheet: cubic-bezier(0.32, 0.72, 0, 1);
@@ -890,10 +892,11 @@
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
-    touch-action: none !important;
-    transition: transform 0.24s var(--spring-bounce),
-                box-shadow 0.24s var(--spring-bounce),
-                border-color 0.18s ease;
+    touch-action: pan-y;
+    touch-action: pan-down; /* Trình duyệt di động tự động cuộn trang 120Hz mượt mà khi vuốt ngón tay lên; giữ lại hướng kéo xuống cho JS kéo món vào Lịch */
+    transition: transform 0.18s var(--ease-out),
+                box-shadow 0.18s var(--ease-out),
+                border-color 0.15s ease;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -901,10 +904,10 @@
     padding: 0; /* TRÀN VIỀN: ảnh trải rộng sát mép trên, trái, phải */
   }
   .tile, .tile * {
-    touch-action: none !important;
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
+    touch-action: inherit;
   }
   .tile img {
     -webkit-user-drag: none !important;
@@ -912,14 +915,14 @@
     pointer-events: none !important;
   }
   .tile:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     border-color: #da241c;
-    box-shadow: 0 16px 32px rgba(218, 36, 28, 0.18);
+    box-shadow: 0 14px 28px rgba(218, 36, 28, 0.18);
   }
   .tile:active {
     cursor: grabbing;
-    transform: scale(0.96) !important;
-    transition-duration: 0.08s !important;
+    transform: scale(0.97) !important;
+    transition-duration: 0.1s !important;
   }
   .tile.is-armed {
     border-color: #da241c !important;
@@ -939,7 +942,7 @@
     left: 0; top: 0;
     z-index: 999999 !important;
     width: 76px; height: 76px;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1.06) rotate(-1.5deg);
     pointer-events: none !important;
     touch-action: none !important;
     user-select: none !important;
@@ -949,7 +952,7 @@
     background: #ffffff;
     border: 2.5px solid #da241c;
     border-radius: 18px;
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.38), 0 0 0 3px rgba(255, 255, 255, 0.85);
+    box-shadow: 0 16px 36px rgba(218, 36, 28, 0.28), 0 6px 14px rgba(0, 0, 0, 0.18), 0 0 0 3px rgba(255, 255, 255, 0.9);
     overflow: hidden;
     will-change: transform, left, top;
   }
@@ -1781,11 +1784,11 @@
     font-size: 12.5px; font-weight: 800; color: #121212;
   }
   .day__date {
-    font-size: 10.5px; font-weight: 600; color: #6e6e73; margin-left: 3px;
+    font-size: 10.5px; font-weight: 700; color: #54441b; margin-left: 3px;
   }
   .day__count {
-    font-size: 10.5px; font-weight: 800; color: #6e6e73;
-    background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 10.5px; font-weight: 800; color: #54441b;
+    background: #ffffff; border: 1px solid rgba(220, 183, 50, 0.4);
     padding: 1.5px 7px; border-radius: var(--radius-pill);
     min-width: 20px; text-align: center;
     transition: all 0.2s var(--spring-bounce);
@@ -1808,17 +1811,17 @@
   }
   .day.drop-over {
     border-color: #da241c !important;
-    box-shadow: 0 0 0 3px rgba(218, 36, 28, 0.28), 0 10px 24px rgba(218, 36, 28, 0.18) !important;
-    transform: translateY(-2px);
-    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 0 0 3.5px rgba(218, 36, 28, 0.32), 0 12px 28px rgba(218, 36, 28, 0.22) !important;
+    transform: translateY(-2px) scale(1.02);
+    transition: transform 0.16s var(--spring-bounce), border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .day__empty {
-    font-size: 11px; font-weight: 600; color: #8e8e93;
+    font-size: 11px; font-weight: 600; color: #7a6320;
     padding: 10px 6px; flex: 1 1 100%;
-    border: 1px dashed rgba(0, 0, 0, 0.12);
+    border: 1px dashed rgba(220, 183, 50, 0.45);
     border-radius: 10px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.7);
     transition: all 0.25s var(--spring-smooth);
     user-select: none;
   }
@@ -1945,7 +1948,7 @@
     font-variant-numeric: tabular-nums;
   }
   .order__total .order__total__calc {
-    font-size: 12px; font-weight: 600; color: #86868b;
+    font-size: 12px; font-weight: 700; color: #5d4a18;
   }
 
   .order__submit {
@@ -2384,28 +2387,29 @@
     margin-bottom: 20px;
   }
   .saved__kpi {
-    background: rgba(255, 255, 255, 0.75);
-    border: 1px solid var(--line);
+    background: #ffffff;
+    border: 1.5px solid #dcb732;
     border-radius: var(--radius-lg);
     padding: 13px 16px;
     display: flex;
     flex-direction: column;
     gap: 3px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    transition: transform 0.15s, border-color 0.15s;
+    box-shadow: 0 4px 12px rgba(180, 40, 20, 0.05);
+    transition: transform 0.16s var(--ease-out), border-color 0.15s ease, box-shadow 0.16s var(--ease-out);
   }
   .saved__kpi:hover {
     transform: translateY(-2px);
-    border-color: rgba(218, 36, 28, 0.3);
+    border-color: #da241c;
+    box-shadow: 0 8px 20px rgba(218, 36, 28, 0.15);
   }
   .saved__kpi--primary {
-    background: linear-gradient(135deg, rgba(255, 253, 230, 0.9), rgba(253, 242, 241, 0.8));
-    border-color: rgba(218, 36, 28, 0.35);
+    background: linear-gradient(135deg, rgba(255, 253, 230, 0.95), rgba(253, 242, 241, 0.9));
+    border-color: #da241c;
   }
   .saved__kpi-label {
     font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
+    font-weight: 800;
+    color: #5d4a18;
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
@@ -2480,14 +2484,15 @@
     align-items: flex-start;
     gap: 11px;
     padding: 11px 12px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(230, 222, 215, 0.85);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(220, 183, 50, 0.4);
     border-radius: 14px;
-    transition: transform 0.15s, border-color 0.15s;
+    transition: transform 0.16s var(--ease-out), border-color 0.15s ease, box-shadow 0.16s var(--ease-out);
   }
   .saved__card:hover {
     transform: translateX(3px);
-    border-color: rgba(218, 36, 28, 0.35);
+    border-color: #da241c;
+    box-shadow: 0 4px 12px rgba(218, 36, 28, 0.1);
   }
   .saved__card-icon {
     flex: 0 0 34px;
@@ -2515,12 +2520,12 @@
   }
   .saved__card-desc {
     font-size: 11.5px;
-    color: var(--muted);
+    color: #5d4a18;
     line-height: 1.45;
   }
   .saved__card-desc b {
-    color: var(--ink);
-    font-weight: 700;
+    color: #1e1917;
+    font-weight: 800;
   }
 
   /* Footer & Call To Action */
@@ -3171,8 +3176,8 @@
     box-shadow: 0 0 0 2.5px rgba(218, 36, 28, 0.25), 0 8px 24px rgba(218, 36, 28, 0.18) !important;
   }
   @keyframes chipPopIn {
-    0% { transform: scale(0.4) rotate(-3deg); opacity: 0; }
-    70% { transform: scale(1.08) rotate(1deg); opacity: 1; }
+    0% { transform: scale(0.92) rotate(-1.5deg); opacity: 0; }
+    60% { transform: scale(1.03) rotate(0.5deg); opacity: 1; }
     100% { transform: scale(1) rotate(0); opacity: 1; }
   }
   .chip:last-child {
@@ -4495,13 +4500,13 @@
     var pointerId = (startEv.pointerId !== undefined) ? startEv.pointerId : null;
     var startX = startEv.clientX, startY = startEv.clientY;
     var currentX = startX, currentY = startY;
-    var lastScrollY = startY;
     var moved = false, ghost = null, autoScrollRaf = null;
 
-    // Pointer capture trên li để theo dõi di chuyển mượt mà
-    if(pointerId !== null && li.setPointerCapture){
-      try { li.setPointerCapture(pointerId); } catch(err){}
-    }
+    // TUYỆT ĐỐI KHÔNG GỌI setPointerCapture Ở ĐÂY!
+    // Vì nếu gọi setPointerCapture ngay khi chạm ngón tay (pointerdown), trình duyệt di động
+    // sẽ khóa cứng thao tác chạm vào thẻ và TẮT cơ chế cuộn trang tự nhiên (native scroll),
+    // khiến người dùng khi vuốt ngón tay lên để cuộn web xuống sẽ bị khựng và giật màn hình!
+    // Chỉ kích hoạt setPointerCapture khi khách thực sự chủ động KÉO XUỐNG DƯỚI.
 
     var stopAutoScroll = function(){
       if(autoScrollRaf){
@@ -4561,20 +4566,22 @@
       var dx = currentX - startX;
 
       if(!moved){
-        // NẾU VUỐT LÊN (dy < -6): User muốn cuộn trang xuống để xem nội dung phía dưới!
-        // Chặn hoàn toàn việc drag món lên phía trên, cho phép cuộn trang mượt mà không bao giờ kéo nhầm món.
-        if(dy < -6){
-          var deltaScroll = currentY - lastScrollY;
-          if(Math.abs(deltaScroll) > 0.5){
-            window.scrollBy(0, -deltaScroll);
-          }
-          lastScrollY = currentY;
+        // NẾU VUỐT LÊN (dy < -4) HOẶC VUỐT NGANG (Math.abs(dx) > Math.abs(dy) * 1.4):
+        // Khách đang theo thói quen chạm vào món và vuốt lên để cuộn trang xuống!
+        // NGAY LẬP TỨC hủy phiên kéo và nhường 100% quyền xử lý cho trình duyệt cuộn mượt mà (Native Inertial Scroll 120Hz).
+        // Tuyệt đối không can thiệp, không scrollBy thủ công -> trang cuộn êm ru, mượt mà, không bao giờ giật lag!
+        if(dy < -4 || Math.abs(dx) > Math.abs(dy) * 1.4){
+          cleanup();
           return;
         }
 
-        // CHỈ KÍCH HOẠT KÉO KHI KÉO XUỐNG DƯỚI (dy >= 8 và hướng dốc xuống)
-        if(dy >= 8 && dy >= Math.abs(dx) * 0.45){
+        // CHỈ BẮT ĐẦU KÉO MÓN KHI KHÁCH CHỦ ĐỘNG KÉO XUỐNG DƯỚI VỀ PHÍA LỊCH (dy >= 9px)
+        if(dy >= 9 && dy >= Math.abs(dx) * 0.5){
           moved = true;
+          if(ev.cancelable) ev.preventDefault();
+          if(pointerId !== null && li.setPointerCapture){
+            try { li.setPointerCapture(pointerId); } catch(err){}
+          }
           cleanupAllGhosts();
           ghost = makeDragGhost(DISHES[i]);
           document.body.appendChild(ghost);
@@ -4635,7 +4642,7 @@
       if(pointerId !== null && li.releasePointerCapture){
         try { li.releasePointerCapture(pointerId); } catch(err){}
       }
-      window.removeEventListener("pointermove", onMove, { passive: false });
+      window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onEnd, true);
       window.removeEventListener("pointercancel", onCancel, true);
 
