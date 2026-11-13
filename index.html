@@ -367,6 +367,9 @@
     animation: counterPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   }
+  .counter-card__stat[hidden] {
+    display: none !important;
+  }
   .counter-card__stat-hl {
     color: #da241c !important;
     font-weight: 900;
@@ -2967,7 +2970,7 @@
   }
   .rev__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: var(--muted); font-weight: 700; }
   .rev__meta time { margin-right: auto; }
-  .rev__body { font-size: 13px; color: var(--ink); line-height: 1.5; white-space: pre-wrap; }
+  .rev__text { font-size: 13px; color: var(--ink); line-height: 1.45; white-space: pre-wrap; margin-top: 3px; padding: 0 !important; }
   .rev__del { border: 0; background: transparent; color: var(--red); font-size: 14px; font-weight: 800; cursor: pointer; padding: 2px 4px; line-height: 1; }
   .rev__adminbtn { margin-left: auto; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer; text-align: right; }
   .rev__adminbtn.is-on { color: var(--green); }
@@ -3886,7 +3889,6 @@
           <button class="saved__cta-btn" id="ctaBtn" type="button">✨ Chọn thêm mâm để nhân thêm thời gian rảnh cho mình ↑</button>
         </div>
       </div>
-      </div>
 
       <!-- REVIEWS & RATING (ĐÁNH GIÁ CỦA KHÁCH - Ô ĐỒNG BỘ 100%) -->
       <div class="rev" id="revBox">
@@ -3912,8 +3914,7 @@
           </div>
         </div>
         <form class="rev__form" id="revForm">
-          <label class="rev__lbl" for="revText">Nội dung đánh giá</label>
-          <textarea id="revText" rows="3" maxlength="500" placeholder="Feedback của khách hàng là giá trị vô cùng chân quý với Mâm Cơm, rất mong quý khách đánh giá thật công tâm và chi tiết để Mâm Cơm có thể phụ vụ tốt hơn. Mâm Cơm cảm ơn quý khách <3"></textarea>
+          <textarea id="revText" rows="3" maxlength="500" aria-label="Nội dung đánh giá" placeholder="Feedback của khách hàng là giá trị vô cùng chân quý với Mâm Cơm, rất mong quý khách đánh giá thật công tâm và chi tiết để Mâm Cơm có thể phụ vụ tốt hơn. Mâm Cơm cảm ơn quý khách <3"></textarea>
           <div class="rev__photo-bar">
             <button type="button" class="rev__photo-btn" id="revPhotoBtn">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
@@ -3927,8 +3928,7 @@
             </div>
           </div>
           <div class="rev__row">
-            <label class="rev__lbl" for="revName">Tên của bạn (tuỳ chọn)</label>
-            <input id="revName" type="text" maxlength="60" placeholder="Tên của bạn (tuỳ chọn)">
+            <input id="revName" type="text" maxlength="60" placeholder="Tên của bạn (tuỳ chọn)" aria-label="Tên của bạn (tuỳ chọn)">
             <button class="rev__submit" id="revSubmit" type="submit">Gửi đánh giá</button>
           </div>
         </form>
@@ -3945,7 +3945,8 @@
         <ul class="rev__list" id="revList"></ul>
         </div>
       </div>
-    </div>
+    </div> <!-- closes board__main -->
+  </div> <!-- closes board -->
 
     <!-- FOOTER: Tinh tế, gọn gàng, có nút mở Quản trị PIN dễ bấm cho mobile -->
 
@@ -4849,9 +4850,9 @@
   }
 
   function startPointerDrag(startEv, li, i){
-    // Bỏ qua nếu bấm chuột phải, hoặc bấm vào nút sửa ✎ hoặc nút zoom 🔍
+    // Bỏ qua nếu bấm chuột phải, hoặc bấm vào nút sửa ✎
     if(startEv.button !== undefined && startEv.button !== 0) return;
-    if(startEv.target.closest && (startEv.target.closest(".tile__edit") || startEv.target.closest(".tile__zoom"))) return;
+    if(startEv.target.closest && startEv.target.closest(".tile__edit")) return;
 
     // Dọn dẹp bất kỳ phiên kéo cũ nào
     if(activeDragSession && activeDragSession.cleanup){
@@ -5907,22 +5908,18 @@
       li.setAttribute("tabindex","0");
       li.setAttribute("aria-label","Món " + dish.name + " — kéo/chạm vào một ngày trong tuần; chủ bấm ✎ để chỉnh");
 
-      li.appendChild(makeMedia(dish, "tile"));
-
+      var mediaEl = makeMedia(dish, "tile");
       if(dish.img){
-        var zoomBtn = document.createElement("button");
-        zoomBtn.type = "button";
-        zoomBtn.className = "tile__zoom";
-        zoomBtn.setAttribute("aria-label", "Xem ảnh phóng to món " + dish.name);
-        zoomBtn.title = "Phóng to ảnh " + dish.name;
-        zoomBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
-        zoomBtn.addEventListener("click", function(e){
+        mediaEl.style.cursor = "zoom-in";
+        mediaEl.setAttribute("title", "Chạm vào ảnh để phóng to món " + dish.name);
+        mediaEl.addEventListener("click", function(e){
+          if(Date.now() < suppressDayClickUntil) return;
           e.stopPropagation();
           e.preventDefault();
           showLightbox(dish.img, dish.name, dish.description);
         });
-        li.appendChild(zoomBtn);
       }
+      li.appendChild(mediaEl);
 
       var badge = document.createElement("span");
       badge.className = "tile__badge";
@@ -5954,7 +5951,7 @@
 
       // tap-to-arm: chạm nhẹ chọn món rồi bấm vào ngày trong lịch
       li.addEventListener("click", function(e){
-        if(e.target.closest(".tile__edit") || e.target.closest(".tile__zoom")) return;
+        if(e.target.closest(".tile__edit") || e.target.closest(".tile__media")) return;
         if(Date.now() < suppressDayClickUntil) return;
         setArmed(armed === i ? -1 : i);
       });
@@ -7927,13 +7924,16 @@
             var meals = (row && row.value != null) ? parseInt(row.value, 10) : null;
             return SUPABASE.from("comments")
               .select("id, rating, text, ts, name, img")
+              .eq("is_deleted", false)
               .order("ts", { ascending:false })
               .order("id", { ascending:false })
               .then(function(r){
                 if(r.error) throw r.error;
-                var comments = (r.data || []).map(function(c){
-                  return { id:c.id, rating:c.rating, text:c.text, ts:c.ts, name:c.name || "", img:c.img || "" };
-                });
+                var comments = (r.data || [])
+                  .filter(function(c){ return c && c.text && c.text.trim(); })
+                  .map(function(c){
+                    return { id:c.id, rating:c.rating, text:c.text.trim(), ts:c.ts, name:(c.name || "").trim(), img:(c.img || "").trim() };
+                  });
                 return { meals: meals, comments: comments };
               });
           });
@@ -8517,12 +8517,14 @@
   if(counterCardEl && counterSavedStatEl){
     function toggleCounterStat(e){
       if(e) e.preventDefault();
-      var isHidden = counterSavedStatEl.hidden;
+      var isHidden = counterSavedStatEl.hasAttribute("hidden") || counterSavedStatEl.hidden;
       if(isHidden){
         updateCounterSavedStat(currentMeals);
+        counterSavedStatEl.removeAttribute("hidden");
         counterSavedStatEl.hidden = false;
         try { triggerHaptic("tap"); } catch(err){}
       } else {
+        counterSavedStatEl.setAttribute("hidden", "");
         counterSavedStatEl.hidden = true;
       }
     }
@@ -8725,9 +8727,11 @@
         del.addEventListener("click", function(){ deleteComment(c.id, li); });
         meta.appendChild(del);
       }
+      var rawText = (c.text || "").trim().replace(/\n{3,}/g, "\n\n");
+      if(!rawText) return;
       var body = document.createElement("div");
-      body.className = "rev__body";
-      body.textContent = c.text;
+      body.className = "rev__text";
+      body.textContent = rawText;
       li.appendChild(meta);
       if(c.name && c.name.trim()){
         var nm = document.createElement("div");
