@@ -7339,22 +7339,60 @@
   // iOS chỉ cho mở URL Scheme (instagram://) khi còn "user gesture" — mà
   // promise/setTimeout sẽ mất gesture đó. Copy đồng bộ giữ được gesture.
   function copyNow(text){
+    // Ghi nhớ vị trí cuộn trang hiện tại để bảo đảm tuyệt đối không bao giờ bị nhảy trang trên mobile
+    var scrollX = window.scrollX || window.pageXOffset || 0;
+    var scrollY = window.scrollY || window.pageYOffset || 0;
+
+    // 1. Thử Clipboard API hiện đại trước (không cần DOM, không bao giờ gây nhảy viewport)
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      try {
+        navigator.clipboard.writeText(text).catch(function(){});
+      } catch(e){}
+    }
+
+    // 2. Fallback đồng bộ với execCommand mà KHÔNG bị nhảy viewport
     var ta = document.createElement("textarea");
     ta.value = text;
     ta.setAttribute("readonly", "");
+    ta.setAttribute("aria-hidden", "true");
+    ta.tabIndex = -1;
+    // Đặt textarea ngay giữa viewport hiện tại (không để top: 0; left: 0 vì mobile Safari sẽ scroll lên đỉnh trang)
     ta.style.position = "fixed";
-    ta.style.top = "0";
-    ta.style.left = "0";
-    ta.style.width = "1px";
-    ta.style.height = "1px";
-    ta.style.opacity = "0";
+    ta.style.top = "50%";
+    ta.style.left = "50%";
+    ta.style.transform = "translate(-50%, -50%)";
+    ta.style.width = "2em";
+    ta.style.height = "2em";
+    ta.style.padding = "0";
+    ta.style.border = "none";
+    ta.style.outline = "none";
+    ta.style.boxShadow = "none";
+    ta.style.background = "transparent";
+    ta.style.opacity = "0.01";
+    ta.style.pointerEvents = "none";
+    ta.style.fontSize = "16px"; // Ngăn iOS tự động zoom khi focus
     document.body.appendChild(ta);
-    ta.focus();
-    ta.select();
-    ta.setSelectionRange(0, ta.value.length);
+
     var ok = false;
-    try{ ok = document.execCommand("copy"); }catch(e){}
-    document.body.removeChild(ta);
+    try{
+      if(typeof ta.focus === "function"){
+        ta.focus({ preventScroll: true });
+      }
+      ta.select();
+      if(typeof ta.setSelectionRange === "function"){
+        ta.setSelectionRange(0, ta.value.length);
+      }
+      ok = document.execCommand("copy");
+    } catch(e){
+      ok = false;
+    }
+
+    try { document.body.removeChild(ta); } catch(e){}
+
+    // Khôi phục lại chính xác vị trí cuộn trang để bảo đảm 100% không bị dịch chuyển dù chỉ 1px
+    if(window.scrollY !== scrollY || window.scrollX !== scrollX){
+      window.scrollTo(scrollX, scrollY);
+    }
     return ok;
   }
 
@@ -7550,12 +7588,25 @@
     bumpMeals();
   }
 
-  // Nút "Sao chép và Dán vào Inbox": chỉ copy toàn bộ nội dung đơn, không redirect
+  // Nút "Sao chép và Dán vào Inbox": chỉ copy toàn bộ nội dung đơn, không redirect và giữ nguyên vị trí màn hình
   var orderInboxBusy = false;
-  function handleOrderInbox(){
+  function handleOrderInbox(e){
+    if(e){
+      if(typeof e.preventDefault === "function") e.preventDefault();
+      if(typeof e.stopPropagation === "function") e.stopPropagation();
+    }
     if(!orderInboxBtn || orderInboxBtn.disabled) return;
     if(orderInboxBusy) return;
     orderInboxBusy = true;
+
+    // Ghi nhớ vị trí cuộn trang hiện tại của người dùng trước khi sao chép
+    var initialScrollX = window.scrollX || window.pageXOffset || 0;
+    var initialScrollY = window.scrollY || window.pageYOffset || 0;
+
+    // Đóng bàn phím ảo một cách êm ái nếu người dùng vừa gõ thông tin xong mà không làm giật trang
+    if(document.activeElement && typeof document.activeElement.blur === "function" && document.activeElement !== orderInboxBtn){
+      try { document.activeElement.blur(); } catch(err){}
+    }
 
     var text = buildText();
     var ok = false;
@@ -7563,6 +7614,16 @@
     if(!ok && navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).catch(function(){});
     }
+
+    // Bảo đảm vị trí cuộn trang trên điện thoại được giữ nguyên tuyệt đối ngay sau khi copy
+    if(window.scrollY !== initialScrollY || window.scrollX !== initialScrollX){
+      window.scrollTo(initialScrollX, initialScrollY);
+    }
+    requestAnimationFrame(function(){
+      if(window.scrollY !== initialScrollY || window.scrollX !== initialScrollX){
+        window.scrollTo(initialScrollX, initialScrollY);
+      }
+    });
 
     flashCopy(ok ? "✓ Đã sao chép toàn bộ đơn!" : "Không sao chép được");
 
@@ -7627,6 +7688,11 @@
       saveInboxOrders(currentInbox);
     } catch(err){
       console.warn("Could not save inbox order:", err);
+    }
+
+    // Khóa giữ nguyên vị trí cuộn trang lần 2 sau khi lưu dữ liệu
+    if(window.scrollY !== initialScrollY || window.scrollX !== initialScrollX){
+      window.scrollTo(initialScrollX, initialScrollY);
     }
 
     // Nhấp nháy nhẹ nhóm nút Instagram & TikTok bên dưới để dẫn dắt hành động của khách
