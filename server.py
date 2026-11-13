@@ -273,6 +273,8 @@ class Handler(BaseHTTPRequestHandler):
 
         if path in ("/", ""):
             path = "/index.html"
+        elif path == "/prep":
+            path = "/prep.html"
         file_path = os.path.normpath(os.path.join(HERE, path.lstrip("/")))
         if not file_path.startswith(HERE) or not os.path.isfile(file_path):
             self.send_error(404)

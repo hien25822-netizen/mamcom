@@ -21,13 +21,13 @@
     --red-tint: rgba(218, 36, 28, 0.08);
     --red-glow: rgba(218, 36, 28, 0.25);
 
-    --yellow: #ffff04; /* Vàng sao vàng & da vàng - Năng lượng tươi sáng, niềm tin & lạc quan Việt Nam */
-    --yellow-hover: #faea00;
-    --yellow-soft: #fffde6;
-    --yellow-tint: rgba(255, 255, 4, 0.25);
-    --yellow-glow: rgba(255, 255, 4, 0.55);
-    --yellow-border: #f0e600;
-    --yellow-deep: #b39b00;
+    --yellow: #f59e0b; /* Vàng mật ong & hoàng yến ấm áp — Màu hoàng kim no đủ, hòa quyện tuyệt đẹp với sắc đỏ Mâm Cơm */
+    --yellow-hover: #d97706;
+    --yellow-soft: #fffbeb;
+    --yellow-tint: rgba(245, 158, 11, 0.18);
+    --yellow-glow: rgba(245, 158, 11, 0.4);
+    --yellow-border: #f5c042;
+    --yellow-deep: #b45309;
 
     --black: #000000;
     --ink: #1e1917;
@@ -80,8 +80,8 @@
   /* ---- Canvas sắc đỏ ấm áp Mâm Cơm (Màu đỏ rực rỡ, đậm đà cùng tone chủ đạo #DA241C) ---- */
   body {
     min-height: 100vh;
-    background-color: #da241c;
-    background-image: radial-gradient(130% 105% at 50% 0%, #eb2c23 0%, #da241c 45%, #a4160f 100%);
+    background-color: #ba1e17;
+    background-image: radial-gradient(120% 90% at 50% 0%, #d82b22 0%, #ba1e17 50%, #9e150f 100%);
     background-attachment: fixed;
     color: #121212;
     font-family: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -102,26 +102,26 @@
     scroll-margin-top: 100px;
   }
 
-  /* ---- THANH TIẾN TRÌNH ĐẶT MÂM (Nằm trên cùng sticky, màu vàng ấm đậm đà chuẩn nhận diện) ---- */
+  /* ---- THANH TIẾN TRÌNH ĐẶT MÂM (Nằm trên cùng sticky, màu vàng kem hoàng yến ấm áp đồng điệu) ---- */
   .prog {
     position: sticky;
     top: max(8px, env(safe-area-inset-top));
     z-index: 1000;
     width: 100%;
     box-sizing: border-box;
-    background: rgba(254, 245, 175, 0.96);
+    background: rgba(255, 252, 228, 0.96);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1.5px solid #dcb732;
+    border: 1.5px solid #dfb027;
     border-radius: var(--radius-pill);
-    box-shadow: 0 12px 34px -4px rgba(180, 40, 20, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 10px 30px -4px rgba(50, 8, 5, 0.28), 0 2px 8px rgba(223, 176, 39, 0.15);
     padding: 8px 18px 8px;
     margin: 0 0 20px;
     transition: box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .prog:hover {
-    box-shadow: 0 16px 42px -4px rgba(180, 40, 20, 0.22), 0 4px 12px rgba(0, 0, 0, 0.05);
-    border-color: #cda21c;
+    box-shadow: 0 14px 38px -4px rgba(50, 8, 5, 0.35), 0 4px 12px rgba(223, 176, 39, 0.22);
+    border-color: #c99818;
   }
   .prog__row {
     display: flex;
@@ -133,7 +133,7 @@
     min-width: 0;
     height: 7px;
     border-radius: 99px;
-    background: rgba(0, 0, 0, 0.06);
+    background: #ffe685;
     overflow: hidden;
     position: relative;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
@@ -219,25 +219,25 @@
     align-items: center;
     margin: 14px auto 0;
     padding: 16px 26px 14px;
-    background-color: #fef5a7;
-    background-image: linear-gradient(180deg, #fffbe0 0%, #fef39c 100%);
-    border: 1.5px solid #dcb732;
+    background-color: #fffde6;
+    background-image: linear-gradient(180deg, #fffce4 0%, #fff7be 100%);
+    border: 1.5px solid #dfb027;
     border-radius: 24px;
-    box-shadow: 0 10px 32px -4px rgba(180, 40, 20, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 12px 36px -4px rgba(50, 8, 5, 0.3), 0 2px 10px rgba(223, 176, 39, 0.15);
     transition: transform 0.22s var(--spring-bounce), box-shadow 0.22s ease;
   }
   .counter-card__glow {
     position: absolute;
     inset: -12px;
     border-radius: 36px;
-    background: radial-gradient(circle, rgba(255, 255, 4, 0.10) 0%, rgba(218, 36, 28, 0.08) 50%, transparent 75%);
+    background: radial-gradient(circle, rgba(223, 176, 39, 0.20) 0%, rgba(218, 36, 28, 0.10) 50%, transparent 75%);
     filter: blur(16px);
     z-index: -1;
     pointer-events: none;
   }
   .counter-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 16px 42px rgba(50, 8, 5, 0.35);
   }
   .flipbox {
     display: flex;
@@ -333,7 +333,7 @@
     margin-top: 10px;
     font-size: 13.5px;
     font-weight: 700;
-    color: #5d4a18;
+    color: #3b1c08;
     text-align: center;
     line-height: 1.4;
     letter-spacing: -0.1px;
@@ -773,35 +773,35 @@
     width: 100%;
   }
 
-  /* ---- WARM CORN SILK & HONEY GOLD CARDS (Màu vàng đậm đà, cùng tone #FFFF04, chuẩn nhận diện Mâm Cơm) ---- */
+  /* ---- WARM CULINARY GOLD & AMBER CARDS (Đồng bộ sắc vàng ấm no đủ, hòa quyện tuyệt đẹp với nền đỏ Mâm Cơm) ---- */
   .panel, .order, .saved, .qa, .rev, .orders, .calendar-panel {
-    background-color: #fef5a7;
-    background-image: linear-gradient(180deg, #fffbe0 0%, #fef39c 100%);
-    border: 1.5px solid #dcb732;
+    background-color: #fff9c2;
+    background-image: linear-gradient(180deg, #fffce4 0%, #fff6b8 48%, #ffef9e 100%);
+    border: 1.5px solid #dfb027;
     border-radius: 24px;
-    box-shadow: 0 10px 32px -4px rgba(180, 40, 20, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 14px 38px -6px rgba(50, 8, 5, 0.32), 0 3px 12px rgba(223, 176, 39, 0.18);
     overflow: hidden;
     transition: box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .panel:hover, .order:hover, .saved:hover, .calendar-panel:hover {
-    box-shadow: 0 18px 46px -6px rgba(180, 40, 20, 0.20), 0 4px 14px rgba(0, 0, 0, 0.06);
-    border-color: #cda21c;
+    box-shadow: 0 18px 48px -6px rgba(50, 8, 5, 0.38), 0 4px 16px rgba(223, 176, 39, 0.25);
+    border-color: #c99818;
   }
   .panel__head {
     padding: 16px 20px;
-    border-bottom: 1.5px solid #dcb732;
+    border-bottom: 1.5px solid #d49f18;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #fee878;
+    background: linear-gradient(135deg, #ffe85c 0%, #ffd633 100%);
   }
   .panel__head h2 {
     font-size: 17px;
     font-weight: 800;
     margin: 0;
-    color: #121212;
+    color: #261109;
     letter-spacing: -0.2px;
   }
   .calendar-panel {
@@ -813,8 +813,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    border-bottom: 1.5px solid #dcb732;
-    background: #fee878;
+    border-bottom: 1.5px solid #d49f18;
+    background: linear-gradient(135deg, #ffe85c 0%, #ffd633 100%);
   }
   .calendar-panel__title-group {
     display: flex;
@@ -826,7 +826,7 @@
     font-size: 17px;
     font-weight: 800;
     margin: 0;
-    color: #121212;
+    color: #261109;
     letter-spacing: -0.2px;
     line-height: 1;
   }
@@ -885,29 +885,28 @@
   /* ---- DISH TILES (Thẻ món phong cách Café Lumo Cards — TRÀN VIỀN) ---- */
   .tile {
     position: relative;
-    border: 1.5px solid #dcb732;
+    border: 1.5px solid #f0c766;
     border-radius: var(--radius-lg);
     background: #ffffff;
     overflow: hidden;
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
-    touch-action: pan-y;
-    touch-action: pan-down; /* Trình duyệt di động tự động cuộn trang 120Hz mượt mà khi vuốt ngón tay lên; giữ lại hướng kéo xuống cho JS kéo món vào Lịch */
+    touch-action: none !important;
     transition: transform 0.18s var(--ease-out),
                 box-shadow 0.18s var(--ease-out),
                 border-color 0.15s ease;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    box-shadow: 0 4px 16px rgba(180, 40, 20, 0.08);
+    box-shadow: 0 4px 16px rgba(160, 30, 20, 0.08);
     padding: 0; /* TRÀN VIỀN: ảnh trải rộng sát mép trên, trái, phải */
   }
   .tile, .tile * {
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
-    touch-action: inherit;
+    touch-action: none !important;
   }
   .tile img {
     -webkit-user-drag: none !important;
@@ -1773,22 +1772,22 @@
   .day__head {
     display: flex; align-items: center; justify-content: space-between;
     gap: 6px; flex-wrap: wrap; padding: 9px 12px;
-    border-bottom: 1px solid #ebd978;
-    background: #fff4af;
+    border-bottom: 1px solid #f0d87a;
+    background: #fffde6;
   }
   .day.has-dishes .day__head {
-    background: #fee678;
-    border-bottom: 1px solid rgba(218, 36, 28, 0.22);
+    background: #fde69e;
+    border-bottom: 1px solid rgba(218, 36, 28, 0.25);
   }
   .day__name {
-    font-size: 12.5px; font-weight: 800; color: #121212;
+    font-size: 12.5px; font-weight: 800; color: #261109;
   }
   .day__date {
-    font-size: 10.5px; font-weight: 700; color: #54441b; margin-left: 3px;
+    font-size: 10.5px; font-weight: 700; color: #4a340a; margin-left: 3px;
   }
   .day__count {
-    font-size: 10.5px; font-weight: 800; color: #54441b;
-    background: #ffffff; border: 1px solid rgba(220, 183, 50, 0.4);
+    font-size: 10.5px; font-weight: 800; color: #4a340a;
+    background: #ffffff; border: 1px solid rgba(223, 176, 39, 0.5);
     padding: 1.5px 7px; border-radius: var(--radius-pill);
     min-width: 20px; text-align: center;
     transition: all 0.2s var(--spring-bounce);
@@ -1811,17 +1810,18 @@
   }
   .day.drop-over {
     border-color: #da241c !important;
-    box-shadow: 0 0 0 3.5px rgba(218, 36, 28, 0.32), 0 12px 28px rgba(218, 36, 28, 0.22) !important;
+    box-shadow: 0 0 0 3.5px rgba(218, 36, 28, 0.35), 0 12px 28px rgba(218, 36, 28, 0.25) !important;
     transform: translateY(-2px) scale(1.02);
+    background: #fff8e7 !important;
     transition: transform 0.16s var(--spring-bounce), border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .day__empty {
-    font-size: 11px; font-weight: 600; color: #7a6320;
+    font-size: 11px; font-weight: 600; color: #7a5015;
     padding: 10px 6px; flex: 1 1 100%;
-    border: 1px dashed rgba(220, 183, 50, 0.45);
+    border: 1px dashed rgba(245, 192, 66, 0.5);
     border-radius: 10px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.85);
     transition: all 0.25s var(--spring-smooth);
     user-select: none;
   }
@@ -3385,6 +3385,9 @@
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;vertical-align:-1px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Thống kê &amp; Cài đặt
     </button>
+    <a href="/prep" target="_blank" class="owner-status-bar__btn" style="text-decoration:none;display:inline-flex;align-items:center;margin-left:8px;background:#C0392B;color:#fff;border-color:transparent;font-weight:700;" title="Mở web app Bếp Sơ Chế & Đóng Gói Mealkit">
+      🥦 Bếp Sơ Chế Mealkit
+    </a>
   </div>
 
     <div class="board">
@@ -3727,6 +3730,9 @@
         <span class="site-foot__sub">Bữa ăn gia đình tươi ngon mỗi tuần</span>
       </div>
       <div class="site-foot__actions">
+        <a href="/prep" class="btn-owner-badge" style="text-decoration:none;display:inline-flex;align-items:center;margin-right:8px;background:rgba(217,72,40,0.08);color:#C0392B;border-color:rgba(217,72,40,0.25);font-weight:600;" title="Vào ứng dụng Quản lý Sơ chế &amp; Đóng gói Mealkit">
+          🥦 Bếp Sơ Chế
+        </a>
         <button type="button" class="btn-owner-badge" id="btnOpenOwnerFooter" title="Đăng nhập PIN quản trị viên">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Quản trị viên (PIN)
@@ -4498,15 +4504,26 @@
     cleanupAllGhosts();
 
     var pointerId = (startEv.pointerId !== undefined) ? startEv.pointerId : null;
+    var pointerType = startEv.pointerType || "mouse";
+    var isMouse = (pointerType === "mouse");
+    var isTouch = (pointerType === "touch" || pointerType === "pen");
+
     var startX = startEv.clientX, startY = startEv.clientY;
+    var startScreenY = (startEv.screenY !== undefined) ? startEv.screenY : startY;
+    var lastScreenY = startScreenY;
     var currentX = startX, currentY = startY;
     var moved = false, ghost = null, autoScrollRaf = null;
+    var isTouchScrolling = false;
 
-    // TUYỆT ĐỐI KHÔNG GỌI setPointerCapture Ở ĐÂY!
-    // Vì nếu gọi setPointerCapture ngay khi chạm ngón tay (pointerdown), trình duyệt di động
-    // sẽ khóa cứng thao tác chạm vào thẻ và TẮT cơ chế cuộn trang tự nhiên (native scroll),
-    // khiến người dùng khi vuốt ngón tay lên để cuộn web xuống sẽ bị khựng và giật màn hình!
-    // Chỉ kích hoạt setPointerCapture khi khách thực sự chủ động KÉO XUỐNG DƯỚI.
+    // Trên cảm ứng: giữ nhẹ 160ms tự động nhấc món vào chế độ kéo tự do
+    var holdTimer = null;
+    if(isTouch){
+      holdTimer = setTimeout(function(){
+        if(!moved && !isTouchScrolling){
+          startDragging(currentX, currentY);
+        }
+      }, 160);
+    }
 
     var stopAutoScroll = function(){
       if(autoScrollRaf){
@@ -4517,19 +4534,19 @@
 
     var checkAutoScroll = function(){
       var vh = window.innerHeight;
-      var EDGE_BOTTOM = 88;
+      var EDGE = 80;
       var speed = 0;
-      // CHỈ CUỘN XUỐNG DƯỚI (hướng về lịch), TUYỆT ĐỐI KHÔNG TỰ ĐỘNG CUỘN LÊN TRÊN
-      if(currentY > vh - EDGE_BOTTOM){
-        speed = Math.min(18, Math.max(3, (currentY - (vh - EDGE_BOTTOM)) * 0.35));
+      if(currentY > vh - EDGE){
+        speed = Math.min(20, Math.max(4, (currentY - (vh - EDGE)) * 0.4));
+      } else if(currentY < EDGE && window.scrollY > 0){
+        speed = -Math.min(20, Math.max(4, (EDGE - currentY) * 0.4));
       }
-      if(speed > 0){
+      if(speed !== 0){
         if(!autoScrollRaf){
           var step = function(){
             if(!moved || !ghost){ stopAutoScroll(); return; }
             window.scrollBy(0, speed);
-            var clampedY = Math.max(startY, currentY);
-            updateDropHighlight(currentX, clampedY);
+            updateDropHighlight(currentX, currentY);
             autoScrollRaf = requestAnimationFrame(step);
           };
           autoScrollRaf = requestAnimationFrame(step);
@@ -4539,11 +4556,15 @@
       }
     };
 
+    var lastHoveredDay = null;
     var updateDropHighlight = function(cx, cy){
-      // .tile.drag-ghost có pointer-events: none !important nên elementFromPoint xuyên qua thẳng ô ngày
       var el = document.elementFromPoint(cx, cy);
       var targetDay = (el && el.closest) ? el.closest(".day") : null;
       var targetBody = targetDay ? targetDay.querySelector(".day__body") : null;
+
+      if(targetDay){
+        lastHoveredDay = targetDay;
+      }
 
       dayBodyEls.forEach(function(b){
         b.classList.toggle("drop-over", b === targetBody);
@@ -4556,68 +4577,97 @@
       return targetDay;
     };
 
+    var startDragging = function(x, y){
+      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
+      moved = true;
+      cleanupAllGhosts();
+      ghost = makeDragGhost(DISHES[i]);
+      document.body.appendChild(ghost);
+      ghost.style.left = x + "px";
+      ghost.style.top = y + "px";
+      li.classList.add("is-dragging");
+      setArmed(-1);
+      setDishHeld(true);
+      triggerHaptic("drag");
+      updateDropHighlight(x, y);
+    };
+
     var onMove = function(ev){
-      // Chỉ nhận event của chính con trỏ này
       if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
 
       currentX = ev.clientX;
       currentY = ev.clientY;
-      var dy = currentY - startY;
+      var currentScreenY = (ev.screenY !== undefined) ? ev.screenY : currentY;
       var dx = currentX - startX;
+      var dy = currentY - startY;
 
-      if(!moved){
-        // NẾU VUỐT LÊN (dy < -4) HOẶC VUỐT NGANG (Math.abs(dx) > Math.abs(dy) * 1.4):
-        // Khách đang theo thói quen chạm vào món và vuốt lên để cuộn trang xuống!
-        // NGAY LẬP TỨC hủy phiên kéo và nhường 100% quyền xử lý cho trình duyệt cuộn mượt mà (Native Inertial Scroll 120Hz).
-        // Tuyệt đối không can thiệp, không scrollBy thủ công -> trang cuộn êm ru, mượt mà, không bao giờ giật lag!
-        if(dy < -4 || Math.abs(dx) > Math.abs(dy) * 1.4){
-          cleanup();
-          return;
+      // CHUỘT DESKTOP: Bất kỳ hướng kéo nào >= 4px đều kích hoạt kéo mượt mà vào lịch
+      if(isMouse){
+        if(!moved && Math.hypot(dx, dy) >= 4){
+          startDragging(currentX, currentY);
         }
-
-        // CHỈ BẮT ĐẦU KÉO MÓN KHI KHÁCH CHỦ ĐỘNG KÉO XUỐNG DƯỚI VỀ PHÍA LỊCH (dy >= 9px)
-        if(dy >= 9 && dy >= Math.abs(dx) * 0.5){
-          moved = true;
+        if(moved && ghost){
           if(ev.cancelable) ev.preventDefault();
-          if(pointerId !== null && li.setPointerCapture){
-            try { li.setPointerCapture(pointerId); } catch(err){}
-          }
-          cleanupAllGhosts();
-          ghost = makeDragGhost(DISHES[i]);
-          document.body.appendChild(ghost);
-          var clampedY = Math.max(startY, currentY);
           ghost.style.left = currentX + "px";
-          ghost.style.top = clampedY + "px";
-          li.classList.add("is-dragging");
-          setArmed(-1);
-          setDishHeld(true);
-          triggerHaptic("drag");
+          ghost.style.top = currentY + "px";
+          updateDropHighlight(currentX, currentY);
+          checkAutoScroll();
         }
+        return;
       }
 
-      if(moved && ghost){
-        if(ev.cancelable) ev.preventDefault();
-        // KHÔNG THỂ KÉO LÊN TRÊN: Luôn kẹp clampedY >= startY
-        var clampedY = Math.max(startY, currentY);
-        ghost.style.left = currentX + "px";
-        ghost.style.top = clampedY + "px";
-        updateDropHighlight(currentX, clampedY);
-        checkAutoScroll();
+      // CẢM ỨNG DI ĐỘNG (TOUCH):
+      if(isTouch){
+        if(!moved){
+          // Khách vuốt lên trên để cuộn trang: dùng vị trí phần cứng screenY (không bao giờ rung giật)
+          if(dy < -6 && !isTouchScrolling){
+            if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
+            isTouchScrolling = true;
+          }
+
+          if(isTouchScrolling){
+            if(ev.cancelable) ev.preventDefault();
+            var deltaScreenY = currentScreenY - lastScreenY;
+            if(Math.abs(deltaScreenY) >= 0.5){
+              window.scrollBy(0, -deltaScreenY);
+            }
+            lastScreenY = currentScreenY;
+            return;
+          }
+
+          // Khách kéo ngón tay xuống dưới về phía lịch tuần (dy >= 6px)
+          if(dy >= 6){
+            if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
+            startDragging(currentX, currentY);
+          }
+        }
+
+        if(moved && ghost){
+          if(ev.cancelable) ev.preventDefault();
+          var clampedY = Math.max(startY - 15, currentY);
+          ghost.style.left = currentX + "px";
+          ghost.style.top = clampedY + "px";
+          updateDropHighlight(currentX, clampedY);
+          checkAutoScroll();
+        }
       }
     };
 
     var onEnd = function(ev){
       if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
+      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
 
-      var finalX = (ev && typeof ev.clientX === "number") ? ev.clientX : currentX;
-      var rawY = (ev && typeof ev.clientY === "number") ? ev.clientY : currentY;
-      var finalY = Math.max(startY, rawY);
+      var finalX = (ev && typeof ev.clientX === "number" && (ev.clientX !== 0 || currentX === 0)) ? ev.clientX : currentX;
+      var rawY = (ev && typeof ev.clientY === "number" && (ev.clientY !== 0 || currentY === 0)) ? ev.clientY : currentY;
+      var finalY = isTouch ? Math.max(startY - 15, rawY) : rawY;
       var wasMoved = moved;
+
+      // Xác định ngày mục tiêu trước hoặc ngay khi kết thúc kéo
+      var targetDay = updateDropHighlight(finalX, finalY) || lastHoveredDay;
 
       cleanup();
 
       if(wasMoved){
-        var targetDay = updateDropHighlight(finalX, finalY);
         clearDropHighlights();
 
         if(targetDay){
@@ -4628,16 +4678,20 @@
           }
         }
         suppressDayClickUntil = Date.now() + 350;
+      } else if(isTouchScrolling){
+        suppressDayClickUntil = Date.now() + 350;
       }
     };
 
     var onCancel = function(){
+      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
       cleanup();
       clearDropHighlights();
       suppressDayClickUntil = Date.now() + 300;
     };
 
     var cleanup = function(){
+      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
       stopAutoScroll();
       if(pointerId !== null && li.releasePointerCapture){
         try { li.releasePointerCapture(pointerId); } catch(err){}
@@ -4651,6 +4705,10 @@
     };
 
     activeDragSession = { cleanup: cleanup };
+
+    if(pointerId !== null && li.setPointerCapture){
+      try { li.setPointerCapture(pointerId); } catch(err){}
+    }
 
     window.addEventListener("pointermove", onMove, { passive: false });
     window.addEventListener("pointerup", onEnd, true);
