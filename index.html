@@ -866,6 +866,115 @@
     padding: 2.5px 9px;
     border-radius: var(--radius-pill);
   }
+
+  /* ---- UNIFIED PANEL HEADS & BODIES (Mâm Cơm Warm Amber & Gold Cards) ---- */
+  .order__head-bar,
+  .saved__head-bar,
+  .rev__head-bar,
+  .qa__head-bar {
+    padding: 14px 18px;
+    border-bottom: 1.5px solid #d49f18;
+    background: linear-gradient(135deg, #ffe85c 0%, #ffd633 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .order__head-bar h2,
+  .saved__head-bar h2,
+  .rev__head-bar h2,
+  .qa__head-bar h2 {
+    font-size: 16.5px;
+    font-weight: 800;
+    margin: 0;
+    color: #261109;
+    letter-spacing: -0.2px;
+  }
+  .order__body {
+    padding: 16px 18px 20px;
+  }
+  .saved__body {
+    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  }
+  .saved.is-collapsed .saved__body {
+    display: none;
+  }
+  .saved.is-collapsed .saved__toggle-icon svg {
+    transform: rotate(-90deg);
+  }
+  .saved__head-bar {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 0.15s ease;
+  }
+  .saved__head-bar:hover {
+    background: linear-gradient(135deg, #ffea6b 0%, #ffd947 100%);
+  }
+  .rev__body {
+    padding: 16px 18px 20px;
+  }
+  .qa__body {
+    padding: 12px 16px 16px;
+  }
+
+  /* Footer Contact Section (Địa chỉ & Hotline Mâm Cơm) */
+  .site-foot__contact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 14px 18px;
+    margin: 14px 0 8px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(223, 176, 39, 0.4);
+    border-radius: 16px;
+    font-size: 13px;
+    color: #261109;
+  }
+  .site-foot__contact-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  .site-foot__contact-icon {
+    color: #da241c;
+    flex-shrink: 0;
+  }
+  .site-foot__contact-label {
+    color: #7a4b10;
+    font-weight: 700;
+  }
+  .site-foot__contact-val {
+    font-weight: 700;
+    color: #261109;
+  }
+  .site-foot__contact-link {
+    color: #da241c;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .site-foot__contact-link:hover {
+    text-decoration: underline;
+    color: #ba1e17;
+  }
+  .btn-edit-contact {
+    background: #da241c;
+    color: #ffffff;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .btn-edit-contact:hover {
+    background: #ba1e17;
+    transform: scale(1.04);
+  }
   .menu__hint {
     padding: 12px 18px 2px;
     font-size: 12.5px;
@@ -892,7 +1001,7 @@
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
-    touch-action: none !important;
+    touch-action: pan-y;
     transition: transform 0.18s var(--ease-out),
                 box-shadow 0.18s var(--ease-out),
                 border-color 0.15s ease;
@@ -906,12 +1015,68 @@
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
-    touch-action: none !important;
+    touch-action: pan-y;
   }
   .tile img {
     -webkit-user-drag: none !important;
     user-drag: none !important;
     pointer-events: none !important;
+  }
+
+  /* ---- TILE THÊM MÓN MỚI (Dành riêng cho chủ khi đăng nhập PIN) ---- */
+  .tile--add {
+    background: #ffffff !important;
+    border: 2px dashed #dfb027 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 108px;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    touch-action: manipulation !important;
+  }
+  .tile--add:hover {
+    border-color: #da241c !important;
+    background: #fff8e7 !important;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(218, 36, 28, 0.18) !important;
+  }
+  .tile--add:active {
+    transform: scale(0.97) !important;
+  }
+  .tile__add-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 6px;
+    text-align: center;
+  }
+  .tile__add-plus {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #da241c;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 4px 12px rgba(218, 36, 28, 0.32);
+    transition: transform 0.22s ease;
+  }
+  .tile--add:hover .tile__add-plus {
+    transform: rotate(90deg) scale(1.1);
+  }
+  .tile__add-text {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #3b1c08;
+    letter-spacing: -0.1px;
   }
   .tile:hover {
     transform: translateY(-3px);
@@ -3385,13 +3550,16 @@
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;vertical-align:-1px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Thống kê &amp; Cài đặt
     </button>
-    <a href="/prep" target="_blank" class="owner-status-bar__btn" style="text-decoration:none;display:inline-flex;align-items:center;margin-left:8px;background:#C0392B;color:#fff;border-color:transparent;font-weight:700;" title="Mở web app Bếp Sơ Chế & Đóng Gói Mealkit">
+    <button type="button" class="owner-status-bar__btn" id="btnOpenInboxOrders" style="background:#f59e0b;color:#261109;border-color:transparent;font-weight:700;margin-left:8px;" title="Xem các đơn vừa sao chép từ khách">
+      📦 Đơn Inbox (<span id="inboxOrderCount">0</span>)
+    </button>
+    <a href="/prep" target="_blank" class="owner-status-bar__btn" id="btnOpenPrepHeader" style="text-decoration:none;display:inline-flex;align-items:center;margin-left:8px;background:#C0392B;color:#fff;border-color:transparent;font-weight:700;" title="Mở web app Bếp Sơ Chế & Đóng Gói Mealkit">
       🥦 Bếp Sơ Chế Mealkit
     </a>
   </div>
 
     <div class="board">
-    <!-- CỘT BÊN CẠNH TRÁI (Desktop 360px): Mâm 6 món + Câu hỏi thường gặp -->
+    <!-- CỘT BÊN CẠNH TRÁI (Desktop 360px): Mâm món + Câu hỏi thường gặp -->
     <div class="board__side">
       <section class="panel panel--menu">
       <div class="panel__head">
@@ -3400,8 +3568,9 @@
           <span class="panel__price-badge" id="menuPriceBadge">49đ/1 người</span>
         </div>
         <div class="panel__head-actions" style="display:flex;align-items:center;gap:8px;">
+          <button type="button" class="btn-manage-cat" id="btnAddDishHeader" style="background:#da241c;color:#fff;border-color:transparent;font-weight:700;" title="Thêm món mới vào Mâm (chỉ chủ)" hidden>+ Thêm món</button>
           <button type="button" class="btn-manage-cat" id="btnManageCategories" title="Sắp xếp thứ tự &amp; màu sắc Category (chỉ chủ)" hidden>⚙️ Sắp xếp Category</button>
-          <span class="hint">6 món</span>
+          <span class="hint" id="menuCountBadge">món</span>
         </div>
       </div>
       <!-- Phân loại món ăn 2 tầng (Category Filter: Chính ở trên, Phụ ở dưới) -->
@@ -3467,7 +3636,8 @@
         <label>Mô tả món (hiện khi khách chạm vào ảnh)<textarea data-f="description" rows="3" maxlength="200" placeholder="Nguyên liệu, vị, gia đình..."></textarea></label>
         <div class="editor__status" id="editorStatus"></div>
         <div class="editor-actions">
-          <button data-act="save" type="button">Lưu thay đổi</button>
+          <button data-act="save" type="button" id="editorSaveBtn">Lưu thay đổi</button>
+          <button data-act="delete" type="button" id="editorDeleteBtn" class="btn--danger" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;padding:8px 14px;border-radius:12px;font-weight:700;" hidden>🗑️ Xóa món này</button>
           <button data-act="cancel" type="button">Hủy</button>
         </div>
       </div>
@@ -3480,8 +3650,13 @@
     <!-- LỊCH: Gộp từ "Tuần này" đến 7 ngày trong tuần thành 1 ô "Lịch" đồng bộ -->
 
       <div class="qa">
-        <h3 class="qa__head">Câu hỏi thường gặp</h3>
-        
+        <div class="panel__head qa__head-bar">
+          <div class="panel__title-group">
+            <h2>Câu hỏi thường gặp</h2>
+          </div>
+          <span class="hint">Giải đáp nhanh</span>
+        </div>
+        <div class="qa__body">
         <details class="qa__item">
           <summary class="qa__summary">
             <h4>1 mâm gồm những gì?</h4>
@@ -3532,6 +3707,7 @@
             <p>Mâm Cơm chia khẩu phần theo số <strong>người ăn</strong> — mỗi người được chia đầy đủ món mặn, món rau và canh, đủ no mà không dư thừa.</p>
           </div>
         </details>
+        </div>
       </div>
     </div>
 
@@ -3554,8 +3730,14 @@
     <!-- CUSTOMER INFO -->
 
       <form class="order" id="orderForm" autocomplete="off" onsubmit="return false;">
-        <h3 class="order__head">Thông tin đơn</h3>
-        <div class="order__grid">
+        <div class="panel__head order__head-bar">
+          <div class="panel__title-group">
+            <h2>Thông tin đơn</h2>
+          </div>
+          <span class="hint">Bước 2 / 2</span>
+        </div>
+        <div class="order__body">
+          <div class="order__grid">
           <label class="order__field">
             <span>Số người ăn</span>
             <input id="cPeople" type="text" inputmode="numeric" placeholder="VD: 4 người">
@@ -3613,16 +3795,26 @@
             <span class="order__submitMsg" id="orderSubmitMsg" role="status" aria-live="polite"></span>
           </div>
         </div>
+      </div>
       </form>
 
-      <!-- TIME SAVED -->
+      <!-- TIME SAVED (BẠN TIẾT KIỆM ĐƯỢC BAO NHIÊU THỜI GIAN NẾU ĐẶT MÂM? - CÓ THỂ ĐÓNG/MỞ) -->
 
       <div class="saved" id="savedBox" hidden>
-        <div class="saved__header">
-          <span class="saved__badge">GIÁ TRỊ THỜI GIAN CỦA BẠN</span>
-          <h3 class="saved__title">Bạn tiết kiệm được bao nhiêu thời gian?</h3>
-          <p class="saved__subtitle" id="savedNow"></p>
+        <div class="panel__head saved__head-bar" id="savedToggleBtn" role="button" tabindex="0" aria-expanded="true" title="Bấm để đóng / mở phần tiết kiệm thời gian">
+          <div class="panel__title-group" style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;">
+            <h2 style="font-size:16px;">Bạn tiết kiệm được bao nhiêu thời gian nếu đặt Mâm?</h2>
+            <p class="saved__subtitle" id="savedNow" style="margin:2px 0 0;font-size:12px;color:#7a4b10;font-weight:600;"></p>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+            <span class="hint" id="savedToggleHint" style="font-size:11px;color:#7a4b10;">Thu gọn</span>
+            <span class="saved__toggle-icon" id="savedToggleIcon" style="transition:transform 0.25s ease;display:inline-flex;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#261109" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </div>
         </div>
+
+        <div class="saved__body" id="savedBody">
 
         <div class="saved__kpis">
           <div class="saved__kpi">
@@ -3668,11 +3860,18 @@
           <button class="saved__cta-btn" id="ctaBtn" type="button">✨ Chọn thêm mâm để nhân thêm thời gian rảnh cho mình ↑</button>
         </div>
       </div>
+      </div>
 
-      <!-- REVIEWS & RATING -->
+      <!-- REVIEWS & RATING (ĐÁNH GIÁ CỦA KHÁCH - Ô ĐỒNG BỘ 100%) -->
       <div class="rev" id="revBox">
-        <div class="rev__head">Đánh giá &amp; lời gửi của khách</div>
-        <div class="rev__sum">
+        <div class="panel__head rev__head-bar">
+          <div class="panel__title-group">
+            <h2>Đánh giá &amp; lời gửi của khách</h2>
+          </div>
+          <span class="hint">Phản hồi thực tế</span>
+        </div>
+        <div class="rev__body">
+          <div class="rev__sum">
           <span class="rev__avg" id="revAvg">—</span>
           <span class="rev__stars" id="revStars">★★★★★</span>
           <span class="rev__count" id="revCount">chưa có đánh giá</span>
@@ -3719,6 +3918,7 @@
           <button type="button" id="revAdminBtn" class="rev__adminbtn" hidden>🔒 Chủ: cho phép xóa bình luận</button>
         </div>
         <ul class="rev__list" id="revList"></ul>
+        </div>
       </div>
     </div>
 
@@ -3729,8 +3929,27 @@
         <span class="site-foot__name">MÂM CƠM</span>
         <span class="site-foot__sub">Bữa ăn gia đình tươi ngon mỗi tuần</span>
       </div>
+
+      <!-- ĐỊA CHỈ & SỐ ĐIỆN THOẠI MÂM CƠM (Có thể sửa khi có PIN chủ) -->
+      <div class="site-foot__contact" id="footContactSection">
+        <div class="site-foot__contact-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="site-foot__contact-icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="site-foot__contact-label">Địa chỉ:</span>
+          <span class="site-foot__contact-val" id="footAddressText">Hà Nội, Việt Nam</span>
+        </div>
+        <div class="site-foot__contact-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="site-foot__contact-icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span class="site-foot__contact-label">Hotline:</span>
+          <a class="site-foot__contact-val site-foot__contact-link" id="footPhoneLink" href="tel:0987654321">0987 654 321</a>
+        </div>
+        <button type="button" class="btn-edit-contact" id="btnEditContact" title="Sửa địa chỉ &amp; SĐT Mâm Cơm (chỉ chủ)" hidden>
+          ✎ Sửa liên hệ
+        </button>
+      </div>
+
       <div class="site-foot__actions">
-        <a href="/prep" class="btn-owner-badge" style="text-decoration:none;display:inline-flex;align-items:center;margin-right:8px;background:rgba(217,72,40,0.08);color:#C0392B;border-color:rgba(217,72,40,0.25);font-weight:600;" title="Vào ứng dụng Quản lý Sơ chế &amp; Đóng gói Mealkit">
+        <!-- Nút vào Bếp sơ chế CHỈ HIỆN KHI CHỦ ĐĂNG NHẬP PIN -->
+        <a href="/prep" target="_blank" class="btn-owner-badge" id="footPrepBtn" style="text-decoration:none;display:none;align-items:center;margin-right:8px;background:rgba(217,72,40,0.08);color:#C0392B;border-color:rgba(217,72,40,0.25);font-weight:600;" title="Vào ứng dụng Quản lý Sơ chế &amp; Đóng gói Mealkit">
           🥦 Bếp Sơ Chế
         </a>
         <button type="button" class="btn-owner-badge" id="btnOpenOwnerFooter" title="Đăng nhập PIN quản trị viên">
@@ -3946,6 +4165,60 @@
   <div class="lightbox__info">
     <div class="lightbox__name" id="lightboxName"></div>
     <div class="lightbox__desc" id="lightboxDesc" hidden></div>
+  </div>
+</div>
+
+<!-- MODAL QUẢN TRỊ ĐƠN INBOX (CHỈ CHỦ - CÓ PIN) -->
+<div class="modal" id="inboxOrdersModal" role="dialog" aria-modal="true" aria-labelledby="inboxModalTitle" hidden>
+  <div class="modal__box" style="max-width:540px;max-height:85vh;display:flex;flex-direction:column;">
+    <div class="modal__head">
+      <div class="modal__title-group">
+        <h3 id="inboxModalTitle">📦 Đơn khách vừa bấm Sao Chép &amp; Dán Inbox</h3>
+        <span class="modal__badge">Tự động liên kết Bếp sơ chế</span>
+      </div>
+      <button class="modal__close-btn" type="button" id="inboxModalClose" aria-label="Đóng bảng đơn inbox">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal__body" style="overflow-y:auto;flex:1;padding:16px;">
+      <div id="inboxOrdersList"></div>
+    </div>
+    <div class="modal__foot" style="display:flex;align-items:center;justify-content:space-between;">
+      <a href="/prep" target="_blank" class="btn btn--primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#C0392B;color:#fff;border-radius:99px;padding:8px 16px;font-weight:700;">
+        🥦 Mở Bếp Sơ Chế Mealkit
+      </a>
+      <button type="button" class="btn btn--secondary" id="inboxModalCloseBtn" style="border-radius:99px;padding:8px 16px;">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SỬA THÔNG TIN LIÊN HỆ FOOTER (CHỈ CHỦ - CÓ PIN) -->
+<div class="modal" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle" hidden>
+  <div class="modal__box" style="max-width:440px;">
+    <div class="modal__head">
+      <div class="modal__title-group">
+        <h3 id="contactModalTitle">✎ Sửa thông tin liên hệ Mâm Cơm</h3>
+        <span class="modal__badge">Quản trị viên</span>
+      </div>
+      <button class="modal__close-btn" type="button" id="contactModalClose" aria-label="Đóng bảng sửa liên hệ">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal__body" style="padding:16px 18px;display:flex;flex-direction:column;gap:14px;">
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:#261109;">
+        <span>Địa chỉ Mâm Cơm</span>
+        <input type="text" id="contactAddressInput" placeholder="VD: Hà Nội, Việt Nam" style="padding:9px 12px;border:1.5px solid #d49f18;border-radius:12px;font-size:14px;">
+      </label>
+      <label style="display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:#261109;">
+        <span>Số điện thoại / Hotline</span>
+        <input type="tel" id="contactPhoneInput" placeholder="VD: 0987 654 321" style="padding:9px 12px;border:1.5px solid #d49f18;border-radius:12px;font-size:14px;">
+      </label>
+      <div id="contactSaveStatus" style="font-size:12px;font-weight:600;min-height:18px;"></div>
+    </div>
+    <div class="modal__foot" style="display:flex;align-items:center;justify-content:flex-end;gap:8px;">
+      <button type="button" class="btn btn--primary" id="btnSaveContact" style="background:#da241c;color:#fff;border-radius:99px;padding:8px 18px;font-weight:700;">💾 Lưu thông tin</button>
+      <button type="button" class="btn btn--secondary" id="contactModalCancelBtn" style="border-radius:99px;padding:8px 14px;">Hủy</button>
+    </div>
   </div>
 </div>
 
@@ -4173,7 +4446,7 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if(raw){
         var parsed = JSON.parse(raw);
-        if(Array.isArray(parsed) && parsed.length === 6 &&
+        if(Array.isArray(parsed) && parsed.length >= 1 &&
            parsed.every(function(d){ return d && typeof d.name === "string" && d.name.trim() !== ""; })){
           return parsed.map(function(d){
             return {
@@ -4206,7 +4479,7 @@
     if(!USE_SUPABASE) return;
     if(typeof syncCategoryConfigFromServer === "function") syncCategoryConfigFromServer();
     sharedStore.loadMenu().then(function(menu){
-      if(Array.isArray(menu) && menu.length === 6){
+      if(Array.isArray(menu) && menu.length >= 1){
         // Menu giống hệt bản đang có → không dựng lại, tránh giật UI mỗi 20s.
         var same = menu.length === DISHES.length && menu.every(function(d, i){
           var cur = DISHES[i] || {};
@@ -4292,8 +4565,18 @@
     if(pin){
       currentOwnerPin = pin;
     }
+    try {
+      sessionStorage.setItem("mamcom.ownerPin.session", pin || "unlocked");
+      localStorage.setItem("mamcom.ownerPin.session", pin || "unlocked");
+    } catch(e){}
     var ownerBar = document.getElementById("ownerStatusBar");
     if(ownerBar) ownerBar.hidden = false;
+    var footPrepBtn = document.getElementById("footPrepBtn");
+    if(footPrepBtn) footPrepBtn.style.display = "inline-flex";
+    var btnEditContact = document.getElementById("btnEditContact");
+    if(btnEditContact) btnEditContact.hidden = false;
+    if(typeof updateInboxOrderBadge === "function") updateInboxOrderBadge();
+
     // Re-render reviews so the ✕ delete buttons + admin label appear.
     if(typeof renderReviews === "function") renderReviews(allComments);
     // Rebuild the menu so the ✎ edit buttons become visible to the owner.
@@ -4315,8 +4598,14 @@
     } catch(e){}
     var ownerBar = document.getElementById("ownerStatusBar");
     if(ownerBar) ownerBar.hidden = true;
+    var footPrepBtn = document.getElementById("footPrepBtn");
+    if(footPrepBtn) footPrepBtn.style.display = "none";
+    var btnEditContact = document.getElementById("btnEditContact");
+    if(btnEditContact) btnEditContact.hidden = true;
     closeSettings();
     if(typeof closeCategoryModal === "function") closeCategoryModal();
+    if(typeof closeInboxOrdersModal === "function") closeInboxOrdersModal();
+    if(typeof closeContactModal === "function") closeContactModal();
     if(typeof renderReviews === "function") renderReviews(allComments);
     if(typeof buildMenu === "function" && typeof menuEl !== "undefined"){
       buildMenu();
@@ -4509,21 +4798,11 @@
     var isTouch = (pointerType === "touch" || pointerType === "pen");
 
     var startX = startEv.clientX, startY = startEv.clientY;
-    var startScreenY = (startEv.screenY !== undefined) ? startEv.screenY : startY;
-    var lastScreenY = startScreenY;
     var currentX = startX, currentY = startY;
     var moved = false, ghost = null, autoScrollRaf = null;
-    var isTouchScrolling = false;
 
-    // Trên cảm ứng: giữ nhẹ 160ms tự động nhấc món vào chế độ kéo tự do
-    var holdTimer = null;
-    if(isTouch){
-      holdTimer = setTimeout(function(){
-        if(!moved && !isTouchScrolling){
-          startDragging(currentX, currentY);
-        }
-      }, 160);
-    }
+    // Trên cảm ứng (mobile touch): KHÔNG dùng timer giữ chỗ vì làm kẹt thao tác vuốt cuộn trang.
+    // Thao tác kéo món CHỈ kích hoạt khi người dùng chủ động vuốt xuống (dy >= 10).
 
     var stopAutoScroll = function(){
       if(autoScrollRaf){
@@ -4578,7 +4857,6 @@
     };
 
     var startDragging = function(x, y){
-      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
       moved = true;
       cleanupAllGhosts();
       ghost = makeDragGhost(DISHES[i]);
@@ -4590,6 +4868,11 @@
       setDishHeld(true);
       triggerHaptic("drag");
       updateDropHighlight(x, y);
+
+      // Chỉ bắt con trỏ khi phiên kéo ĐÃ THỰC SỰ BẮT ĐẦU
+      if(pointerId !== null && li.setPointerCapture){
+        try { li.setPointerCapture(pointerId); } catch(err){}
+      }
     };
 
     var onMove = function(ev){
@@ -4597,7 +4880,6 @@
 
       currentX = ev.clientX;
       currentY = ev.clientY;
-      var currentScreenY = (ev.screenY !== undefined) ? ev.screenY : currentY;
       var dx = currentX - startX;
       var dy = currentY - startY;
 
@@ -4619,32 +4901,23 @@
       // CẢM ỨNG DI ĐỘNG (TOUCH):
       if(isTouch){
         if(!moved){
-          // Khách vuốt lên trên để cuộn trang: dùng vị trí phần cứng screenY (không bao giờ rung giật)
-          if(dy < -6 && !isTouchScrolling){
-            if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
-            isTouchScrolling = true;
-          }
-
-          if(isTouchScrolling){
-            if(ev.cancelable) ev.preventDefault();
-            var deltaScreenY = currentScreenY - lastScreenY;
-            if(Math.abs(deltaScreenY) >= 0.5){
-              window.scrollBy(0, -deltaScreenY);
-            }
-            lastScreenY = currentScreenY;
+          // Khách vuốt ngón tay lên trên để xem phần bên dưới web (dy < 0):
+          // TUYỆT ĐỐI KHÔNG CAN THIỆP, HỦY NGAY ĐỂ TRÌNH DUYỆT CUỘN NATIVE 120HZ MƯỢT MÀ!
+          if(dy < 0){
+            cleanup();
             return;
           }
 
-          // Khách kéo ngón tay xuống dưới về phía lịch tuần (dy >= 6px)
-          if(dy >= 6){
-            if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
+          // Khách chủ động kéo ngón tay xuống dưới về phía lịch tuần (dy >= 10 && dy > Math.abs(dx))
+          if(dy >= 10 && dy > Math.abs(dx)){
+            if(ev.cancelable) ev.preventDefault();
             startDragging(currentX, currentY);
           }
         }
 
         if(moved && ghost){
           if(ev.cancelable) ev.preventDefault();
-          var clampedY = Math.max(startY - 15, currentY);
+          var clampedY = Math.max(startY, currentY);
           ghost.style.left = currentX + "px";
           ghost.style.top = clampedY + "px";
           updateDropHighlight(currentX, clampedY);
@@ -4655,11 +4928,10 @@
 
     var onEnd = function(ev){
       if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
-      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
 
       var finalX = (ev && typeof ev.clientX === "number" && (ev.clientX !== 0 || currentX === 0)) ? ev.clientX : currentX;
       var rawY = (ev && typeof ev.clientY === "number" && (ev.clientY !== 0 || currentY === 0)) ? ev.clientY : currentY;
-      var finalY = isTouch ? Math.max(startY - 15, rawY) : rawY;
+      var finalY = isTouch ? Math.max(startY, rawY) : rawY;
       var wasMoved = moved;
 
       // Xác định ngày mục tiêu trước hoặc ngay khi kết thúc kéo
@@ -4678,20 +4950,16 @@
           }
         }
         suppressDayClickUntil = Date.now() + 350;
-      } else if(isTouchScrolling){
-        suppressDayClickUntil = Date.now() + 350;
       }
     };
 
     var onCancel = function(){
-      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
       cleanup();
       clearDropHighlights();
       suppressDayClickUntil = Date.now() + 300;
     };
 
     var cleanup = function(){
-      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
       stopAutoScroll();
       if(pointerId !== null && li.releasePointerCapture){
         try { li.releasePointerCapture(pointerId); } catch(err){}
@@ -4706,10 +4974,7 @@
 
     activeDragSession = { cleanup: cleanup };
 
-    if(pointerId !== null && li.setPointerCapture){
-      try { li.setPointerCapture(pointerId); } catch(err){}
-    }
-
+    // TUYỆT ĐỐI KHÔNG GỌI setPointerCapture Ở ĐÂY để cho phép cuộn trang native 120Hz mượt mà khi vuốt lên!
     window.addEventListener("pointermove", onMove, { passive: false });
     window.addEventListener("pointerup", onEnd, true);
     window.addEventListener("pointercancel", onCancel, true);
@@ -5701,9 +5966,44 @@
 
       menuEl.appendChild(li);
     });
+
+    // Thêm ô "+" vào Mâm nếu chủ đang mở khóa PIN
+    if(isOwner()){
+      var addLi = document.createElement("li");
+      addLi.className = "tile tile--add";
+      addLi.setAttribute("tabindex", "0");
+      addLi.setAttribute("role", "button");
+      addLi.setAttribute("aria-label", "Thêm món mới vào Mâm (chỉ chủ)");
+      addLi.innerHTML = '<div class="tile__add-content">' +
+        '<span class="tile__add-plus">+</span>' +
+        '<span class="tile__add-text">Thêm món</span>' +
+        '</div>';
+      addLi.addEventListener("click", function(e){
+        e.stopPropagation();
+        openEditor(-1);
+      });
+      addLi.addEventListener("keydown", function(e){
+        if(e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          openEditor(-1);
+        }
+      });
+      menuEl.appendChild(addLi);
+    }
+
     updateTileBadges();
     var btnManageCat = document.getElementById("btnManageCategories");
     if(btnManageCat) btnManageCat.hidden = !isOwner();
+    var btnAddDish = document.getElementById("btnAddDishHeader");
+    if(btnAddDish){
+      btnAddDish.hidden = !isOwner();
+      btnAddDish.onclick = function(){ openEditor(-1); };
+    }
+    var menuPanel = menuEl.closest(".panel");
+    if(menuPanel){
+      var hintEl = menuPanel.querySelector(".hint");
+      if(hintEl) hintEl.textContent = DISHES.length + " món";
+    }
     renderCategoryFilters();
     filterMenuDishes();
   }
@@ -5917,13 +6217,21 @@
       return;
     }
     editing = dishIndex;
-    var d = DISHES[dishIndex];
-    editorDishName.textContent = "món #" + (dishIndex+1);
-    editorEl.querySelector('[data-f="name"]').value = d.name;
+    var isNew = (dishIndex === -1);
+    var d = isNew ? {
+      name: "",
+      categories: "Cơm nhà [tag: #DA241C, txt: #FFFFFF, sub: #E65100]",
+      img: "",
+      emoji: "🍽️",
+      description: ""
+    } : (DISHES[dishIndex] || { name: "" });
+
+    editorDishName.textContent = isNew ? "Thêm món mới" : ("món #" + (dishIndex+1));
+    editorEl.querySelector('[data-f="name"]').value = d.name || "";
     
     var catInfo = parseDishCategory(d.categories);
     var mainInp = editorEl.querySelector('[data-f="cat-main"]');
-    if(mainInp) mainInp.value = catInfo.main || "";
+    if(mainInp) mainInp.value = catInfo.main || "Cơm nhà";
     var subInp = editorEl.querySelector('[data-f="cat-sub"]');
     if(subInp) subInp.value = catInfo.rawSub || "";
     var activeColor = catInfo.color || "#DA241C";
@@ -5943,10 +6251,14 @@
 
     updateEditorCatPreviews();
 
-    editorEl.querySelector('[data-f="img"]').value = d.img;
-    editorEl.querySelector('[data-f="emoji"]').value = d.emoji;
+    editorEl.querySelector('[data-f="img"]').value = d.img || "";
+    editorEl.querySelector('[data-f="emoji"]').value = d.emoji || "🍽️";
     editorEl.querySelector('[data-f="description"]').value = d.description || "";
     editorFile.value = "";
+
+    var delBtn = document.getElementById("editorDeleteBtn");
+    if(delBtn) delBtn.hidden = isNew;
+
     setEditorStatus("", "");
     refreshEditorPreview();
     editorEl.hidden = false;
@@ -6014,21 +6326,48 @@
   editorEl.addEventListener("click", function(e){
     var act = e.target.dataset && e.target.dataset.act;
     if(act === "save"){
-      var d = DISHES[editing];
+      var isNew = (editing === -1);
       var newName = editorEl.querySelector('[data-f="name"]').value.trim();
-      if(newName) d.name = newName;
+      if(!newName && isNew){
+        setEditorStatus("Vui lòng nhập tên món ăn!", "err");
+        editorEl.querySelector('[data-f="name"]').focus();
+        return;
+      }
       var mainInp = editorEl.querySelector('[data-f="cat-main"]');
       var subInp  = editorEl.querySelector('[data-f="cat-sub"]');
       var colInp  = editorEl.querySelector('[data-f="cat-color"]');
       var txtColInp = editorEl.querySelector('[data-f="cat-text-color"]');
       var subColInp = editorEl.querySelector('[data-f="cat-sub-color"]');
-      var catMain = (mainInp ? mainInp.value : "").trim();
+      var catMain = (mainInp ? mainInp.value : "").trim() || "Cơm nhà";
       var catSub  = (subInp ? subInp.value : "").trim();
       var catCol  = (colInp ? colInp.value : "").trim() || "#DA241C";
       var catTxtCol = (txtColInp ? txtColInp.value : "").trim() || "#FFFFFF";
       var catSubCol = (subColInp ? subColInp.value : "").trim() || "#E65100";
 
-      d.categories = serializeDishCategory(catMain, catSub, catCol, catTxtCol, catSubCol);
+      var categoriesStr = serializeDishCategory(catMain, catSub, catCol, catTxtCol, catSubCol);
+      var imgVal = editorEl.querySelector('[data-f="img"]').value.trim();
+      var emVal = editorEl.querySelector('[data-f="emoji"]').value.trim() || "🍽️";
+      var descVal = editorEl.querySelector('[data-f="description"]').value.trim();
+
+      var d;
+      if(isNew){
+        d = {
+          name: newName || "Món mới",
+          img: imgVal,
+          emoji: emVal,
+          description: descVal,
+          categories: categoriesStr
+        };
+        DISHES.push(d);
+        editing = DISHES.length - 1;
+      } else {
+        d = DISHES[editing];
+        if(newName) d.name = newName;
+        d.categories = categoriesStr;
+        d.img = imgVal;
+        d.emoji = emVal;
+        d.description = descVal;
+      }
 
       // Cập nhật cấu hình bộ lọc toàn cục
       var cfg = loadCategoryConfig();
@@ -6046,10 +6385,7 @@
         });
       }
       saveCategoryConfig(cfg);
-      d.img = editorEl.querySelector('[data-f="img"]').value.trim();
-      var em = editorEl.querySelector('[data-f="emoji"]').value.trim();
-      d.emoji = em || "🍽️";
-      d.description = editorEl.querySelector('[data-f="description"]').value.trim();
+
       var saveBtn = e.target;
       saveBtn.disabled = true;
       setEditorStatus("Đang lưu…", "");
@@ -6079,6 +6415,33 @@
         setEditorStatus("Lỗi khi lưu: " + ((err && err.message) || err) +
           ". Ảnh/tên đã giữ sẵn trên máy này.", "err");
       });
+    } else if(act === "delete"){
+      if(editing >= 0 && editing < DISHES.length){
+        var dishToDelete = DISHES[editing];
+        if(!confirm("Bạn có chắc chắn muốn xóa món \"" + dishToDelete.name + "\" khỏi Mâm?")){
+          return;
+        }
+        var removedIdx = editing;
+        DISHES.splice(removedIdx, 1);
+        // Cập nhật lại lịch (plan): loại bỏ món bị xóa và dịch chuyển các index sau nó
+        plan.forEach(function(dayArr){
+          for(var p = dayArr.length - 1; p >= 0; p--){
+            if(dayArr[p] === removedIdx){
+              dayArr.splice(p, 1);
+            } else if(dayArr[p] > removedIdx){
+              dayArr[p]--;
+            }
+          }
+        });
+        savePlan();
+        saveMenu(DISHES).then(function(){
+          closeEditor();
+          rebuildAll();
+        }).catch(function(){
+          closeEditor();
+          rebuildAll();
+        });
+      }
     } else if(act === "cancel"){
       closeEditor();
     }
@@ -7132,6 +7495,59 @@
     try{ bumpMealsOnce(); }catch(e){}
     try{ sharedStore.trackEvent("order_click"); }catch(e){}
 
+    // Lưu đơn hàng có cấu trúc vào mamcom_inbox_orders_v1 để tự động link sang Bếp Sơ Chế Mealkit
+    try {
+      var currentInbox = loadInboxOrders();
+      var peopleVal = (document.getElementById("cPeople") ? document.getElementById("cPeople").value : "").trim() || "1 người";
+      var phoneVal = (document.getElementById("cPhone") ? document.getElementById("cPhone").value : "").trim();
+      var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value : "").trim();
+      var timeVal = (document.getElementById("cTime") ? document.getElementById("cTime").value : "").trim();
+      var addrVal = (document.getElementById("cAddress") ? document.getElementById("cAddress").value : "").trim();
+      var noteVal = (document.getElementById("cNote") ? document.getElementById("cNote").value : "").trim();
+      var totalVal = (document.getElementById("orderTotal") ? document.getElementById("orderTotal").textContent : "").trim() || "0đ";
+      var calcVal = (document.getElementById("orderTotalCalc") ? document.getElementById("orderTotalCalc").textContent : "").trim();
+
+      // Thu thập các món đã xếp theo ngày
+      var scheduledMeals = [];
+      [0, 1].forEach(function(off){
+        var p = weekPlanAt(off);
+        var dates = mondayOfDateKey(off);
+        DAYS.forEach(function(dayName, i){
+          var dishesInDay = (p[i] || []).map(function(idx){ return DISHES[idx] ? DISHES[idx].name : ""; }).filter(Boolean);
+          if(dishesInDay.length){
+            scheduledMeals.push({
+              week: weekName(off),
+              day: dayName + " " + fmtDate(dates[i]),
+              dishes: dishesInDay
+            });
+          }
+        });
+      });
+
+      var newInboxOrder = {
+        id: "mc_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 6),
+        code: nextOrderCode(currentInbox),
+        created_at: new Date().toISOString(),
+        created_str: new Date().toLocaleTimeString("vi-VN", {hour:"2-digit", minute:"2-digit"}) + " " + fmtDM(new Date()),
+        people: peopleVal,
+        phone: phoneVal,
+        delivery_date: dateVal,
+        delivery_time: timeVal,
+        address: addrVal,
+        note: noteVal,
+        total: totalVal,
+        calc: calcVal,
+        meals: scheduledMeals,
+        raw_text: text,
+        status: "new" // "new" | "in_prep" | "done"
+      };
+
+      currentInbox.unshift(newInboxOrder);
+      saveInboxOrders(currentInbox);
+    } catch(err){
+      console.warn("Could not save inbox order:", err);
+    }
+
     // Nhấp nháy nhẹ nhóm nút Instagram & TikTok bên dưới để dẫn dắt hành động của khách
     var socialGroup = document.getElementById("orderSocialApps");
     if(socialGroup){
@@ -7142,6 +7558,289 @@
     setTimeout(function(){ orderInboxBusy = false; }, 800);
   }
   if(orderInboxBtn) orderInboxBtn.addEventListener("click", handleOrderInbox);
+
+  // ================= LƯU TRỮ VÀ QUẢN LÝ ĐƠN INBOX =================
+  var INBOX_ORDERS_KEY = "mamcom_inbox_orders_v1";
+
+  function loadInboxOrders(){
+    try {
+      var raw = localStorage.getItem(INBOX_ORDERS_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch(e){ return []; }
+  }
+
+  function saveInboxOrders(list){
+    try {
+      localStorage.setItem(INBOX_ORDERS_KEY, JSON.stringify(list));
+    } catch(e){}
+    updateInboxOrderBadge();
+  }
+
+  function updateInboxOrderBadge(){
+    var badge = document.getElementById("inboxOrderCount");
+    if(badge){
+      var orders = loadInboxOrders();
+      badge.textContent = String(orders.length);
+    }
+  }
+
+  // ================= MODAL QUẢN LÝ ĐƠN INBOX (CHỦ PIN) =================
+  var inboxOrdersModal = document.getElementById("inboxOrdersModal");
+  var inboxOrdersList = document.getElementById("inboxOrdersList");
+  var btnOpenInboxOrders = document.getElementById("btnOpenInboxOrders");
+  var inboxModalClose = document.getElementById("inboxModalClose");
+  var inboxModalCloseBtn = document.getElementById("inboxModalCloseBtn");
+
+  function openInboxOrdersModal(){
+    if(!isOwner()){
+      requestPin(function(ok){
+        if(ok) openInboxOrdersModal();
+      }, "cần PIN của chủ để xem danh sách đơn Inbox");
+      return;
+    }
+    renderInboxOrders();
+    if(inboxOrdersModal){
+      inboxOrdersModal.hidden = false;
+      inboxOrdersModal.classList.add("show");
+    }
+  }
+
+  function closeInboxOrdersModal(){
+    if(inboxOrdersModal){
+      inboxOrdersModal.classList.remove("show");
+      inboxOrdersModal.hidden = true;
+    }
+  }
+
+  if(btnOpenInboxOrders) btnOpenInboxOrders.addEventListener("click", openInboxOrdersModal);
+  if(inboxModalClose) inboxModalClose.addEventListener("click", closeInboxOrdersModal);
+  if(inboxModalCloseBtn) inboxModalCloseBtn.addEventListener("click", closeInboxOrdersModal);
+  if(inboxOrdersModal){
+    inboxOrdersModal.addEventListener("click", function(e){
+      if(e.target === inboxOrdersModal) closeInboxOrdersModal();
+    });
+  }
+
+  function renderInboxOrders(){
+    if(!inboxOrdersList) return;
+    var orders = loadInboxOrders();
+    updateInboxOrderBadge();
+
+    if(!orders.length){
+      inboxOrdersList.innerHTML = '<div style="text-align:center;padding:36px 16px;color:#7a4b10;">' +
+        '<div style="font-size:36px;margin-bottom:8px;">📭</div>' +
+        '<div style="font-weight:700;font-size:14px;">Chưa có đơn hàng nào vừa sao chép</div>' +
+        '<div style="font-size:12px;margin-top:4px;color:#8c6d46;">Khi khách bấm "📋 Sao chép và Dán vào Inbox", thông tin đơn sẽ tự động lưu và hiển thị tại đây để chuyển qua Bếp sơ chế.</div>' +
+        '</div>';
+      return;
+    }
+
+    inboxOrdersList.innerHTML = orders.map(function(order, idx){
+      var statusBadge = '';
+      if(order.status === "in_prep"){
+        statusBadge = '<span style="background:#ffedd5;color:#c2410c;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid #fdba74;">🥦 Đang ở Bếp sơ chế</span>';
+      } else if(order.status === "done"){
+        statusBadge = '<span style="background:#dcfce7;color:#15803d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid #86efac;">✓ Đã hoàn thành</span>';
+      } else {
+        statusBadge = '<span style="background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid #bfdbfe;">✨ Đơn mới nhận</span>';
+      }
+
+      var mealsHtml = (order.meals && order.meals.length)
+        ? '<div style="margin-top:8px;background:rgba(255,255,255,0.7);padding:8px 10px;border-radius:10px;border:1px solid rgba(223,176,39,0.3);">' +
+            order.meals.map(function(m){
+              return '<div style="font-size:12px;margin-bottom:2px;"><b>' + escHtml(m.day) + ':</b> ' + escHtml(m.dishes.join(", ")) + '</div>';
+            }).join("") +
+          '</div>'
+        : '';
+
+      return '<div style="background:#fff9e6;border:1.5px solid #dfb027;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(50,8,5,0.06);">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;border-bottom:1px solid rgba(223,176,39,0.25);padding-bottom:8px;">' +
+          '<div>' +
+            '<span style="font-weight:800;font-size:14px;color:#261109;">Đơn #' + (order.code || (orders.length - idx)) + '</span> ' +
+            '<span style="font-size:11px;color:#8c6d46;margin-left:4px;">' + escHtml(order.created_str || "") + '</span>' +
+          '</div>' +
+          '<div>' + statusBadge + '</div>' +
+        '</div>' +
+        '<div style="font-size:12.5px;color:#261109;display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;">' +
+          '<div><b>Khách:</b> ' + escHtml(order.people || "—") + '</div>' +
+          '<div><b>SĐT:</b> <a href="tel:' + escAttr(order.phone) + '" style="color:#da241c;font-weight:700;text-decoration:none;">' + escHtml(order.phone || "Chưa có") + '</a></div>' +
+          '<div><b>Ngày nhận:</b> ' + escHtml(order.delivery_date || "—") + '</div>' +
+          '<div><b>Giờ nhận:</b> ' + escHtml(order.delivery_time || "—") + '</div>' +
+          '<div style="grid-column:1/-1;"><b>Địa chỉ:</b> ' + escHtml(order.address || "Chưa nhập") + '</div>' +
+          (order.note ? '<div style="grid-column:1/-1;color:#b45309;"><b>Ghi chú:</b> ' + escHtml(order.note) + '</div>' : '') +
+          '<div style="grid-column:1/-1;font-weight:800;color:#da241c;margin-top:2px;">Tổng: ' + escHtml(order.total || "0đ") + ' <span style="font-size:11px;color:#7a4b10;font-weight:500;">(' + escHtml(order.calc || "") + ')</span></div>' +
+        '</div>' +
+        mealsHtml +
+        '<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:10px;padding-top:8px;border-top:1px dashed rgba(223,176,39,0.3);">' +
+          '<button type="button" class="btn-send-prep" data-id="' + escAttr(order.id) + '" style="background:#C0392B;color:#fff;border:none;padding:5px 12px;border-radius:99px;font-size:11.5px;font-weight:700;cursor:pointer;">🥦 Chuyển qua Bếp sơ chế</button>' +
+          '<button type="button" class="btn-copy-inbox-order" data-id="' + escAttr(order.id) + '" style="background:#fff;border:1px solid #d49f18;color:#261109;padding:5px 10px;border-radius:99px;font-size:11.5px;font-weight:600;cursor:pointer;">📋 Sao chép</button>' +
+          '<button type="button" class="btn-del-inbox-order" data-id="' + escAttr(order.id) + '" style="background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:5px 9px;border-radius:99px;font-size:11.5px;font-weight:600;cursor:pointer;" title="Xóa đơn">🗑️</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+
+    // Attach actions
+    inboxOrdersList.querySelectorAll(".btn-send-prep").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-id");
+        var orders = loadInboxOrders();
+        var ord = orders.find(function(o){ return o.id === id; });
+        if(ord){
+          ord.status = "in_prep";
+          saveInboxOrders(orders);
+          renderInboxOrders();
+          window.open("/prep?orderId=" + encodeURIComponent(id), "_blank");
+        }
+      });
+    });
+
+    inboxOrdersList.querySelectorAll(".btn-copy-inbox-order").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-id");
+        var orders = loadInboxOrders();
+        var ord = orders.find(function(o){ return o.id === id; });
+        if(ord && ord.raw_text){
+          copyNow(ord.raw_text);
+          btn.textContent = "✓ Đã copy";
+          setTimeout(function(){ btn.textContent = "📋 Sao chép"; }, 1500);
+        }
+      });
+    });
+
+    inboxOrdersList.querySelectorAll(".btn-del-inbox-order").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-id");
+        if(!confirm("Bạn có chắc muốn xóa đơn này khỏi danh sách?")) return;
+        var orders = loadInboxOrders().filter(function(o){ return o.id !== id; });
+        saveInboxOrders(orders);
+        renderInboxOrders();
+      });
+    });
+  }
+
+  // ================= COLLAPSIBLE SAVED TIME BOX =================
+  var savedToggleBtn = document.getElementById("savedToggleBtn");
+  var savedBox = document.getElementById("savedBox");
+  var savedToggleHint = document.getElementById("savedToggleHint");
+  if(savedToggleBtn && savedBox){
+    savedToggleBtn.addEventListener("click", function(){
+      var isCollapsed = savedBox.classList.toggle("is-collapsed");
+      savedToggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
+      if(savedToggleHint){
+        savedToggleHint.textContent = isCollapsed ? "Mở rộng" : "Thu gọn";
+      }
+    });
+    savedToggleBtn.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        savedToggleBtn.click();
+      }
+    });
+  }
+
+  // ================= FOOTER CONTACT INFO MANAGEMENT =================
+  var CONTACT_KEY = "mamcom_contact_info_v1";
+
+  function loadContactInfo(){
+    try {
+      var raw = localStorage.getItem(CONTACT_KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(parsed && typeof parsed.address === "string" && typeof parsed.phone === "string"){
+          return parsed;
+        }
+      }
+    } catch(e){}
+    return {
+      address: "Hà Nội, Việt Nam",
+      phone: "0987 654 321"
+    };
+  }
+
+  function saveContactInfo(info){
+    try {
+      localStorage.setItem(CONTACT_KEY, JSON.stringify(info));
+    } catch(e){}
+    renderContactInfo();
+    if(USE_SUPABASE && typeof SUPABASE !== "undefined"){
+      SUPABASE.from("state").upsert({ key: "contact_info", value: JSON.stringify(info) }).then(function(){}).catch(function(){});
+    }
+  }
+
+  function renderContactInfo(){
+    var info = loadContactInfo();
+    var addrEl = document.getElementById("footAddressText");
+    var phoneEl = document.getElementById("footPhoneLink");
+    if(addrEl) addrEl.textContent = info.address || "Hà Nội, Việt Nam";
+    if(phoneEl){
+      phoneEl.textContent = info.phone || "0987 654 321";
+      phoneEl.href = "tel:" + (info.phone || "0987654321").replace(/\s+/g, "");
+    }
+  }
+
+  var contactModal = document.getElementById("contactModal");
+  var btnEditContact = document.getElementById("btnEditContact");
+  var contactModalClose = document.getElementById("contactModalClose");
+  var contactModalCancelBtn = document.getElementById("contactModalCancelBtn");
+  var btnSaveContact = document.getElementById("btnSaveContact");
+  var contactAddressInput = document.getElementById("contactAddressInput");
+  var contactPhoneInput = document.getElementById("contactPhoneInput");
+  var contactSaveStatus = document.getElementById("contactSaveStatus");
+
+  function openContactModal(){
+    if(!isOwner()){
+      requestPin(function(ok){
+        if(ok) openContactModal();
+      }, "cần PIN của chủ để chỉnh sửa thông tin liên hệ");
+      return;
+    }
+    var info = loadContactInfo();
+    if(contactAddressInput) contactAddressInput.value = info.address || "";
+    if(contactPhoneInput) contactPhoneInput.value = info.phone || "";
+    if(contactSaveStatus) contactSaveStatus.textContent = "";
+    if(contactModal){
+      contactModal.hidden = false;
+      contactModal.classList.add("show");
+    }
+    if(contactAddressInput) contactAddressInput.focus();
+  }
+
+  function closeContactModal(){
+    if(contactModal){
+      contactModal.classList.remove("show");
+      contactModal.hidden = true;
+    }
+  }
+
+  if(btnEditContact) btnEditContact.addEventListener("click", openContactModal);
+  if(contactModalClose) contactModalClose.addEventListener("click", closeContactModal);
+  if(contactModalCancelBtn) contactModalCancelBtn.addEventListener("click", closeContactModal);
+  if(contactModal){
+    contactModal.addEventListener("click", function(e){
+      if(e.target === contactModal) closeContactModal();
+    });
+  }
+
+  if(btnSaveContact){
+    btnSaveContact.addEventListener("click", function(){
+      var addr = contactAddressInput ? contactAddressInput.value.trim() : "";
+      var phone = contactPhoneInput ? contactPhoneInput.value.trim() : "";
+      if(!addr || !phone){
+        if(contactSaveStatus){
+          contactSaveStatus.textContent = "Vui lòng nhập đủ địa chỉ và số điện thoại!";
+          contactSaveStatus.style.color = "#dc2626";
+        }
+        return;
+      }
+      saveContactInfo({ address: addr, phone: phone });
+      closeContactModal();
+    });
+  }
+
+  // Khởi tạo contact info & inbox badge
+  renderContactInfo();
+  updateInboxOrderBadge();
 
   // ================= shared data layer (Supabase ↔ local) =================
   // One abstraction so the rest of the app never touches a backend directly.

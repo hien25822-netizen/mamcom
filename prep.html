@@ -175,6 +175,11 @@
         <button id="btnSoundToggle" class="w-9 h-9 rounded-xl bg-white border border-[#E0D9CE] text-stone-600 flex items-center justify-center hover:bg-stone-50 active:scale-95 touch-btn shadow-sm" title="Bật/Tắt âm thanh báo">
           <span id="soundIcon">🔊</span>
         </button>
+
+        <!-- Nút Khóa Bếp / Đăng xuất PIN -->
+        <button id="btnLockPrep" onclick="lockPrepGate()" class="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-bold flex items-center gap-1 hover:bg-red-100 active:scale-95 shadow-sm" title="Khóa màn hình Bếp sơ chế">
+          <span>🔒</span> <span class="hidden sm:inline">Khóa Bếp</span>
+        </button>
       </div>
 
     </div>
@@ -504,6 +509,33 @@
   </div>
 
   <!-- ============================================================ -->
+  <!-- PIN AUTH GUARD MODAL (CHỈ CHỦ BẾP CÓ PIN MỚI ĐƯỢC VÀO) -->
+  <!-- ============================================================ -->
+  <div id="prepPinGate" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/80 backdrop-blur-md transition-all duration-300">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-2 border-[#dfb027] transform scale-100 transition-all">
+      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+        🥦
+      </div>
+      <h3 class="text-xl font-extrabold text-stone-900 mb-1">Bếp Sơ Chế Mealkit</h3>
+      <p class="text-xs text-stone-500 mb-5">Khu vực bảo mật nội bộ — Chỉ chủ có mã PIN mới được phép truy cập.</p>
+
+      <div class="space-y-3">
+        <input type="password" id="prepPinInput" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off"
+          class="w-full text-center text-3xl tracking-widest font-mono font-bold py-3 px-4 rounded-2xl border-2 border-stone-200 focus:border-red-600 focus:outline-none transition-all">
+        <p id="prepPinError" class="text-xs text-red-600 font-semibold min-h-[18px]"></p>
+        
+        <button type="button" id="btnSubmitPrepPin" onclick="verifyPrepPin()" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-white font-bold text-sm shadow-lg shadow-red-600/30 active:scale-98 transition-all hover:brightness-105">
+          Mở khóa Bếp Sơ Chế
+        </button>
+
+        <a href="/" class="block text-xs font-semibold text-stone-400 hover:text-stone-700 pt-2 transition-colors">
+          ← Quay lại trang chủ Mâm Cơm
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
   <!-- MODAL: TẠO ĐƠN HÀNG MỚI (ORDER MODAL) -->
   <!-- ============================================================ -->
   <div id="orderModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
@@ -817,13 +849,121 @@
     }
 
     // ------------------------------------------------------------
+    // PIN AUTH GUARD (CHỈ CHỦ CÓ PIN MỚI ĐƯỢC VÀO BẾP SƠ CHẾ)
+    // ------------------------------------------------------------
+    let prepUnlocked = false;
+
+    async function checkPrepAuth(){
+      const pinGate = document.getElementById('prepPinGate');
+      let savedPin = '';
+      try {
+        savedPin = sessionStorage.getItem('mamcom.ownerPin.session') || localStorage.getItem('mamcom.ownerPin.session') || '';
+      } catch(e){}
+
+      if (savedPin && savedPin !== 'unlocked') {
+        try {
+          const { data, error } = await supabase.rpc('admin_verify_pin', { p_pin: savedPin });
+          if (!error && data === true) {
+            prepUnlocked = true;
+            if (pinGate) pinGate.classList.add('hidden');
+            return;
+          }
+        } catch(err){}
+      } else if (savedPin === 'unlocked') {
+        prepUnlocked = true;
+        if (pinGate) pinGate.classList.add('hidden');
+        return;
+      }
+
+      prepUnlocked = false;
+      if (pinGate) {
+        pinGate.classList.remove('hidden');
+        setTimeout(() => {
+          const pinInp = document.getElementById('prepPinInput');
+          if (pinInp) pinInp.focus();
+        }, 120);
+      }
+    }
+
+    async function verifyPrepPin(){
+      const pinInp = document.getElementById('prepPinInput');
+      const errEl = document.getElementById('prepPinError');
+      const btn = document.getElementById('btnSubmitPrepPin');
+      const pin = pinInp ? pinInp.value.trim() : '';
+
+      if (!pin) {
+        if (errEl) errEl.textContent = 'Vui lòng nhập mã PIN!';
+        if (pinInp) pinInp.focus();
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.innerText = 'Đang kiểm tra...'; }
+      if (errEl) errEl.textContent = '';
+
+      try {
+        const { data, error } = await supabase.rpc('admin_verify_pin', { p_pin: pin });
+        if (btn) { btn.disabled = false; btn.innerText = 'Mở khóa Bếp Sơ Chế'; }
+
+        if (!error && data === true) {
+          prepUnlocked = true;
+          try {
+            sessionStorage.setItem('mamcom.ownerPin.session', pin);
+            localStorage.setItem('mamcom.ownerPin.session', pin);
+          } catch(e){}
+          const pinGate = document.getElementById('prepPinGate');
+          if (pinGate) pinGate.classList.add('hidden');
+          playBeep('success');
+          await refreshData(true);
+        } else {
+          if (errEl) errEl.textContent = 'Mã PIN chưa đúng, vui lòng thử lại.';
+          if (pinInp) { pinInp.value = ''; pinInp.focus(); }
+        }
+      } catch(err) {
+        if (btn) { btn.disabled = false; btn.innerText = 'Mở khóa Bếp Sơ Chế'; }
+        if (errEl) errEl.textContent = 'Lỗi: ' + ((err && err.message) || err);
+      }
+    }
+
+    function lockPrepGate(){
+      try {
+        sessionStorage.removeItem('mamcom.ownerPin.session');
+        localStorage.removeItem('mamcom.ownerPin.session');
+      } catch(e){}
+      prepUnlocked = false;
+      const pinGate = document.getElementById('prepPinGate');
+      const pinInp = document.getElementById('prepPinInput');
+      const errEl = document.getElementById('prepPinError');
+      if (errEl) errEl.textContent = '';
+      if (pinInp) pinInp.value = '';
+      if (pinGate) {
+        pinGate.classList.remove('hidden');
+        setTimeout(() => { if (pinInp) pinInp.focus(); }, 120);
+      }
+    }
+
+    // ------------------------------------------------------------
     // 2. INITIALIZATION & REALTIME
     // ------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', async () => {
       setupDateControls();
       setupSoundControls();
       setupRealtime();
+      await checkPrepAuth();
       await refreshData();
+
+      // Lắng nghe sự kiện đơn mới vừa sao chép từ web Mâm Cơm
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'mamcom_inbox_orders_v1') {
+          refreshData(true);
+        }
+      });
+
+      const pinInp = document.getElementById('prepPinInput');
+      if (pinInp) {
+        pinInp.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') verifyPrepPin();
+        });
+      }
     });
 
     function setupDateControls() {
@@ -936,6 +1076,47 @@
           .eq('order_date', state.currentDate)
           .order('tray_number');
         state.orders = orderData || [];
+
+        // Đồng bộ các đơn inbox vừa bấm Sao Chép từ trang chủ Mâm Cơm
+        let localInboxOrders = [];
+        try {
+          const rawInbox = localStorage.getItem('mamcom_inbox_orders_v1');
+          if (rawInbox) localInboxOrders = JSON.parse(rawInbox) || [];
+        } catch(e){}
+
+        if (Array.isArray(localInboxOrders) && localInboxOrders.length > 0) {
+          localInboxOrders.forEach((ord, idx) => {
+            if (!state.orders.some(o => o.id === ord.id)) {
+              const items = [];
+              if (ord.meals && Array.isArray(ord.meals)) {
+                ord.meals.forEach(m => {
+                  (m.dishes || []).forEach(dishName => {
+                    const matchedRecipe = state.recipes.find(r => r.name.toLowerCase().trim() === dishName.toLowerCase().trim());
+                    items.push({
+                      id: 'inbox_item_' + ord.id + '_' + Math.random().toString(36).substring(2, 6),
+                      order_id: ord.id,
+                      recipe_id: matchedRecipe ? matchedRecipe.id : null,
+                      quantity: 1,
+                      prep_recipes: matchedRecipe ? { name: matchedRecipe.name, code: matchedRecipe.code } : { name: dishName, code: 'MC' }
+                    });
+                  });
+                });
+              }
+
+              state.orders.push({
+                id: ord.id,
+                tray_number: ord.code || (state.orders.length + 1),
+                customer_name: (ord.people ? ord.people + ' • ' : '') + (ord.phone || 'Khách Inbox'),
+                customer_phone: ord.phone || '',
+                delivery_time: ord.delivery_time || '',
+                special_notes: (ord.address ? 'Đ/c: ' + ord.address + '. ' : '') + (ord.note || ''),
+                status: ord.status === 'done' ? 'packaged' : (ord.status === 'in_prep' ? 'prepping' : 'not_started'),
+                is_inbox: true,
+                prep_order_items: items
+              });
+            }
+          });
+        }
 
         // Fetch checklist items for today's orders
         if (state.orders.length > 0) {
@@ -1644,6 +1825,12 @@
     async function deleteOrder(orderId) {
       if (!confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Tất cả checklist của khay sẽ bị xóa theo.')) return;
       try {
+        let rawInbox = localStorage.getItem('mamcom_inbox_orders_v1');
+        if (rawInbox) {
+          let list = JSON.parse(rawInbox) || [];
+          list = list.filter(o => o.id !== orderId);
+          localStorage.setItem('mamcom_inbox_orders_v1', JSON.stringify(list));
+        }
         await supabase.from('prep_orders').delete().eq('id', orderId);
         playBeep('success');
         await refreshData();
