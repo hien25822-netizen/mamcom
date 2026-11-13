@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
-<meta name="theme-color" content="#da241c">
+<meta name="theme-color" content="#540b08">
 <title>Kế hoạch bữa ăn tuần - Mâm Cơm</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,11 +77,11 @@
   html { min-height: 100%; }
   html, body { margin: 0; padding: 0; }
   
-  /* ---- Canvas sắc đỏ ấm áp Mâm Cơm (Màu đỏ rực rỡ, đậm đà cùng tone chủ đạo #DA241C) ---- */
+  /* ---- Canvas sắc đỏ rượu sơn mài Mâm Cơm (Đỏ trầm ấm thượng hạng, hòa quyện tuyệt đối với logo và tôn vinh mâm cơm) ---- */
   body {
     min-height: 100vh;
-    background-color: #ba1e17;
-    background-image: radial-gradient(120% 90% at 50% 0%, #d82b22 0%, #ba1e17 50%, #9e150f 100%);
+    background-color: #540b08;
+    background-image: radial-gradient(140% 100% at 50% 0%, #75120d 0%, #540b08 45%, #330503 100%);
     background-attachment: fixed;
     color: #121212;
     font-family: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -102,26 +102,26 @@
     scroll-margin-top: 100px;
   }
 
-  /* ---- THANH TIẾN TRÌNH ĐẶT MÂM (Nằm trên cùng sticky, màu vàng kem hoàng yến ấm áp đồng điệu) ---- */
+  /* ---- THANH TIẾN TRÌNH ĐẶT MÂM (Nằm trên cùng sticky, màu sứ ngà hoàng kim ấm áp đồng điệu) ---- */
   .prog {
     position: sticky;
     top: max(8px, env(safe-area-inset-top));
     z-index: 1000;
     width: 100%;
     box-sizing: border-box;
-    background: rgba(255, 252, 228, 0.96);
+    background: rgba(255, 254, 247, 0.97);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1.5px solid #dfb027;
+    border: 1.5px solid #e5b338;
     border-radius: var(--radius-pill);
-    box-shadow: 0 10px 30px -4px rgba(50, 8, 5, 0.28), 0 2px 8px rgba(223, 176, 39, 0.15);
+    box-shadow: 0 10px 30px -4px rgba(25, 3, 2, 0.38), 0 2px 8px rgba(229, 179, 56, 0.18);
     padding: 8px 18px 8px;
     margin: 0 0 20px;
     transition: box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .prog:hover {
-    box-shadow: 0 14px 38px -4px rgba(50, 8, 5, 0.35), 0 4px 12px rgba(223, 176, 39, 0.22);
-    border-color: #c99818;
+    box-shadow: 0 14px 38px -4px rgba(25, 3, 2, 0.45), 0 4px 14px rgba(229, 179, 56, 0.25);
+    border-color: #d19e26;
   }
   .prog__row {
     display: flex;
@@ -219,25 +219,25 @@
     align-items: center;
     margin: 14px auto 0;
     padding: 16px 26px 14px;
-    background-color: #fffde6;
-    background-image: linear-gradient(180deg, #fffce4 0%, #fff7be 100%);
-    border: 1.5px solid #dfb027;
+    background-color: #fffef7;
+    background-image: linear-gradient(180deg, #fffef9 0%, #fffcf2 50%, #fff8e7 100%);
+    border: 1.5px solid #e5b338;
     border-radius: 24px;
-    box-shadow: 0 12px 36px -4px rgba(50, 8, 5, 0.3), 0 2px 10px rgba(223, 176, 39, 0.15);
+    box-shadow: 0 16px 42px -6px rgba(25, 3, 2, 0.45), 0 3px 12px rgba(229, 179, 56, 0.2);
     transition: transform 0.22s var(--spring-bounce), box-shadow 0.22s ease;
   }
   .counter-card__glow {
     position: absolute;
     inset: -12px;
     border-radius: 36px;
-    background: radial-gradient(circle, rgba(223, 176, 39, 0.20) 0%, rgba(218, 36, 28, 0.10) 50%, transparent 75%);
+    background: radial-gradient(circle, rgba(229, 179, 56, 0.22) 0%, rgba(218, 36, 28, 0.10) 50%, transparent 75%);
     filter: blur(16px);
     z-index: -1;
     pointer-events: none;
   }
   .counter-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 16px 42px rgba(50, 8, 5, 0.35);
+    box-shadow: 0 18px 48px rgba(25, 3, 2, 0.52);
   }
   .flipbox {
     display: flex;
@@ -773,29 +773,29 @@
     width: 100%;
   }
 
-  /* ---- WARM CULINARY GOLD & AMBER CARDS (Đồng bộ sắc vàng ấm no đủ, hòa quyện tuyệt đẹp với nền đỏ Mâm Cơm) ---- */
+  /* ---- WARM IMPERIAL PORCELAIN & GOLD ACCENT CARDS (Sứ ngà hoàng kim ấm áp, làm nổi bật món ăn & hài hòa với logo) ---- */
   .panel, .order, .saved, .qa, .rev, .orders, .calendar-panel {
-    background-color: #fff9c2;
-    background-image: linear-gradient(180deg, #fffce4 0%, #fff6b8 48%, #ffef9e 100%);
-    border: 1.5px solid #dfb027;
+    background-color: #fffef7;
+    background-image: linear-gradient(180deg, #fffef9 0%, #fffcf2 50%, #fff8e7 100%);
+    border: 1.5px solid #e5b338;
     border-radius: 24px;
-    box-shadow: 0 14px 38px -6px rgba(50, 8, 5, 0.32), 0 3px 12px rgba(223, 176, 39, 0.18);
+    box-shadow: 0 16px 44px -6px rgba(25, 3, 2, 0.48), 0 3px 14px rgba(229, 179, 56, 0.22);
     overflow: hidden;
     transition: box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .panel:hover, .order:hover, .saved:hover, .calendar-panel:hover {
-    box-shadow: 0 18px 48px -6px rgba(50, 8, 5, 0.38), 0 4px 16px rgba(223, 176, 39, 0.25);
-    border-color: #c99818;
+    box-shadow: 0 20px 52px -6px rgba(25, 3, 2, 0.54), 0 4px 18px rgba(229, 179, 56, 0.3);
+    border-color: #d19e26;
   }
   .panel__head {
     padding: 16px 20px;
-    border-bottom: 1.5px solid #d49f18;
+    border-bottom: 1.5px solid #cca020;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(135deg, #ffe85c 0%, #ffd633 100%);
+    background: linear-gradient(135deg, #fde369 0%, #f6c836 100%);
   }
   .panel__head h2 {
     font-size: 17px;
@@ -813,8 +813,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    border-bottom: 1.5px solid #d49f18;
-    background: linear-gradient(135deg, #ffe85c 0%, #ffd633 100%);
+    border-bottom: 1.5px solid #cca020;
+    background: linear-gradient(135deg, #fde369 0%, #f6c836 100%);
   }
   .calendar-panel__title-group {
     display: flex;
@@ -873,8 +873,8 @@
   .rev__head-bar,
   .qa__head-bar {
     padding: 14px 18px;
-    border-bottom: 1.5px solid #d49f18;
-    background: linear-gradient(135deg, #ffe85c 0%, #ffd633 100%);
+    border-bottom: 1.5px solid #cca020;
+    background: linear-gradient(135deg, #fde369 0%, #f6c836 100%);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -909,7 +909,7 @@
     transition: background 0.15s ease;
   }
   .saved__head-bar:hover {
-    background: linear-gradient(135deg, #ffea6b 0%, #ffd947 100%);
+    background: linear-gradient(135deg, #feeb84 0%, #f9d24d 100%);
   }
   .rev__body {
     padding: 16px 18px 20px;
@@ -927,8 +927,8 @@
     gap: 16px;
     padding: 14px 18px;
     margin: 14px 0 8px;
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(223, 176, 39, 0.4);
+    background: rgba(255, 254, 247, 0.88);
+    border: 1px solid rgba(229, 179, 56, 0.5);
     border-radius: 16px;
     font-size: 13px;
     color: #261109;
@@ -1026,7 +1026,7 @@
   /* ---- TILE THÊM MÓN MỚI (Dành riêng cho chủ khi đăng nhập PIN) ---- */
   .tile--add {
     background: #ffffff !important;
-    border: 2px dashed #dfb027 !important;
+    border: 2px dashed #e5b338 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -1952,7 +1952,7 @@
   }
   .day__count {
     font-size: 10.5px; font-weight: 800; color: #4a340a;
-    background: #ffffff; border: 1px solid rgba(223, 176, 39, 0.5);
+    background: #ffffff; border: 1px solid rgba(229, 179, 56, 0.5);
     padding: 1.5px 7px; border-radius: var(--radius-pill);
     min-width: 20px; text-align: center;
     transition: all 0.2s var(--spring-bounce);
@@ -4207,11 +4207,11 @@
     <div class="modal__body" style="padding:16px 18px;display:flex;flex-direction:column;gap:14px;">
       <label style="display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:#261109;">
         <span>Địa chỉ Mâm Cơm</span>
-        <input type="text" id="contactAddressInput" placeholder="VD: Hà Nội, Việt Nam" style="padding:9px 12px;border:1.5px solid #d49f18;border-radius:12px;font-size:14px;">
+        <input type="text" id="contactAddressInput" placeholder="VD: Hà Nội, Việt Nam" style="padding:9px 12px;border:1.5px solid #cca020;border-radius:12px;font-size:14px;">
       </label>
       <label style="display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:#261109;">
         <span>Số điện thoại / Hotline</span>
-        <input type="tel" id="contactPhoneInput" placeholder="VD: 0987 654 321" style="padding:9px 12px;border:1.5px solid #d49f18;border-radius:12px;font-size:14px;">
+        <input type="tel" id="contactPhoneInput" placeholder="VD: 0987 654 321" style="padding:9px 12px;border:1.5px solid #cca020;border-radius:12px;font-size:14px;">
       </label>
       <div id="contactSaveStatus" style="font-size:12px;font-weight:600;min-height:18px;"></div>
     </div>
@@ -7654,8 +7654,8 @@
           '</div>'
         : '';
 
-      return '<div style="background:#fff9e6;border:1.5px solid #dfb027;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(50,8,5,0.06);">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;border-bottom:1px solid rgba(223,176,39,0.25);padding-bottom:8px;">' +
+      return '<div style="background:#fffcf2;border:1.5px solid #e5b338;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(50,8,5,0.06);">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;border-bottom:1px solid rgba(229,179,56,0.3);padding-bottom:8px;">' +
           '<div>' +
             '<span style="font-weight:800;font-size:14px;color:#261109;">Đơn #' + (order.code || (orders.length - idx)) + '</span> ' +
             '<span style="font-size:11px;color:#8c6d46;margin-left:4px;">' + escHtml(order.created_str || "") + '</span>' +
@@ -7672,9 +7672,9 @@
           '<div style="grid-column:1/-1;font-weight:800;color:#da241c;margin-top:2px;">Tổng: ' + escHtml(order.total || "0đ") + ' <span style="font-size:11px;color:#7a4b10;font-weight:500;">(' + escHtml(order.calc || "") + ')</span></div>' +
         '</div>' +
         mealsHtml +
-        '<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:10px;padding-top:8px;border-top:1px dashed rgba(223,176,39,0.3);">' +
+        '<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:10px;padding-top:8px;border-top:1px dashed rgba(229,179,56,0.35);">' +
           '<button type="button" class="btn-send-prep" data-id="' + escAttr(order.id) + '" style="background:#C0392B;color:#fff;border:none;padding:5px 12px;border-radius:99px;font-size:11.5px;font-weight:700;cursor:pointer;">🥦 Chuyển qua Bếp sơ chế</button>' +
-          '<button type="button" class="btn-copy-inbox-order" data-id="' + escAttr(order.id) + '" style="background:#fff;border:1px solid #d49f18;color:#261109;padding:5px 10px;border-radius:99px;font-size:11.5px;font-weight:600;cursor:pointer;">📋 Sao chép</button>' +
+          '<button type="button" class="btn-copy-inbox-order" data-id="' + escAttr(order.id) + '" style="background:#fff;border:1px solid #cca020;color:#261109;padding:5px 10px;border-radius:99px;font-size:11.5px;font-weight:600;cursor:pointer;">📋 Sao chép</button>' +
           '<button type="button" class="btn-del-inbox-order" data-id="' + escAttr(order.id) + '" style="background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:5px 9px;border-radius:99px;font-size:11.5px;font-weight:600;cursor:pointer;" title="Xóa đơn">🗑️</button>' +
         '</div>' +
       '</div>';
