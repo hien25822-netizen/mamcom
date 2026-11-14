@@ -1124,12 +1124,17 @@
   }
   .tile.is-armed {
     border-color: #da241c !important;
-    box-shadow: 0 0 0 3.5px rgba(218, 36, 28, 0.35), 0 10px 28px rgba(218, 36, 28, 0.25) !important;
-    animation: tileArmedPulse 1.6s ease-in-out infinite;
+    box-shadow: 0 0 0 3px #da241c, 0 12px 28px rgba(218, 36, 28, 0.35) !important;
+    transform: translateY(-2px) scale(1.02);
+    animation: tileArmedPulse 1.4s ease-in-out infinite;
   }
   @keyframes tileArmedPulse {
-    0%, 100% { box-shadow: 0 0 0 3.5px rgba(218, 36, 28, 0.35), 0 8px 24px rgba(218, 36, 28, 0.2); }
-    50% { box-shadow: 0 0 0 5px rgba(218, 36, 28, 0.45), 0 12px 30px rgba(218, 36, 28, 0.3); }
+    0%, 100% {
+      box-shadow: 0 0 0 3px #da241c, 0 8px 24px rgba(218, 36, 28, 0.22);
+    }
+    50% {
+      box-shadow: 0 0 0 5.5px #da241c, 0 14px 32px rgba(218, 36, 28, 0.38);
+    }
   }
   .tile.is-dragging {
     opacity: 0.35;
@@ -1166,27 +1171,36 @@
   }
   .tile__zoom {
     position: absolute;
-    top: 6px; left: 6px; z-index: 4;
-    width: 24px; height: 24px;
+    top: 6px;
+    right: 6px;
+    left: auto;
+    z-index: 5;
+    width: 26px;
+    height: 26px;
     border: 1px solid rgba(255, 255, 255, 0.95);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
     color: #1e1917;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     padding: 0;
-    transition: all 0.16s ease;
+    transition: transform 0.16s ease, background 0.16s ease;
     touch-action: manipulation !important;
     pointer-events: auto !important;
   }
+  .tile__zoom::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+  }
   .tile__zoom:hover {
     background: #ffffff;
-    transform: scale(1.12);
+    transform: scale(1.1);
   }
   .tile__zoom:active {
     transform: scale(0.92);
@@ -1218,7 +1232,7 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    display: block; cursor: zoom-in;
+    display: block; cursor: pointer;
     transition: transform 0.32s var(--spring-smooth);
   }
   .tile:hover .tile__media img {
@@ -1244,7 +1258,7 @@
   }
   .tile__badge {
     position: absolute;
-    top: 7px; left: 7px; z-index: 1;
+    top: 7px; left: 7px; z-index: 3;
     background: var(--yellow);
     border: 1.5px solid var(--black);
     border-radius: var(--radius-pill);
@@ -1257,13 +1271,16 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
   .tile.has-dish .tile__badge { display: flex; }
+  body.is-owner-unlocked .tile__badge {
+    top: 36px !important;
+  }
   .tile__edit {
     position: absolute;
-    top: 7px; right: 7px; z-index: 2;
+    top: 6px; left: 6px; right: auto; z-index: 6;
     width: 26px; height: 26px;
     border: 1px solid rgba(255, 255, 255, 0.95);
-    border-radius: 9px;
-    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
@@ -1276,7 +1293,7 @@
     padding: 0;
     transition: background .15s, color .15s, transform 0.15s var(--spring-bounce);
   }
-  .tile__edit::after { content: ""; position: absolute; inset: -10px; }
+  .tile__edit::after { content: ""; position: absolute; inset: -6px; }
   .tile__edit:hover {
     background: var(--yellow);
     color: var(--black);
@@ -3227,19 +3244,31 @@
       word-break: break-word !important;
       font-weight: 700 !important;
     }
-    .tile__edit {
-      width: 20px !important;
-      height: 20px !important;
-      font-size: 10px !important;
-      border-radius: 6px !important;
+    .tile__zoom {
+      width: 24px !important;
+      height: 24px !important;
+      border-radius: 7px !important;
       top: 4px !important;
       right: 4px !important;
+      left: auto !important;
+    }
+    .tile__edit {
+      width: 22px !important;
+      height: 22px !important;
+      font-size: 10px !important;
+      border-radius: 7px !important;
+      top: 4px !important;
+      left: 4px !important;
+      right: auto !important;
     }
     .tile__badge {
       font-size: 7.5px !important;
       padding: 1px 4px !important;
       top: 4px !important;
       left: 4px !important;
+    }
+    body.is-owner-unlocked .tile__badge {
+      top: 30px !important;
     }
     .week { grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .day { border-radius: 14px; }
@@ -3634,7 +3663,7 @@
         <div class="menu__filter-row menu__filter-row--main" id="menuFilterMain" role="tablist" aria-label="Category chính"></div>
         <div class="menu__filter-row menu__filter-row--sub" id="menuFilterSub" role="tablist" aria-label="Category phụ"></div>
       </div>
-      <p class="menu__hint">Bạn hãy kéo thả "mâm" vào các ngày muốn ăn</p>
+      <p class="menu__hint">Bạn hãy kéo hoặc chọn "mâm" vào lịch</p>
       <ul class="menu" id="menu"></ul>
 
       <!-- owner-only shared editor -->
@@ -4621,6 +4650,7 @@
   var ownerUnlocked = false; // Luôn bắt đầu ở chế độ thường (khách), CHỈ mở khóa khi nhập đúng mã PIN
   function unlockOwner(pin){
     ownerUnlocked = true;
+    document.body.classList.add("is-owner-unlocked");
     if(pin){
       currentOwnerPin = pin;
     }
@@ -4650,6 +4680,7 @@
   }
   function logoutOwner(){
     ownerUnlocked = false;
+    document.body.classList.remove("is-owner-unlocked");
     currentOwnerPin = "";
     try {
       sessionStorage.removeItem("mamcom.ownerPin.session");
@@ -4809,9 +4840,10 @@
     return wrap;
   }
 
-  // ================= pointer drag engine (chuột desktop, cảm ứng điện thoại, stylus) =================
+  // ================= drag & drop and tap-to-select engine =================
   var suppressDayClickUntil = 0;   // chặn click tổng hợp ngay sau khi kéo thả
   var activeDragSession = null;
+  var activeTouchDrag = null;
 
   function cleanupAllGhosts(){
     document.querySelectorAll(".tile.drag-ghost").forEach(function(g){ g.remove(); });
@@ -4841,9 +4873,14 @@
     return g;
   }
 
-  // Hit-test day elements by geometry (bounding client rect) with 36px forgiving margin for fast swipes
+  // Hit-test day elements by geometry (bounding client rect) with 40px forgiving margin for fast swipes
   function getDayUnderPoint(x, y){
     if(!weekEl) return null;
+    var hit = document.elementFromPoint(x, y);
+    if(hit){
+      var dHit = hit.closest(".day");
+      if(dHit) return dHit;
+    }
     var dayNodes = weekEl.querySelectorAll(".day");
     // 1. Exact box check
     for(var d = 0; d < dayNodes.length; d++){
@@ -4852,11 +4889,11 @@
         return dayNodes[d];
       }
     }
-    // 2. Forgiving 36px margin around each day box
+    // 2. Forgiving 40px margin around each day box (handles fast swipes that release slightly outside)
     var closest = null, minD = 999999;
     for(var d = 0; d < dayNodes.length; d++){
       var r = dayNodes[d].getBoundingClientRect();
-      if(x >= r.left - 36 && x <= r.right + 36 && y >= r.top - 36 && y <= r.bottom + 36){
+      if(x >= r.left - 40 && x <= r.right + 40 && y >= r.top - 40 && y <= r.bottom + 40){
         var midX = (r.left + r.right) / 2, midY = (r.top + r.bottom) / 2;
         var dist = Math.hypot(x - midX, y - midY);
         if(dist < minD){ minD = dist; closest = dayNodes[d]; }
@@ -4875,24 +4912,154 @@
     });
   }
 
-  function startPointerDrag(startEv, li, i){
-    // Bỏ qua nếu bấm chuột phải, hoặc bấm vào nút sửa ✎
-    if(startEv.button !== undefined && startEv.button !== 0) return;
-    if(startEv.target.closest && startEv.target.closest(".tile__edit")) return;
+  // --- TOUCH ENGINE DÀNH RIÊNG CHO MOBILE & IN-APP BROWSERS (Facebook, Zalo, TikTok, Telegram, iOS Safari) ---
+  function handleTouchDragStart(startEv, li, i){
+    if(activeTouchDrag && activeTouchDrag.cleanup){
+      activeTouchDrag.cleanup();
+    }
+    cleanupAllGhosts();
 
-    // Dọn dẹp bất kỳ phiên kéo cũ nào
+    var touch = startEv.touches[0];
+    if(!touch) return;
+
+    var startX = touch.clientX;
+    var startY = touch.clientY;
+    var lastX = startX;
+    var lastY = startY;
+    var startTime = Date.now();
+    var isDragging = false;
+    var ghost = null;
+    var targetDay = null;
+    var autoScrollRaf = null;
+
+    var stopAutoScroll = function(){
+      if(autoScrollRaf){ cancelAnimationFrame(autoScrollRaf); autoScrollRaf = null; }
+    };
+
+    var checkAutoScroll = function(y){
+      var vh = window.innerHeight;
+      var EDGE = 75;
+      var speed = 0;
+      if(y > vh - EDGE){
+        speed = Math.min(24, Math.max(6, (y - (vh - EDGE)) * 0.45));
+      } else if(y < EDGE && window.scrollY > 0){
+        speed = -Math.min(24, Math.max(6, (EDGE - y) * 0.45));
+      }
+      if(speed !== 0){
+        if(!autoScrollRaf){
+          var step = function(){
+            if(!isDragging || !ghost){ stopAutoScroll(); return; }
+            window.scrollBy(0, speed);
+            targetDay = getDayUnderPoint(lastX, lastY);
+            highlightDay(targetDay);
+            autoScrollRaf = requestAnimationFrame(step);
+          };
+          autoScrollRaf = requestAnimationFrame(step);
+        }
+      } else {
+        stopAutoScroll();
+      }
+    };
+
+    var onTouchMove = function(e){
+      // Chặn mọi hành vi mặc định của trình duyệt để in-app browser pop-in KHÔNG BAO GIỜ bị kéo tắt
+      if(e.cancelable) e.preventDefault();
+      var t = e.touches[0];
+      if(!t) return;
+      var cx = t.clientX, cy = t.clientY;
+      lastX = cx;
+      lastY = cy;
+      var dist = Math.hypot(cx - startX, cy - startY);
+
+      if(!isDragging){
+        if(dist >= 3){
+          isDragging = true;
+          document.body.classList.add("is-pointer-dragging");
+          cleanupAllGhosts();
+          ghost = makeDragGhost(DISHES[i]);
+          document.body.appendChild(ghost);
+          ghost.style.left = cx + "px";
+          ghost.style.top = cy + "px";
+          li.classList.add("is-dragging");
+          setArmed(-1);
+          setDishHeld(true);
+          triggerHaptic("drag");
+          targetDay = getDayUnderPoint(cx, cy);
+          highlightDay(targetDay);
+        }
+        return;
+      }
+
+      if(isDragging && ghost){
+        ghost.style.left = cx + "px";
+        ghost.style.top = cy + "px";
+        targetDay = getDayUnderPoint(cx, cy);
+        highlightDay(targetDay);
+        checkAutoScroll(cy);
+      }
+    };
+
+    var cleanup = function(){
+      stopAutoScroll();
+      window.removeEventListener("touchmove", onTouchMove, { passive: false });
+      window.removeEventListener("touchend", onTouchEnd, { passive: false });
+      window.removeEventListener("touchcancel", onTouchCancel, { passive: false });
+      document.body.classList.remove("is-pointer-dragging");
+      cleanupAllGhosts();
+      activeTouchDrag = null;
+    };
+
+    var onTouchEnd = function(e){
+      if(e.cancelable) e.preventDefault();
+      var wasDragging = isDragging;
+      var dropDay = targetDay || getDayUnderPoint(lastX, lastY);
+      var totalDist = Math.hypot(lastX - startX, lastY - startY);
+      var duration = Date.now() - startTime;
+
+      cleanup();
+
+      if(wasDragging){
+        clearDropHighlights();
+        if(dropDay){
+          var dayIdx = Number(dropDay.dataset.day);
+          if(dayIdx >= 0 && dayIdx < plan.length){
+            addDish(dayIdx, i);
+            triggerHaptic("drop");
+          }
+        }
+        suppressDayClickUntil = Date.now() + 450;
+      } else {
+        // Tap gesture: chọn / đổi món (Arm/Disarm)
+        setArmed(armed === i ? -1 : i);
+        triggerHaptic("tap");
+      }
+    };
+
+    var onTouchCancel = function(e){
+      cleanup();
+      clearDropHighlights();
+      suppressDayClickUntil = Date.now() + 300;
+    };
+
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd, { passive: false });
+    window.addEventListener("touchcancel", onTouchCancel, { passive: false });
+
+    activeTouchDrag = { cleanup: cleanup };
+  }
+
+  // --- POINTER / MOUSE ENGINE DÀNH CHO DESKTOP CHUỘT & STYLUS ---
+  function startPointerDrag(startEv, li, i){
+    if(startEv.pointerType === "touch") return; // Touch đã được xử lý bởi handleTouchDragStart
+    if(startEv.button !== undefined && startEv.button !== 0) return;
+    if(startEv.target.closest && (startEv.target.closest(".tile__zoom") || startEv.target.closest(".tile__edit"))) return;
+
     if(activeDragSession && activeDragSession.cleanup){
       activeDragSession.cleanup();
     }
     cleanupAllGhosts();
 
     var pointerId = (startEv.pointerId !== undefined) ? startEv.pointerId : null;
-    var pointerType = startEv.pointerType || "mouse";
-    var isMouse = (pointerType === "mouse");
-
-    // Khóa pointer capture ngay lập tức để giữ mọi cử chỉ cho ô món ăn,
-    // ngăn hoàn toàn iOS WebKit / In-App Browser (Facebook, Zalo, TikTok, Telegram)
-    // nhận diện cử chỉ kéo xuống là lệnh kéo tắt (pull-down to dismiss) pop-in browser.
     if(pointerId !== null && typeof li.setPointerCapture === "function"){
       try { li.setPointerCapture(pointerId); } catch(e){}
     }
@@ -4900,7 +5067,7 @@
     var startX = startEv.clientX, startY = startEv.clientY;
     var lastX = startX, lastY = startY;
     var startTime = Date.now();
-    var mode = "pending"; // "pending" | "scrolling" | "dragging"
+    var mode = "pending";
     var ghost = null, autoScrollRaf = null;
     var targetDay = null;
 
@@ -4952,20 +5119,16 @@
 
     var onMove = function(ev){
       if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
-
       var cx = ev.clientX, cy = ev.clientY;
       var dx = cx - startX, dy = cy - startY;
       lastX = cx;
       lastY = cy;
       var dist = Math.hypot(dx, dy);
 
-      // Chặn mọi hành vi mặc định của trình duyệt để in-app browser pop-in
-      // KHÔNG BAO GIỜ bị kéo tắt kể cả khi người dùng vuốt rất nhanh xuống dưới
       if(ev.cancelable) ev.preventDefault();
 
-      // Kéo nhanh hay chậm: ngay khi có chuyển động >= 2px là bật drag mode ngay
       if(mode === "pending"){
-        if(dist >= 2){
+        if(dist >= 3){
           startDragMode(cx, cy);
         }
         return;
@@ -4980,17 +5143,8 @@
       }
     };
 
-    // Chặn tuyệt đối touchmove ngay từ pixel đầu tiên trên toàn window và chính li
-    // để loại bỏ hoàn toàn việc in-app browser sheet bắt cử chỉ flick/pull-down
-    var blockTouchMove = function(ev){
-      if(ev.cancelable){
-        ev.preventDefault();
-      }
-    };
-
     var onEnd = function(ev){
       if(pointerId !== null && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
-
       var wasDragging = (mode === "dragging");
       var dropDay = targetDay || getDayUnderPoint(lastX, lastY);
       var totalDist = Math.hypot(lastX - startX, lastY - startY);
@@ -5007,33 +5161,16 @@
             triggerHaptic("drop");
           }
         }
-        suppressDayClickUntil = Date.now() + 400;
-      } else if(totalDist < 5 && duration < 350){
-        // Xử lý tap trực tiếp: chạm vào ảnh mở lightbox, chạm vào thân thẻ để arm
-        var hitMedia = startEv.target.closest && (startEv.target.closest(".tile__media") || startEv.target.closest("img"));
-        if(hitMedia && dish.img){
-          suppressDayClickUntil = Date.now() + 400;
-          showLightbox(dish.img, dish.name, dish.description);
-        } else {
-          suppressDayClickUntil = Date.now() + 400;
-          setArmed(armed === i ? -1 : i);
-        }
+        suppressDayClickUntil = Date.now() + 450;
+      } else if(totalDist < 5 && duration < 400){
+        setArmed(armed === i ? -1 : i);
+        triggerHaptic("tap");
       }
     };
 
     var onCancel = function(){
-      var wasDragging = (mode === "dragging");
-      var dropDay = targetDay || getDayUnderPoint(lastX, lastY);
       cleanup();
       clearDropHighlights();
-      // Nếu vuốt nhanh mà browser gửi pointercancel khi ngón tay đang ở trên ngày:
-      if(wasDragging && dropDay){
-        var dayIdx = Number(dropDay.dataset.day);
-        if(dayIdx >= 0 && dayIdx < plan.length){
-          addDish(dayIdx, i);
-          triggerHaptic("drop");
-        }
-      }
       suppressDayClickUntil = Date.now() + 300;
     };
 
@@ -5042,8 +5179,6 @@
       window.removeEventListener("pointermove", onMove, { passive: false });
       window.removeEventListener("pointerup", onEnd, true);
       window.removeEventListener("pointercancel", onCancel, true);
-      window.removeEventListener("touchmove", blockTouchMove, { passive: false });
-      li.removeEventListener("touchmove", blockTouchMove, { passive: false });
       if(pointerId !== null && typeof li.releasePointerCapture === "function"){
         try {
           if(li.hasPointerCapture && li.hasPointerCapture(pointerId)){
@@ -5056,13 +5191,11 @@
       activeDragSession = null;
     };
 
-    activeDragSession = { cleanup: cleanup };
-
     window.addEventListener("pointermove", onMove, { passive: false });
     window.addEventListener("pointerup", onEnd, true);
     window.addEventListener("pointercancel", onCancel, true);
-    window.addEventListener("touchmove", blockTouchMove, { passive: false });
-    li.addEventListener("touchmove", blockTouchMove, { passive: false });
+
+    activeDragSession = { cleanup: cleanup };
   }
 
     // ================= Phân loại 2 tầng (Category: Chính ở trên, Phụ ở dưới) & Bảng màu =================
@@ -5991,17 +6124,26 @@
       li.setAttribute("aria-label","Món " + dish.name + " — kéo/chạm vào một ngày trong tuần; chủ bấm ✎ để chỉnh");
 
       var mediaEl = makeMedia(dish, "tile");
-      if(dish.img){
-        mediaEl.style.cursor = "zoom-in";
-        mediaEl.setAttribute("title", "Chạm vào ảnh để phóng to món " + dish.name);
-        mediaEl.addEventListener("click", function(e){
-          if(Date.now() < suppressDayClickUntil) return;
-          e.stopPropagation();
-          e.preventDefault();
-          showLightbox(dish.img, dish.name, dish.description);
-        });
-      }
       li.appendChild(mediaEl);
+
+      // Kính lúp ở góc trên bên phải từng món để khách bấm phóng to ảnh
+      if(dish.img){
+        var zoomBtn = document.createElement("button");
+        zoomBtn.type = "button";
+        zoomBtn.className = "tile__zoom";
+        zoomBtn.setAttribute("aria-label", "Phóng to ảnh món " + dish.name);
+        zoomBtn.setAttribute("title", "Phóng to ảnh món " + dish.name);
+        zoomBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
+        var openZoom = function(e){
+          e.stopPropagation();
+          if(e.cancelable) e.preventDefault();
+          suppressDayClickUntil = Date.now() + 400;
+          showLightbox(dish.img, dish.name, dish.description);
+        };
+        zoomBtn.addEventListener("click", openZoom);
+        zoomBtn.addEventListener("touchend", openZoom);
+        li.appendChild(zoomBtn);
+      }
 
       var badge = document.createElement("span");
       badge.className = "tile__badge";
@@ -6016,10 +6158,13 @@
       // Nút chỉ hiện ra khi chủ đã mở khóa PIN trong phiên này (isOwner()).
       // Khách xem không thấy ✎; buildMenu() được gọi lại khi unlockOwner().
       editBtn.hidden = !isOwner();
-      editBtn.addEventListener("click", function(e){
+      var handleEdit = function(e){
         e.stopPropagation();
+        if(e.cancelable) e.preventDefault();
         openEditor(i);
-      });
+      };
+      editBtn.addEventListener("click", handleEdit);
+      editBtn.addEventListener("touchend", handleEdit);
       li.appendChild(editBtn);
 
       var name = document.createElement("span");
@@ -6028,20 +6173,26 @@
       name.title = dish.name;
       li.appendChild(name);
 
-      // Kéo thả toàn diện bằng Pointer Events (chuột desktop, cảm ứng điện thoại, bút stylus)
-      li.addEventListener("pointerdown", function(e){ startPointerDrag(e, li, i); });
+      // Cảm ứng điện thoại & Trình duyệt pop-in mạng xã hội (Facebook, Zalo, TikTok, Telegram, iOS Safari)
+      li.addEventListener("touchstart", function(e){
+        if(e.target.closest(".tile__zoom") || e.target.closest(".tile__edit")) return;
+        // Chặn tuyệt đối native sheet pull-to-dismiss của iOS WebKit / In-App Browser
+        if(e.cancelable) e.preventDefault();
+        handleTouchDragStart(e, li, i);
+      }, { passive: false });
 
-      // tap-to-arm: chạm nhẹ chọn món rồi bấm vào ngày trong lịch
-      li.addEventListener("click", function(e){
-        if(e.target.closest(".tile__edit") || e.target.closest(".tile__media")) return;
-        if(Date.now() < suppressDayClickUntil) return;
-        setArmed(armed === i ? -1 : i);
+      // Chuột Desktop & Stylus
+      li.addEventListener("pointerdown", function(e){
+        if(e.pointerType === "touch") return; // Touch đã được xử lý độc lập bởi touchstart ở trên
+        if(e.target.closest(".tile__zoom") || e.target.closest(".tile__edit")) return;
+        startPointerDrag(e, li, i);
       });
 
+      // Bàn phím: Enter/Space để chọn hoặc bỏ chọn mâm
       li.addEventListener("keydown", function(e){
         if(e.key === "Enter" || e.key === " "){
           e.preventDefault();
-          li.click();
+          setArmed(armed === i ? -1 : i);
         }
       });
 
@@ -6112,6 +6263,13 @@
     setDishHeld(armed >= 0);
   }
 
+  // Hủy chọn mâm nếu người dùng bấm ra ngoài Mâm và Lịch
+  document.addEventListener("click", function(e){
+    if(armed < 0) return;
+    if(e.target.closest(".tile") || e.target.closest(".day") || e.target.closest(".week") || e.target.closest(".menu")) return;
+    setArmed(-1);
+  });
+
   // ================= week =================
   function buildWeek(){
     weekEl.innerHTML = "";
@@ -6151,7 +6309,12 @@
       day.addEventListener("click", function(e){
         if(e.target.closest(".chip__x")) return;
         if(Date.now() < suppressDayClickUntil) return;
-        if(armed >= 0) addDish(dayIndex, armed);
+        if(armed >= 0){
+          var selected = armed;
+          addDish(dayIndex, selected);
+          triggerHaptic("drop");
+          setArmed(-1);
+        }
       });
 
       // Bàn phím: Tab tới ô ngày, Enter để cắm món đang "cầm" (armed).
@@ -6161,7 +6324,12 @@
       body.addEventListener("keydown", function(e){
         if(e.key !== "Enter" && e.key !== " ") return;
         e.preventDefault();
-        if(armed >= 0) addDish(dayIndex, armed);
+        if(armed >= 0){
+          var selected = armed;
+          addDish(dayIndex, selected);
+          triggerHaptic("drop");
+          setArmed(-1);
+        }
       });
 
       weekEl.appendChild(day);
@@ -6273,7 +6441,7 @@
       if(items.length === 0){
         var empty = document.createElement("span");
         empty.className = "day__empty";
-        empty.textContent = "Kéo hoặc chọn món vào đây";
+        empty.textContent = "Kéo hoặc chọn mâm vào đây";
         body.appendChild(empty);
       }
 
