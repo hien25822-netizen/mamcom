@@ -9929,11 +9929,17 @@
             </div>
           </div>
 
-          <!-- THÔNG BÁO TỰ ĐỘNG XÁC NHẬN (KHÔNG CẦN USER PHẢI ẤN NÚT) -->
-          <div id="qrAutoStatusBox" style="width: 100%; padding: 10px 14px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <div id="qrAutoStatusSpinner" style="width: 14px; height: 14px; border: 2px solid #d97706; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.9s linear infinite; flex-shrink: 0;"></div>
-            <span id="qrAutoStatusText" style="font-size: 12px; font-weight: 700; color: #92400e;">Hệ thống tự động ghi nhận ngay sau khi bạn chuyển tiền</span>
-          </div>
+          <!-- NÚT XÁC NHẬN CHUYỂN KHOẢN (DO KHÁCH BẤM KHI ĐÃ CHUYỂN TIỀN XONG) -->
+          <button
+            id="btnConfirmTransferred"
+            type="button"
+            style="width: 100%; padding: 13px 16px; border-radius: 12px; background: linear-gradient(135deg, #ce2626 0%, #b91c1c 100%); color: #ffffff; font-weight: 700; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(206, 38, 38, 0.35); transition: opacity 0.2s;"
+          >
+            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span id="btnConfirmTransferredText">Tôi đã chuyển khoản xong</span>
+          </button>
         </div>
 
         <!-- Link hỗ trợ Instagram Mâm Cơm -->
@@ -10076,12 +10082,11 @@
   const qrReviewNoteRow = document.getElementById("qrReviewNoteRow");
   const qrReviewDishesList = document.getElementById("qrReviewDishesList");
 
-  // Elements - Step 1 Loading & Auto Check
+  // Elements - Step 1 Loading & Confirm
   const qrWaitingTitle = document.getElementById("qrWaitingTitle");
   const qrWaitingSubtitle = document.getElementById("qrWaitingSubtitle");
-  const qrAutoStatusBox = document.getElementById("qrAutoStatusBox");
-  const qrAutoStatusSpinner = document.getElementById("qrAutoStatusSpinner");
-  const qrAutoStatusText = document.getElementById("qrAutoStatusText");
+  const btnConfirmTransferred = document.getElementById("btnConfirmTransferred");
+  const btnConfirmTransferredText = document.getElementById("btnConfirmTransferredText");
 
   // Elements - Step 2 Success
   const successOrderId = document.getElementById("successOrderId");
@@ -10095,8 +10100,6 @@
   let currentTotalAmount = 0;
   let isSuccessTriggered = false;
   let isModalActive = false;
-  let hiddenStartTime = 0;
-  let autoCheckTimer = null;
   let statusPollInterval = null;
 
   // Hiển thị thông tin mặc định lên bảng tóm tắt
@@ -10168,9 +10171,7 @@
     currentOrderId = generateOrderId();
     isSuccessTriggered = false;
     isModalActive = true;
-    hiddenStartTime = 0;
 
-    if (autoCheckTimer) clearTimeout(autoCheckTimer);
     if (statusPollInterval) clearInterval(statusPollInterval);
 
     // Đặt lại giao diện về Bước 1 (Quét QR)
@@ -10179,9 +10180,17 @@
     if (modalTitle) modalTitle.textContent = "Quét mã VietQR chuyển khoản";
     if (statusDot) statusDot.style.backgroundColor = "#10b981";
 
+    if (btnConfirmTransferred) {
+      btnConfirmTransferred.disabled = false;
+      btnConfirmTransferred.style.opacity = "1";
+      btnConfirmTransferred.style.pointerEvents = "auto";
+    }
+    if (btnConfirmTransferredText) {
+      btnConfirmTransferredText.textContent = "Tôi đã chuyển khoản xong";
+    }
+
     if (qrWaitingTitle) qrWaitingTitle.textContent = "Đang chờ bạn chuyển khoản...";
     if (qrWaitingSubtitle) qrWaitingSubtitle.textContent = "Quét mã QR hoặc chép số tài khoản ở trên để chuyển khoản nha";
-    if (qrAutoStatusText) qrAutoStatusText.textContent = "Hệ thống tự động ghi nhận ngay sau khi bạn chuyển tiền";
 
     if (qrOrderIdText) qrOrderIdText.textContent = currentOrderId;
     if (qrTotalAmountText) qrTotalAmountText.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
@@ -10256,7 +10265,7 @@
     // Bắn thông báo đơn mới qua Telegram (khách bắt đầu quét mã chuyển khoản)
     sendTelegramOrder(currentOrderId, currentTotalAmount, false);
 
-    // 1. Tự động lắng nghe trạng thái đơn từ Supabase (nếu quán duyệt từ trang Bếp)
+    // Lắng nghe cập nhật trạng thái đơn hàng thời gian thực từ hệ thống Bếp/Admin qua Supabase
     if (typeof SUPABASE !== "undefined" && SUPABASE) {
       statusPollInterval = setInterval(function() {
         if (!isModalActive || isSuccessTriggered) {
@@ -10272,49 +10281,29 @@
           }).catch(function(){});
       }, 3000);
     }
-
-    // 2. Tự động kiểm tra đối soát trên máy tính (khi khách quét xong trên điện thoại cá nhân)
-    autoCheckTimer = setTimeout(function() {
-      if (isModalActive && !isSuccessTriggered) {
-        if (qrAutoStatusText) qrAutoStatusText.textContent = "✓ Đang hoàn tất đối soát ngân hàng...";
-        setTimeout(function() {
-          if (isModalActive && !isSuccessTriggered) {
-            triggerSuccessPayment();
-          }
-        }, 1500);
-      }
-    }, 45000);
   }
 
-  // Tự động nhận diện khi khách từ App ngân hàng quay lại trình duyệt
-  document.addEventListener("visibilitychange", function() {
-    if (!isModalActive || isSuccessTriggered) return;
-
-    if (document.hidden) {
-      // Khách rời tab để mở app ngân hàng chuyển tiền
-      hiddenStartTime = Date.now();
-    } else {
-      // Khách đã chuyển tiền xong và quay lại trình duyệt
-      if (hiddenStartTime > 0) {
-        var durationAway = Date.now() - hiddenStartTime;
-        // Nếu khách ở trong app ngân hàng ít nhất 8 giây (thời gian tối thiểu để thực hiện giao dịch)
-        if (durationAway >= 8000) {
-          if (qrAutoStatusText) qrAutoStatusText.textContent = "✓ Đã nhận tín hiệu chuyển khoản, đang đối soát...";
-          setTimeout(function() {
-            if (isModalActive && !isSuccessTriggered) {
-              triggerSuccessPayment();
-            }
-          }, 1400);
-        }
-      }
+  // Khách chủ động bấm "Tôi đã chuyển khoản xong" sau khi đã thanh toán
+  function handleConfirmTransferred() {
+    if (isSuccessTriggered) return;
+    if (btnConfirmTransferred) {
+      btnConfirmTransferred.disabled = true;
+      btnConfirmTransferred.style.opacity = "0.85";
+      btnConfirmTransferred.style.pointerEvents = "none";
     }
-  });
+    if (btnConfirmTransferredText) {
+      btnConfirmTransferredText.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:vietqrSpin 0.8s linear infinite;vertical-align:middle;margin-right:6px;"></span>Đang đối soát hệ thống...';
+    }
+
+    setTimeout(function() {
+      triggerSuccessPayment();
+    }, 700);
+  }
 
   // Chuyển sang màn hình xác nhận thanh toán thành công
   function triggerSuccessPayment() {
     if (isSuccessTriggered) return;
     isSuccessTriggered = true;
-    if (autoCheckTimer) clearTimeout(autoCheckTimer);
     if (statusPollInterval) clearInterval(statusPollInterval);
 
     // TĂNG BỘ ĐẾM SỐ MÂM CHỈ KHI KHÁCH ĐÃ THANH TOÁN THÀNH CÔNG!
@@ -10344,7 +10333,6 @@
   // Đóng Popup
   function closePaymentModal() {
     isModalActive = false;
-    if (autoCheckTimer) clearTimeout(autoCheckTimer);
     if (statusPollInterval) clearInterval(statusPollInterval);
     if (modal) {
       modal.style.display = "none";
@@ -10443,6 +10431,11 @@
   if (btnOpen) btnOpen.addEventListener("click", openPaymentModal);
   if (btnClose) btnClose.addEventListener("click", closePaymentModal);
   if (backdrop) backdrop.addEventListener("click", closePaymentModal);
+
+  // Nút bấm "Tôi đã chuyển khoản xong"
+  if (btnConfirmTransferred) {
+    btnConfirmTransferred.addEventListener("click", handleConfirmTransferred);
+  }
 
   // Nút Hoàn tất ở trang xác nhận thành công
   if (btnSuccessDone) {
