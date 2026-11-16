@@ -4416,7 +4416,10 @@
   // Supabase client (only real when URL + anon key are both supplied).
   var SUPABASE = null;
   if(window.supabase && !isPlaceholder(MAMCOM_SUPABASE.url) && !isPlaceholder(MAMCOM_SUPABASE.anonKey)){
-    try{ SUPABASE = window.supabase.createClient(MAMCOM_SUPABASE.url, MAMCOM_SUPABASE.anonKey); }
+    try{ 
+      SUPABASE = window.supabase.createClient(MAMCOM_SUPABASE.url, MAMCOM_SUPABASE.anonKey);
+      window.SUPABASE = SUPABASE;
+    }
     catch(e){ SUPABASE = null; }
   }
   var USE_SUPABASE = !!SUPABASE;
@@ -10097,6 +10100,21 @@
   let isModalActive = false;
   let statusPollInterval = null;
 
+  // Lấy Supabase client một cách an toàn
+  function getSupabaseClient() {
+    if (window.SUPABASE) return window.SUPABASE;
+    if (window.supabase) {
+      try {
+        window.SUPABASE = window.supabase.createClient(
+          "https://sdlpldhldyyytkbpujdk.supabase.co",
+          "sb_publishable_9-Z47h5jf1Dtj2ZJ-RslwA_RjL1rz9_"
+        );
+        return window.SUPABASE;
+      } catch(e) {}
+    }
+    return null;
+  }
+
   // Hiển thị thông tin mặc định lên bảng tóm tắt
   if (qrBankName) qrBankName.textContent = BANK_DISPLAY;
   if (qrAccountNoText) qrAccountNoText.textContent = ACCOUNT_NO;
@@ -10255,8 +10273,9 @@
     }
 
     // Khởi tạo bản ghi đơn hàng với trạng thái "pending" vào Supabase
-    if (typeof SUPABASE !== "undefined" && SUPABASE) {
-      SUPABASE.from("orders").insert({
+    var sb = getSupabaseClient();
+    if (sb) {
+      sb.from("orders").insert({
         id: currentOrderId,
         status: "pending",
         phone: phoneVal,
@@ -10278,13 +10297,13 @@
     sendTelegramOrder(currentOrderId, currentTotalAmount, false);
 
     // Lắng nghe cập nhật trạng thái đơn hàng thời gian thực từ hệ thống qua Supabase
-    if (typeof SUPABASE !== "undefined" && SUPABASE) {
+    if (sb) {
       statusPollInterval = setInterval(function() {
         if (!isModalActive || isSuccessTriggered) {
           clearInterval(statusPollInterval);
           return;
         }
-        SUPABASE.rpc("get_order_status", { p_order_id: currentOrderId })
+        sb.rpc("get_order_status", { p_order_id: currentOrderId })
           .then(function(res) {
             if (res && (res.data === "confirmed" || res.data === "done")) {
               clearInterval(statusPollInterval);
@@ -10401,13 +10420,17 @@
     }
 
     try {
-      fetch("https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage", {
+      var tgEndpoint = (window.location && window.location.origin && window.location.origin.indexOf("http") === 0)
+        ? (window.location.origin + "/api/telegram")
+        : "https://mamcomvn.vercel.app/api/telegram";
+
+      fetch(tgEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reqBody)
-      }).catch(function(err){ console.warn("Telegram fetch error:", err); });
+      }).catch(function(err){ console.warn("Telegram proxy fetch error:", err); });
     } catch(err) {
-      console.warn("Lỗi gửi Telegram:", err);
+      console.warn("Lỗi gửi Telegram qua proxy:", err);
     }
   }
 
