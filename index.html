@@ -8,6 +8,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<!-- Tailwind CSS (preflight: false để bảo toàn 100% style hiện có của website) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  if (typeof tailwind !== 'undefined') {
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    };
+  }
+</script>
 <style>
   :root {
     color-scheme: light;
@@ -3854,9 +3865,17 @@
               <div class="order__guide-ball-wrap" aria-hidden="true">
                 <div class="order__guide-ball"></div>
               </div>
-              <span class="order__guide-text">Bấm nút bên dưới hệ thống sẽ SAO CHÉP đơn, bạn hãy <b class="order__guide-hl">DÁN vào inbox Mâm Cơm nhé</b></span>
+              <span class="order__guide-text">Bấm nút bên dưới để <b class="order__guide-hl">quét mã VietQR chuyển khoản</b> trực tiếp nhé</span>
             </div>
-            <button class="btn btn--primary order__send" id="orderInboxBtn" type="button">📋 Sao chép và Dán vào Inbox</button>
+            <!-- NÚT THANH TOÁN VIETQR MỚI -->
+            <button class="btn btn--primary order__send" id="btnOpenVietQR" type="button" style="background-color: #ce2626; color: #fff; width: 100%; border: none; border-radius: 999px; padding: 14px 20px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(206, 38, 38, 0.35); cursor: pointer; transition: all 0.2s ease;">
+              <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              </svg>
+              Thanh toán chuyển khoản
+            </button>
+            <!-- Nút cũ được ẩn an toàn để các hàm JS gốc không bị lỗi null -->
+            <button class="btn btn--primary order__send" id="orderInboxBtn" type="button" style="display: none;" aria-hidden="true">📋 Sao chép và Dán vào Inbox</button>
             <p class="order__needTray" id="orderNeedTray">Hãy kéo ít nhất 1 mâm vào lịch trước khi đặt</p>
             
             <!-- 3 Button mở app Instagram, TikTok và Threads trực tiếp -->
@@ -7638,6 +7657,12 @@
     if(!orderInboxBtn) return;
     var hasTray = totalTraysAllWeeks() > 0;
     orderInboxBtn.disabled = !hasTray;
+    var vqrBtn = document.getElementById("btnOpenVietQR");
+    if(vqrBtn){
+      vqrBtn.disabled = !hasTray;
+      vqrBtn.style.opacity = hasTray ? "1" : "0.5";
+      vqrBtn.style.cursor = hasTray ? "pointer" : "not-allowed";
+    }
     if(orderNeedTrayEl) orderNeedTrayEl.hidden = hasTray;
   }
 
@@ -9694,6 +9719,308 @@
     }).catch(function(){ /* bảng orders chưa tồn tại — giữ bản local */ });
   }
   startSync();
+})();
+</script>
+
+<!-- ======================================================== -->
+<!-- MODAL POPUP THANH TOÁN VIETQR (QuickLink)                -->
+<!-- ======================================================== -->
+<div id="vietqrModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" style="display: none; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 16px; background-color: rgba(0,0,0,0.65); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);">
+  <!-- Backdrop đóng modal khi click ra ngoài -->
+  <div id="vietqrBackdrop" style="position: absolute; inset: 0; cursor: pointer;"></div>
+
+  <!-- Modal Box -->
+  <div class="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden z-10 border border-gray-100 flex flex-col max-h-[92vh]" style="position: relative; width: 100%; max-width: 380px; background: #ffffff; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; z-index: 10; border: 1px solid #f3f4f6; display: flex; flex-direction: column; max-height: 92vh; font-family: 'Be Vietnam Pro', system-ui, sans-serif;">
+    
+    <!-- Modal Header -->
+    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between" style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to right, #fef2f2, #fff7ed);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 10px; height: 10px; border-radius: 9999px; background-color: #10b981; display: inline-block;"></span>
+        <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #111827;">Quét mã VietQR chuyển khoản</h3>
+      </div>
+      <button id="btnCloseVietQR" type="button" aria-label="Đóng" style="background: none; border: none; font-size: 18px; color: #9ca3af; cursor: pointer; padding: 4px 8px; border-radius: 9999px; line-height: 1;">✕</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div style="padding: 16px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;">
+      
+      <!-- Khung hiển thị ảnh mã QR -->
+      <div style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 16px; min-height: 270px;">
+        <div id="qrLoadingSpinner" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #f9fafb; border-radius: 16px; gap: 8px;">
+          <div style="width: 32px; height: 32px; border: 3px solid #ce2626; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.8s linear infinite;"></div>
+          <span style="font-size: 12px; color: #6b7280; font-weight: 500;">Đang tạo mã VietQR...</span>
+        </div>
+        <img
+          id="vietqrImage"
+          src=""
+          alt="Mã thanh toán VietQR"
+          style="width: 100%; max-width: 260px; height: auto; border-radius: 12px; opacity: 0; transition: opacity 0.3s ease; display: block;"
+        />
+      </div>
+
+      <!-- Bảng tóm tắt thông tin thanh toán cho khách -->
+      <div style="background-color: #f9fafb; border-radius: 12px; padding: 12px; font-size: 12.5px; border: 1px solid #f3f4f6; display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+          <span>Ngân hàng:</span>
+          <span id="qrBankName" style="font-weight: 700; color: #111827;">Vietcombank (VCB)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+          <span>Số tài khoản:</span>
+          <button type="button" id="btnCopyAccountNo" title="Bấm để sao chép" style="background: none; border: none; font-family: monospace; font-weight: 700; color: #111827; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0;">
+            <span id="qrAccountNoText">1073762617</span>
+            <span style="font-size: 11px;">📋</span>
+          </button>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+          <span>Chủ tài khoản:</span>
+          <span id="qrAccountNameText" style="font-weight: 600; color: #111827;">Mâm Cơm VN (NGUYEN QUANG HIEN)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+          <span>Số tiền:</span>
+          <span id="qrTotalAmountText" style="font-weight: 800; color: #ce2626; font-size: 13.5px;">0 ₫</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+          <span>Nội dung CK:</span>
+          <button type="button" id="btnCopyOrderId" title="Bấm để sao chép" style="background: #fef2f2; border: 1px solid #fee2e2; border-radius: 6px; padding: 2px 6px; font-family: monospace; font-weight: 700; color: #ce2626; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <span id="qrOrderIdText">MC123456</span>
+            <span style="font-size: 11px;">📋</span>
+          </button>
+        </div>
+      </div>
+
+      <p style="margin: 0; font-size: 11.5px; color: #6b7280; text-align: center; line-height: 1.4;">
+        Sau khi chuyển khoản, bấm nút xác nhận bên dưới để gửi tin nhắn thông báo cho shop.
+      </p>
+
+      <!-- NÚT "TÔI ĐÃ CHUYỂN KHOẢN" (#ce2626) -->
+      <button
+        id="btnConfirmPaid"
+        type="button"
+        style="width: 100%; padding: 13px 16px; border-radius: 12px; background-color: #ce2626; color: #ffffff; font-weight: 700; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(206, 38, 38, 0.35); transition: opacity 0.2s;"
+      >
+        <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+        </svg>
+        Tôi đã chuyển khoản
+      </button>
+
+      <p id="qrCopyNotice" style="display: none; margin: 0; font-size: 11.5px; text-align: center; color: #059669; font-weight: 600;">
+        ✓ Đã sao chép tin nhắn vào bộ nhớ đệm! Đang mở Zalo...
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes vietqrSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<!-- ======================================================== -->
+<!-- SCRIPT XỬ LÝ THANH TOÁN VIETQR                          -->
+<!-- ======================================================== -->
+<script>
+(function() {
+  // ========================================================
+  // BƯỚC 4: THÔNG TIN CẤU HÌNH NGÂN HÀNG
+  // ========================================================
+  const BANK_ID = "VCB";                                            // Vietcombank
+  const BANK_DISPLAY = "Vietcombank (VCB)";
+  const ACCOUNT_NO = "1073762617";                                 // Số tài khoản ngân hàng
+  const ACCOUNT_NAME = "MAM COM VN";                               // Tên tài khoản Hộ kinh doanh DigiShop
+  const ZALO_PHONE = "0858200286";                                 // Số điện thoại Zalo
+  const INSTAGRAM_USERNAME = "mamcomvn";                           // Fallback sang Instagram nếu chưa có Zalo
+
+  // DOM Elements
+  const modal = document.getElementById("vietqrModal");
+  const backdrop = document.getElementById("vietqrBackdrop");
+  const btnOpen = document.getElementById("btnOpenVietQR");
+  const btnClose = document.getElementById("btnCloseVietQR");
+  const btnConfirm = document.getElementById("btnConfirmPaid");
+  const qrImage = document.getElementById("vietqrImage");
+  const qrSpinner = document.getElementById("qrLoadingSpinner");
+  const qrCopyNotice = document.getElementById("qrCopyNotice");
+
+  const qrBankName = document.getElementById("qrBankName");
+  const qrAccountNoText = document.getElementById("qrAccountNoText");
+  const qrAccountNameText = document.getElementById("qrAccountNameText");
+  const qrTotalAmountText = document.getElementById("qrTotalAmountText");
+  const qrOrderIdText = document.getElementById("qrOrderIdText");
+
+  let currentOrderId = "";
+  let currentTotalAmount = 0;
+
+  // Hiển thị thông tin mặc định lên bảng tóm tắt
+  if (qrBankName) qrBankName.textContent = BANK_DISPLAY;
+  if (qrAccountNoText) qrAccountNoText.textContent = ACCOUNT_NO;
+  if (qrAccountNameText) qrAccountNameText.textContent = "Mâm Cơm VN (NGUYEN QUANG HIEN)";
+
+  // ========================================================
+  // BƯỚC 5: HÀM LẤY TỔNG TIỀN TỪ GIỎ HÀNG HIỆN TẠI
+  // ========================================================
+  function getCartTotal() {
+    var total = 0;
+    // 1. Kiểm tra từ biến tính toán của app (PRICE_PER_MAM, cPeople, totalTraysAllWeeks)
+    if (typeof totalTraysAllWeeks === "function") {
+      var peopleEl = document.getElementById("cPeople");
+      var people = (peopleEl && parseInt(peopleEl.value, 10)) || 1;
+      var mams = totalTraysAllWeeks();
+      var price = (typeof PRICE_PER_MAM !== "undefined") ? PRICE_PER_MAM : 49;
+      total = price * mams * people;
+    }
+    // 2. Dự phòng: Kiểm tra từ element DOM #orderTotal
+    if (!total || total === 0) {
+      var totalEl = document.getElementById("orderTotal");
+      if (totalEl) {
+        var num = parseInt((totalEl.textContent || "").replace(/\D/g, ""), 10);
+        if (!isNaN(num) && num > 0) total = num;
+      }
+    }
+    // 3. Quy đổi nếu shop đặt giá 49 (nghĩa là 49k / 49.000 VNĐ) để số tiền VietQR hợp lệ
+    if (total > 0 && total < 1000) {
+      total = total * 1000;
+    }
+    return total > 0 ? total : 49000;
+  }
+
+  // Sinh mã đơn ngẫu nhiên (Ví dụ: MC582910)
+  function generateOrderId() {
+    return "MC" + Math.floor(100000 + Math.random() * 900000);
+  }
+
+  // Hàm sao chép clipboard an toàn (tương thích iOS Safari / WebView)
+  function safeCopyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function() {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+      return Promise.resolve();
+    }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    ta.style.top = "-9999px";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand("copy");
+    } catch(e) {}
+    document.body.removeChild(ta);
+  }
+
+  // Mở Popup Thanh toán VietQR
+  function openPaymentModal() {
+    if (typeof totalTraysAllWeeks === "function" && totalTraysAllWeeks() === 0) {
+      alert("Bạn ơi, hãy kéo ít nhất 1 mâm vào lịch trước khi thanh toán nhé!");
+      var weekEl = document.getElementById("week");
+      if (weekEl && typeof weekEl.scrollIntoView === "function") {
+        weekEl.scrollIntoView({ behavior: "smooth" });
+      }
+      return;
+    }
+
+    currentTotalAmount = getCartTotal();
+    currentOrderId = generateOrderId();
+
+    if (qrOrderIdText) qrOrderIdText.textContent = currentOrderId;
+    if (qrTotalAmountText) qrTotalAmountText.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
+
+    // Chuẩn hóa param URL VietQR
+    var safeBank = encodeURIComponent(BANK_ID.trim());
+    var safeAcc = encodeURIComponent(ACCOUNT_NO.trim());
+    var safeName = encodeURIComponent(ACCOUNT_NAME.trim());
+    var safeOrder = encodeURIComponent(currentOrderId.trim());
+
+    var qrUrl = "https://img.vietqr.io/image/" + safeBank + "-" + safeAcc + "-compact2.jpg?amount=" + currentTotalAmount + "&addInfo=" + safeOrder + "&accountName=" + safeName;
+
+    if (qrSpinner) qrSpinner.style.display = "flex";
+    if (qrImage) {
+      qrImage.style.opacity = "0";
+      qrImage.onload = function() {
+        if (qrSpinner) qrSpinner.style.display = "none";
+        qrImage.style.opacity = "1";
+      };
+      qrImage.src = qrUrl;
+    }
+
+    if (qrCopyNotice) qrCopyNotice.style.display = "none";
+    if (modal) {
+      modal.style.display = "flex";
+      modal.classList.remove("hidden");
+    }
+    document.body.style.overflow = "hidden"; // Khóa cuộn trang nền
+  }
+
+  // Đóng Popup
+  function closePaymentModal() {
+    if (modal) {
+      modal.style.display = "none";
+      modal.classList.add("hidden");
+    }
+    document.body.style.overflow = "";
+  }
+
+  // Bấm nút "Tôi đã chuyển khoản"
+  async function handlePaymentConfirmation() {
+    var formattedAmount = currentTotalAmount.toLocaleString("vi-VN") + "đ";
+    var clipboardText = "Mình đã thanh toán cho đơn hàng " + currentOrderId + ", số tiền " + formattedAmount + ". Shop check nhé!";
+
+    // 1. Sao chép tin nhắn vào Clipboard
+    await safeCopyToClipboard(clipboardText);
+
+    if (qrCopyNotice) {
+      qrCopyNotice.style.display = "block";
+    }
+
+    // 2. Mở Zalo (hoặc Instagram fallback)
+    var cleanPhone = ZALO_PHONE.replace(/\D/g, "");
+    var targetUrl = (cleanPhone && cleanPhone.length >= 9) 
+      ? ("https://zalo.me/" + cleanPhone) 
+      : ("https://www.instagram.com/" + INSTAGRAM_USERNAME);
+
+    setTimeout(function() {
+      window.open(targetUrl, "_blank", "noopener,noreferrer");
+    }, 400);
+  }
+
+  // Gán sự kiện
+  if (btnOpen) btnOpen.addEventListener("click", openPaymentModal);
+  if (btnClose) btnClose.addEventListener("click", closePaymentModal);
+  if (backdrop) backdrop.addEventListener("click", closePaymentModal);
+  if (btnConfirm) btnConfirm.addEventListener("click", handlePaymentConfirmation);
+
+  // Nút copy nhanh STK & Mã đơn
+  var btnCopyAccountNo = document.getElementById("btnCopyAccountNo");
+  if (btnCopyAccountNo) {
+    btnCopyAccountNo.addEventListener("click", function() {
+      safeCopyToClipboard(ACCOUNT_NO);
+      alert("Đã sao chép số tài khoản: " + ACCOUNT_NO);
+    });
+  }
+
+  var btnCopyOrderId = document.getElementById("btnCopyOrderId");
+  if (btnCopyOrderId) {
+    btnCopyOrderId.addEventListener("click", function() {
+      safeCopyToClipboard(currentOrderId);
+      alert("Đã sao chép mã đơn: " + currentOrderId);
+    });
+  }
+
+  // Đóng bằng phím Escape
+  window.addEventListener("keydown", function(e) {
+    if (e.key === "Escape" && modal && modal.style.display !== "none") {
+      closePaymentModal();
+    }
+  });
 })();
 </script>
 </body>
