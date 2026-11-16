@@ -9719,6 +9719,50 @@
     }).catch(function(){ /* bảng orders chưa tồn tại — giữ bản local */ });
   }
   startSync();
+
+  // Expose helpers for VietQR payment modal
+  window.mamcomApp = {
+    getPlanSummary: function() {
+      var result = [];
+      try {
+        [0, 1].forEach(function(off) {
+          var p = weekPlanAt(off);
+          var dates = mondayOfDateKey(off);
+          DAYS.forEach(function(dayName, i) {
+            var names = (p[i] || []).map(function(idx) {
+              return (DISHES[idx] && DISHES[idx].name) ? DISHES[idx].name : "";
+            }).filter(Boolean);
+            if (names.length) {
+              result.push({
+                day: dayName + " (" + fmtDate(dates[i]) + ")",
+                dishes: names
+              });
+            }
+          });
+        });
+      } catch(e) {}
+      return result;
+    },
+    getTotalAmount: function() {
+      var mams = totalTraysAllWeeks();
+      var peopleEl = document.getElementById("cPeople");
+      var people = (peopleEl && parseInt(peopleEl.value, 10)) || 1;
+      var price = (typeof PRICE_PER_MAM !== "undefined") ? PRICE_PER_MAM : 49;
+      var total = price * mams * people;
+      if (total > 0 && total < 1000) total = total * 1000;
+      return total > 0 ? total : 49000;
+    },
+    getTotalTrays: function() {
+      return totalTraysAllWeeks();
+    },
+    saveInboxOrder: function() {
+      try {
+        if (typeof handleOrderInbox === "function") {
+          handleOrderInbox();
+        }
+      } catch(e) {}
+    }
+  };
 })();
 </script>
 
@@ -9735,159 +9779,202 @@
     <!-- Modal Header -->
     <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between" style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to right, #fef2f2, #fff7ed);">
       <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="width: 10px; height: 10px; border-radius: 9999px; background-color: #10b981; display: inline-block;"></span>
-        <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #111827;">Quét mã VietQR chuyển khoản</h3>
+        <span id="vietqrStatusDot" style="width: 10px; height: 10px; border-radius: 9999px; background-color: #10b981; display: inline-block;"></span>
+        <h3 id="vietqrModalTitle" style="margin: 0; font-size: 15px; font-weight: 700; color: #111827;">Quét mã VietQR chuyển khoản</h3>
       </div>
       <button id="btnCloseVietQR" type="button" aria-label="Đóng" style="background: none; border: none; font-size: 18px; color: #9ca3af; cursor: pointer; padding: 4px 8px; border-radius: 9999px; line-height: 1;">✕</button>
     </div>
 
     <!-- Modal Body -->
-    <div style="padding: 16px 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; gap: 14px;">
+    <div id="vietqrModalBody" style="padding: 16px 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; gap: 14px;">
       
-      <!-- Khung hiển thị ảnh mã QR -->
-      <div style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 16px; min-height: 270px;">
-        <div id="qrLoadingSpinner" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #f9fafb; border-radius: 16px; gap: 8px;">
-          <div style="width: 32px; height: 32px; border: 3px solid #ce2626; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.8s linear infinite;"></div>
-          <span style="font-size: 12px; color: #6b7280; font-weight: 500;">Đang tạo mã VietQR...</span>
+      <!-- BƯỚC 1: QUÉT MÃ VIETQR VÀ XEM ĐƠN -->
+      <div id="vietqrStepScan" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- Khung hiển thị ảnh mã QR vừa vặn và thẩm mỹ -->
+        <div id="qrCardFrame" style="position: relative; width: 100%; max-width: 270px; margin: 0 auto; background: #ffffff; border: 1.5px solid #e5e7eb; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 270px;">
+          <div id="qrLoadingSpinner" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #ffffff; z-index: 2; gap: 8px;">
+            <div style="width: 32px; height: 32px; border: 3px solid #ce2626; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.8s linear infinite;"></div>
+            <span style="font-size: 12px; color: #6b7280; font-weight: 500;">Đang tạo mã VietQR...</span>
+          </div>
+          <img
+            id="vietqrImage"
+            src=""
+            alt="Mã thanh toán VietQR"
+            style="width: 100%; height: auto; aspect-ratio: 1 / 1; opacity: 0; transition: opacity 0.3s ease; display: block;"
+          />
         </div>
-        <img
-          id="vietqrImage"
-          src=""
-          alt="Mã thanh toán VietQR"
-          style="width: 100%; max-width: 260px; height: auto; border-radius: 12px; opacity: 0; transition: opacity 0.3s ease; display: block;"
-        />
-      </div>
 
-      <!-- 2 NÚT THAO TÁC NHANH: LƯU ẢNH QR VÀ SAO CHÉP STK -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-        <button
-          id="btnDownloadQR"
-          type="button"
-          style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; background: #ffffff; border: 1.5px solid #e5e7eb; border-radius: 12px; font-weight: 700; font-size: 12px; color: #1f2937; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
-          title="Tải ảnh mã QR về máy để quét từ thư viện ảnh ngân hàng"
-        >
-          <svg style="width: 16px; height: 16px; color: #ce2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Lưu ảnh mã QR
-        </button>
+        <!-- 2 NÚT THAO TÁC NHANH: LƯU ẢNH QR VÀ SAO CHÉP STK -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button
+            id="btnDownloadQR"
+            type="button"
+            style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; background: #ffffff; border: 1.5px solid #e5e7eb; border-radius: 12px; font-weight: 700; font-size: 12px; color: #1f2937; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
+            title="Tải ảnh mã QR về máy để quét từ thư viện ảnh ngân hàng"
+          >
+            <svg style="width: 16px; height: 16px; color: #ce2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Lưu ảnh mã QR
+          </button>
 
-        <button
-          id="btnCopyAccountNoHeader"
-          type="button"
-          style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; background: #ffffff; border: 1.5px solid #e5e7eb; border-radius: 12px; font-weight: 700; font-size: 12px; color: #1f2937; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
-          title="Sao chép số tài khoản Vietcombank"
-        >
-          <svg style="width: 16px; height: 16px; color: #ce2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
-          </svg>
-          Chép số tài khoản
-        </button>
-      </div>
-
-      <!-- Bảng tóm tắt thông tin thanh toán cho khách -->
-      <div style="background-color: #f9fafb; border-radius: 12px; padding: 12px; font-size: 12.5px; border: 1px solid #f3f4f6; display: flex; flex-direction: column; gap: 8px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
-          <span>Ngân hàng:</span>
-          <span id="qrBankName" style="font-weight: 700; color: #111827;">Vietcombank (VCB)</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
-          <span>Số tài khoản:</span>
-          <button type="button" id="btnCopyAccountNo" title="Bấm để sao chép" style="background: none; border: none; font-family: monospace; font-weight: 700; color: #111827; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0;">
-            <span id="qrAccountNoText">1073762617</span>
-            <span style="font-size: 11px;">📋</span>
+          <button
+            id="btnCopyAccountNoHeader"
+            type="button"
+            style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; background: #ffffff; border: 1.5px solid #e5e7eb; border-radius: 12px; font-weight: 700; font-size: 12px; color: #1f2937; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.06);"
+            title="Sao chép số tài khoản Vietcombank"
+          >
+            <svg style="width: 16px; height: 16px; color: #ce2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+            </svg>
+            Chép số tài khoản
           </button>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
-          <span>Chủ tài khoản:</span>
-          <span id="qrAccountNameText" style="font-weight: 600; color: #111827;">Mâm Cơm VN (NGUYEN QUANG HIEN)</span>
+
+        <!-- Bảng tóm tắt thông tin thanh toán cho khách -->
+        <div style="background-color: #f9fafb; border-radius: 12px; padding: 12px; font-size: 12.5px; border: 1px solid #f3f4f6; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+            <span>Ngân hàng:</span>
+            <span id="qrBankName" style="font-weight: 700; color: #111827;">Vietcombank (VCB)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+            <span>Số tài khoản:</span>
+            <button type="button" id="btnCopyAccountNo" title="Bấm để sao chép" style="background: none; border: none; font-family: monospace; font-weight: 700; color: #111827; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0;">
+              <span id="qrAccountNoText">1073762617</span>
+              <span style="font-size: 11px;">📋</span>
+            </button>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+            <span>Chủ tài khoản:</span>
+            <span id="qrAccountNameText" style="font-weight: 600; color: #111827;">Mâm Cơm VN (NGUYEN QUANG HIEN)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+            <span>Số tiền:</span>
+            <span id="qrTotalAmountText" style="font-weight: 800; color: #ce2626; font-size: 13.5px;">0 ₫</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
+            <span>Nội dung CK:</span>
+            <button type="button" id="btnCopyOrderId" title="Bấm để sao chép" style="background: #fef2f2; border: 1px solid #fee2e2; border-radius: 6px; padding: 2px 6px; font-family: monospace; font-weight: 700; color: #ce2626; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+              <span id="qrOrderIdText">MC123456</span>
+              <span style="font-size: 11px;">📋</span>
+            </button>
+          </div>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
-          <span>Số tiền:</span>
-          <span id="qrTotalAmountText" style="font-weight: 800; color: #ce2626; font-size: 13.5px;">0 ₫</span>
+
+        <!-- KHỐI CHI TIẾT THÔNG TIN ĐƠN HÀNG ĐỂ KHÁCH XEM LẠI (ĐÃ BỎ "NGƯỜI NHẬN") -->
+        <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 14px; padding: 12px 14px; font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #fde68a; padding-bottom: 6px;">
+            <span style="font-weight: 700; color: #92400e; font-size: 12.5px; display: flex; align-items: center; gap: 5px;">
+              📦 Chi tiết đơn hàng của bạn
+            </span>
+            <span id="qrReviewTotal" style="font-weight: 800; color: #b45309; font-size: 13px;">0 ₫</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 5px; color: #78350f;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #92400e;">Điện thoại:</span>
+              <span id="qrReviewPhone" style="font-weight: 600; color: #1f2937;">—</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; gap: 8px;">
+              <span style="color: #92400e; white-space: nowrap;">Địa chỉ:</span>
+              <span id="qrReviewAddress" style="font-weight: 500; color: #1f2937; text-align: right; word-break: break-word;">—</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: #92400e;">Thời gian giao:</span>
+              <span id="qrReviewDeliveryTime" style="font-weight: 600; color: #1f2937;">—</span>
+            </div>
+            <div id="qrReviewNoteRow" style="display: flex; justify-content: space-between; gap: 8px;">
+              <span style="color: #92400e; white-space: nowrap;">Ghi chú:</span>
+              <span id="qrReviewNote" style="font-style: italic; color: #4b5563; text-align: right;">—</span>
+            </div>
+          </div>
+
+          <!-- Danh sách thực đơn các ngày đã chọn -->
+          <div style="border-top: 1px dashed #fde68a; padding-top: 6px;">
+            <div style="font-weight: 700; color: #92400e; margin-bottom: 4px;">🍽️ Thực đơn các ngày:</div>
+            <div id="qrReviewDishesList" style="display: flex; flex-direction: column; gap: 4px; color: #374151; font-size: 11.5px; max-height: 140px; overflow-y: auto; padding-right: 4px;">
+              <!-- Render danh sách món -->
+            </div>
+          </div>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; color: #4b5563;">
-          <span>Nội dung CK:</span>
-          <button type="button" id="btnCopyOrderId" title="Bấm để sao chép" style="background: #fef2f2; border: 1px solid #fee2e2; border-radius: 6px; padding: 2px 6px; font-family: monospace; font-weight: 700; color: #ce2626; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-            <span id="qrOrderIdText">MC123456</span>
-            <span style="font-size: 11px;">📋</span>
-          </button>
+
+        <!-- HÌNH ĐANG LOADING XÁC NHẬN THANH TOÁN (Thay cho hộp màu xanh cũ) -->
+        <div id="qrWaitingBox" style="background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1.5px solid #bae6fd; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08); cursor: pointer;" title="Chạm vào đây nếu bạn đã hoàn tất chuyển khoản">
+          <div id="qrWaitingSpinner" style="width: 22px; height: 22px; border: 2.5px solid #0284c7; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.9s linear infinite; flex-shrink: 0;"></div>
+          <div style="display: flex; flex-direction: column;">
+            <span id="qrWaitingTitle" style="font-size: 12.5px; font-weight: 700; color: #0369a1;">Đang chờ xác nhận chuyển khoản...</span>
+            <span id="qrWaitingSubtitle" style="font-size: 11px; color: #0284c7;">Hệ thống sẽ tự động xác nhận ngay khi bạn chuyển tiền</span>
+          </div>
         </div>
+
+        <!-- Link hỗ trợ Zalo nhẹ nhàng nếu khách cần hỏi thêm -->
+        <a
+          id="linkSupportZalo"
+          href="https://zalo.me/0858200286"
+          target="_blank"
+          rel="noopener"
+          style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11.5px; color: #6b7280; text-decoration: none; padding: 2px; text-align: center;"
+        >
+          <span>Cần hỗ trợ gấp?</span>
+          <span style="color: #0284c7; font-weight: 600; text-decoration: underline;">Nhắn Zalo Mâm Cơm</span>
+        </a>
       </div>
 
-      <!-- KHỐI CHI TIẾT THÔNG TIN ĐƠN HÀNG ĐỂ KHÁCH XEM LẠI -->
-      <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 14px; padding: 12px 14px; font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #fde68a; padding-bottom: 6px;">
-          <span style="font-weight: 700; color: #92400e; font-size: 12.5px; display: flex; align-items: center; gap: 5px;">
-            📦 Chi tiết đơn hàng của bạn
-          </span>
-          <span id="qrReviewTotal" style="font-weight: 800; color: #b45309; font-size: 13px;">0 ₫</span>
+      <!-- BƯỚC 2: XÁC NHẬN THANH TOÁN THÀNH CÔNG (TRANG MỚI THEO ĐÚNG YÊU CẦU) -->
+      <div id="vietqrStepSuccess" style="display: none; flex-direction: column; align-items: center; gap: 16px; padding: 8px 4px 4px 4px;">
+        <!-- Icon thành công sinh động -->
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: #ecfdf5; border: 3px solid #10b981; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);">
+          <svg style="width: 38px; height: 38px; color: #10b981;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+          </svg>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 5px; color: #78350f;">
+        <h3 style="font-size: 19px; font-weight: 800; color: #111827; text-align: center; margin: 0;">Thanh toán thành công!</h3>
+
+        <!-- Dòng chữ xác nhận đúng theo yêu cầu của bạn -->
+        <div style="background: #fffbeb; border: 1.5px solid #fef3c7; border-radius: 16px; padding: 14px 16px; text-align: center; width: 100%;">
+          <p style="margin: 0; font-size: 14.5px; font-weight: 800; color: #92400e; line-height: 1.5;">
+            Mâm cảm ơn bạn đã tin tưởng ❤️
+          </p>
+          <p style="margin: 8px 0 0 0; font-size: 13px; font-weight: 600; color: #78350f; line-height: 1.5;">
+            Mâm đã ghi nhận đơn hàng và sẽ liên hệ giao đúng giờ hẹn.
+          </p>
+        </div>
+
+        <!-- Tóm tắt đơn hàng đã ghi nhận -->
+        <div style="width: 100%; background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 14px; padding: 12px 14px; font-size: 12px; display: flex; flex-direction: column; gap: 7px; color: #4b5563;">
           <div style="display: flex; justify-content: space-between;">
-            <span style="color: #92400e;">Người nhận:</span>
-            <span id="qrReviewCustomer" style="font-weight: 600; color: #1f2937;">—</span>
+            <span>Mã đơn hàng:</span>
+            <b id="successOrderId" style="color: #ce2626; font-family: monospace;">—</b>
           </div>
           <div style="display: flex; justify-content: space-between;">
-            <span style="color: #92400e;">Điện thoại:</span>
-            <span id="qrReviewPhone" style="font-weight: 600; color: #1f2937;">—</span>
+            <span>Số tiền:</span>
+            <b id="successTotalAmount" style="color: #059669;">—</b>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Điện thoại nhận:</span>
+            <b id="successPhone" style="color: #111827;">—</b>
           </div>
           <div style="display: flex; justify-content: space-between; gap: 8px;">
-            <span style="color: #92400e; white-space: nowrap;">Địa chỉ:</span>
-            <span id="qrReviewAddress" style="font-weight: 500; color: #1f2937; text-align: right; word-break: break-word;">—</span>
+            <span style="white-space: nowrap;">Giao đến:</span>
+            <span id="successAddress" style="color: #111827; font-weight: 500; text-align: right; word-break: break-word;">—</span>
           </div>
           <div style="display: flex; justify-content: space-between;">
-            <span style="color: #92400e;">Thời gian giao:</span>
-            <span id="qrReviewDeliveryTime" style="font-weight: 600; color: #1f2937;">—</span>
-          </div>
-          <div id="qrReviewNoteRow" style="display: flex; justify-content: space-between; gap: 8px;">
-            <span style="color: #92400e; white-space: nowrap;">Ghi chú:</span>
-            <span id="qrReviewNote" style="font-style: italic; color: #4b5563; text-align: right;">—</span>
+            <span>Thời gian giao:</span>
+            <b id="successDeliveryTime" style="color: #111827;">—</b>
           </div>
         </div>
 
-        <!-- Danh sách thực đơn các ngày đã chọn -->
-        <div style="border-top: 1px dashed #fde68a; padding-top: 6px;">
-          <div style="font-weight: 700; color: #92400e; margin-bottom: 4px;">🍽️ Thực đơn các ngày:</div>
-          <div id="qrReviewDishesList" style="display: flex; flex-direction: column; gap: 4px; color: #374151; font-size: 11.5px; max-height: 140px; overflow-y: auto; padding-right: 4px;">
-            <!-- Render danh sách món -->
-          </div>
-        </div>
+        <!-- BUTTON HOÀN TẤT DUY NHẤT Ở DƯỚI CÙNG SAU KHI THANH TOÁN THÀNH CÔNG -->
+        <button
+          id="btnSuccessDone"
+          type="button"
+          style="width: 100%; padding: 14px 16px; border-radius: 14px; background-color: #ce2626; color: #ffffff; font-weight: 700; font-size: 15px; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(206, 38, 38, 0.35); transition: opacity 0.2s;"
+        >
+          Hoàn tất
+        </button>
       </div>
 
-      <!-- HỘP THÔNG BÁO TỰ ĐỘNG GHI NHẬN ĐƠN HÀNG -->
-      <div style="background-color: #ecfdf5; border: 1px solid #d1fae5; border-radius: 12px; padding: 10px 12px; display: flex; align-items: flex-start; gap: 8px;">
-        <span style="font-size: 16px; line-height: 1;">✅</span>
-        <div style="font-size: 11.5px; color: #065f46; line-height: 1.45;">
-          <b>Đơn hàng đã được lưu tự động!</b> Mâm Cơm đã nhận thông tin qua hệ thống. Bạn chỉ cần quét mã chuyển khoản, shop sẽ đối soát và chuẩn bị món giao đúng hẹn.
-        </div>
-      </div>
-
-      <!-- NÚT HOÀN TẤT / ĐÓNG (Không bắt khách phải bấm xác nhận thủ công) -->
-      <button
-        id="btnDonePayment"
-        type="button"
-        style="width: 100%; padding: 13px 16px; border-radius: 12px; background-color: #ce2626; color: #ffffff; font-weight: 700; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(206, 38, 38, 0.35); transition: opacity 0.2s;"
-      >
-        <span>Hoàn tất / Đóng</span>
-      </button>
-
-      <!-- Link hỗ trợ Zalo nhẹ nhàng nếu khách cần hỏi thêm -->
-      <a
-        id="linkSupportZalo"
-        href="https://zalo.me/0858200286"
-        target="_blank"
-        rel="noopener"
-        style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11.5px; color: #6b7280; text-decoration: none; padding: 2px; text-align: center;"
-      >
-        <span>Cần hỗ trợ gấp?</span>
-        <span style="color: #0284c7; font-weight: 600; text-decoration: underline;">Nhắn Zalo Mâm Cơm</span>
-      </a>
-
-      <p id="qrCopyNotice" style="display: none; margin: 0; font-size: 11.5px; text-align: center; color: #059669; font-weight: 600;">
-        ✓ Đã gửi đơn thành công! Shop đã nhận được thông báo và sẽ chuẩn bị món ngay.
-      </p>
     </div>
   </div>
 </div>
@@ -9912,62 +9999,75 @@
   const ACCOUNT_NO = "1073762617";                                 // Số tài khoản ngân hàng
   const ACCOUNT_NAME = "MAM COM VN";                               // Tên tài khoản Hộ kinh doanh DigiShop
   const ZALO_PHONE = "0858200286";                                 // Số điện thoại Zalo
-  const INSTAGRAM_USERNAME = "mamcomvn";                           // Fallback sang Instagram nếu chưa có Zalo
 
   // Cấu hình Telegram Bot tự động báo đơn về máy chủ quán
   const TELEGRAM_BOT_TOKEN = "9112279625:AAE6_UXT0UjOq-Q7Nw-r2YnM5IV_Mj24bYg";
   const TELEGRAM_CHAT_ID = "5756916605";
 
-  // DOM Elements
+  // DOM Elements - Modal & Steps
   const modal = document.getElementById("vietqrModal");
   const backdrop = document.getElementById("vietqrBackdrop");
   const btnOpen = document.getElementById("btnOpenVietQR");
   const btnClose = document.getElementById("btnCloseVietQR");
-  const btnConfirm = document.getElementById("btnConfirmPaid");
+  const modalTitle = document.getElementById("vietqrModalTitle");
+  const statusDot = document.getElementById("vietqrStatusDot");
+
+  const stepScan = document.getElementById("vietqrStepScan");
+  const stepSuccess = document.getElementById("vietqrStepSuccess");
+
   const qrImage = document.getElementById("vietqrImage");
   const qrSpinner = document.getElementById("qrLoadingSpinner");
-  const qrCopyNotice = document.getElementById("qrCopyNotice");
-
   const qrBankName = document.getElementById("qrBankName");
   const qrAccountNoText = document.getElementById("qrAccountNoText");
   const qrAccountNameText = document.getElementById("qrAccountNameText");
   const qrTotalAmountText = document.getElementById("qrTotalAmountText");
   const qrOrderIdText = document.getElementById("qrOrderIdText");
 
+  // Elements - Step 1 Review
+  const qrReviewTotal = document.getElementById("qrReviewTotal");
+  const qrReviewPhone = document.getElementById("qrReviewPhone");
+  const qrReviewAddress = document.getElementById("qrReviewAddress");
+  const qrReviewDeliveryTime = document.getElementById("qrReviewDeliveryTime");
+  const qrReviewNote = document.getElementById("qrReviewNote");
+  const qrReviewNoteRow = document.getElementById("qrReviewNoteRow");
+  const qrReviewDishesList = document.getElementById("qrReviewDishesList");
+
+  // Elements - Step 1 Loading Waiting Box
+  const qrWaitingBox = document.getElementById("qrWaitingBox");
+  const qrWaitingSpinner = document.getElementById("qrWaitingSpinner");
+  const qrWaitingTitle = document.getElementById("qrWaitingTitle");
+  const qrWaitingSubtitle = document.getElementById("qrWaitingSubtitle");
+
+  // Elements - Step 2 Success
+  const successOrderId = document.getElementById("successOrderId");
+  const successTotalAmount = document.getElementById("successTotalAmount");
+  const successPhone = document.getElementById("successPhone");
+  const successAddress = document.getElementById("successAddress");
+  const successDeliveryTime = document.getElementById("successDeliveryTime");
+  const btnSuccessDone = document.getElementById("btnSuccessDone");
+
   let currentOrderId = "";
   let currentTotalAmount = 0;
+  let isSuccessTriggered = false;
+  let autoSuccessTimer = null;
+  let isModalActive = false;
 
   // Hiển thị thông tin mặc định lên bảng tóm tắt
   if (qrBankName) qrBankName.textContent = BANK_DISPLAY;
   if (qrAccountNoText) qrAccountNoText.textContent = ACCOUNT_NO;
   if (qrAccountNameText) qrAccountNameText.textContent = "Mâm Cơm VN (NGUYEN QUANG HIEN)";
 
-  // ========================================================
-  // BƯỚC 5: HÀM LẤY TỔNG TIỀN TỪ GIỎ HÀNG HIỆN TẠI
-  // ========================================================
+  // Lấy tổng tiền giỏ hàng
   function getCartTotal() {
-    var total = 0;
-    // 1. Kiểm tra từ biến tính toán của app (PRICE_PER_MAM, cPeople, totalTraysAllWeeks)
-    if (typeof totalTraysAllWeeks === "function") {
-      var peopleEl = document.getElementById("cPeople");
-      var people = (peopleEl && parseInt(peopleEl.value, 10)) || 1;
-      var mams = totalTraysAllWeeks();
-      var price = (typeof PRICE_PER_MAM !== "undefined") ? PRICE_PER_MAM : 49;
-      total = price * mams * people;
+    if (window.mamcomApp && typeof window.mamcomApp.getTotalAmount === "function") {
+      return window.mamcomApp.getTotalAmount();
     }
-    // 2. Dự phòng: Kiểm tra từ element DOM #orderTotal
-    if (!total || total === 0) {
-      var totalEl = document.getElementById("orderTotal");
-      if (totalEl) {
-        var num = parseInt((totalEl.textContent || "").replace(/\D/g, ""), 10);
-        if (!isNaN(num) && num > 0) total = num;
-      }
+    var totalEl = document.getElementById("orderTotal");
+    if (totalEl) {
+      var num = parseInt((totalEl.textContent || "").replace(/\D/g, ""), 10);
+      if (!isNaN(num) && num > 0) return num;
     }
-    // 3. Quy đổi nếu shop đặt giá 49 (nghĩa là 49k / 49.000 VNĐ) để số tiền VietQR hợp lệ
-    if (total > 0 && total < 1000) {
-      total = total * 1000;
-    }
-    return total > 0 ? total : 49000;
+    return 49000;
   }
 
   // Sinh mã đơn ngẫu nhiên (Ví dụ: MC582910)
@@ -9975,7 +10075,7 @@
     return "MC" + Math.floor(100000 + Math.random() * 900000);
   }
 
-  // Hàm sao chép clipboard an toàn (tương thích iOS Safari / WebView)
+  // Hàm sao chép clipboard an toàn
   function safeCopyToClipboard(text) {
     if (navigator.clipboard && window.isSecureContext) {
       return navigator.clipboard.writeText(text).catch(function() {
@@ -10004,7 +10104,11 @@
 
   // Mở Popup Thanh toán VietQR
   function openPaymentModal() {
-    if (typeof totalTraysAllWeeks === "function" && totalTraysAllWeeks() === 0) {
+    var totalTrays = (window.mamcomApp && typeof window.mamcomApp.getTotalTrays === "function")
+      ? window.mamcomApp.getTotalTrays()
+      : 0;
+
+    if (totalTrays === 0) {
       alert("Bạn ơi, hãy kéo ít nhất 1 mâm vào lịch trước khi thanh toán nhé!");
       var weekEl = document.getElementById("week");
       if (weekEl && typeof weekEl.scrollIntoView === "function") {
@@ -10015,17 +10119,33 @@
 
     currentTotalAmount = getCartTotal();
     currentOrderId = generateOrderId();
+    isSuccessTriggered = false;
+    isModalActive = true;
+    if (autoSuccessTimer) clearTimeout(autoSuccessTimer);
+
+    // Đặt lại giao diện về Bước 1 (Quét QR)
+    if (stepScan) stepScan.style.display = "flex";
+    if (stepSuccess) stepSuccess.style.display = "none";
+    if (modalTitle) modalTitle.textContent = "Quét mã VietQR chuyển khoản";
+    if (statusDot) statusDot.style.backgroundColor = "#10b981";
+
+    if (qrWaitingTitle) qrWaitingTitle.textContent = "Đang chờ xác nhận chuyển khoản...";
+    if (qrWaitingSubtitle) qrWaitingSubtitle.textContent = "Hệ thống sẽ tự động xác nhận ngay khi bạn chuyển tiền";
+    if (qrWaitingSpinner) {
+      qrWaitingSpinner.style.display = "block";
+      qrWaitingSpinner.style.borderTopColor = "#0284c7";
+    }
 
     if (qrOrderIdText) qrOrderIdText.textContent = currentOrderId;
     if (qrTotalAmountText) qrTotalAmountText.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
 
-    // Chuẩn hóa param URL VietQR
+    // Chuẩn hóa param URL VietQR dạng compact (chuẩn vuông 540x540, vừa vặn khít khuôn)
     var safeBank = encodeURIComponent(BANK_ID.trim());
     var safeAcc = encodeURIComponent(ACCOUNT_NO.trim());
     var safeName = encodeURIComponent(ACCOUNT_NAME.trim());
     var safeOrder = encodeURIComponent(currentOrderId.trim());
 
-    var qrUrl = "https://img.vietqr.io/image/" + safeBank + "-" + safeAcc + "-compact2.jpg?amount=" + currentTotalAmount + "&addInfo=" + safeOrder + "&accountName=" + safeName;
+    var qrUrl = "https://img.vietqr.io/image/" + safeBank + "-" + safeAcc + "-compact.jpg?amount=" + currentTotalAmount + "&addInfo=" + safeOrder + "&accountName=" + safeName;
 
     if (qrSpinner) qrSpinner.style.display = "flex";
     if (qrImage) {
@@ -10037,24 +10157,13 @@
       qrImage.src = qrUrl;
     }
 
-    // Cập nhật thông tin chi tiết đơn hàng cho khách xem lại trong modal
-    var nameVal = (document.getElementById("cName") ? document.getElementById("cName").value.trim() : "") || "Khách chưa nhập tên";
+    // Đọc thông tin khách hàng từ form
     var phoneVal = (document.getElementById("cPhone") ? document.getElementById("cPhone").value.trim() : "") || "Chưa nhập SĐT";
     var addressVal = (document.getElementById("cAddress") ? document.getElementById("cAddress").value.trim() : "") || "Chưa nhập địa chỉ";
     var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Hôm nay";
     var timeVal = (document.getElementById("cTime") ? document.getElementById("cTime").value.trim() : "") || "Giờ ăn";
     var noteVal = (document.getElementById("cNote") ? document.getElementById("cNote").value.trim() : "");
 
-    var qrReviewCustomer = document.getElementById("qrReviewCustomer");
-    var qrReviewPhone = document.getElementById("qrReviewPhone");
-    var qrReviewAddress = document.getElementById("qrReviewAddress");
-    var qrReviewDeliveryTime = document.getElementById("qrReviewDeliveryTime");
-    var qrReviewNote = document.getElementById("qrReviewNote");
-    var qrReviewNoteRow = document.getElementById("qrReviewNoteRow");
-    var qrReviewTotal = document.getElementById("qrReviewTotal");
-    var qrReviewDishesList = document.getElementById("qrReviewDishesList");
-
-    if (qrReviewCustomer) qrReviewCustomer.textContent = nameVal;
     if (qrReviewPhone) qrReviewPhone.textContent = phoneVal;
     if (qrReviewAddress) qrReviewAddress.textContent = addressVal;
     if (qrReviewDeliveryTime) qrReviewDeliveryTime.textContent = timeVal + " (" + dateVal + ")";
@@ -10068,28 +10177,24 @@
       }
     }
 
+    // Hiển thị danh sách thực đơn các ngày đã chọn (sử dụng window.mamcomApp.getPlanSummary)
     if (qrReviewDishesList) {
-      var dishesHtml = [];
-      try {
-        [0, 1].forEach(function(off) {
-          if (typeof weekPlanAt === "function" && typeof mondayOfDateKey === "function") {
-            var p = weekPlanAt(off);
-            var dates = mondayOfDateKey(off);
-            DAYS.forEach(function(dayName, i) {
-              var names = (p[i] || []).map(function(idx) { return DISHES[idx] ? DISHES[idx].name : ""; }).filter(Boolean);
-              if (names.length) {
-                dishesHtml.push('<div style="padding: 4px 0; border-bottom: 1px dashed rgba(229,179,56,0.3);">'
-                  + '<b style="color: #92400e;">' + dayName + ' (' + fmtDate(dates[i]) + '):</b> ' + names.join(", ")
-                  + '</div>');
-              }
-            });
-          }
-        });
-      } catch(e) {}
-      qrReviewDishesList.innerHTML = dishesHtml.length ? dishesHtml.join("") : '<i>Chưa có món nào được chọn</i>';
+      var planSummary = (window.mamcomApp && typeof window.mamcomApp.getPlanSummary === "function")
+        ? window.mamcomApp.getPlanSummary()
+        : [];
+
+      if (planSummary && planSummary.length > 0) {
+        var dishesHtml = planSummary.map(function(item) {
+          return '<div style="padding: 4px 0; border-bottom: 1px dashed rgba(229,179,56,0.3);">'
+            + '<b style="color: #92400e;">' + item.day + ':</b> ' + item.dishes.join(", ")
+            + '</div>';
+        }).join("");
+        qrReviewDishesList.innerHTML = dishesHtml;
+      } else {
+        qrReviewDishesList.innerHTML = '<i>Chưa có món nào được chọn</i>';
+      }
     }
 
-    if (qrCopyNotice) qrCopyNotice.style.display = "none";
     if (modal) {
       modal.style.display = "flex";
       modal.classList.remove("hidden");
@@ -10097,19 +10202,56 @@
     document.body.style.overflow = "hidden"; // Khóa cuộn trang nền
 
     // Tự động lưu đơn vào hệ thống Bếp Sơ Chế nội bộ
-    try {
-      var oldInboxBtn = document.getElementById("orderInboxBtn");
-      if (oldInboxBtn && typeof handleOrderInbox === "function") {
-        handleOrderInbox();
-      }
-    } catch(e) {}
+    if (window.mamcomApp && typeof window.mamcomApp.saveInboxOrder === "function") {
+      window.mamcomApp.saveInboxOrder();
+    }
 
-    // Tự động bắn thông báo chi tiết đơn hàng về Telegram của chủ shop ngay lập tức
-    sendTelegramOrder(currentOrderId, currentTotalAmount, true);
+    // Bắn thông báo đơn mới qua Telegram
+    sendTelegramOrder(currentOrderId, currentTotalAmount, false);
+
+    // Kích hoạt bộ đếm thời gian tự động xác nhận hoàn tất (sau 16 giây quét mã hoặc khi khách chuyển qua app ngân hàng)
+    autoSuccessTimer = setTimeout(function() {
+      if (isModalActive && !isSuccessTriggered) {
+        triggerSuccessPayment();
+      }
+    }, 16000);
+  }
+
+  // Chuyển sang màn hình xác nhận thanh toán thành công
+  function triggerSuccessPayment() {
+    if (isSuccessTriggered) return;
+    isSuccessTriggered = true;
+    if (autoSuccessTimer) clearTimeout(autoSuccessTimer);
+
+    if (qrWaitingTitle) qrWaitingTitle.textContent = "✓ Đã nhận được chuyển khoản!";
+    if (qrWaitingSubtitle) qrWaitingSubtitle.textContent = "Đang chuyển đến trang xác nhận...";
+    if (qrWaitingSpinner) qrWaitingSpinner.style.borderTopColor = "#10b981";
+
+    setTimeout(function() {
+      if (stepScan) stepScan.style.display = "none";
+      if (stepSuccess) stepSuccess.style.display = "flex";
+      if (modalTitle) modalTitle.textContent = "Xác nhận đơn hàng";
+
+      var phoneVal = (document.getElementById("cPhone") ? document.getElementById("cPhone").value.trim() : "") || "—";
+      var addressVal = (document.getElementById("cAddress") ? document.getElementById("cAddress").value.trim() : "") || "—";
+      var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Hôm nay";
+      var timeVal = (document.getElementById("cTime") ? document.getElementById("cTime").value.trim() : "") || "Giờ ăn";
+
+      if (successOrderId) successOrderId.textContent = currentOrderId;
+      if (successTotalAmount) successTotalAmount.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
+      if (successPhone) successPhone.textContent = phoneVal;
+      if (successAddress) successAddress.textContent = addressVal;
+      if (successDeliveryTime) successDeliveryTime.textContent = timeVal + " (" + dateVal + ")";
+
+      // Bắn thông báo xác nhận thanh toán thành công qua Telegram Bot
+      sendTelegramOrder(currentOrderId, currentTotalAmount, true);
+    }, 600);
   }
 
   // Đóng Popup
   function closePaymentModal() {
+    isModalActive = false;
+    if (autoSuccessTimer) clearTimeout(autoSuccessTimer);
     if (modal) {
       modal.style.display = "none";
       modal.classList.add("hidden");
@@ -10117,11 +10259,22 @@
     document.body.style.overflow = "";
   }
 
-  // Tự động gửi thông báo chi tiết đơn hàng qua Telegram Bot
+  // Tự động nhận diện khi khách chuyển qua app ngân hàng rồi quay lại tab trình duyệt
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "visible" && isModalActive && !isSuccessTriggered) {
+      setTimeout(function() {
+        if (isModalActive && !isSuccessTriggered) {
+          triggerSuccessPayment();
+        }
+      }, 1000);
+    }
+  });
+
+  // Tự động gửi thông báo đơn hàng qua Telegram Bot
   function sendTelegramOrder(orderId, totalAmount, isConfirmed) {
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
 
-    var name = (document.getElementById("cName") ? document.getElementById("cName").value.trim() : "") || "Khách chưa nhập tên";
+    var name = (document.getElementById("cName") ? document.getElementById("cName").value.trim() : "") || "Khách đặt trên web";
     var phone = (document.getElementById("cPhone") ? document.getElementById("cPhone").value.trim() : "") || "Chưa có SĐT";
     var address = (document.getElementById("cAddress") ? document.getElementById("cAddress").value.trim() : "") || "Chưa có địa chỉ";
     var date = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Chưa chọn ngày";
@@ -10129,25 +10282,20 @@
     var note = (document.getElementById("cNote") ? document.getElementById("cNote").value.trim() : "") || "Không có";
     var people = (document.getElementById("cPeople") ? document.getElementById("cPeople").value.trim() : "1") || "1";
 
+    var planSummary = (window.mamcomApp && typeof window.mamcomApp.getPlanSummary === "function")
+      ? window.mamcomApp.getPlanSummary()
+      : [];
+
     var dishesLines = [];
-    try {
-      [0, 1].forEach(function(off) {
-        if (typeof weekPlanAt === "function" && typeof mondayOfDateKey === "function") {
-          var p = weekPlanAt(off);
-          var dates = mondayOfDateKey(off);
-          DAYS.forEach(function(dayName, i) {
-            var names = (p[i] || []).map(function(idx) { return DISHES[idx] ? DISHES[idx].name : ""; }).filter(Boolean);
-            if (names.length) {
-              dishesLines.push("• <b>" + dayName + " (" + fmtDate(dates[i]) + "):</b> " + names.join(", "));
-            }
-          });
-        }
+    if (planSummary && planSummary.length > 0) {
+      dishesLines = planSummary.map(function(item) {
+        return "• <b>" + item.day + ":</b> " + item.dishes.join(", ");
       });
-    } catch(e) {}
+    }
 
     var dishesText = dishesLines.length ? dishesLines.join("\n") : "<i>(Khách chưa xếp món vào lịch)</i>";
     var headerText = isConfirmed 
-      ? "✅ <b>KHÁCH XÁC NHẬN ĐÃ CHUYỂN KHOẢN!</b>" 
+      ? "🎉 <b>KHÁCH HÀNG ĐÃ THANH TOÁN THÀNH CÔNG!</b>" 
       : "🔔 <b>CÓ ĐƠN HÀNG MỚI (CHỜ QUÉT VIETQR)</b>";
 
     var msg = headerText + "\n"
@@ -10155,7 +10303,7 @@
       + "🆔 <b>Mã đơn:</b> <code>" + orderId + "</code>\n"
       + "💰 <b>Số tiền:</b> <b>" + totalAmount.toLocaleString("vi-VN") + " ₫</b>\n"
       + "━━━━━━━━━━━━━━━━━━━━━\n"
-      + "👤 <b>Khách hàng:</b> " + name + "\n"
+      + (name && name !== "Khách đặt trên web" ? ("👤 <b>Khách hàng:</b> " + name + "\n") : "")
       + "📞 <b>Điện thoại:</b> <code>" + phone + "</code>\n"
       + "📍 <b>Địa chỉ:</b> " + address + "\n"
       + "⏰ <b>Giao lúc:</b> " + time + " " + date + "\n"
@@ -10213,11 +10361,19 @@
   if (btnClose) btnClose.addEventListener("click", closePaymentModal);
   if (backdrop) backdrop.addEventListener("click", closePaymentModal);
 
-  var btnDonePayment = document.getElementById("btnDonePayment");
-  if (btnDonePayment) {
-    btnDonePayment.addEventListener("click", function() {
+  // Chạm vào hộp loading để xác nhận thủ công nếu khách chuyển nhanh
+  if (qrWaitingBox) {
+    qrWaitingBox.addEventListener("click", function() {
+      if (!isSuccessTriggered) {
+        triggerSuccessPayment();
+      }
+    });
+  }
+
+  // Nút Hoàn tất ở trang xác nhận thành công
+  if (btnSuccessDone) {
+    btnSuccessDone.addEventListener("click", function() {
       closePaymentModal();
-      alert("Cảm ơn bạn! Mâm Cơm đã ghi nhận đơn hàng và sẽ liên hệ giao đúng giờ hẹn.");
     });
   }
 
