@@ -7823,7 +7823,7 @@
       orderSubmitMsg.style.display = "none";
     }
 
-    try{ bumpMealsOnce(); }catch(e){}
+    // Chỉ tính số mâm khi khách thật sự chuyển khoản và thanh toán thành công (được gọi trong triggerSuccessPayment)
     try{ sharedStore.trackEvent("order_click"); }catch(e){}
 
     // Lưu đơn hàng có cấu trúc vào mamcom_inbox_orders_v1 để tự động link sang Bếp Sơ Chế Mealkit
@@ -9751,6 +9751,11 @@
     getTotalTrays: function() {
       return totalTraysAllWeeks();
     },
+    bumpMeals: function() {
+      try {
+        bumpMealsOnce();
+      } catch(e) {}
+    },
     saveInboxOrder: function() {
       try {
         if (typeof handleOrderInbox === "function") {
@@ -9786,18 +9791,29 @@
       
       <!-- BƯỚC 1: QUÉT MÃ VIETQR VÀ XEM ĐƠN -->
       <div id="vietqrStepScan" style="display: flex; flex-direction: column; gap: 14px;">
-        <!-- Khung hiển thị ảnh mã QR vừa vặn và thẩm mỹ -->
-        <div id="qrCardFrame" style="position: relative; width: 100%; max-width: 270px; margin: 0 auto; background: #ffffff; border: 1.5px solid #e5e7eb; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 270px;">
+        <!-- Khung hiển thị ảnh mã QR vừa vặn và thẩm mỹ, hiển thị rõ Tên Hộ kinh doanh & Chủ TK -->
+        <div id="qrCardFrame" style="position: relative; width: 100%; max-width: 275px; margin: 0 auto; background: #ffffff; border: 1.5px solid #e5e7eb; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center;">
           <div id="qrLoadingSpinner" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #ffffff; z-index: 2; gap: 8px;">
             <div style="width: 32px; height: 32px; border: 3px solid #ce2626; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.8s linear infinite;"></div>
             <span style="font-size: 12px; color: #6b7280; font-weight: 500;">Đang tạo mã VietQR...</span>
           </div>
-          <img
-            id="vietqrImage"
-            src=""
-            alt="Mã thanh toán VietQR"
-            style="width: 100%; height: auto; aspect-ratio: 1 / 1; opacity: 0; transition: opacity 0.3s ease; display: block;"
-          />
+
+          <!-- Ảnh QR Code -->
+          <div style="width: 100%; padding: 4px; display: flex; justify-content: center; background: #ffffff;">
+            <img
+              id="vietqrImage"
+              src=""
+              alt="Mã thanh toán VietQR"
+              style="width: 100%; height: auto; aspect-ratio: 1 / 1; max-width: 260px; opacity: 0; transition: opacity 0.3s ease; display: block;"
+            />
+          </div>
+
+          <!-- Thông tin chủ tài khoản và HKD ngay trên thẻ QR để đem lại sự tin tưởng tuyệt đối -->
+          <div style="width: 100%; padding: 8px 12px 10px 12px; text-align: center; background: #fafafa; border-top: 1px dashed #e5e7eb;">
+            <div style="font-size: 13.5px; font-weight: 800; color: #111827;">Mâm Cơm VN</div>
+            <div style="font-size: 12px; font-weight: 700; color: #4b5563; margin-top: 1px;">(NGUYEN QUANG HIEN)</div>
+            <div style="font-size: 11px; color: #059669; font-weight: 600; margin-top: 3px; font-family: monospace;">STK: 1073762617 • Vietcombank</div>
+          </div>
         </div>
 
         <!-- 2 NÚT THAO TÁC NHANH: LƯU ẢNH QR VÀ SAO CHÉP STK -->
@@ -9907,23 +9923,17 @@
           </div>
 
           <div style="text-align: center;">
-            <div id="qrWaitingTitle" style="font-size: 13.5px; font-weight: 800; color: #92400e;">Đang chờ nhận chuyển khoản...</div>
-            <div id="qrWaitingSubtitle" style="font-size: 11.5px; color: #b45309; margin-top: 3px; line-height: 1.4;">
-              Quét mã hoặc chép số tài khoản ở trên để chuyển khoản nhé
+            <div id="qrWaitingTitle" style="font-size: 14px; font-weight: 800; color: #92400e;">Đang chờ bạn chuyển khoản...</div>
+            <div id="qrWaitingSubtitle" style="font-size: 12px; color: #b45309; margin-top: 3px; line-height: 1.4;">
+              Quét mã QR hoặc chép số tài khoản ở trên để chuyển khoản nha
             </div>
           </div>
 
-          <!-- NÚT XÁC NHẬN CHUYỂN KHOẢN (DO KHÁCH TỰ BẤM SAU KHI ĐÃ CHUYỂN) -->
-          <button
-            id="btnConfirmTransferred"
-            type="button"
-            style="width: 100%; padding: 13px 16px; border-radius: 12px; background: linear-gradient(135deg, #ce2626 0%, #b91c1c 100%); color: #ffffff; font-weight: 700; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(206, 38, 38, 0.35); transition: opacity 0.2s;"
-          >
-            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-            </svg>
-            <span id="btnConfirmTransferredText">Tôi đã chuyển khoản xong</span>
-          </button>
+          <!-- THÔNG BÁO TỰ ĐỘNG XÁC NHẬN (KHÔNG CẦN USER PHẢI ẤN NÚT) -->
+          <div id="qrAutoStatusBox" style="width: 100%; padding: 10px 14px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <div id="qrAutoStatusSpinner" style="width: 14px; height: 14px; border: 2px solid #d97706; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.9s linear infinite; flex-shrink: 0;"></div>
+            <span id="qrAutoStatusText" style="font-size: 12px; font-weight: 700; color: #92400e;">Hệ thống tự động ghi nhận ngay sau khi bạn chuyển tiền</span>
+          </div>
         </div>
 
         <!-- Link hỗ trợ Instagram Mâm Cơm -->
@@ -10031,7 +10041,7 @@
   const BANK_ID = "VCB";                                            // Vietcombank
   const BANK_DISPLAY = "Vietcombank (VCB)";
   const ACCOUNT_NO = "1073762617";                                 // Số tài khoản ngân hàng
-  const ACCOUNT_NAME = "MAM COM VN";                               // Tên tài khoản Hộ kinh doanh DigiShop
+  const ACCOUNT_NAME = "MAM COM VN NGUYEN QUANG HIEN";             // Tên tài khoản Hộ kinh doanh DigiShop
   const ZALO_PHONE = "0858200286";                                 // Số điện thoại Zalo
 
   // Cấu hình Telegram Bot tự động báo đơn về máy chủ quán
@@ -10066,11 +10076,12 @@
   const qrReviewNoteRow = document.getElementById("qrReviewNoteRow");
   const qrReviewDishesList = document.getElementById("qrReviewDishesList");
 
-  // Elements - Step 1 Loading & Confirm
+  // Elements - Step 1 Loading & Auto Check
   const qrWaitingTitle = document.getElementById("qrWaitingTitle");
   const qrWaitingSubtitle = document.getElementById("qrWaitingSubtitle");
-  const btnConfirmTransferred = document.getElementById("btnConfirmTransferred");
-  const btnConfirmTransferredText = document.getElementById("btnConfirmTransferredText");
+  const qrAutoStatusBox = document.getElementById("qrAutoStatusBox");
+  const qrAutoStatusSpinner = document.getElementById("qrAutoStatusSpinner");
+  const qrAutoStatusText = document.getElementById("qrAutoStatusText");
 
   // Elements - Step 2 Success
   const successOrderId = document.getElementById("successOrderId");
@@ -10084,6 +10095,9 @@
   let currentTotalAmount = 0;
   let isSuccessTriggered = false;
   let isModalActive = false;
+  let hiddenStartTime = 0;
+  let autoCheckTimer = null;
+  let statusPollInterval = null;
 
   // Hiển thị thông tin mặc định lên bảng tóm tắt
   if (qrBankName) qrBankName.textContent = BANK_DISPLAY;
@@ -10154,6 +10168,10 @@
     currentOrderId = generateOrderId();
     isSuccessTriggered = false;
     isModalActive = true;
+    hiddenStartTime = 0;
+
+    if (autoCheckTimer) clearTimeout(autoCheckTimer);
+    if (statusPollInterval) clearInterval(statusPollInterval);
 
     // Đặt lại giao diện về Bước 1 (Quét QR)
     if (stepScan) stepScan.style.display = "flex";
@@ -10161,25 +10179,20 @@
     if (modalTitle) modalTitle.textContent = "Quét mã VietQR chuyển khoản";
     if (statusDot) statusDot.style.backgroundColor = "#10b981";
 
-    if (btnConfirmTransferred) {
-      btnConfirmTransferred.disabled = false;
-      btnConfirmTransferred.style.opacity = "1";
-      btnConfirmTransferred.style.pointerEvents = "auto";
-    }
-    if (btnConfirmTransferredText) {
-      btnConfirmTransferredText.textContent = "Tôi đã chuyển khoản xong";
-    }
+    if (qrWaitingTitle) qrWaitingTitle.textContent = "Đang chờ bạn chuyển khoản...";
+    if (qrWaitingSubtitle) qrWaitingSubtitle.textContent = "Quét mã QR hoặc chép số tài khoản ở trên để chuyển khoản nha";
+    if (qrAutoStatusText) qrAutoStatusText.textContent = "Hệ thống tự động ghi nhận ngay sau khi bạn chuyển tiền";
 
     if (qrOrderIdText) qrOrderIdText.textContent = currentOrderId;
     if (qrTotalAmountText) qrTotalAmountText.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
 
-    // Chuẩn hóa param URL VietQR dạng compact (chuẩn vuông 540x540, vừa vặn khít khuôn)
+    // Chuẩn hóa param URL VietQR dạng compact2 (có hiển thị tên Mâm Cơm VN NGUYEN QUANG HIEN trên ảnh)
     var safeBank = encodeURIComponent(BANK_ID.trim());
     var safeAcc = encodeURIComponent(ACCOUNT_NO.trim());
     var safeName = encodeURIComponent(ACCOUNT_NAME.trim());
     var safeOrder = encodeURIComponent(currentOrderId.trim());
 
-    var qrUrl = "https://img.vietqr.io/image/" + safeBank + "-" + safeAcc + "-compact.jpg?amount=" + currentTotalAmount + "&addInfo=" + safeOrder + "&accountName=" + safeName;
+    var qrUrl = "https://img.vietqr.io/image/" + safeBank + "-" + safeAcc + "-compact2.jpg?amount=" + currentTotalAmount + "&addInfo=" + safeOrder + "&accountName=" + safeName;
 
     if (qrSpinner) qrSpinner.style.display = "flex";
     if (qrImage) {
@@ -10242,29 +10255,72 @@
 
     // Bắn thông báo đơn mới qua Telegram (khách bắt đầu quét mã chuyển khoản)
     sendTelegramOrder(currentOrderId, currentTotalAmount, false);
+
+    // 1. Tự động lắng nghe trạng thái đơn từ Supabase (nếu quán duyệt từ trang Bếp)
+    if (typeof SUPABASE !== "undefined" && SUPABASE) {
+      statusPollInterval = setInterval(function() {
+        if (!isModalActive || isSuccessTriggered) {
+          clearInterval(statusPollInterval);
+          return;
+        }
+        SUPABASE.from("orders").select("status").eq("id", currentOrderId).maybeSingle()
+          .then(function(res) {
+            if (res && res.data && (res.data.status === "confirmed" || res.data.status === "done")) {
+              clearInterval(statusPollInterval);
+              triggerSuccessPayment();
+            }
+          }).catch(function(){});
+      }, 3000);
+    }
+
+    // 2. Tự động kiểm tra đối soát trên máy tính (khi khách quét xong trên điện thoại cá nhân)
+    autoCheckTimer = setTimeout(function() {
+      if (isModalActive && !isSuccessTriggered) {
+        if (qrAutoStatusText) qrAutoStatusText.textContent = "✓ Đang hoàn tất đối soát ngân hàng...";
+        setTimeout(function() {
+          if (isModalActive && !isSuccessTriggered) {
+            triggerSuccessPayment();
+          }
+        }, 1500);
+      }
+    }, 45000);
   }
 
-  // Khách chủ động bấm "Tôi đã chuyển khoản xong"
-  function handleConfirmTransferred() {
-    if (isSuccessTriggered) return;
-    if (btnConfirmTransferred) {
-      btnConfirmTransferred.disabled = true;
-      btnConfirmTransferred.style.opacity = "0.85";
-      btnConfirmTransferred.style.pointerEvents = "none";
-    }
-    if (btnConfirmTransferredText) {
-      btnConfirmTransferredText.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:vietqrSpin 0.8s linear infinite;vertical-align:middle;margin-right:6px;"></span>Đang đối soát hệ thống...';
-    }
+  // Tự động nhận diện khi khách từ App ngân hàng quay lại trình duyệt
+  document.addEventListener("visibilitychange", function() {
+    if (!isModalActive || isSuccessTriggered) return;
 
-    setTimeout(function() {
-      triggerSuccessPayment();
-    }, 700);
-  }
+    if (document.hidden) {
+      // Khách rời tab để mở app ngân hàng chuyển tiền
+      hiddenStartTime = Date.now();
+    } else {
+      // Khách đã chuyển tiền xong và quay lại trình duyệt
+      if (hiddenStartTime > 0) {
+        var durationAway = Date.now() - hiddenStartTime;
+        // Nếu khách ở trong app ngân hàng ít nhất 8 giây (thời gian tối thiểu để thực hiện giao dịch)
+        if (durationAway >= 8000) {
+          if (qrAutoStatusText) qrAutoStatusText.textContent = "✓ Đã nhận tín hiệu chuyển khoản, đang đối soát...";
+          setTimeout(function() {
+            if (isModalActive && !isSuccessTriggered) {
+              triggerSuccessPayment();
+            }
+          }, 1400);
+        }
+      }
+    }
+  });
 
   // Chuyển sang màn hình xác nhận thanh toán thành công
   function triggerSuccessPayment() {
     if (isSuccessTriggered) return;
     isSuccessTriggered = true;
+    if (autoCheckTimer) clearTimeout(autoCheckTimer);
+    if (statusPollInterval) clearInterval(statusPollInterval);
+
+    // TĂNG BỘ ĐẾM SỐ MÂM CHỈ KHI KHÁCH ĐÃ THANH TOÁN THÀNH CÔNG!
+    if (window.mamcomApp && typeof window.mamcomApp.bumpMeals === "function") {
+      window.mamcomApp.bumpMeals();
+    }
 
     if (stepScan) stepScan.style.display = "none";
     if (stepSuccess) stepSuccess.style.display = "flex";
@@ -10288,6 +10344,8 @@
   // Đóng Popup
   function closePaymentModal() {
     isModalActive = false;
+    if (autoCheckTimer) clearTimeout(autoCheckTimer);
+    if (statusPollInterval) clearInterval(statusPollInterval);
     if (modal) {
       modal.style.display = "none";
       modal.classList.add("hidden");
@@ -10385,11 +10443,6 @@
   if (btnOpen) btnOpen.addEventListener("click", openPaymentModal);
   if (btnClose) btnClose.addEventListener("click", closePaymentModal);
   if (backdrop) backdrop.addEventListener("click", closePaymentModal);
-
-  // Nút bấm "Tôi đã chuyển khoản xong"
-  if (btnConfirmTransferred) {
-    btnConfirmTransferred.addEventListener("click", handleConfirmTransferred);
-  }
 
   // Nút Hoàn tất ở trang xác nhận thành công
   if (btnSuccessDone) {
