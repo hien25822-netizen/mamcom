@@ -9972,16 +9972,40 @@
   // Bấm nút "Tôi đã chuyển khoản"
   async function handlePaymentConfirmation() {
     var formattedAmount = currentTotalAmount.toLocaleString("vi-VN") + "đ";
-    var clipboardText = "Mình đã thanh toán cho đơn hàng " + currentOrderId + ", số tiền " + formattedAmount + ". Shop check nhé!";
+    var orderDetailText = "";
+    try {
+      if (typeof buildText === "function") {
+        orderDetailText = buildText();
+      }
+    } catch(e) {}
 
-    // 1. Sao chép tin nhắn vào Clipboard
+    var clipboardText = "✅ ĐÃ CHUYỂN KHOẢN THANH TOÁN\n"
+      + "Mã đơn hàng: " + currentOrderId + "\n"
+      + "Số tiền: " + formattedAmount + "\n"
+      + "--------------------------------\n"
+      + "CHI TIẾT ĐƠN HÀNG:\n"
+      + (orderDetailText ? orderDetailText : ("Đơn hàng: " + currentOrderId)) + "\n"
+      + "--------------------------------\n"
+      + "Shop Mâm Cơm kiểm tra tài khoản và xác nhận giúp mình nhé!";
+
+    // 1. Sao chép tin nhắn đầy đủ vào Clipboard
     await safeCopyToClipboard(clipboardText);
+
+    // 2. Kích hoạt lưu đơn vào hệ thống quản lý đơn nếu có
+    try {
+      var oldInboxBtn = document.getElementById("orderInboxBtn");
+      if (oldInboxBtn && typeof handleOrderInbox === "function") {
+        handleOrderInbox();
+        // Đảm bảo clipboard lưu đúng nội dung có kèm mã đơn chuyển khoản
+        await safeCopyToClipboard(clipboardText);
+      }
+    } catch(e) {}
 
     if (qrCopyNotice) {
       qrCopyNotice.style.display = "block";
     }
 
-    // 2. Mở Zalo (hoặc Instagram fallback)
+    // 3. Mở Zalo (hoặc Instagram fallback)
     var cleanPhone = ZALO_PHONE.replace(/\D/g, "");
     var targetUrl = (cleanPhone && cleanPhone.length >= 9) 
       ? ("https://zalo.me/" + cleanPhone) 
