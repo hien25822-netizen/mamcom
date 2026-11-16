@@ -3878,8 +3878,8 @@
             <button class="btn btn--primary order__send" id="orderInboxBtn" type="button" style="display: none;" aria-hidden="true">📋 Sao chép và Dán vào Inbox</button>
             <p class="order__needTray" id="orderNeedTray">Hãy kéo ít nhất 1 mâm vào lịch trước khi đặt</p>
             
-            <!-- 3 Button mở app Instagram, TikTok và Threads trực tiếp -->
-            <div class="order__social-apps" id="orderSocialApps">
+            <!-- 3 Button mở app Instagram, TikTok và Threads trực tiếp (ẩn vì đã chuyển sang thanh toán online) -->
+            <div class="order__social-apps" id="orderSocialApps" style="display: none;">
               <a class="order__app-btn order__app-btn--ig" id="btnOpenInstagram" href="instagram://user?username=mamcomvn" target="_blank" rel="noopener">
                 <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                 <span>Mở Instagram Mâm Cơm</span>
@@ -7818,13 +7818,9 @@
       }
     });
 
-    flashCopy(ok ? "✓ Đã sao chép toàn bộ đơn!" : "Không sao chép được");
-
     if(orderSubmitMsg){
-      orderSubmitMsg.innerHTML = ok
-        ? "✓ <b>Đã sao chép đơn thành công!</b> Bạn hãy bấm <b>Mở Instagram</b>, <b>Tiktok</b> hoặc <b>Threads</b> bên dưới để DÁN vào inbox nhé "
-        : "Chưa sao chép được, bạn hãy thử bấm lại nhé!";
-      orderSubmitMsg.className = "order__submitMsg" + (ok ? " is-ok" : "");
+      orderSubmitMsg.innerHTML = "";
+      orderSubmitMsg.style.display = "none";
     }
 
     try{ bumpMealsOnce(); }catch(e){}
@@ -9898,25 +9894,53 @@
           </div>
         </div>
 
-        <!-- HÌNH ĐANG LOADING XÁC NHẬN THANH TOÁN (Thay cho hộp màu xanh cũ) -->
-        <div id="qrWaitingBox" style="background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1.5px solid #bae6fd; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08); cursor: pointer;" title="Chạm vào đây nếu bạn đã hoàn tất chuyển khoản">
-          <div id="qrWaitingSpinner" style="width: 22px; height: 22px; border: 2.5px solid #0284c7; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.9s linear infinite; flex-shrink: 0;"></div>
-          <div style="display: flex; flex-direction: column;">
-            <span id="qrWaitingTitle" style="font-size: 12.5px; font-weight: 700; color: #0369a1;">Đang chờ xác nhận chuyển khoản...</span>
-            <span id="qrWaitingSubtitle" style="font-size: 11px; color: #0284c7;">Hệ thống sẽ tự động xác nhận ngay khi bạn chuyển tiền</span>
+        <!-- HÌNH ĐỘNG LOADING THỂ HIỆN SỰ CHỜ ĐỢI & THÚC ĐẨY CHUYỂN KHOẢN -->
+        <div id="qrWaitingContainer" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a; border-radius: 18px; padding: 16px 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08);">
+          
+          <!-- Radar / Vòng sóng lan tỏa chuyển động sinh động -->
+          <div style="position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+            <div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 3px solid #f59e0b; opacity: 0.8; animation: pulseRingWave 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;"></div>
+            <div style="position: absolute; width: 80%; height: 80%; border-radius: 50%; border: 2.5px solid #d97706; opacity: 0.5; animation: pulseRingWave 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) 0.6s infinite;"></div>
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: #ffffff; border: 2px solid #f59e0b; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25); z-index: 1;">
+              <span style="font-size: 20px; animation: hourglassFlip 2.5s ease-in-out infinite; display: inline-block;">⏳</span>
+            </div>
           </div>
+
+          <div style="text-align: center;">
+            <div id="qrWaitingTitle" style="font-size: 13.5px; font-weight: 800; color: #92400e;">Đang chờ nhận chuyển khoản...</div>
+            <div id="qrWaitingSubtitle" style="font-size: 11.5px; color: #b45309; margin-top: 3px; line-height: 1.4;">
+              Quét mã hoặc chép số tài khoản ở trên để chuyển khoản nhé
+            </div>
+          </div>
+
+          <!-- NÚT XÁC NHẬN CHUYỂN KHOẢN (DO KHÁCH TỰ BẤM SAU KHI ĐÃ CHUYỂN) -->
+          <button
+            id="btnConfirmTransferred"
+            type="button"
+            style="width: 100%; padding: 13px 16px; border-radius: 12px; background: linear-gradient(135deg, #ce2626 0%, #b91c1c 100%); color: #ffffff; font-weight: 700; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(206, 38, 38, 0.35); transition: opacity 0.2s;"
+          >
+            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span id="btnConfirmTransferredText">Tôi đã chuyển khoản xong</span>
+          </button>
         </div>
 
-        <!-- Link hỗ trợ Zalo nhẹ nhàng nếu khách cần hỏi thêm -->
+        <!-- Link hỗ trợ Instagram Mâm Cơm -->
         <a
-          id="linkSupportZalo"
-          href="https://zalo.me/0858200286"
+          id="linkSupportInstagram"
+          href="https://www.instagram.com/mamcomvn/"
           target="_blank"
           rel="noopener"
-          style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11.5px; color: #6b7280; text-decoration: none; padding: 2px; text-align: center;"
+          style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: #6b7280; text-decoration: none; padding: 4px; text-align: center;"
         >
           <span>Cần hỗ trợ gấp?</span>
-          <span style="color: #0284c7; font-weight: 600; text-decoration: underline;">Nhắn Zalo Mâm Cơm</span>
+          <span style="color: #e1306c; font-weight: 700; text-decoration: underline; display: flex; align-items: center; gap: 4px;">
+            <svg style="width: 14px; height: 14px;" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            Nhắn Instagram Mâm Cơm
+          </span>
         </a>
       </div>
 
@@ -9984,6 +10008,16 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+@keyframes pulseRingWave {
+  0% { transform: scale(0.85); opacity: 0.9; }
+  50% { transform: scale(1.35); opacity: 0.35; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+@keyframes hourglassFlip {
+  0%, 15% { transform: rotate(0deg); }
+  45%, 55% { transform: rotate(180deg); }
+  85%, 100% { transform: rotate(360deg); }
+}
 </style>
 
 <!-- ======================================================== -->
@@ -10032,11 +10066,11 @@
   const qrReviewNoteRow = document.getElementById("qrReviewNoteRow");
   const qrReviewDishesList = document.getElementById("qrReviewDishesList");
 
-  // Elements - Step 1 Loading Waiting Box
-  const qrWaitingBox = document.getElementById("qrWaitingBox");
-  const qrWaitingSpinner = document.getElementById("qrWaitingSpinner");
+  // Elements - Step 1 Loading & Confirm
   const qrWaitingTitle = document.getElementById("qrWaitingTitle");
   const qrWaitingSubtitle = document.getElementById("qrWaitingSubtitle");
+  const btnConfirmTransferred = document.getElementById("btnConfirmTransferred");
+  const btnConfirmTransferredText = document.getElementById("btnConfirmTransferredText");
 
   // Elements - Step 2 Success
   const successOrderId = document.getElementById("successOrderId");
@@ -10049,7 +10083,6 @@
   let currentOrderId = "";
   let currentTotalAmount = 0;
   let isSuccessTriggered = false;
-  let autoSuccessTimer = null;
   let isModalActive = false;
 
   // Hiển thị thông tin mặc định lên bảng tóm tắt
@@ -10121,7 +10154,6 @@
     currentOrderId = generateOrderId();
     isSuccessTriggered = false;
     isModalActive = true;
-    if (autoSuccessTimer) clearTimeout(autoSuccessTimer);
 
     // Đặt lại giao diện về Bước 1 (Quét QR)
     if (stepScan) stepScan.style.display = "flex";
@@ -10129,11 +10161,13 @@
     if (modalTitle) modalTitle.textContent = "Quét mã VietQR chuyển khoản";
     if (statusDot) statusDot.style.backgroundColor = "#10b981";
 
-    if (qrWaitingTitle) qrWaitingTitle.textContent = "Đang chờ xác nhận chuyển khoản...";
-    if (qrWaitingSubtitle) qrWaitingSubtitle.textContent = "Hệ thống sẽ tự động xác nhận ngay khi bạn chuyển tiền";
-    if (qrWaitingSpinner) {
-      qrWaitingSpinner.style.display = "block";
-      qrWaitingSpinner.style.borderTopColor = "#0284c7";
+    if (btnConfirmTransferred) {
+      btnConfirmTransferred.disabled = false;
+      btnConfirmTransferred.style.opacity = "1";
+      btnConfirmTransferred.style.pointerEvents = "auto";
+    }
+    if (btnConfirmTransferredText) {
+      btnConfirmTransferredText.textContent = "Tôi đã chuyển khoản xong";
     }
 
     if (qrOrderIdText) qrOrderIdText.textContent = currentOrderId;
@@ -10206,69 +10240,60 @@
       window.mamcomApp.saveInboxOrder();
     }
 
-    // Bắn thông báo đơn mới qua Telegram
+    // Bắn thông báo đơn mới qua Telegram (khách bắt đầu quét mã chuyển khoản)
     sendTelegramOrder(currentOrderId, currentTotalAmount, false);
+  }
 
-    // Kích hoạt bộ đếm thời gian tự động xác nhận hoàn tất (sau 16 giây quét mã hoặc khi khách chuyển qua app ngân hàng)
-    autoSuccessTimer = setTimeout(function() {
-      if (isModalActive && !isSuccessTriggered) {
-        triggerSuccessPayment();
-      }
-    }, 16000);
+  // Khách chủ động bấm "Tôi đã chuyển khoản xong"
+  function handleConfirmTransferred() {
+    if (isSuccessTriggered) return;
+    if (btnConfirmTransferred) {
+      btnConfirmTransferred.disabled = true;
+      btnConfirmTransferred.style.opacity = "0.85";
+      btnConfirmTransferred.style.pointerEvents = "none";
+    }
+    if (btnConfirmTransferredText) {
+      btnConfirmTransferredText.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:vietqrSpin 0.8s linear infinite;vertical-align:middle;margin-right:6px;"></span>Đang đối soát hệ thống...';
+    }
+
+    setTimeout(function() {
+      triggerSuccessPayment();
+    }, 700);
   }
 
   // Chuyển sang màn hình xác nhận thanh toán thành công
   function triggerSuccessPayment() {
     if (isSuccessTriggered) return;
     isSuccessTriggered = true;
-    if (autoSuccessTimer) clearTimeout(autoSuccessTimer);
 
-    if (qrWaitingTitle) qrWaitingTitle.textContent = "✓ Đã nhận được chuyển khoản!";
-    if (qrWaitingSubtitle) qrWaitingSubtitle.textContent = "Đang chuyển đến trang xác nhận...";
-    if (qrWaitingSpinner) qrWaitingSpinner.style.borderTopColor = "#10b981";
+    if (stepScan) stepScan.style.display = "none";
+    if (stepSuccess) stepSuccess.style.display = "flex";
+    if (modalTitle) modalTitle.textContent = "Xác nhận đơn hàng";
 
-    setTimeout(function() {
-      if (stepScan) stepScan.style.display = "none";
-      if (stepSuccess) stepSuccess.style.display = "flex";
-      if (modalTitle) modalTitle.textContent = "Xác nhận đơn hàng";
+    var phoneVal = (document.getElementById("cPhone") ? document.getElementById("cPhone").value.trim() : "") || "—";
+    var addressVal = (document.getElementById("cAddress") ? document.getElementById("cAddress").value.trim() : "") || "—";
+    var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Hôm nay";
+    var timeVal = (document.getElementById("cTime") ? document.getElementById("cTime").value.trim() : "") || "Giờ ăn";
 
-      var phoneVal = (document.getElementById("cPhone") ? document.getElementById("cPhone").value.trim() : "") || "—";
-      var addressVal = (document.getElementById("cAddress") ? document.getElementById("cAddress").value.trim() : "") || "—";
-      var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Hôm nay";
-      var timeVal = (document.getElementById("cTime") ? document.getElementById("cTime").value.trim() : "") || "Giờ ăn";
+    if (successOrderId) successOrderId.textContent = currentOrderId;
+    if (successTotalAmount) successTotalAmount.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
+    if (successPhone) successPhone.textContent = phoneVal;
+    if (successAddress) successAddress.textContent = addressVal;
+    if (successDeliveryTime) successDeliveryTime.textContent = timeVal + " (" + dateVal + ")";
 
-      if (successOrderId) successOrderId.textContent = currentOrderId;
-      if (successTotalAmount) successTotalAmount.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
-      if (successPhone) successPhone.textContent = phoneVal;
-      if (successAddress) successAddress.textContent = addressVal;
-      if (successDeliveryTime) successDeliveryTime.textContent = timeVal + " (" + dateVal + ")";
-
-      // Bắn thông báo xác nhận thanh toán thành công qua Telegram Bot
-      sendTelegramOrder(currentOrderId, currentTotalAmount, true);
-    }, 600);
+    // Bắn thông báo xác nhận thanh toán thành công qua Telegram Bot
+    sendTelegramOrder(currentOrderId, currentTotalAmount, true);
   }
 
   // Đóng Popup
   function closePaymentModal() {
     isModalActive = false;
-    if (autoSuccessTimer) clearTimeout(autoSuccessTimer);
     if (modal) {
       modal.style.display = "none";
       modal.classList.add("hidden");
     }
     document.body.style.overflow = "";
   }
-
-  // Tự động nhận diện khi khách chuyển qua app ngân hàng rồi quay lại tab trình duyệt
-  document.addEventListener("visibilitychange", function() {
-    if (document.visibilityState === "visible" && isModalActive && !isSuccessTriggered) {
-      setTimeout(function() {
-        if (isModalActive && !isSuccessTriggered) {
-          triggerSuccessPayment();
-        }
-      }, 1000);
-    }
-  });
 
   // Tự động gửi thông báo đơn hàng qua Telegram Bot
   function sendTelegramOrder(orderId, totalAmount, isConfirmed) {
@@ -10361,13 +10386,9 @@
   if (btnClose) btnClose.addEventListener("click", closePaymentModal);
   if (backdrop) backdrop.addEventListener("click", closePaymentModal);
 
-  // Chạm vào hộp loading để xác nhận thủ công nếu khách chuyển nhanh
-  if (qrWaitingBox) {
-    qrWaitingBox.addEventListener("click", function() {
-      if (!isSuccessTriggered) {
-        triggerSuccessPayment();
-      }
-    });
+  // Nút bấm "Tôi đã chuyển khoản xong"
+  if (btnConfirmTransferred) {
+    btnConfirmTransferred.addEventListener("click", handleConfirmTransferred);
   }
 
   // Nút Hoàn tất ở trang xác nhận thành công
