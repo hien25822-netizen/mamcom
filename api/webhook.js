@@ -6,8 +6,10 @@ export default async function handler(req, res) {
 
   const SUPABASE_URL = "https://sdlpldhldyyytkbpujdk.supabase.co";
   const SUPABASE_KEY = "sb_publishable_9-Z47h5jf1Dtj2ZJ-RslwA_RjL1rz9_";
-  const TELEGRAM_BOT_TOKEN = "9112279625:AAE6_UXT0UjOq-Q7Nw-r2YnM5IV_Mj24bYg";
-  const TELEGRAM_CHAT_ID = "5756916605";
+  
+  // Đọc Bot Token và Chat ID từ Biến Môi Trường Vercel
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "5756916605";
 
   try {
     const payload = req.body || {};
@@ -21,7 +23,7 @@ export default async function handler(req, res) {
       orderId = match[0].toUpperCase();
     }
 
-    // 1. Định dạng SePay: payload.content hoặc payload.description
+    // 1. Định dạng SePay/PayOS: payload.content hoặc payload.transferAmount
     if (payload.transferAmount) {
       transferAmount = Number(payload.transferAmount) || 0;
     } else if (payload.data && payload.data.amount) {
@@ -40,18 +42,20 @@ export default async function handler(req, res) {
         body: JSON.stringify({ p_order_id: orderId })
       });
 
-      // Bắn thông báo Telegram tự động
-      try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: `🎉 <b>HỆ THỐNG NGÂN HÀNG ĐÃ NHẬN TIỀN TỰ ĐỘNG!</b>\n━━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Mã đơn:</b> <code>${orderId}</code>\n💰 <b>Số tiền:</b> ${transferAmount ? transferAmount.toLocaleString("vi-VN") + " ₫" : "Đã đối soát khớp"}\n⚡ Màn hình khách đã tự động hoàn tất và số mâm đã được cộng.`,
-            parse_mode: "HTML"
-          })
-        });
-      } catch(e) {}
+      // Bắn thông báo Telegram tự động nếu đã cấu hình Token
+      if (TELEGRAM_BOT_TOKEN) {
+        try {
+          await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: TELEGRAM_CHAT_ID,
+              text: `🎉 <b>HỆ THỐNG NGÂN HÀNG ĐÃ NHẬN TIỀN TỰ ĐỘNG!</b>\n━━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Mã đơn:</b> <code>${orderId}</code>\n💰 <b>Số tiền:</b> ${transferAmount ? transferAmount.toLocaleString("vi-VN") + " ₫" : "Đã đối soát khớp"}\n⚡ Màn hình khách đã tự động hoàn tất và số mâm đã được cộng.`,
+              parse_mode: "HTML"
+            })
+          });
+        } catch(e) {}
+      }
 
       console.log(`[Webhook] Đã tự động xác nhận đơn hàng: ${orderId}`);
     }

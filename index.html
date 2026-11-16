@@ -10047,10 +10047,6 @@
   const ACCOUNT_NAME = "MAM COM VN NGUYEN QUANG HIEN";             // Tên tài khoản Hộ kinh doanh DigiShop
   const ZALO_PHONE = "0858200286";                                 // Số điện thoại Zalo
 
-  // Cấu hình Telegram Bot tự động báo đơn về máy chủ quán
-  const TELEGRAM_BOT_TOKEN = "9112279625:AAE6_UXT0UjOq-Q7Nw-r2YnM5IV_Mj24bYg";
-  const TELEGRAM_CHAT_ID = "5756916605";
-
   // DOM Elements - Modal & Steps
   const modal = document.getElementById("vietqrModal");
   const backdrop = document.getElementById("vietqrBackdrop");
@@ -10357,8 +10353,6 @@
 
   // Tự động gửi thông báo đơn hàng qua Telegram Bot
   function sendTelegramOrder(orderId, totalAmount, isConfirmed) {
-    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
-
     var name = (document.getElementById("cName") ? document.getElementById("cName").value.trim() : "") || "Khách đặt trên web";
     var phone = (document.getElementById("cPhone") ? document.getElementById("cPhone").value.trim() : "") || "Chưa có SĐT";
     var address = (document.getElementById("cAddress") ? document.getElementById("cAddress").value.trim() : "") || "Chưa có địa chỉ";
@@ -10401,7 +10395,6 @@
       + "🏦 <b>Tài khoản nhận:</b> VCB <code>1073762617</code> (Mâm Cơm VN)";
 
     var reqBody = {
-      chat_id: TELEGRAM_CHAT_ID,
       text: msg,
       parse_mode: "HTML"
     };

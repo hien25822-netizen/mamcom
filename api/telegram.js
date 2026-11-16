@@ -12,8 +12,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const TELEGRAM_BOT_TOKEN = "9112279625:AAE6_UXT0UjOq-Q7Nw-r2YnM5IV_Mj24bYg";
-  const TELEGRAM_CHAT_ID = "5756916605";
+  // Đọc Bot Token và Chat ID từ Biến Môi Trường Vercel (bảo mật tuyệt đối, chống lộ secrets)
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "5756916605";
+
+  if (!TELEGRAM_BOT_TOKEN) {
+    console.warn("TELEGRAM_BOT_TOKEN is not configured in environment variables");
+    return res.status(500).json({ error: "Chưa cấu hình TELEGRAM_BOT_TOKEN trong Environment Variables" });
+  }
 
   const { text, reply_markup } = req.body || {};
 
