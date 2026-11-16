@@ -9929,17 +9929,11 @@
             </div>
           </div>
 
-          <!-- NÚT XÁC NHẬN CHUYỂN KHOẢN (DO KHÁCH BẤM KHI ĐÃ CHUYỂN TIỀN XONG) -->
-          <button
-            id="btnConfirmTransferred"
-            type="button"
-            style="width: 100%; padding: 13px 16px; border-radius: 12px; background: linear-gradient(135deg, #ce2626 0%, #b91c1c 100%); color: #ffffff; font-weight: 700; font-size: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(206, 38, 38, 0.35); transition: opacity 0.2s;"
-          >
-            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-            </svg>
-            <span id="btnConfirmTransferredText">Tôi đã chuyển khoản xong</span>
-          </button>
+          <!-- TRẠNG THÁI TỰ ĐỘNG XÁC NHẬN (HOÀN TOÀN TỰ ĐỘNG, KHÔNG CẦN USER ẤN NÚT) -->
+          <div id="qrAutoStatusBox" style="width: 100%; padding: 12px 14px; background: rgba(245, 158, 11, 0.12); border: 1.5px solid rgba(245, 158, 11, 0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <div id="qrAutoStatusSpinner" style="width: 16px; height: 16px; border: 2.5px solid #d97706; border-top-color: transparent; border-radius: 50%; animation: vietqrSpin 0.9s linear infinite; flex-shrink: 0;"></div>
+            <span id="qrAutoStatusText" style="font-size: 12.5px; font-weight: 700; color: #92400e;">Đang tự động kiểm tra giao dịch từ ngân hàng...</span>
+          </div>
         </div>
 
         <!-- Link hỗ trợ Instagram Mâm Cơm -->
@@ -10082,11 +10076,12 @@
   const qrReviewNoteRow = document.getElementById("qrReviewNoteRow");
   const qrReviewDishesList = document.getElementById("qrReviewDishesList");
 
-  // Elements - Step 1 Loading & Confirm
+  // Elements - Step 1 Loading & Auto Check
   const qrWaitingTitle = document.getElementById("qrWaitingTitle");
   const qrWaitingSubtitle = document.getElementById("qrWaitingSubtitle");
-  const btnConfirmTransferred = document.getElementById("btnConfirmTransferred");
-  const btnConfirmTransferredText = document.getElementById("btnConfirmTransferredText");
+  const qrAutoStatusBox = document.getElementById("qrAutoStatusBox");
+  const qrAutoStatusSpinner = document.getElementById("qrAutoStatusSpinner");
+  const qrAutoStatusText = document.getElementById("qrAutoStatusText");
 
   // Elements - Step 2 Success
   const successOrderId = document.getElementById("successOrderId");
@@ -10180,13 +10175,8 @@
     if (modalTitle) modalTitle.textContent = "Quét mã VietQR chuyển khoản";
     if (statusDot) statusDot.style.backgroundColor = "#10b981";
 
-    if (btnConfirmTransferred) {
-      btnConfirmTransferred.disabled = false;
-      btnConfirmTransferred.style.opacity = "1";
-      btnConfirmTransferred.style.pointerEvents = "auto";
-    }
-    if (btnConfirmTransferredText) {
-      btnConfirmTransferredText.textContent = "Tôi đã chuyển khoản xong";
+    if (qrAutoStatusText) {
+      qrAutoStatusText.textContent = "Đang tự động kiểm tra giao dịch từ ngân hàng...";
     }
 
     if (qrWaitingTitle) qrWaitingTitle.textContent = "Đang chờ bạn chuyển khoản...";
@@ -10219,6 +10209,7 @@
     var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Hôm nay";
     var timeVal = (document.getElementById("cTime") ? document.getElementById("cTime").value.trim() : "") || "Giờ ăn";
     var noteVal = (document.getElementById("cNote") ? document.getElementById("cNote").value.trim() : "");
+    var peopleVal = (document.getElementById("cPeople") ? document.getElementById("cPeople").value.trim() : "1") || "1";
 
     if (qrReviewPhone) qrReviewPhone.textContent = phoneVal;
     if (qrReviewAddress) qrReviewAddress.textContent = addressVal;
@@ -10234,8 +10225,9 @@
     }
 
     // Hiển thị danh sách thực đơn các ngày đã chọn (sử dụng window.mamcomApp.getPlanSummary)
+    var planSummary = [];
     if (qrReviewDishesList) {
-      var planSummary = (window.mamcomApp && typeof window.mamcomApp.getPlanSummary === "function")
+      planSummary = (window.mamcomApp && typeof window.mamcomApp.getPlanSummary === "function")
         ? window.mamcomApp.getPlanSummary()
         : [];
 
@@ -10262,42 +10254,45 @@
       window.mamcomApp.saveInboxOrder();
     }
 
-    // Bắn thông báo đơn mới qua Telegram (khách bắt đầu quét mã chuyển khoản)
+    // Khởi tạo bản ghi đơn hàng với trạng thái "pending" vào Supabase
+    if (typeof SUPABASE !== "undefined" && SUPABASE) {
+      SUPABASE.from("orders").insert({
+        id: currentOrderId,
+        status: "pending",
+        phone: phoneVal,
+        address: addressVal,
+        date: dateVal,
+        time: timeVal,
+        note: noteVal,
+        people: peopleVal,
+        products: planSummary,
+        total: currentTotalAmount
+      }).then(function() {
+        console.log("Đã khởi tạo đơn hàng Supabase:", currentOrderId);
+      }).catch(function(err) {
+        console.warn("Lỗi lưu đơn Supabase:", err);
+      });
+    }
+
+    // Bắn thông báo đơn mới qua Telegram kèm nút xác nhận 1-chạm
     sendTelegramOrder(currentOrderId, currentTotalAmount, false);
 
-    // Lắng nghe cập nhật trạng thái đơn hàng thời gian thực từ hệ thống Bếp/Admin qua Supabase
+    // Lắng nghe cập nhật trạng thái đơn hàng thời gian thực từ hệ thống qua Supabase
     if (typeof SUPABASE !== "undefined" && SUPABASE) {
       statusPollInterval = setInterval(function() {
         if (!isModalActive || isSuccessTriggered) {
           clearInterval(statusPollInterval);
           return;
         }
-        SUPABASE.from("orders").select("status").eq("id", currentOrderId).maybeSingle()
+        SUPABASE.rpc("get_order_status", { p_order_id: currentOrderId })
           .then(function(res) {
-            if (res && res.data && (res.data.status === "confirmed" || res.data.status === "done")) {
+            if (res && (res.data === "confirmed" || res.data === "done")) {
               clearInterval(statusPollInterval);
               triggerSuccessPayment();
             }
           }).catch(function(){});
-      }, 3000);
+      }, 1500);
     }
-  }
-
-  // Khách chủ động bấm "Tôi đã chuyển khoản xong" sau khi đã thanh toán
-  function handleConfirmTransferred() {
-    if (isSuccessTriggered) return;
-    if (btnConfirmTransferred) {
-      btnConfirmTransferred.disabled = true;
-      btnConfirmTransferred.style.opacity = "0.85";
-      btnConfirmTransferred.style.pointerEvents = "none";
-    }
-    if (btnConfirmTransferredText) {
-      btnConfirmTransferredText.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:vietqrSpin 0.8s linear infinite;vertical-align:middle;margin-right:6px;"></span>Đang đối soát hệ thống...';
-    }
-
-    setTimeout(function() {
-      triggerSuccessPayment();
-    }, 700);
   }
 
   // Chuyển sang màn hình xác nhận thanh toán thành công
@@ -10386,15 +10381,30 @@
       + "━━━━━━━━━━━━━━━━━━━━━\n"
       + "🏦 <b>Tài khoản nhận:</b> VCB <code>1073762617</code> (Mâm Cơm VN)";
 
+    var reqBody = {
+      chat_id: TELEGRAM_CHAT_ID,
+      text: msg,
+      parse_mode: "HTML"
+    };
+
+    if (!isConfirmed) {
+      reqBody.reply_markup = {
+        inline_keyboard: [
+          [
+            {
+              text: "✅ Xác nhận đã nhận tiền (" + orderId + ")",
+              url: "https://mamcomvn.vercel.app/api/confirm?id=" + encodeURIComponent(orderId)
+            }
+          ]
+        ]
+      };
+    }
+
     try {
       fetch("https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: msg,
-          parse_mode: "HTML"
-        })
+        body: JSON.stringify(reqBody)
       }).catch(function(err){ console.warn("Telegram fetch error:", err); });
     } catch(err) {
       console.warn("Lỗi gửi Telegram:", err);
@@ -10431,11 +10441,6 @@
   if (btnOpen) btnOpen.addEventListener("click", openPaymentModal);
   if (btnClose) btnClose.addEventListener("click", closePaymentModal);
   if (backdrop) backdrop.addEventListener("click", closePaymentModal);
-
-  // Nút bấm "Tôi đã chuyển khoản xong"
-  if (btnConfirmTransferred) {
-    btnConfirmTransferred.addEventListener("click", handleConfirmTransferred);
-  }
 
   // Nút Hoàn tất ở trang xác nhận thành công
   if (btnSuccessDone) {
