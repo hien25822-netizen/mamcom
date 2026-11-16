@@ -1,4 +1,4 @@
-// Vercel Serverless Function: Webhook nhận biến động số dư từ SePay / PayOS / Casso / Ngân hàng Vietcombank
+// Vercel Serverless Function: Webhook nhận biến động số dư từ PayOS (MB Bank VietQR PRO) / SePay / Casso
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Chỉ chấp nhận phương thức POST" });
@@ -16,18 +16,25 @@ export default async function handler(req, res) {
     let orderId = "";
     let transferAmount = 0;
 
-    // Chuyển toàn bộ payload thành text để quét mã đơn MCxxxxxx
-    const rawText = JSON.stringify(payload);
-    const match = rawText.match(/MC\d{6}/i);
-    if (match) {
-      orderId = match[0].toUpperCase();
+    // 1. Bóc tách mã đơn từ PayOS webhook data
+    if (payload.data && payload.data.orderCode) {
+      orderId = "MC" + payload.data.orderCode;
     }
 
-    // 1. Định dạng SePay/PayOS: payload.content hoặc payload.transferAmount
-    if (payload.transferAmount) {
-      transferAmount = Number(payload.transferAmount) || 0;
-    } else if (payload.data && payload.data.amount) {
+    // 2. Quét regex nếu chưa thấy
+    if (!orderId) {
+      const rawText = JSON.stringify(payload);
+      const match = rawText.match(/MC\d+/i);
+      if (match) {
+        orderId = match[0].toUpperCase();
+      }
+    }
+
+    // 3. Số tiền giao dịch
+    if (payload.data && payload.data.amount) {
       transferAmount = Number(payload.data.amount) || 0;
+    } else if (payload.transferAmount) {
+      transferAmount = Number(payload.transferAmount) || 0;
     }
 
     if (orderId) {
@@ -42,7 +49,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({ p_order_id: orderId })
       });
 
-      // Bắn thông báo Telegram tự động nếu đã cấu hình Token
+      // Bắn thông báo Telegram tự động
       if (TELEGRAM_BOT_TOKEN) {
         try {
           await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -50,17 +57,17 @@ export default async function handler(req, res) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               chat_id: TELEGRAM_CHAT_ID,
-              text: `🎉 <b>HỆ THỐNG NGÂN HÀNG ĐÃ NHẬN TIỀN TỰ ĐỘNG!</b>\n━━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Mã đơn:</b> <code>${orderId}</code>\n💰 <b>Số tiền:</b> ${transferAmount ? transferAmount.toLocaleString("vi-VN") + " ₫" : "Đã đối soát khớp"}\n⚡ Màn hình khách đã tự động hoàn tất và số mâm đã được cộng.`,
+              text: `🎉 <b>KHÁCH HÀNG ĐÃ THANH TOÁN THÀNH CÔNG!</b>\n━━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Mã đơn:</b> <code>${orderId}</code>\n💰 <b>Số tiền:</b> ${transferAmount ? transferAmount.toLocaleString("vi-VN") + " ₫" : "Đã đối soát khớp"}\n🏦 <b>Ngân hàng:</b> MB Bank (VietQR PRO - PayOS)\n⚡ Màn hình khách đã tự động hoàn tất và số mâm đã được cộng vào hệ thống.`,
               parse_mode: "HTML"
             })
           });
         } catch(e) {}
       }
 
-      console.log(`[Webhook] Đã tự động xác nhận đơn hàng: ${orderId}`);
+      console.log(`[PayOS Webhook] Đã tự động xác nhận đơn hàng: ${orderId}`);
     }
 
-    // Luôn trả về HTTP 200 cho cổng thanh toán / ngân hàng
+    // Luôn trả về HTTP 200 cho PayOS
     return res.status(200).json({ success: true, orderId: orderId || null });
   } catch (err) {
     console.error("[Webhook Error]:", err);
