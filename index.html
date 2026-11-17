@@ -1007,18 +1007,79 @@
   .saved.is-collapsed .saved__body {
     display: none;
   }
+  .saved:not(.is-collapsed) .saved__body {
+    display: block;
+    animation: paneFadeIn 0.25s ease;
+  }
   .saved.is-collapsed .saved__toggle-icon svg {
-    transform: rotate(-90deg);
+    transform: rotate(0deg);
+  }
+  .saved:not(.is-collapsed) .saved__toggle-icon svg {
+    transform: rotate(180deg);
   }
   .saved__head-bar {
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
-    transition: opacity 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 18px;
+    background: linear-gradient(135deg, #fffdfa 0%, #fff7ed 100%);
+    border-radius: var(--radius-lg, 16px);
+    transition: background 0.2s ease, opacity 0.15s ease;
   }
   .saved__head-bar:hover {
-    background: #ffff04 !important;
-    opacity: 0.94;
+    background: linear-gradient(135deg, #fff9f0 0%, #ffedd5 100%);
+  }
+  .saved__headline {
+    margin: 0;
+    font-size: 15.5px;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.2px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    line-height: 1.4;
+  }
+  .saved-hl-hours {
+    color: #dc2626 !important;
+    font-weight: 900 !important;
+    background: #fee2e2 !important;
+    border: 1px solid rgba(220, 38, 38, 0.25) !important;
+    padding: 2px 10px !important;
+    border-radius: 999px !important;
+    box-shadow: 0 1px 3px rgba(220, 38, 38, 0.15) !important;
+    display: inline-block !important;
+    letter-spacing: -0.2px !important;
+  }
+  .saved__expand-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #475569;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .saved__head-bar:hover .saved__expand-btn {
+    border-color: #dc2626;
+    color: #dc2626;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
+  }
+  .saved__toggle-icon {
+    display: inline-flex;
+    transition: transform 0.25s var(--spring-bounce);
   }
   .rev__body {
     padding: 16px 18px 20px;
@@ -1897,52 +1958,104 @@
 
   /* ---- ORDER MANAGEMENT IN OWNER MODAL ---- */
   .set__orders-list {
-    max-height: 380px;
+    max-height: 52vh;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding-right: 2px;
+    gap: 12px;
+    padding-right: 4px;
+    -webkit-overflow-scrolling: touch;
   }
   .set__order-card {
     background: #ffffff;
-    border: 1px solid rgba(28, 23, 21, 0.08);
+    border: 1.5px solid #e2e8f0;
     border-radius: 14px;
-    padding: 12px;
+    padding: 13px 14px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    gap: 9px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
   }
   .set__order-card:hover {
-    border-color: rgba(218, 36, 28, 0.25);
+    border-color: rgba(220, 38, 38, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  }
+  .set__order-card[data-status="pending"] {
+    border-left: 4.5px solid #f59e0b;
+  }
+  .set__order-card[data-status="confirmed"] {
+    border-left: 4.5px solid #3b82f6;
+  }
+  .set__order-card[data-status="preparing"] {
+    border-left: 4.5px solid #8b5cf6;
+  }
+  .set__order-card[data-status="done"] {
+    border-left: 4.5px solid #10b981;
+  }
+  .set__order-card[data-status="cancelled"] {
+    border-left: 4.5px solid #94a3b8;
+    opacity: 0.82;
   }
   .set__order-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    flex-wrap: wrap;
   }
   .set__order-code {
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--ink);
+    font-size: 13px;
+    font-weight: 900;
+    color: #0f172a;
     letter-spacing: -0.2px;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    background: #f1f5f9;
+    padding: 2.5px 8px;
+    border-radius: 6px;
   }
   .set__order-status-select {
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 700;
     font-family: inherit;
-    padding: 4px 8px;
+    padding: 4px 9px;
     border-radius: var(--radius-pill);
-    border: 1px solid rgba(0,0,0,0.12);
+    border: 1.5px solid rgba(0,0,0,0.12);
     cursor: pointer;
+    outline: none;
+    transition: all 0.15s ease;
   }
   .set__order-status-select[data-status="pending"] { background: #fffbeb; color: #b45309; border-color: #fde68a; }
   .set__order-status-select[data-status="confirmed"] { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
   .set__order-status-select[data-status="preparing"] { background: #faf5ff; color: #7e22ce; border-color: #e9d5ff; }
   .set__order-status-select[data-status="done"] { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
   .set__order-status-select[data-status="cancelled"] { background: #f3f4f6; color: #4b5563; border-color: #e5e7eb; }
+
+  .btn-order-filter {
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    font-family: inherit;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  .btn-order-filter:hover {
+    border-color: #cbd5e1;
+    color: #0f172a;
+    background: #ffffff;
+  }
+  .btn-order-filter.is-active {
+    background: #dc2626 !important;
+    border-color: #dc2626 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.28) !important;
+  }
+
   .set__order-info {
     font-size: 12px;
     color: var(--ink-light);
@@ -1979,8 +2092,8 @@
     margin-top: 2px;
   }
   .set__order-total {
-    font-size: 13px;
-    font-weight: 800;
+    font-size: 13.5px;
+    font-weight: 900;
     color: var(--red);
     font-variant-numeric: tabular-nums;
   }
@@ -4105,23 +4218,25 @@
       </div>
       </form>
 
-      <!-- TIME SAVED (BẠN TIẾT KIỆM ĐƯỢC BAO NHIÊU THỜI GIAN NẾU ĐẶT MÂM? - CÓ THỂ ĐÓNG/MỞ) -->
+      <!-- TIME SAVED (BẠN TIẾT KIỆM ĐƯỢC ... GIỜ KHI ĐẶT MÂM - TỰ ĐỘNG THU GỌN KHI MỚI MỞ WEB) -->
 
-      <div class="saved" id="savedBox" hidden>
-        <div class="panel__head saved__head-bar" id="savedToggleBtn" role="button" tabindex="0" aria-expanded="true" title="Bấm để đóng / mở phần tiết kiệm thời gian">
-          <div class="panel__title-group" style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;">
-            <h2 style="font-size:16px;">Bạn tiết kiệm được bao nhiêu thời gian nếu đặt Mâm?</h2>
-            <p class="saved__subtitle" id="savedNow" style="margin:2px 0 0;font-size:12px;color:#7a4b10;font-weight:600;"></p>
+      <div class="saved is-collapsed" id="savedBox">
+        <div class="panel__head saved__head-bar" id="savedToggleBtn" role="button" tabindex="0" aria-expanded="false" title="Bấm để xem chi tiết thời gian tiết kiệm">
+          <div class="panel__title-group" style="display:flex;align-items:center;">
+            <h2 class="saved__headline" id="savedHeadline">
+              Bạn tiết kiệm được <span class="saved-hl-hours" id="savedHeaderHours">195 giờ</span> khi đặt Mâm
+            </h2>
           </div>
-          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-            <span class="hint" id="savedToggleHint" style="font-size:11px;color:#7a4b10;">Thu gọn</span>
-            <span class="saved__toggle-icon" id="savedToggleIcon" style="transition:transform 0.25s ease;display:inline-flex;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#261109" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          <div class="saved__expand-btn" id="savedExpandBtn" aria-hidden="true">
+            <span class="hint" id="savedToggleHint" style="font-size:11.5px;font-weight:700;color:#475569;">Mở rộng</span>
+            <span class="saved__toggle-icon" id="savedToggleIcon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </span>
           </div>
         </div>
 
         <div class="saved__body" id="savedBody">
+          <p class="saved__subtitle" id="savedNow" style="margin:0 0 16px;font-size:12.5px;color:#78350f;line-height:1.55;font-weight:600;"></p>
 
         <div class="saved__kpis">
           <div class="saved__kpi">
@@ -4229,8 +4344,8 @@
 
     <!-- KẾT NỐI MẠNG XÃ HỘI (ĐƯỢC ĐƯA RA NGOÀI Ô ĐƠN ĐỂ KHÁCH TẬP TRUNG 100% VÀO NÚT THANH TOÁN) -->
     <div class="site-social-section" style="max-width: 680px; margin: 26px auto 12px; text-align: center; padding: 0 16px;">
-      <p style="font-size: 13px; font-weight: 700; color: #78350f; margin-bottom: 10px;">
-        Theo dõi &amp; kết nối cùng Mâm Cơm trên mạng xã hội
+      <p style="font-size: 13.5px; font-weight: 800; color: #1e293b; margin-bottom: 10px; letter-spacing: -0.1px;">
+        ✨ Theo dõi &amp; kết nối cùng Mâm Cơm trên mạng xã hội
       </p>
       <div class="order__social-apps" id="orderSocialApps" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
         <a class="order__app-btn order__app-btn--ig" id="btnOpenInstagram" href="instagram://user?username=mamcomvn" target="_blank" rel="noopener">
@@ -4327,7 +4442,7 @@
 
 <!-- OWNER SETTINGS (opens on logo click; PIN-gated) -->
 <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="setTitle">
-  <div class="modal__box" style="max-width:480px">
+  <div class="modal__box" style="max-width:540px;width:100%;">
     <div class="modal__head">
       <div class="modal__title-group">
         <h3 id="setTitle">Cài đặt chủ Bếp</h3>
@@ -4338,30 +4453,57 @@
       </button>
     </div>
 
-    <!-- TABS NAVIGATION -->
+    <!-- TABS NAVIGATION (SẮP XẾP LOGIC & TRẬT TỰ QUẢN TRỊ CHUẨN) -->
     <div class="set__tabs" role="tablist">
-      <button type="button" class="set__tab-btn is-active" data-tab="setPaneStats" role="tab" aria-selected="true">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-        <span>Hiệu quả</span>
-      </button>
-      <button type="button" class="set__tab-btn" data-tab="setPaneOrders" role="tab" aria-selected="false">
+      <button type="button" class="set__tab-btn is-active" data-tab="setPaneOrders" role="tab" aria-selected="true">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         <span>Đơn hàng</span>
         <span class="set__tab-badge" id="setOrdersCountBadge">0</span>
-      </button>
-      <button type="button" class="set__tab-btn" data-tab="setPaneConfig" role="tab" aria-selected="false">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Cài đặt &amp; Sao lưu</span>
       </button>
       <button type="button" class="set__tab-btn" data-tab="setPaneDiscount" role="tab" aria-selected="false">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         <span>Khuyến mãi</span>
         <span class="set__tab-badge" id="setDiscountStatusBadge" style="display:none;background:#10b981;color:#fff;font-size:9px;padding:1px 5px;">ON</span>
       </button>
+      <button type="button" class="set__tab-btn" data-tab="setPaneStats" role="tab" aria-selected="false">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        <span>Hiệu quả</span>
+      </button>
+      <button type="button" class="set__tab-btn" data-tab="setPaneConfig" role="tab" aria-selected="false">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Cài đặt &amp; Sao lưu</span>
+      </button>
     </div>
 
-    <!-- PANE 1: ANALYTICS -->
-    <div class="set__pane is-active" id="setPaneStats">
+    <!-- PANE 1: QUẢN LÝ ĐƠN HÀNG CHI TIẾT & BỘ LỌC TRẠNG THÁI -->
+    <div class="set__pane is-active" id="setPaneOrders">
+      <div class="set__head-row" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="set__label" style="margin:0;font-size:14px;font-weight:800;color:#1e293b;">Danh sách đơn hàng</div>
+          <span class="set__tab-badge" id="setOrdersTotalBadge" style="background:#dc2626;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;">0</span>
+        </div>
+        <button class="set__refresh-btn" type="button" id="setRefreshOrders" title="Cập nhật đơn hàng mới nhất" style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;border:1px solid #cbd5e1;background:#fff;font-size:11.5px;font-weight:700;cursor:pointer;color:#475569;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+          Làm mới
+        </button>
+      </div>
+
+      <!-- FILTER TRẠNG THÁI ĐƠN HÀNG -->
+      <div class="set__order-filters" id="orderStatusFilters" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;-webkit-overflow-scrolling:touch;">
+        <button type="button" class="btn-order-filter is-active" data-filter="all">Tất cả (<span id="cntFilterAll">0</span>)</button>
+        <button type="button" class="btn-order-filter" data-filter="pending">⏳ Chờ xác nhận (<span id="cntFilterPending">0</span>)</button>
+        <button type="button" class="btn-order-filter" data-filter="confirmed">👨‍🍳 Đã xác nhận (<span id="cntFilterConfirmed">0</span>)</button>
+        <button type="button" class="btn-order-filter" data-filter="preparing">🍳 Đang chuẩn bị (<span id="cntFilterPreparing">0</span>)</button>
+        <button type="button" class="btn-order-filter" data-filter="done">✓ Hoàn thành (<span id="cntFilterDone">0</span>)</button>
+        <button type="button" class="btn-order-filter" data-filter="cancelled">✕ Đã hủy (<span id="cntFilterCancelled">0</span>)</button>
+      </div>
+
+      <div class="set__orders-list" id="setOrdersList"></div>
+      <p class="set__empty" id="setOrdersEmpty" hidden style="text-align:center;padding:32px 16px;color:#94a3b8;font-size:13px;font-weight:600;">Chưa có đơn hàng nào trong mục này.</p>
+    </div>
+
+    <!-- PANE 2: THỐNG KÊ HIỆU QUẢ -->
+    <div class="set__pane" id="setPaneStats">
       <div class="set__sec set__sec--stats" style="border-top:0;padding-top:0">
         <div class="set__head-row">
           <div class="set__label">Hiệu quả đơn hàng</div>
@@ -4411,19 +4553,26 @@
         <p class="set__hint" style="margin-top:8px">🟢 Dữ liệu đồng bộ trực tiếp máy chủ PostgreSQL với cơ chế chống giả lập.</p>
       </div>
     </div>
-
-    <!-- PANE 2: ORDERS MANAGEMENT -->
-    <div class="set__pane" id="setPaneOrders">
-      <div class="set__head-row" style="margin-bottom:8px">
-        <div class="set__label">Danh sách đơn hàng khách gửi</div>
-        <button class="set__refresh-btn" type="button" id="setRefreshOrders" title="Cập nhật đơn hàng mới nhất">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
-          Làm mới
-        </button>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statMealsCount">0</div>
+          </div>
+          <div class="set__stat-card">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">TỶ LỆ CHỐT ĐƠN</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--conv">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statConvRate">0%</div>
+          </div>
+        </div>
+        <p class="set__hint" style="margin-top:8px">🟢 Dữ liệu đồng bộ trực tiếp máy chủ PostgreSQL với cơ chế chống giả lập.</p>
       </div>
-      <div class="set__orders-list" id="setOrdersList"></div>
-      <p class="set__empty" id="setOrdersEmpty" hidden>Chưa có đơn hàng nào.</p>
     </div>
+
+
 
     <!-- PANE 3: CONFIG & BACKUP -->
     <div class="set__pane" id="setPaneConfig">
@@ -7956,10 +8105,9 @@
 
   function updateSavings(){
     var meals = totalTraysAllWeeks();
-    if(meals === 0){ savedBox.hidden = true; return; }
-    savedBox.hidden = false;
+    var countMeals = meals > 0 ? meals : 5; // Mặc định chuẩn 5 bữa/tuần khi khách chưa chọn để tính ra 195 giờ/năm
 
-    var weekMin = meals * MIN_PER_MEAL;
+    var weekMin = countMeals * MIN_PER_MEAL;
     var monthMin = weekMin * 4;
     var yearMin = weekMin * 52;
 
@@ -7968,15 +8116,24 @@
     var yearHours = Math.round(yearMin / 60);
     var yearDays = (yearMin / (60 * 24)).toFixed(1).replace(".0", "");
 
+    // Cập nhật câu tiêu đề chính duy nhất: "Bạn tiết kiệm được ... giờ khi đặt Mâm"
+    var headerHoursEl = document.getElementById("savedHeaderHours");
+    if(headerHoursEl) headerHoursEl.textContent = yearHours + " giờ";
+
     // Cập nhật số liệu các KPI
     var yearDaysRound = Math.round(yearMin / (60 * 24));
-    document.getElementById("savedNow").innerHTML =
-      "Mỗi bữa ăn hàng ngày thường tốn ít nhất <b>45 phút</b> để nghĩ món, đi chợ, di chuyển và sơ chế. " +
-      "Với <b>" + meals + " mâm</b> bạn đã chọn, Mâm Cơm trao lại cho bạn trọn vẹn <strong>" + fmtDuration(weekMin) + "</strong> thảnh thơi mỗi tuần " +
-      "— tích lũy tương đương <strong>" + yearHours + " giờ rảnh (~" + yearDaysRound + " ngày trọn vẹn)</strong> mỗi năm!";
+    var savedNowEl = document.getElementById("savedNow");
+    if(savedNowEl){
+      savedNowEl.innerHTML = meals > 0
+        ? ("Mỗi bữa ăn hàng ngày thường tốn ít nhất <b>45 phút</b> để nghĩ món, đi chợ, di chuyển và sơ chế. " +
+           "Với <b>" + meals + " mâm</b> bạn đã chọn, Mâm Cơm trao lại cho bạn trọn vẹn <strong>" + fmtDuration(weekMin) + "</strong> thảnh thơi mỗi tuần " +
+           "— tích lũy tương đương <strong>" + yearHours + " giờ rảnh (~" + yearDaysRound + " ngày trọn vẹn)</strong> mỗi năm!")
+        : ("Mỗi bữa ăn hàng ngày trung bình tốn ít nhất <b>45 phút</b> để nghĩ món, đi chợ, nấu nướng và dọn rửa. " +
+           "Đặt Mâm Cơm đều đặn giúp bạn lấy lại trọn vẹn <strong>" + yearHours + " giờ rảnh rỗi (~" + yearDaysRound + " ngày trọn vẹn)</strong> cả năm để dành cho bản thân và gia đình!");
+    }
 
     document.getElementById("savedWeek").textContent = fmtDuration(weekMin);
-    document.getElementById("savedWeekUnit").textContent = "với " + meals + " mâm đã chọn";
+    document.getElementById("savedWeekUnit").textContent = meals > 0 ? ("với " + meals + " mâm đã chọn") : "chuẩn 5 mâm/tuần";
     document.getElementById("savedMonth").textContent = monthHours + " giờ";
     document.getElementById("savedYear").textContent = yearHours + " giờ";
     
@@ -9979,71 +10136,236 @@
     });
   }
 
+  var currentOrderFilter = "all";
+  var cachedOwnerOrders = [];
+
+  function updateOrderFilterCounts(orders) {
+    orders = orders || [];
+    var counts = { all: orders.length, pending: 0, confirmed: 0, preparing: 0, done: 0, cancelled: 0 };
+    orders.forEach(function(o) {
+      var s = o.status || "pending";
+      if (counts[s] !== undefined) counts[s]++;
+    });
+    var elAll = document.getElementById("cntFilterAll");
+    var elPend = document.getElementById("cntFilterPending");
+    var elConf = document.getElementById("cntFilterConfirmed");
+    var elPrep = document.getElementById("cntFilterPreparing");
+    var elDone = document.getElementById("cntFilterDone");
+    var elCanc = document.getElementById("cntFilterCancelled");
+    if (elAll) elAll.textContent = counts.all;
+    if (elPend) elPend.textContent = counts.pending;
+    if (elConf) elConf.textContent = counts.confirmed;
+    if (elPrep) elPrep.textContent = counts.preparing;
+    if (elDone) elDone.textContent = counts.done;
+    if (elCanc) elCanc.textContent = counts.cancelled;
+
+    if (setOrdersCountBadge) {
+      setOrdersCountBadge.textContent = String(counts.pending > 0 ? counts.pending : counts.all);
+    }
+    var totBadge = document.getElementById("setOrdersTotalBadge");
+    if (totBadge) totBadge.textContent = String(counts.all);
+  }
+
+  function applyOrderFilter() {
+    if (!setOrdersList) return;
+    var filtered = (cachedOwnerOrders || []).filter(function(o) {
+      if (currentOrderFilter === "all") return true;
+      return (o.status || "pending") === currentOrderFilter;
+    });
+
+    if (!filtered.length) {
+      setOrdersList.innerHTML = "";
+      if (setOrdersEmpty) setOrdersEmpty.hidden = false;
+      return;
+    }
+    if (setOrdersEmpty) setOrdersEmpty.hidden = true;
+
+    setOrdersList.innerHTML = filtered.map(function(o) {
+      var timeStr = o.created_at ? fmtTs(new Date(o.created_at).getTime()) : "";
+      var rawTotal = typeof o.total === "number" ? o.total : parseInt(o.total, 10) || 0;
+      var totalFmt = rawTotal >= 1000 ? (rawTotal.toLocaleString("vi-VN") + "đ") : ((rawTotal * 1000).toLocaleString("vi-VN") + "đ");
+
+      var cleanPhone = (o.phone || "").replace(/\D/g, "");
+      var phoneHtml = o.phone
+        ? '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px;">' +
+            '<a href="tel:' + escAttr(o.phone) + '" class="set__order-phone">📞 <strong>' + escHtml(o.phone) + '</strong></a>' +
+            '<button type="button" class="btn-copy-phone" data-phone="' + escAttr(o.phone) + '" style="background:#f1f5f9;border:1px solid #cbd5e1;padding:2px 7px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:#475569;">Copy</button>' +
+            (cleanPhone ? '<a href="https://zalo.me/' + escAttr(cleanPhone) + '" target="_blank" rel="noopener" style="background:#0068ff;color:#fff;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:3px;">💬 Zalo</a>' : '') +
+          '</div>'
+        : '<div style="color:#94a3b8;font-size:12px;">📞 Chưa có SĐT</div>';
+
+      var addrHtml = o.address
+        ? '<div class="set__order-addr" style="margin:3px 0;font-size:12px;color:#334155;line-height:1.4;">' +
+            '📍 <strong>Địa chỉ:</strong> ' + escHtml(o.address) +
+          '</div>'
+        : '';
+
+      var schedDate = o.date ? escHtml(o.date) : "Trong ngày";
+      var schedTime = o.time ? escHtml(o.time) : "11:00 – 20:00";
+      var schedDateTimeHtml = '<div style="margin:3px 0;font-size:12px;color:#b45309;font-weight:700;background:#fffbeb;padding:3px 8px;border-radius:6px;border:1px solid #fef3c7;display:inline-block;">' +
+        '⏰ <strong>Nhận hàng:</strong> ' + schedDate + ' • ' + schedTime +
+      '</div>';
+
+      var peopleHtml = '<div style="font-size:12px;color:#475569;margin-top:2px;">' +
+        '👥 <strong>Quy mô:</strong> ' + escHtml(o.people ? o.people + " người ăn" : "1 người") +
+      '</div>';
+
+      var noteHtml = o.note
+        ? '<div class="set__order-note" style="margin-top:4px;padding:4px 8px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:4px;font-size:11.5px;color:#991b1b;font-weight:600;">' +
+            '📝 <strong>Ghi chú:</strong> ' + escHtml(o.note) +
+          '</div>'
+        : '';
+
+      // Xử lý thực đơn (products hoặc schedule)
+      var dishesList = [];
+      if (Array.isArray(o.products) && o.products.length) {
+        dishesList = o.products;
+      } else if (Array.isArray(o.schedule) && o.schedule.length) {
+        dishesList = o.schedule;
+      }
+
+      var dishesHtml = '';
+      if (dishesList.length) {
+        dishesHtml = '<div style="margin-top:6px;background:#f8fafc;padding:7px 9px;border-radius:8px;border:1px solid #e2e8f0;">' +
+          '<div style="font-size:11px;font-weight:800;color:#475569;margin-bottom:3px;text-transform:uppercase;">🍲 Mâm cơm chi tiết:</div>' +
+          dishesList.map(function(item) {
+            var dayLabel = item.day || "Mâm";
+            var dishNames = Array.isArray(item.dishes) ? item.dishes.join(", ") : (item.dishes || "");
+            return '<div style="font-size:11.5px;color:#1e293b;margin-bottom:2px;line-height:1.4;">' +
+              '• <strong>' + escHtml(dayLabel) + ':</strong> ' + escHtml(dishNames) +
+            '</div>';
+          }).join("") +
+        '</div>';
+      }
+
+      var st = o.status || "pending";
+      return '<div class="set__order-card" data-status="' + escAttr(st) + '" data-order-id="' + escAttr(o.id) + '">' +
+        '<div class="set__order-head">' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<span class="set__order-code">#' + escHtml(String(o.id).slice(-8)) + '</span>' +
+            '<span class="set__order-time">' + escHtml(timeStr) + '</span>' +
+          '</div>' +
+          '<select class="set__order-status-select" data-id="' + escAttr(o.id) + '" data-status="' + escAttr(st) + '">' +
+            '<option value="pending"' + (st === "pending" ? ' selected' : '') + '>⏳ Chờ xác nhận</option>' +
+            '<option value="confirmed"' + (st === "confirmed" ? ' selected' : '') + '>👨‍🍳 Đã xác nhận</option>' +
+            '<option value="preparing"' + (st === "preparing" ? ' selected' : '') + '>🍳 Đang chuẩn bị</option>' +
+            '<option value="done"' + (st === "done" ? ' selected' : '') + '>✓ Hoàn thành</option>' +
+            '<option value="cancelled"' + (st === "cancelled" ? ' selected' : '') + '>✕ Đã hủy</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="set__order-info" style="margin-top:4px;">' +
+          phoneHtml +
+          addrHtml +
+          schedDateTimeHtml +
+          peopleHtml +
+          dishesHtml +
+          noteHtml +
+        '</div>' +
+        '<div class="set__order-foot" style="margin-top:6px;padding-top:7px;border-top:1px dashed #e2e8f0;display:flex;align-items:center;justify-content:space-between;">' +
+          '<div>' +
+            '<span style="font-size:11px;color:#64748b;font-weight:600;">Tổng tiền: </span>' +
+            '<strong class="set__order-total" style="font-size:14px;color:#dc2626;font-weight:900;">' + escHtml(totalFmt) + '</strong>' +
+          '</div>' +
+          '<button type="button" class="btn-copy-order-info" data-id="' + escAttr(o.id) + '" style="font-size:11px;padding:4px 9px;border-radius:6px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-weight:700;color:#334155;">📋 Sao chép đơn</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+
+    // Gắn sự kiện thay đổi trạng thái
+    setOrdersList.querySelectorAll(".set__order-status-select").forEach(function(sel){
+      sel.addEventListener("change", function(){
+        var id = sel.getAttribute("data-id");
+        var nextStatus = sel.value;
+        sel.setAttribute("data-status", nextStatus);
+        var card = sel.closest(".set__order-card");
+        if(card) card.setAttribute("data-status", nextStatus);
+        sel.disabled = true;
+        sharedStore.updateOrderStatus(id, nextStatus).then(function(){
+          sel.disabled = false;
+          (cachedOwnerOrders || []).forEach(function(x){ if(x.id === id) x.status = nextStatus; });
+          var mine = loadOrders();
+          mine.forEach(function(x){ if(x.id === id) x.status = nextStatus; });
+          saveOrders(mine);
+          updateOrderFilterCounts(cachedOwnerOrders);
+        }).catch(function(){
+          sel.disabled = false;
+        });
+      });
+    });
+
+    // Gắn sự kiện sao chép SĐT
+    setOrdersList.querySelectorAll(".btn-copy-phone").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var p = btn.getAttribute("data-phone") || "";
+        safeCopyToClipboard(p).then(function(){
+          var old = btn.textContent;
+          btn.textContent = "✓ Đã copy";
+          setTimeout(function(){ btn.textContent = old; }, 1500);
+        });
+      });
+    });
+
+    // Gắn sự kiện sao chép toàn bộ thông tin đơn
+    setOrdersList.querySelectorAll(".btn-copy-order-info").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-id");
+        var ord = (cachedOwnerOrders || []).find(function(x){ return x.id === id; });
+        if(!ord) return;
+        var rawT = typeof ord.total === "number" ? ord.total : parseInt(ord.total, 10) || 0;
+        var tFmt = rawT >= 1000 ? (rawT.toLocaleString("vi-VN") + "đ") : ((rawT * 1000).toLocaleString("vi-VN") + "đ");
+        var lines = [
+          "MÂM CƠM - ĐƠN #" + ord.id,
+          "• SĐT: " + (ord.phone || "---"),
+          "• Địa chỉ: " + (ord.address || "---"),
+          "• Lịch nhận: " + (ord.date || "Trong ngày") + " lúc " + (ord.time || "11:00 - 20:00"),
+          "• Quy mô: " + (ord.people ? ord.people + " người" : "1 người"),
+          "• Tổng tiền: " + tFmt
+        ];
+        if(ord.note) lines.push("• Ghi chú: " + ord.note);
+        var dList = ord.products || ord.schedule || [];
+        if(dList.length){
+          lines.push("• Thực đơn:");
+          dList.forEach(function(d){
+            var dishesStr = Array.isArray(d.dishes) ? d.dishes.join(", ") : (d.dishes || "");
+            lines.push("  - " + (d.day || "Mâm") + ": " + dishesStr);
+          });
+        }
+        safeCopyToClipboard(lines.join("\n")).then(function(){
+          var old = btn.textContent;
+          btn.textContent = "✓ Đã copy đơn";
+          setTimeout(function(){ btn.textContent = old; }, 1800);
+        });
+      });
+    });
+  }
+
+  function initOrderFilters() {
+    var filterWrap = document.getElementById("orderStatusFilters");
+    if (!filterWrap) return;
+    filterWrap.querySelectorAll(".btn-order-filter").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        filterWrap.querySelectorAll(".btn-order-filter").forEach(function(b) { b.classList.remove("is-active"); });
+        btn.classList.add("is-active");
+        currentOrderFilter = btn.getAttribute("data-filter") || "all";
+        applyOrderFilter();
+      });
+    });
+  }
+
   function renderOwnerOrders(){
     if(!setOrdersList) return;
+    initOrderFilters();
     if(setRefreshOrders) setRefreshOrders.classList.add("is-loading");
     sharedStore.loadOrders().then(function(rows){
       var orders = Array.isArray(rows) ? rows : loadOrders();
-      if(setOrdersCountBadge) setOrdersCountBadge.textContent = String(orders.length);
-      if(!orders.length){
-        setOrdersList.innerHTML = "";
-        if(setOrdersEmpty) setOrdersEmpty.hidden = false;
-        return;
-      }
-      if(setOrdersEmpty) setOrdersEmpty.hidden = true;
-
-      setOrdersList.innerHTML = orders.map(function(o){
-        var timeStr = o.created_at ? fmtTs(new Date(o.created_at).getTime()) : "";
-        var totalFmt = (o.total || 0).toLocaleString("vi-VN") + "k";
-        var phoneHtml = o.phone ? '<a href="tel:' + escAttr(o.phone) + '" class="set__order-phone">📞 ' + escHtml(o.phone) + '</a>' : '<span style="color:var(--muted)">Chưa có SĐT</span>';
-        var addrHtml = o.address ? '<div class="set__order-addr">📍 ' + escHtml(o.address) + '</div>' : '';
-        var noteHtml = o.note ? '<div class="set__order-note">📝 ' + escHtml(o.note) + '</div>' : '';
-        var schedHtml = (Array.isArray(o.schedule) && o.schedule.length)
-          ? '<div class="set__order-sched">🗓️ ' + o.schedule.map(function(s){ return escHtml(s.day + ": " + (s.dishes||[]).join(", ")); }).join(" • ") + '</div>'
-          : '';
-
-        var st = o.status || "pending";
-        return '<div class="set__order-card" data-order-id="' + escAttr(o.id) + '">' +
-          '<div class="set__order-head">' +
-            '<div class="set__order-code">Đơn #' + escHtml(String(o.id).slice(-6)) + '</div>' +
-            '<div class="set__order-time">' + escHtml(timeStr) + '</div>' +
-          '</div>' +
-          '<div class="set__order-info">' +
-            '<div><strong>' + escHtml(o.people ? o.people + " người" : "Khách") + '</strong> • ' + phoneHtml + '</div>' +
-            addrHtml +
-            schedHtml +
-            noteHtml +
-          '</div>' +
-          '<div class="set__order-foot">' +
-            '<div class="set__order-total">' + escHtml(totalFmt) + '</div>' +
-            '<select class="set__order-status-select" data-id="' + escAttr(o.id) + '" data-status="' + escAttr(st) + '">' +
-              '<option value="pending"' + (st === "pending" ? ' selected' : '') + '>⏳ Chờ xác nhận</option>' +
-              '<option value="confirmed"' + (st === "confirmed" ? ' selected' : '') + '>👨‍🍳 Đã xác nhận</option>' +
-              '<option value="preparing"' + (st === "preparing" ? ' selected' : '') + '>🍳 Đang chuẩn bị</option>' +
-              '<option value="done"' + (st === "done" ? ' selected' : '') + '>✓ Hoàn thành</option>' +
-              '<option value="cancelled"' + (st === "cancelled" ? ' selected' : '') + '>✕ Đã hủy</option>' +
-            '</select>' +
-          '</div>' +
-        '</div>';
-      }).join("");
-
-      setOrdersList.querySelectorAll(".set__order-status-select").forEach(function(sel){
-        sel.addEventListener("change", function(){
-          var id = sel.getAttribute("data-id");
-          var nextStatus = sel.value;
-          sel.setAttribute("data-status", nextStatus);
-          sel.disabled = true;
-          sharedStore.updateOrderStatus(id, nextStatus).then(function(){
-            sel.disabled = false;
-            var mine = loadOrders();
-            mine.forEach(function(x){ if(x.id === id) x.status = nextStatus; });
-            saveOrders(mine);
-          }).catch(function(){
-            sel.disabled = false;
-          });
-        });
-      });
-    }).catch(function(){}).then(function(){
+      cachedOwnerOrders = orders;
+      updateOrderFilterCounts(orders);
+      applyOrderFilter();
+    }).catch(function(){
+      cachedOwnerOrders = loadOrders();
+      updateOrderFilterCounts(cachedOwnerOrders);
+      applyOrderFilter();
+    }).then(function(){
       if(setRefreshOrders){
         setTimeout(function(){ setRefreshOrders.classList.remove("is-loading"); }, 400);
       }
@@ -10061,6 +10383,8 @@
     renderSettingsComments();
     renderOwnerAnalytics();
     renderOwnerOrders();
+    var firstTab = document.querySelector('.set__tab-btn[data-tab="setPaneOrders"]');
+    if(firstTab) firstTab.click();
     settingsModal.classList.add("show");
   }
   function closeSettings(){ settingsModal.classList.remove("show"); }
