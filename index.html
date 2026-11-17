@@ -3826,8 +3826,11 @@
 
       <form class="order" id="orderForm" autocomplete="off" onsubmit="return false;">
         <div class="panel__head order__head-bar">
-          <div class="panel__title-group">
+          <div class="panel__title-group" style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 8px;">
             <h2>Thông tin đơn</h2>
+            <span style="font-size: 11.5px; color: #92400e; background: #fef3c7; border: 1px solid #fde68a; padding: 4px 10px; border-radius: 999px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
+              ⚡ Đặt trước hôm nay • Nhận hàng ngày hôm sau (11:00 – 20:00)
+            </span>
           </div>
         </div>
         <div class="order__body">
@@ -3842,11 +3845,11 @@
           </label>
           <label class="order__field">
             <span>Ngày nhận hàng</span>
-            <input id="cDate" type="text" readonly placeholder="Chọn ngày →" aria-haspopup="dialog">
+            <input id="cDate" type="text" readonly placeholder="Chọn ngày (từ ngày mai) →" aria-haspopup="dialog">
           </label>
           <label class="order__field">
             <span>Thời gian nhận hàng</span>
-            <input id="cTime" type="text" readonly placeholder="Chọn giờ →" aria-haspopup="dialog">
+            <input id="cTime" type="text" readonly placeholder="Chọn giờ (11:00 – 20:00) →" aria-haspopup="dialog">
           </label>
           <label class="order__field order__field--wide">
             <span>Địa chỉ</span>
@@ -4354,7 +4357,10 @@
   <div class="picker__box">
     <div class="picker__head">
       <button class="picker__nav" id="calPrev" type="button" aria-label="Tháng trước">‹</button>
-      <h3>Nhận hàng ngày</h3>
+      <div style="text-align: center;">
+        <h3 style="margin: 0;">Nhận hàng ngày</h3>
+        <p style="margin: 2px 0 0; font-size: 11.5px; color: #b45309; font-weight: 700;">Đặt trước hôm nay • Nhận hàng ngày hôm sau</p>
+      </div>
       <button class="picker__nav" id="calNext" type="button" aria-label="Tháng sau">›</button>
     </div>
     <p class="picker__month" id="calMonth"></p>
@@ -4366,7 +4372,10 @@
 <div class="picker" id="timeModal" role="dialog" aria-modal="true" aria-label="Chọn giờ nhận hàng">
   <div class="picker__box">
     <div class="picker__head">
-      <h3 style="flex:1">Giờ nhận hàng</h3>
+      <div style="flex: 1; text-align: center;">
+        <h3 style="margin: 0;">Giờ nhận hàng</h3>
+        <p style="margin: 2px 0 0; font-size: 11.5px; color: #6b7280; font-weight: 600;">Khung giờ giao: 11:00 – 20:00</p>
+      </div>
     </div>
     <div class="times" id="timeGrid"></div>
   </div>
@@ -7122,12 +7131,12 @@
     var tomorrow  = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // Danh sách khung giờ nhận hàng: từ 9h sáng đến 9h tối, không có 12h trưa
+    // Danh sách khung giờ nhận hàng: từ 11h sáng đến 8h tối (20:00), không có 12h trưa
     var ALLOWED_TIMES = [
-      "09:00","09:30","10:00","10:30","11:00","11:30",
+      "11:00","11:30",
       "12:30","13:00","13:30","14:00","14:30","15:00",
       "15:30","16:00","16:30","17:00","17:30","18:00",
-      "18:30","19:00","19:30","20:00","20:30","21:00"
+      "18:30","19:00","19:30","20:00"
     ];
 
     // Khởi tạo: kiểm tra & tự động xóa ngày/giờ cũ nếu là hôm nay hoặc giờ không hợp lệ
