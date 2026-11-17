@@ -380,43 +380,58 @@
     letter-spacing: -0.2px;
   }
   .counter-card__stat {
-    margin-top: 10px;
+    margin-top: 8px;
     padding: 6px 14px;
-    background: #ffff04;
-    border: 1.5px solid #d4c800;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%);
+    border: 1px solid rgba(245, 158, 11, 0.45);
     border-radius: var(--radius-pill);
-    color: #261109;
-    font-size: clamp(10.5px, 2.8vw, 12.5px);
-    font-weight: 800;
+    color: #78350f;
+    font-size: clamp(11px, 2.7vw, 12.5px);
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    line-height: 1.3;
-    white-space: nowrap !important;
-    max-width: min(96vw, 420px);
+    line-height: 1.35;
+    max-width: min(94vw, 420px);
     box-sizing: border-box;
-    animation: counterPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 14px -2px rgba(245, 158, 11, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    cursor: pointer;
+    user-select: none;
+    animation: statGlowPulse 3.5s ease-in-out infinite;
+  }
+  .counter-card__stat:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 6px 18px -2px rgba(245, 158, 11, 0.38), inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+  .counter-card__stat:active, .counter-card__stat.is-popped {
+    transform: scale(0.96);
   }
   .counter-card__stat[hidden] {
     display: none !important;
   }
   .counter-card__stat-text {
-    white-space: nowrap !important;
-    display: inline;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   .counter-card__stat-hl {
-    color: #da241c !important;
+    color: #dc2626 !important;
     font-weight: 900;
     letter-spacing: -0.2px;
-    padding: 0 1px;
-    display: inline;
-    white-space: nowrap !important;
+    background: #ffffff;
+    padding: 1.5px 7px;
+    border-radius: 999px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    box-shadow: 0 1px 3px rgba(185, 28, 28, 0.12);
+    display: inline-block;
   }
-  @keyframes counterPop {
-    0% { transform: scale(0.88); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+  @keyframes statGlowPulse {
+    0%, 100% { box-shadow: 0 4px 14px -2px rgba(245, 158, 11, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.95); }
+    50% { box-shadow: 0 4px 18px 2px rgba(245, 158, 11, 0.45), inset 0 1px 0 rgba(255, 255, 255, 1); }
   }
 
   /* ---- SPLASH SCREEN (Circular Logo Loading, Calligraphy Handwriting & Suction Morph) ---- */
@@ -2518,6 +2533,7 @@
     -webkit-backdrop-filter: blur(16px);
     padding: 16px;
     transition: opacity 0.25s ease;
+    overscroll-behavior: contain;
   }
   .picker.show { display: flex; }
   .picker__box {
@@ -2529,6 +2545,8 @@
     border: 1px solid var(--glass-border);
     width: 100%; max-width: 340px; padding: 22px;
     animation: modalPop .24s var(--spring-bounce);
+    overscroll-behavior: contain;
+    transform: translateZ(0);
   }
   .picker__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .picker__head h3 { margin: 0; font-size: 15px; font-weight: 800; color: var(--red); }
@@ -2558,7 +2576,15 @@
     transform: scale(1.04);
   }
   .cal__blank { padding: 7px 0; }
-  .times { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; max-height: 46vh; overflow-y: auto; }
+  .times {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    max-height: 46vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
   .times button {
     border: 1px solid var(--line); background: rgba(255, 255, 255, 0.85); color: var(--ink);
     font: inherit; font-size: 13px; font-weight: 700; padding: 10px 0; border-radius: 10px; cursor: pointer;
@@ -3630,8 +3656,8 @@
         <div class="counter-card__label">
           <span class="counter-card__num" id="mealsCount">83</span> mâm cơm nhà đã được Mâm Cơm chuẩn bị
         </div>
-        <div class="counter-card__stat" id="counterSavedStat" hidden>
-          <span class="counter-card__stat-text" id="counterSavedStatText">Mâm Cơm tiết kiệm được tổng <span class="counter-card__stat-hl" id="counterSavedStatCalc">83*45'=3.735'=63 giờ</span></span>
+        <div class="counter-card__stat" id="counterSavedStat">
+          <span class="counter-card__stat-text" id="counterSavedStatText">✨ Mâm Cơm tiết kiệm được <strong class="counter-card__stat-hl" id="counterSavedStatCalc">79 tiếng</strong> cho khách hàng</span>
         </div>
       </div>
     </div>
@@ -3829,7 +3855,7 @@
           <div class="panel__title-group" style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 8px;">
             <h2>Thông tin đơn</h2>
             <span style="font-size: 11.5px; color: #92400e; background: #fef3c7; border: 1px solid #fde68a; padding: 4px 10px; border-radius: 999px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
-              ⚡ Đặt trước hôm nay • Nhận hàng ngày hôm sau (11:00 – 20:00)
+              ⚡ Đặt hôm nay • Nhận hôm sau
             </span>
           </div>
         </div>
@@ -3845,11 +3871,11 @@
           </label>
           <label class="order__field">
             <span>Ngày nhận hàng</span>
-            <input id="cDate" type="text" readonly placeholder="Chọn ngày (từ ngày mai) →" aria-haspopup="dialog">
+            <input id="cDate" type="text" readonly inputmode="none" placeholder="Chọn ngày (từ ngày mai) →" aria-haspopup="dialog">
           </label>
           <label class="order__field">
             <span>Thời gian nhận hàng</span>
-            <input id="cTime" type="text" readonly placeholder="Chọn giờ (11:00 – 20:00) →" aria-haspopup="dialog">
+            <input id="cTime" type="text" readonly inputmode="none" placeholder="Chọn giờ (11:00 – 20:00) →" aria-haspopup="dialog">
           </label>
           <label class="order__field order__field--wide">
             <span>Địa chỉ</span>
@@ -4358,8 +4384,8 @@
     <div class="picker__head">
       <button class="picker__nav" id="calPrev" type="button" aria-label="Tháng trước">‹</button>
       <div style="text-align: center;">
-        <h3 style="margin: 0;">Nhận hàng ngày</h3>
-        <p style="margin: 2px 0 0; font-size: 11.5px; color: #b45309; font-weight: 700;">Đặt trước hôm nay • Nhận hàng ngày hôm sau</p>
+        <h3 style="margin: 0;">Ngày nhận hàng</h3>
+        <p style="margin: 2px 0 0; font-size: 11.5px; color: #b45309; font-weight: 700;">Đặt hôm nay - Nhận hôm sau</p>
       </div>
       <button class="picker__nav" id="calNext" type="button" aria-label="Tháng sau">›</button>
     </div>
@@ -7158,9 +7184,13 @@
       if(typeof updateProgress === "function") updateProgress();
     }
 
-    function open(el){ el.classList.add("show"); }
+    function open(el){
+      el.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
     function close(el){
       el.classList.remove("show");
+      document.body.style.overflow = "";
       setTimeout(function(){
         var active = document.activeElement ? document.activeElement.id : "";
         var inOrder = orderFields.some(function(item){ return item.id === active; });
@@ -7228,7 +7258,11 @@
       if(!sel) return;
       calGrid.querySelectorAll(".cal__day").forEach(function(c){ c.tabIndex = -1; });
       sel.tabIndex = 0;
-      sel.focus();
+      try {
+        sel.focus({ preventScroll: true });
+      } catch(err){
+        sel.focus();
+      }
     }
     // Lịch: mũi tên di chuyển giữa các ngày, Enter chọn.
     calGrid.addEventListener("keydown", function(e){
@@ -7293,18 +7327,31 @@
       if(next) next.focus();
     });
 
-    // ---- open on tap of the field ----
-    document.getElementById("cDate").addEventListener("click", function(){
+    // ---- open on tap of the field (silky smooth, no jitter on mobile) ----
+    document.getElementById("cDate").addEventListener("click", function(e){
+      if(e) e.preventDefault();
+      if(document.activeElement && typeof document.activeElement.blur === "function"){
+        document.activeElement.blur();
+      }
       renderCal();
       open(dateModal);
-      // Chỉ chuyển tiêu điểm sau khi hộp thoại đã hiện, nếu không focus() bị bỏ qua.
       focusCalToday();
     });
-    document.getElementById("cTime").addEventListener("click", function(){
+    document.getElementById("cTime").addEventListener("click", function(e){
+      if(e) e.preventDefault();
+      if(document.activeElement && typeof document.activeElement.blur === "function"){
+        document.activeElement.blur();
+      }
       markTimeSel();
       open(timeModal);
       var cur = timeGrid.querySelector(".is-sel") || timeGrid.children[0];
-      if(cur) cur.focus();
+      if(cur){
+        try {
+          cur.focus({ preventScroll: true });
+        } catch(err){
+          cur.focus();
+        }
+      }
     });
     markTimeSel(); // reflect any value restored from localStorage on load
 
@@ -8882,37 +8929,38 @@
   }
 
   function updateCounterSavedStat(count){
-    var n = parseInt(count, 10) || currentMeals || 83;
+    var n = parseInt(count, 10) || currentMeals || 105;
     var totalMins = n * 45;
     var hrs = Math.ceil(totalMins / 60);
-    var minsFormatted = formatVnNumber(totalMins);
-    var statEl = document.getElementById("counterSavedStatText");
-    if(statEl){
-      var calcStr = n + "*45'=" + minsFormatted + "'=" + hrs + " giờ";
-      statEl.innerHTML = 'Mâm Cơm tiết kiệm được tổng <span class="counter-card__stat-hl" id="counterSavedStatCalc">' + calcStr + '</span>';
+    var statCalcEl = document.getElementById("counterSavedStatCalc");
+    if(statCalcEl){
+      statCalcEl.textContent = hrs + " tiếng";
+    } else {
+      var statEl = document.getElementById("counterSavedStatText");
+      if(statEl){
+        statEl.innerHTML = '✨ Mâm Cơm tiết kiệm được <strong class="counter-card__stat-hl" id="counterSavedStatCalc">' + hrs + ' tiếng</strong> cho khách hàng';
+      }
     }
   }
 
   var counterCardEl = document.getElementById("counterCard");
   var counterSavedStatEl = document.getElementById("counterSavedStat");
   if(counterCardEl && counterSavedStatEl){
-    function toggleCounterStat(e){
+    updateCounterSavedStat(currentMeals);
+    function popCounterStat(e){
       if(e) e.preventDefault();
-      var isHidden = counterSavedStatEl.hasAttribute("hidden") || counterSavedStatEl.hidden;
-      if(isHidden){
-        updateCounterSavedStat(currentMeals);
-        counterSavedStatEl.removeAttribute("hidden");
-        counterSavedStatEl.hidden = false;
-        try { triggerHaptic("tap"); } catch(err){}
-      } else {
-        counterSavedStatEl.setAttribute("hidden", "");
-        counterSavedStatEl.hidden = true;
-      }
+      counterSavedStatEl.classList.remove("is-popped");
+      void counterSavedStatEl.offsetWidth; // trigger reflow
+      counterSavedStatEl.classList.add("is-popped");
+      setTimeout(function(){
+        counterSavedStatEl.classList.remove("is-popped");
+      }, 200);
+      try { triggerHaptic("medium"); } catch(err){}
     }
-    counterCardEl.addEventListener("click", toggleCounterStat);
+    counterCardEl.addEventListener("click", popCounterStat);
     counterCardEl.addEventListener("keydown", function(e){
       if(e.key === "Enter" || e.key === " "){
-        toggleCounterStat(e);
+        popCounterStat(e);
       }
     });
   }
