@@ -96,6 +96,7 @@
   html, body {
     margin: 0;
     padding: 0;
+    scrollbar-gutter: stable;
     overscroll-behavior: none;
     overscroll-behavior-y: none;
     overscroll-behavior-x: none;
@@ -1721,6 +1722,131 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* ---- DISCOUNT & COUNTDOWN CARD IN MÂM ---- */
+  .m-discount-card {
+    background: linear-gradient(135deg, #fff1f2 0%, #fee2e2 40%, #fef3c7 100%);
+    border: 1.5px solid rgba(220, 38, 38, 0.35);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin: 8px 0 12px;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    animation: flashSalePulse 3s ease-in-out infinite;
+    user-select: none;
+  }
+  .m-discount-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .m-discount-card__badge {
+    background: #dc2626;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
+    display: inline-flex;
+    align-items: center;
+  }
+  .m-discount-card__timer-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #991b1b;
+  }
+  .m-discount-card__clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .m-clock-unit {
+    background: #b91c1c;
+    color: #ffffff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-weight: 800;
+    font-size: 11.5px;
+    padding: 2px 5px;
+    border-radius: 6px;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  .m-clock-sep {
+    font-weight: 900;
+    color: #b91c1c;
+    animation: clockBlink 1s infinite;
+  }
+  .m-discount-card__desc {
+    margin-top: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #7f1d1d;
+    line-height: 1.35;
+  }
+  @keyframes flashSalePulse {
+    0%, 100% { box-shadow: 0 4px 14px rgba(220, 38, 38, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9); }
+    50% { box-shadow: 0 4px 20px rgba(220, 38, 38, 0.25), inset 0 1px 0 rgba(255, 255, 255, 1); }
+  }
+  @keyframes clockBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+  .badge-disc-tag {
+    background: #dc2626;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 1.5px 6px;
+    border-radius: 99px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  /* Switch Toggle */
+  .switch-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  .switch-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .switch-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #cbd5e1;
+    border-radius: 24px;
+    transition: 0.3s;
+  }
+  .switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  .switch-toggle input:checked + .switch-slider {
+    background-color: #10b981;
+  }
+  .switch-toggle input:checked + .switch-slider:before {
+    transform: translateX(20px);
+  }
+
   /* ---- ORDER MANAGEMENT IN OWNER MODAL ---- */
   .set__orders-list {
     max-height: 380px;
@@ -2534,6 +2660,7 @@
     padding: 16px;
     transition: opacity 0.25s ease;
     overscroll-behavior: contain;
+    touch-action: none;
   }
   .picker.show { display: flex; }
   .picker__box {
@@ -2546,6 +2673,7 @@
     width: 100%; max-width: 340px; padding: 22px;
     animation: modalPop .24s var(--spring-bounce);
     overscroll-behavior: contain;
+    touch-action: pan-y;
     transform: translateZ(0);
   }
   .picker__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
@@ -3657,7 +3785,7 @@
           <span class="counter-card__num" id="mealsCount">83</span> mâm cơm nhà đã được Mâm Cơm chuẩn bị
         </div>
         <div class="counter-card__stat" id="counterSavedStat">
-          <span class="counter-card__stat-text" id="counterSavedStatText">✨ Mâm Cơm tiết kiệm được <strong class="counter-card__stat-hl" id="counterSavedStatCalc">79 tiếng</strong> cho khách hàng</span>
+          <span class="counter-card__stat-text" id="counterSavedStatText">✨ Mâm Cơm tiết kiệm được tổng <strong class="counter-card__stat-hl" id="counterSavedStatCalc">79 tiếng</strong> cho khách hàng</span>
         </div>
       </div>
     </div>
@@ -3693,6 +3821,24 @@
         <div class="panel__head-actions" style="display:flex;align-items:center;gap:8px;">
           <button type="button" class="btn-manage-cat" id="btnAddDishHeader" style="background:#da241c;color:#fff;border-color:transparent;font-weight:700;" title="Thêm món mới vào Mâm (chỉ chủ)" hidden>+ Thêm món</button>
           <button type="button" class="btn-manage-cat" id="btnManageCategories" title="Sắp xếp thứ tự &amp; màu sắc Category (chỉ chủ)" hidden>⚙️ Sắp xếp Category</button>
+        </div>
+      </div>
+      <!-- KHUNG DISCOUNT & COUNTDOWN TRONG MÂM -->
+      <div class="m-discount-card" id="mDiscountCard" style="display:none;">
+        <div class="m-discount-card__top">
+          <span class="m-discount-card__badge" id="mDiscountBadge">⚡ FLASH SALE -20%</span>
+          <div class="m-discount-card__timer-wrap">
+            <span class="m-discount-card__clock-icon">⏱️</span>
+            <span class="m-discount-card__label">Còn lại:</span>
+            <div class="m-discount-card__clock" id="mDiscountClock">
+              <span class="m-clock-unit" id="mClockH">00</span><span class="m-clock-sep">:</span>
+              <span class="m-clock-unit" id="mClockM">00</span><span class="m-clock-sep">:</span>
+              <span class="m-clock-unit" id="mClockS">00</span>
+            </div>
+          </div>
+        </div>
+        <div class="m-discount-card__desc" id="mDiscountDesc">
+          Giảm 20% trên tổng đơn đặt hôm nay!
         </div>
       </div>
       <!-- Phân loại món ăn 2 tầng (Category Filter: Chính ở trên, Phụ ở dưới) -->
@@ -4156,6 +4302,11 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span>Cài đặt &amp; Sao lưu</span>
       </button>
+      <button type="button" class="set__tab-btn" data-tab="setPaneDiscount" role="tab" aria-selected="false">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>Khuyến mãi</span>
+        <span class="set__tab-badge" id="setDiscountStatusBadge" style="display:none;background:#10b981;color:#fff;font-size:9px;padding:1px 5px;">ON</span>
+      </button>
     </div>
 
     <!-- PANE 1: ANALYTICS -->
@@ -4284,6 +4435,85 @@
         </div>
       </div>
     </div>
+
+    <!-- PANE 4: KHUYẾN MÃI & GIẢM GIÁ (PIN CHỦ) -->
+    <div class="set__pane" id="setPaneDiscount">
+      <div class="set__sec" style="border-top:0;padding-top:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div>
+            <div class="set__label" style="margin:0;font-size:14px;font-weight:800;color:#111827;">Trạng thái khuyến mãi</div>
+            <p class="set__hint" style="margin:2px 0 0;">Bật để hiển thị giảm giá và đồng hồ đếm ngược trên web</p>
+          </div>
+          <label class="switch-toggle">
+            <input type="checkbox" id="setDiscEnabled">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+
+        <!-- 2 Hình thức discount: Phần trăm (%) hoặc Giảm thẳng tiền (đ) -->
+        <div style="margin-bottom:12px;">
+          <div class="set__label">Hình thức giảm giá</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">
+            <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:12px;cursor:pointer;background:#fff;" id="labelDiscPercent">
+              <input type="radio" name="discType" value="percent" id="setDiscTypePercent" checked style="accent-color:#da241c;">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#1e293b;">Giảm phần trăm (%)</div>
+                <div style="font-size:10.5px;color:#64748b;">VD: Giảm 10%, 20%...</div>
+              </div>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:12px;cursor:pointer;background:#fff;" id="labelDiscFixed">
+              <input type="radio" name="discType" value="fixed" id="setDiscTypeFixed" style="accent-color:#da241c;">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#1e293b;">Giảm thẳng tiền (đ)</div>
+                <div style="font-size:10.5px;color:#64748b;">VD: 10.000đ, 20.000đ...</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Mức giảm -->
+        <div style="margin-bottom:12px;">
+          <div class="set__label" id="discValueLabel">Mức giảm (%)</div>
+          <div style="position:relative;margin-top:6px;">
+            <input class="set__input" id="setDiscValue" type="number" min="1" step="1" inputmode="numeric" placeholder="VD: 20" style="padding-right:45px;width:100%;box-sizing:border-box;">
+            <span id="discValueUnit" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#64748b;font-size:13px;">%</span>
+          </div>
+          <p class="set__hint" id="discValueHint">Nhập số phần trăm muốn giảm trên tổng đơn hàng (ví dụ: 15 hoặc 20).</p>
+        </div>
+
+        <!-- Khung giờ discount / Thời gian kết thúc -->
+        <div style="margin-bottom:12px;">
+          <div class="set__label">Thời gian kết thúc (Đếm ngược)</div>
+          <input class="set__input" id="setDiscEndTime" type="datetime-local" style="margin-top:6px;width:100%;box-sizing:border-box;">
+          
+          <!-- Phím tắt chọn nhanh -->
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+            <button type="button" class="btn-disc-preset" data-preset="1h" style="font-size:11px;padding:4px 9px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer;font-weight:600;">+1 Giờ</button>
+            <button type="button" class="btn-disc-preset" data-preset="2h" style="font-size:11px;padding:4px 9px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer;font-weight:600;">+2 Giờ</button>
+            <button type="button" class="btn-disc-preset" data-preset="today20" style="font-size:11px;padding:4px 9px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer;font-weight:600;">Tối nay 20:00</button>
+            <button type="button" class="btn-disc-preset" data-preset="today22" style="font-size:11px;padding:4px 9px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer;font-weight:600;">Tối nay 22:00</button>
+            <button type="button" class="btn-disc-preset" data-preset="tomorrow20" style="font-size:11px;padding:4px 9px;border-radius:8px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer;font-weight:600;">Tối mai 20:00</button>
+          </div>
+        </div>
+
+        <!-- Tiêu đề khuyến mãi -->
+        <div style="margin-bottom:16px;">
+          <div class="set__label">Tiêu đề khuyến mãi (Tùy chọn)</div>
+          <input class="set__input" id="setDiscLabel" type="text" placeholder="VD: GIỜ VÀNG GIẢM GIÁ • FLASH SALE" value="⚡ GIỜ VÀNG GIẢM GIÁ • FLASH SALE" style="margin-top:6px;width:100%;box-sizing:border-box;">
+        </div>
+
+        <!-- Nút hành động -->
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn--primary" id="btnSaveDiscount" type="button" style="flex:1;background:#da241c;color:#fff;border:none;padding:10px 16px;border-radius:99px;font-weight:700;cursor:pointer;">
+            💾 Lưu &amp; Kích hoạt khuyến mãi
+          </button>
+          <button class="btn btn--ghost" id="btnDisableDiscount" type="button" style="border:1.5px solid #cbd5e1;padding:10px 14px;border-radius:99px;font-weight:600;cursor:pointer;color:#64748b;">
+            Tắt KM
+          </button>
+        </div>
+        <div id="setDiscStatusMsg" style="font-size:12px;font-weight:600;margin-top:8px;text-align:center;"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -4385,7 +4615,7 @@
       <button class="picker__nav" id="calPrev" type="button" aria-label="Tháng trước">‹</button>
       <div style="text-align: center;">
         <h3 style="margin: 0;">Ngày nhận hàng</h3>
-        <p style="margin: 2px 0 0; font-size: 11.5px; color: #b45309; font-weight: 700;">Đặt hôm nay - Nhận hôm sau</p>
+        <p style="margin: 2px 0 0; font-size: 11.5px; color: #b45309; font-weight: 700;">⚡ Đặt hôm nay • Nhận hôm sau</p>
       </div>
       <button class="picker__nav" id="calNext" type="button" aria-label="Tháng sau">›</button>
     </div>
@@ -4400,7 +4630,6 @@
     <div class="picker__head">
       <div style="flex: 1; text-align: center;">
         <h3 style="margin: 0;">Giờ nhận hàng</h3>
-        <p style="margin: 2px 0 0; font-size: 11.5px; color: #6b7280; font-weight: 600;">Khung giờ giao: 11:00 – 20:00</p>
       </div>
     </div>
     <div class="times" id="timeGrid"></div>
@@ -4841,7 +5070,7 @@
   // ================= modal dùng chung: khóa cuộn trang + giữ phím Tab =================
   // Bảo đảm khi một hộp thoại mở, Tab không chạy ra ngoài hộp thoại đó và
   // trang nền không cuộn được (nền vẫn nhìn thấy nhưng không bị cuộn).
-  var DIALOGS = ["pinModal","settingsModal","dateModal","timeModal"];
+  var DIALOGS = ["pinModal","settingsModal"];
   function dialogsOpen(){
     return DIALOGS.map(function(id){ return document.getElementById(id); })
       .filter(function(el){ return el && el.classList.contains("show"); })
@@ -7185,12 +7414,16 @@
     }
 
     function open(el){
+      if(document.activeElement && typeof document.activeElement.blur === "function"){
+        document.activeElement.blur();
+      }
       el.classList.add("show");
-      document.body.style.overflow = "hidden";
     }
     function close(el){
+      if(document.activeElement && typeof document.activeElement.blur === "function"){
+        document.activeElement.blur();
+      }
       el.classList.remove("show");
-      document.body.style.overflow = "";
       setTimeout(function(){
         var active = document.activeElement ? document.activeElement.id : "";
         var inOrder = orderFields.some(function(item){ return item.id === active; });
@@ -7240,7 +7473,12 @@
           if(dateInput.value && dateInput.value === fmtDM(sel)) cell.classList.add("is-sel");
           cell.tabIndex = -1;
           cell.setAttribute("aria-label", "Ngày " + sel.getDate() + " tháng " + (sel.getMonth() + 1) + " năm " + sel.getFullYear() + (past ? (sel.getTime() === today.getTime() ? " (hôm nay - không nhận giao trong ngày)" : " (đã qua)") : ""));
-          cell.addEventListener("click", function(){
+          cell.addEventListener("click", function(e){
+            if(e) e.preventDefault();
+            if(cell && typeof cell.blur === "function") cell.blur();
+            if(document.activeElement && typeof document.activeElement.blur === "function"){
+              document.activeElement.blur();
+            }
             dateInput.value = fmtDM(sel);
             saveOrder();
             updateProgress();
@@ -7249,7 +7487,6 @@
         })(new Date(y, m, d));
         calGrid.appendChild(cell);
       }
-      focusCalToday();
     }
     // Đưa tiêu điểm vào ô ngày khả dụng đầu tiên (hoặc ngày đang chọn) khi mở lịch bằng bàn phím.
     function focusCalToday(){
@@ -7297,7 +7534,12 @@
       var b = document.createElement("button");
       b.type = "button";
       b.textContent = t;
-      b.addEventListener("click", function(){
+      b.addEventListener("click", function(e){
+        if(e) e.preventDefault();
+        if(b && typeof b.blur === "function") b.blur();
+        if(document.activeElement && typeof document.activeElement.blur === "function"){
+          document.activeElement.blur();
+        }
         timeInput.value = t;
         saveOrder();
         updateProgress();
@@ -7327,31 +7569,33 @@
       if(next) next.focus();
     });
 
-    // ---- open on tap of the field (silky smooth, no jitter on mobile) ----
-    document.getElementById("cDate").addEventListener("click", function(e){
+    // Chặn hoàn toàn việc trình duyệt tự động scroll để focus input ngày/giờ trên mobile
+    function preventFieldFocusJump(e){
+      if(document.activeElement && typeof document.activeElement.blur === "function"){
+        document.activeElement.blur();
+      }
+    }
+    ["mousedown", "touchstart", "pointerdown"].forEach(function(evt){
+      dateInput.addEventListener(evt, preventFieldFocusJump, { passive: true });
+      timeInput.addEventListener(evt, preventFieldFocusJump, { passive: true });
+    });
+
+    // ---- open on tap of the field (silky smooth, zero jitter on mobile & desktop) ----
+    dateInput.addEventListener("click", function(e){
       if(e) e.preventDefault();
       if(document.activeElement && typeof document.activeElement.blur === "function"){
         document.activeElement.blur();
       }
       renderCal();
       open(dateModal);
-      focusCalToday();
     });
-    document.getElementById("cTime").addEventListener("click", function(e){
+    timeInput.addEventListener("click", function(e){
       if(e) e.preventDefault();
       if(document.activeElement && typeof document.activeElement.blur === "function"){
         document.activeElement.blur();
       }
       markTimeSel();
       open(timeModal);
-      var cur = timeGrid.querySelector(".is-sel") || timeGrid.children[0];
-      if(cur){
-        try {
-          cur.focus({ preventScroll: true });
-        } catch(err){
-          cur.focus();
-        }
-      }
     });
     markTimeSel(); // reflect any value restored from localStorage on load
 
@@ -7366,7 +7610,7 @@
     });
   })();
 
-  // ================= total price (49đ / mâm / khẩu phần) =================
+  // ================= total price & discount =================
   var PRICE_PER_MAM = 49; // in "đ" (ví dụ 49đ / 1 người)
   var orderTotalEl = document.getElementById("orderTotal");
   var orderTotalCalcEl = document.getElementById("orderTotalCalc");
@@ -7374,14 +7618,176 @@
     var n = parseFloat(String(text).replace(",", "."));
     return isFinite(n) && n > 0 ? Math.round(n) : 0;
   }
+
+  // ================= DISCOUNT & REAL-TIME COUNTDOWN =================
+  var DISCOUNT_CONFIG_KEY = "mamcom.discount.config.v1";
+
+  function loadDiscountConfig(){
+    try {
+      var raw = localStorage.getItem(DISCOUNT_CONFIG_KEY);
+      if(raw){
+        var cfg = JSON.parse(raw);
+        if(cfg && typeof cfg === "object") return cfg;
+      }
+    } catch(e){}
+    return {
+      enabled: false,
+      type: "percent", // "percent" | "fixed"
+      value: 20,
+      endTime: "",
+      label: "⚡ GIỜ VÀNG GIẢM GIÁ • FLASH SALE"
+    };
+  }
+
+  function isDiscountActive(cfg){
+    cfg = cfg || loadDiscountConfig();
+    if(!cfg || !cfg.enabled) return false;
+    var val = parseFloat(cfg.value);
+    if(!isFinite(val) || val <= 0) return false;
+    if(!cfg.endTime) return true; // không đặt thời gian kết thúc = luôn bật
+    var end = new Date(cfg.endTime).getTime();
+    if(!end || isNaN(end)) return false;
+    return end > Date.now();
+  }
+
+  function getActiveDiscount(){
+    var cfg = loadDiscountConfig();
+    return isDiscountActive(cfg) ? cfg : null;
+  }
+
+  function calculateDiscount(subtotal, cfg){
+    cfg = cfg || getActiveDiscount();
+    if(!cfg || !isDiscountActive(cfg)){
+      return { active: false, discountAmount: 0, finalTotal: subtotal };
+    }
+    var val = parseFloat(cfg.value);
+    var discAmount = 0;
+    if(cfg.type === "percent"){
+      discAmount = Math.round(subtotal * (val / 100));
+    } else {
+      if(subtotal >= 1000){
+        var fixedVnd = val < 1000 ? val * 1000 : val;
+        discAmount = Math.min(subtotal, Math.round(fixedVnd));
+      } else {
+        var fixedD = val >= 1000 ? Math.round(val / 1000) : val;
+        discAmount = Math.min(subtotal, fixedD);
+      }
+    }
+    var finalTotal = Math.max(0, subtotal - discAmount);
+    return {
+      active: true,
+      type: cfg.type,
+      value: val,
+      discountAmount: discAmount,
+      finalTotal: finalTotal,
+      label: cfg.label || "Ưu đãi"
+    };
+  }
+
+  function saveDiscountConfig(cfg){
+    try {
+      localStorage.setItem(DISCOUNT_CONFIG_KEY, JSON.stringify(cfg));
+    } catch(e){}
+    if(USE_SUPABASE && typeof SUPABASE !== "undefined" && SUPABASE && SUPABASE.from){
+      try {
+        SUPABASE.from("state").upsert({ key: "discount", value: JSON.stringify(cfg) }, { onConflict: "key" }).then(function(){}).catch(function(){});
+      } catch(e){}
+    }
+    syncDiscountUI();
+  }
+
+  var discountCountdownTimer = null;
+  function syncDiscountUI(){
+    var cfg = loadDiscountConfig();
+    var active = isDiscountActive(cfg);
+
+    var cardEl = document.getElementById("mDiscountCard");
+    var badgeEl = document.getElementById("mDiscountBadge");
+    var descEl = document.getElementById("mDiscountDesc");
+    var hEl = document.getElementById("mClockH");
+    var mEl = document.getElementById("mClockM");
+    var sEl = document.getElementById("mClockS");
+    var menuPriceBadge = document.getElementById("menuPriceBadge");
+    var statusBadge = document.getElementById("setDiscountStatusBadge");
+
+    if(statusBadge){
+      statusBadge.style.display = active ? "inline-block" : "none";
+    }
+
+    if(!active){
+      if(cardEl) cardEl.style.display = "none";
+      if(menuPriceBadge) menuPriceBadge.innerHTML = PRICE_PER_MAM + "đ/1 người";
+      if(discountCountdownTimer){
+        clearInterval(discountCountdownTimer);
+        discountCountdownTimer = null;
+      }
+      updateOrderTotal();
+      return;
+    }
+
+    if(cardEl) cardEl.style.display = "block";
+    var tagText = cfg.type === "percent" ? ("-" + cfg.value + "%") : ("-" + (cfg.value >= 1000 ? (formatVnNumber(cfg.value) + "đ") : (cfg.value + "đ")));
+    if(badgeEl) badgeEl.textContent = (cfg.label || "⚡ FLASH SALE") + " " + tagText;
+    if(descEl){
+      var descStr = cfg.type === "percent"
+        ? ("Giảm ngay " + cfg.value + "% cho tất cả mâm cơm nhà khi đặt trong khung giờ vàng!")
+        : ("Giảm trực tiếp " + (cfg.value >= 1000 ? (formatVnNumber(cfg.value) + "đ") : (cfg.value + "đ")) + " cho đơn hàng khi đặt trong khung giờ vàng!");
+      descEl.textContent = descStr;
+    }
+
+    // Giá trên header Mâm
+    if(menuPriceBadge){
+      var discP = calculateDiscount(PRICE_PER_MAM, cfg);
+      menuPriceBadge.innerHTML = '<del style="opacity:0.6;margin-right:4px;">' + PRICE_PER_MAM + 'đ</del> <strong style="color:#ffffff;">' + discP.finalTotal + 'đ</strong>/1 người <span class="badge-disc-tag">' + tagText + '</span>';
+    }
+
+    // Countdown Clock
+    function tickClock(){
+      if(!cfg.endTime){
+        if(hEl) hEl.textContent = "99";
+        if(mEl) mEl.textContent = "59";
+        if(sEl) sEl.textContent = "59";
+        return;
+      }
+      var diff = new Date(cfg.endTime).getTime() - Date.now();
+      if(diff <= 0){
+        // Hết giờ
+        cfg.enabled = false;
+        saveDiscountConfig(cfg);
+        syncDiscountUI();
+        return;
+      }
+      var hrs = Math.floor(diff / 3600000);
+      var mins = Math.floor((diff % 3600000) / 60000);
+      var secs = Math.floor((diff % 60000) / 1000);
+      var pad = function(n){ return n < 10 ? "0" + n : "" + n; };
+      if(hEl) hEl.textContent = pad(hrs);
+      if(mEl) mEl.textContent = pad(mins);
+      if(sEl) sEl.textContent = pad(secs);
+    }
+    tickClock();
+    if(discountCountdownTimer) clearInterval(discountCountdownTimer);
+    discountCountdownTimer = setInterval(tickClock, 1000);
+
+    updateOrderTotal();
+  }
+
   function updateOrderTotal(){
     var people = parseNum(document.getElementById("cPeople").value);
     var mams = totalTraysAllWeeks();        // số mâm cả hai tuần (khớp với nội dung sao chép)
-    var totalD = PRICE_PER_MAM * mams * people;
-    orderTotalEl.textContent = totalD ? totalD + "đ" : "0đ";
-    orderTotalCalcEl.textContent = PRICE_PER_MAM + "đ × " + mams + " mâm × " + people + " người";
+    var rawTotal = PRICE_PER_MAM * mams * people;
+    var disc = calculateDiscount(rawTotal);
+
+    if(disc.active && rawTotal > 0){
+      orderTotalEl.innerHTML = '<span style="text-decoration:line-through;opacity:0.55;font-size:0.75em;margin-right:6px;font-weight:700;">' + rawTotal + 'đ</span>' + disc.finalTotal + 'đ';
+      var discNote = disc.type === "percent" ? ("-" + disc.value + "%") : ("-" + disc.discountAmount + "đ");
+      orderTotalCalcEl.innerHTML = PRICE_PER_MAM + 'đ × ' + mams + ' mâm × ' + people + ' người <span style="color:#dc2626;font-weight:800;">(' + discNote + ')</span> = ' + disc.finalTotal + 'đ';
+    } else {
+      orderTotalEl.textContent = rawTotal ? rawTotal + "đ" : "0đ";
+      orderTotalCalcEl.textContent = PRICE_PER_MAM + "đ × " + mams + " mâm × " + people + " người";
+    }
     var badge = document.getElementById("menuPriceBadge");
-    if(badge){ badge.textContent = PRICE_PER_MAM + "đ/1 người"; }
+    if(badge && !disc.active){ badge.textContent = PRICE_PER_MAM + "đ/1 người"; }
   }
 
   // ================= time saved =================
@@ -8938,7 +9344,7 @@
     } else {
       var statEl = document.getElementById("counterSavedStatText");
       if(statEl){
-        statEl.innerHTML = '✨ Mâm Cơm tiết kiệm được <strong class="counter-card__stat-hl" id="counterSavedStatCalc">' + hrs + ' tiếng</strong> cho khách hàng';
+        statEl.innerHTML = '✨ Mâm Cơm tiết kiệm được tổng <strong class="counter-card__stat-hl" id="counterSavedStatCalc">' + hrs + ' tiếng</strong> cho khách hàng';
       }
     }
   }
@@ -9421,6 +9827,7 @@
       });
       if(target === "setPaneOrders") renderOwnerOrders();
       if(target === "setPaneStats") renderOwnerAnalytics();
+      if(target === "setPaneDiscount") renderDiscountSettings();
     });
   });
 
@@ -9522,6 +9929,7 @@
       return;
     }
     setPrice.value = PRICE_PER_MAM;
+    renderDiscountSettings();
     renderSettingsComments();
     renderOwnerAnalytics();
     renderOwnerOrders();
@@ -9667,11 +10075,200 @@
     }).catch(function(){ /* offline — keep the default 49đ */ });
   }
 
+  // ================= CÀI ĐẶT KHUYẾN MÃI (PIN CHỦ) =================
+  function toDatetimeLocalString(date) {
+    if(!date) return "";
+    var d = new Date(date);
+    if(isNaN(d.getTime())) return "";
+    var pad = function(n) { return (n < 10 ? "0" : "") + n; };
+    return d.getFullYear() + "-" +
+      pad(d.getMonth() + 1) + "-" +
+      pad(d.getDate()) + "T" +
+      pad(d.getHours()) + ":" +
+      pad(d.getMinutes());
+  }
+
+  function updateDiscTypeUI(type) {
+    var labelPercent = document.getElementById("labelDiscPercent");
+    var labelFixed = document.getElementById("labelDiscFixed");
+    var discValueLabel = document.getElementById("discValueLabel");
+    var discValueUnit = document.getElementById("discValueUnit");
+    var discValueHint = document.getElementById("discValueHint");
+    var setDiscValue = document.getElementById("setDiscValue");
+
+    if (type === "percent") {
+      if (labelPercent) { labelPercent.style.borderColor = "#da241c"; labelPercent.style.background = "#fff5f5"; }
+      if (labelFixed) { labelFixed.style.borderColor = "#e2e8f0"; labelFixed.style.background = "#ffffff"; }
+      if (discValueLabel) discValueLabel.textContent = "Mức giảm (%)";
+      if (discValueUnit) discValueUnit.textContent = "%";
+      if (discValueHint) discValueHint.textContent = "Nhập số phần trăm muốn giảm trên tổng đơn hàng (ví dụ: 15 hoặc 20).";
+      if (setDiscValue) setDiscValue.placeholder = "VD: 20";
+    } else {
+      if (labelFixed) { labelFixed.style.borderColor = "#da241c"; labelFixed.style.background = "#fff5f5"; }
+      if (labelPercent) { labelPercent.style.borderColor = "#e2e8f0"; labelPercent.style.background = "#ffffff"; }
+      if (discValueLabel) discValueLabel.textContent = "Mức giảm (VNĐ)";
+      if (discValueUnit) discValueUnit.textContent = "đ";
+      if (discValueHint) discValueHint.textContent = "Nhập số tiền muốn giảm thẳng (ví dụ: 20000 hoặc 50000).";
+      if (setDiscValue) setDiscValue.placeholder = "VD: 20000";
+    }
+  }
+
+  function renderDiscountSettings() {
+    var cfg = loadDiscountConfig();
+    var setDiscEnabled = document.getElementById("setDiscEnabled");
+    var setDiscTypePercent = document.getElementById("setDiscTypePercent");
+    var setDiscTypeFixed = document.getElementById("setDiscTypeFixed");
+    var setDiscValue = document.getElementById("setDiscValue");
+    var setDiscEndTime = document.getElementById("setDiscEndTime");
+    var setDiscLabel = document.getElementById("setDiscLabel");
+    var setDiscStatusMsg = document.getElementById("setDiscStatusMsg");
+
+    if (setDiscEnabled) setDiscEnabled.checked = !!cfg.enabled;
+    if (cfg.type === "fixed") {
+      if (setDiscTypeFixed) setDiscTypeFixed.checked = true;
+      updateDiscTypeUI("fixed");
+    } else {
+      if (setDiscTypePercent) setDiscTypePercent.checked = true;
+      updateDiscTypeUI("percent");
+    }
+    if (setDiscValue) setDiscValue.value = cfg.value || "";
+    if (setDiscEndTime && cfg.endTime) {
+      setDiscEndTime.value = toDatetimeLocalString(cfg.endTime);
+    }
+    if (setDiscLabel && cfg.label) setDiscLabel.value = cfg.label;
+    if (setDiscStatusMsg) setDiscStatusMsg.textContent = "";
+  }
+
+  var setDiscTypePercentEl = document.getElementById("setDiscTypePercent");
+  var setDiscTypeFixedEl = document.getElementById("setDiscTypeFixed");
+  if (setDiscTypePercentEl) {
+    setDiscTypePercentEl.addEventListener("change", function() {
+      if (this.checked) updateDiscTypeUI("percent");
+    });
+  }
+  if (setDiscTypeFixedEl) {
+    setDiscTypeFixedEl.addEventListener("change", function() {
+      if (this.checked) updateDiscTypeUI("fixed");
+    });
+  }
+
+  // Phím tắt thời gian đếm ngược
+  document.querySelectorAll(".btn-disc-preset").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      var preset = btn.getAttribute("data-preset");
+      var now = new Date();
+      var targetDate = new Date();
+      if (preset === "1h") {
+        targetDate = new Date(now.getTime() + 60 * 60 * 1000);
+      } else if (preset === "2h") {
+        targetDate = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+      } else if (preset === "today20") {
+        targetDate.setHours(20, 0, 0, 0);
+        if (targetDate.getTime() <= now.getTime()) {
+          targetDate.setDate(targetDate.getDate() + 1);
+        }
+      } else if (preset === "today22") {
+        targetDate.setHours(22, 0, 0, 0);
+        if (targetDate.getTime() <= now.getTime()) {
+          targetDate.setDate(targetDate.getDate() + 1);
+        }
+      } else if (preset === "tomorrow20") {
+        targetDate.setDate(targetDate.getDate() + 1);
+        targetDate.setHours(20, 0, 0, 0);
+      }
+      var setDiscEndTime = document.getElementById("setDiscEndTime");
+      if (setDiscEndTime) {
+        setDiscEndTime.value = toDatetimeLocalString(targetDate);
+      }
+    });
+  });
+
+  var btnSaveDiscount = document.getElementById("btnSaveDiscount");
+  var btnDisableDiscount = document.getElementById("btnDisableDiscount");
+  var setDiscStatusMsg = document.getElementById("setDiscStatusMsg");
+
+  if (btnSaveDiscount) {
+    btnSaveDiscount.addEventListener("click", function() {
+      if (!isOwner()) {
+        requestPin(function(ok) { if (ok) btnSaveDiscount.click(); }, "Cần PIN của chủ để lưu khuyến mãi");
+        return;
+      }
+      var enabled = document.getElementById("setDiscEnabled") ? document.getElementById("setDiscEnabled").checked : true;
+      var typeEl = document.querySelector('input[name="discType"]:checked');
+      var type = typeEl ? typeEl.value : "percent";
+      var val = parseFloat(document.getElementById("setDiscValue") ? document.getElementById("setDiscValue").value : 0);
+      if (isNaN(val) || val <= 0) {
+        if (setDiscStatusMsg) {
+          setDiscStatusMsg.style.color = "#da241c";
+          setDiscStatusMsg.textContent = "Vui lòng nhập mức giảm lớn hơn 0!";
+        }
+        var setDiscValue = document.getElementById("setDiscValue");
+        if (setDiscValue) setDiscValue.focus();
+        return;
+      }
+      var endTimeEl = document.getElementById("setDiscEndTime");
+      var endTime = endTimeEl && endTimeEl.value ? new Date(endTimeEl.value).toISOString() : "";
+      var labelEl = document.getElementById("setDiscLabel");
+      var label = (labelEl && labelEl.value.trim()) || "⚡ GIỜ VÀNG GIẢM GIÁ • FLASH SALE";
+
+      var cfg = {
+        enabled: enabled,
+        type: type,
+        value: val,
+        endTime: endTime,
+        label: label
+      };
+      saveDiscountConfig(cfg);
+      if (setDiscStatusMsg) {
+        setDiscStatusMsg.style.color = "#16a34a";
+        setDiscStatusMsg.textContent = "✓ Đã lưu & cập nhật khuyến mãi thành công!";
+        setTimeout(function() { if (setDiscStatusMsg) setDiscStatusMsg.textContent = ""; }, 3500);
+      }
+    });
+  }
+
+  if (btnDisableDiscount) {
+    btnDisableDiscount.addEventListener("click", function() {
+      if (!isOwner()) {
+        requestPin(function(ok) { if (ok) btnDisableDiscount.click(); }, "Cần PIN của chủ để tắt khuyến mãi");
+        return;
+      }
+      var cfg = loadDiscountConfig();
+      cfg.enabled = false;
+      saveDiscountConfig(cfg);
+      var setDiscEnabled = document.getElementById("setDiscEnabled");
+      if (setDiscEnabled) setDiscEnabled.checked = false;
+      if (setDiscStatusMsg) {
+        setDiscStatusMsg.style.color = "#64748b";
+        setDiscStatusMsg.textContent = "✓ Đã tắt chương trình khuyến mãi";
+        setTimeout(function() { if (setDiscStatusMsg) setDiscStatusMsg.textContent = ""; }, 3000);
+      }
+    });
+  }
+
+  function syncDiscountFromServer(){
+    if(!USE_SUPABASE || typeof SUPABASE === "undefined" || !SUPABASE || !SUPABASE.from) return;
+    try {
+      SUPABASE.from("state").select("value").eq("key", "discount").single().then(function(res){
+        if(res && res.data && res.data.value){
+          try {
+            var cfg = typeof res.data.value === "string" ? JSON.parse(res.data.value) : res.data.value;
+            if(cfg && typeof cfg === "object"){
+              localStorage.setItem(DISCOUNT_CONFIG_KEY, JSON.stringify(cfg));
+              syncDiscountUI();
+            }
+          } catch(e){}
+        }
+      }).catch(function(){});
+    } catch(e){}
+  }
+
   // ================= init =================
   buildMenu();
   buildWeek();
   loadOrder();
   updateOrderTotal();
+  syncDiscountUI();
   updateWeekBar();
   render();
   // Kích hoạt bảng điểm lật tay (hoặc sẵn sàng chờ hiệu ứng morph của màn hình mở đầu)
@@ -9690,6 +10287,7 @@
   loadSharedMenu();
   syncCategoryConfigFromServer();
   syncOrdersFromServer();
+  syncDiscountFromServer();
   trackPageViewOnce();
 
   var btnDoChangePin = document.getElementById("btnDoChangePin");
@@ -9752,6 +10350,7 @@
     loadSharedMenu();
     syncOrdersFromServer();
     syncSharedPrice();
+    syncDiscountFromServer();
   }
   // Giá chủ đặt được đồng bộ cho mọi máy, không chỉ lúc mở trang.
   function syncSharedPrice(){
@@ -9836,9 +10435,20 @@
       var peopleEl = document.getElementById("cPeople");
       var people = (peopleEl && parseInt(peopleEl.value, 10)) || 1;
       var price = (typeof PRICE_PER_MAM !== "undefined") ? PRICE_PER_MAM : 49;
-      var total = price * mams * people;
-      if (total > 0 && total < 1000) total = total * 1000;
-      return total > 0 ? total : 49000;
+      var countTrays = mams > 0 ? mams : 1;
+      var rawTotalD = price * countTrays * people;
+      var disc = calculateDiscount(rawTotalD);
+      var finalVnd = disc.finalTotal * 1000;
+      return finalVnd > 0 ? finalVnd : 49000;
+    },
+    getDiscountInfo: function() {
+      var mams = totalTraysAllWeeks();
+      var peopleEl = document.getElementById("cPeople");
+      var people = (peopleEl && parseInt(peopleEl.value, 10)) || 1;
+      var price = (typeof PRICE_PER_MAM !== "undefined") ? PRICE_PER_MAM : 49;
+      var countTrays = mams > 0 ? mams : 1;
+      var rawTotalD = price * countTrays * people;
+      return calculateDiscount(rawTotalD);
     },
     getTotalTrays: function() {
       return totalTraysAllWeeks();
@@ -10356,7 +10966,21 @@
     if (qrReviewPhone) qrReviewPhone.textContent = phoneVal;
     if (qrReviewAddress) qrReviewAddress.textContent = addressVal;
     if (qrReviewDeliveryTime) qrReviewDeliveryTime.textContent = timeVal + " (" + dateVal + ")";
-    if (qrReviewTotal) qrReviewTotal.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
+    
+    var discInfo = (window.mamcomApp && typeof window.mamcomApp.getDiscountInfo === "function")
+      ? window.mamcomApp.getDiscountInfo()
+      : null;
+
+    if (qrReviewTotal) {
+      if (discInfo && discInfo.active) {
+        var rawVnd = (discInfo.finalTotal + discInfo.discountAmount) * 1000;
+        var tag = discInfo.type === "percent" ? ("-" + discInfo.value + "%") : ("-" + (discInfo.discountAmount * 1000).toLocaleString("vi-VN") + " ₫");
+        qrReviewTotal.innerHTML = '<span style="text-decoration:line-through;color:#94a3b8;font-size:0.85em;margin-right:6px;">' + rawVnd.toLocaleString("vi-VN") + ' ₫</span>'
+          + currentTotalAmount.toLocaleString("vi-VN") + ' ₫ <span style="background:#dc2626;color:#fff;font-size:11px;padding:2px 7px;border-radius:99px;font-weight:700;margin-left:4px;">' + tag + '</span>';
+      } else {
+        qrReviewTotal.textContent = currentTotalAmount.toLocaleString("vi-VN") + " ₫";
+      }
+    }
     if (qrReviewNote) {
       if (noteVal) {
         qrReviewNote.textContent = noteVal;
@@ -10505,10 +11129,20 @@
       ? "🎉 <b>KHÁCH HÀNG ĐÃ THANH TOÁN THÀNH CÔNG!</b>" 
       : "🔔 <b>CÓ ĐƠN HÀNG MỚI (CHỜ QUÉT VIETQR)</b>";
 
+    var discInfo = (window.mamcomApp && typeof window.mamcomApp.getDiscountInfo === "function")
+      ? window.mamcomApp.getDiscountInfo()
+      : null;
+    var discLine = "";
+    if (discInfo && discInfo.active) {
+      var tagStr = discInfo.type === "percent" ? ("-" + discInfo.value + "%") : ("-" + (discInfo.discountAmount * 1000).toLocaleString("vi-VN") + " ₫");
+      discLine = "⚡ <b>Ưu đãi áp dụng:</b> " + (discInfo.label || "Giờ vàng") + " (" + tagStr + ")\n";
+    }
+
     var msg = headerText + "\n"
       + "━━━━━━━━━━━━━━━━━━━━━\n"
       + "🆔 <b>Mã đơn:</b> <code>" + orderId + "</code>\n"
       + "💰 <b>Số tiền:</b> <b>" + totalAmount.toLocaleString("vi-VN") + " ₫</b>\n"
+      + (discLine ? discLine : "")
       + "━━━━━━━━━━━━━━━━━━━━━\n"
       + (name && name !== "Khách đặt trên web" ? ("👤 <b>Khách hàng:</b> " + name + "\n") : "")
       + "📞 <b>Điện thoại:</b> <code>" + phone + "</code>\n"
