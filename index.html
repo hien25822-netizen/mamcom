@@ -7119,6 +7119,35 @@
     var timeGrid  = document.getElementById("timeGrid");
     var today     = new Date();
     today.setHours(0,0,0,0);
+    var tomorrow  = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // Danh sách khung giờ nhận hàng: từ 9h sáng đến 9h tối, không có 12h trưa
+    var ALLOWED_TIMES = [
+      "09:00","09:30","10:00","10:30","11:00","11:30",
+      "12:30","13:00","13:30","14:00","14:30","15:00",
+      "15:30","16:00","16:30","17:00","17:30","18:00",
+      "18:30","19:00","19:30","20:00","20:30","21:00"
+    ];
+
+    // Khởi tạo: kiểm tra & tự động xóa ngày/giờ cũ nếu là hôm nay hoặc giờ không hợp lệ
+    if(dateInput.value){
+      var parts = dateInput.value.split("/");
+      if(parts.length === 2){
+        var cd = parseInt(parts[0], 10), cm = parseInt(parts[1], 10) - 1;
+        var checkD = new Date(today.getFullYear(), cm, cd);
+        if(checkD < tomorrow){
+          dateInput.value = "";
+          if(typeof saveOrder === "function") saveOrder();
+          if(typeof updateProgress === "function") updateProgress();
+        }
+      }
+    }
+    if(timeInput.value && ALLOWED_TIMES.indexOf(timeInput.value) === -1){
+      timeInput.value = "";
+      if(typeof saveOrder === "function") saveOrder();
+      if(typeof updateProgress === "function") updateProgress();
+    }
 
     function open(el){ el.classList.add("show"); }
     function close(el){
@@ -7133,12 +7162,13 @@
       }, 350);
     }
 
-    // ---- mini calendar (current + next month) ----
-    var calView = new Date(today); calView.setDate(1);
+    // ---- mini calendar (chỉ cho phép chọn từ ngày mai trở đi) ----
+    var calView = new Date(tomorrow); calView.setDate(1);
     function renderCal(){
       var y = calView.getFullYear(), m = calView.getMonth();
       calMonth.textContent = MONTHS_VI[m] + " " + y;
-      calPrev.disabled = (y === today.getFullYear() && m === today.getMonth());
+      var minView = new Date(tomorrow); minView.setDate(1);
+      calPrev.disabled = (y === minView.getFullYear() && m === minView.getMonth());
       calNext.disabled = false;
       calGrid.innerHTML = "";
       ["T2","T3","T4","T5","T6","T7","CN"].forEach(function(w){
@@ -7160,15 +7190,17 @@
         cell.type = "button";
         cell.className = "cal__day";
         cell.textContent = d;
-        // IIFE captures THIS iteration's date (a bare `var sel` would be shared
-        // by every deferred click handler and all of them would set the last day)
+        // IIFE captures THIS iteration's date
         (function(sel){
-          var past = sel < today;
+          var past = sel < tomorrow; // Khóa ngày hôm nay và các ngày quá khứ
           if(past){ cell.classList.add("is-past"); cell.disabled = true; }
-          if(sel.getTime() === today.getTime()) cell.classList.add("is-today");
+          if(sel.getTime() === today.getTime()){
+            cell.classList.add("is-today");
+            cell.title = "Không nhận ship trong ngày (chỉ nhận từ ngày mai trở đi)";
+          }
           if(dateInput.value && dateInput.value === fmtDM(sel)) cell.classList.add("is-sel");
           cell.tabIndex = -1;
-          cell.setAttribute("aria-label", "Ngày " + sel.getDate() + " tháng " + (sel.getMonth() + 1) + " năm " + sel.getFullYear() + (past ? " (đã qua)" : ""));
+          cell.setAttribute("aria-label", "Ngày " + sel.getDate() + " tháng " + (sel.getMonth() + 1) + " năm " + sel.getFullYear() + (past ? (sel.getTime() === today.getTime() ? " (hôm nay - không nhận giao trong ngày)" : " (đã qua)") : ""));
           cell.addEventListener("click", function(){
             dateInput.value = fmtDM(sel);
             saveOrder();
@@ -7180,10 +7212,9 @@
       }
       focusCalToday();
     }
-    // Đưa tiêu điểm vào ô hôm nay (hoặc ngày đang chọn) khi mở lịch bằng bàn phím.
+    // Đưa tiêu điểm vào ô ngày khả dụng đầu tiên (hoặc ngày đang chọn) khi mở lịch bằng bàn phím.
     function focusCalToday(){
       var sel = calGrid.querySelector(".cal__day.is-sel")
-        || calGrid.querySelector(".cal__day.is-today")
         || calGrid.querySelector(".cal__day:not(:disabled)");
       if(!sel) return;
       calGrid.querySelectorAll(".cal__day").forEach(function(c){ c.tabIndex = -1; });
@@ -7212,13 +7243,14 @@
     });
     function shiftMonth(delta){
       var n = new Date(calView.getFullYear(), calView.getMonth() + delta, 1);
-      if(n >= today) calView = n;
+      var minView = new Date(tomorrow); minView.setDate(1);
+      if(n >= minView) calView = n;
     }
     calPrev.addEventListener("click", function(){ shiftMonth(-1); renderCal(); });
     calNext.addEventListener("click", function(){ shiftMonth(1); renderCal(); });
 
     // ---- time table ----
-    ["07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"].forEach(function(t){
+    ALLOWED_TIMES.forEach(function(t){
       var b = document.createElement("button");
       b.type = "button";
       b.textContent = t;
@@ -10259,7 +10291,7 @@
     // Đọc thông tin khách hàng từ form
     var phoneVal = (document.getElementById("cPhone") ? document.getElementById("cPhone").value.trim() : "") || "Chưa nhập SĐT";
     var addressVal = (document.getElementById("cAddress") ? document.getElementById("cAddress").value.trim() : "") || "Chưa nhập địa chỉ";
-    var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Hôm nay";
+    var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Chưa chọn ngày";
     var timeVal = (document.getElementById("cTime") ? document.getElementById("cTime").value.trim() : "") || "Giờ ăn";
     var noteVal = (document.getElementById("cNote") ? document.getElementById("cNote").value.trim() : "");
     var peopleVal = (document.getElementById("cPeople") ? document.getElementById("cPeople").value.trim() : "1") || "1";
@@ -10366,7 +10398,7 @@
 
     var phoneVal = (document.getElementById("cPhone") ? document.getElementById("cPhone").value.trim() : "") || "—";
     var addressVal = (document.getElementById("cAddress") ? document.getElementById("cAddress").value.trim() : "") || "—";
-    var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Hôm nay";
+    var dateVal = (document.getElementById("cDate") ? document.getElementById("cDate").value.trim() : "") || "Chưa chọn ngày";
     var timeVal = (document.getElementById("cTime") ? document.getElementById("cTime").value.trim() : "") || "Giờ ăn";
 
     if (successOrderId) successOrderId.textContent = currentOrderId;
