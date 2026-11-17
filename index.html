@@ -937,42 +937,51 @@
     letter-spacing: -0.2px;
     transition: all 0.25s ease;
   }
-  /* Khi có khuyến mại đang chạy - Huy hiệu giá Mâm nổi bật trên nền với tone đỏ cam rượu sang trọng */
+  /* GIAO DIỆN NỔI BẬT & THU HÚT CẠNH MÂM KHI CÓ GIẢM GIÁ */
   .panel__price-badge.panel__price-badge--sale {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(254, 202, 202, 0.45) !important;
-    box-shadow: 0 3px 10px rgba(220, 38, 38, 0.28) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: #ffffff !important;
+    border: 1.5px solid #dc2626 !important;
     padding: 3px 10px !important;
-    gap: 4px !important;
+    border-radius: var(--radius-pill) !important;
+    box-shadow: 0 3px 12px rgba(220, 38, 38, 0.18), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    animation: salePillPulse 2.8s ease-in-out infinite !important;
+    white-space: nowrap !important;
   }
-  .panel__price-badge.panel__price-badge--sale del {
-    color: rgba(255, 255, 255, 0.72) !important;
-    font-size: 11px !important;
+  @keyframes salePillPulse {
+    0%, 100% { box-shadow: 0 3px 10px rgba(220, 38, 38, 0.16); }
+    50% { box-shadow: 0 4px 16px rgba(220, 38, 38, 0.32); }
+  }
+  .panel__price-badge.panel__price-badge--sale .price-orig {
+    font-size: 11.5px !important;
     font-weight: 600 !important;
+    color: #94a3b8 !important;
     text-decoration: line-through !important;
   }
   .panel__price-badge.panel__price-badge--sale .price-final {
-    color: #ffffff !important;
+    font-size: 15.5px !important;
     font-weight: 900 !important;
-    font-size: 13.5px !important;
-    letter-spacing: -0.2px !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+    color: #dc2626 !important;
+    letter-spacing: -0.3px !important;
+    text-shadow: 0 1px 1px rgba(220, 38, 38, 0.15) !important;
   }
   .panel__price-badge.panel__price-badge--sale .price-unit {
-    color: rgba(255, 255, 255, 0.9) !important;
     font-size: 11px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+    color: #78350f !important;
   }
   .panel__price-badge.panel__price-badge--sale .badge-disc-tag {
-    background: #fef08a !important;
-    color: #991b1b !important;
-    font-size: 10.5px !important;
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
     font-weight: 900 !important;
+    letter-spacing: 0.2px !important;
     padding: 2px 7px !important;
-    border-radius: 99px !important;
-    margin-left: 3px !important;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18) !important;
+    border-radius: 999px !important;
+    box-shadow: 0 2px 5px rgba(220, 38, 38, 0.35) !important;
+    margin-left: 1px !important;
     vertical-align: middle !important;
   }
   .calendar-panel__body {
@@ -3875,9 +3884,6 @@
               <span class="m-clock-unit" id="mClockS">00</span>
             </div>
           </div>
-        </div>
-        <div class="m-discount-card__desc" id="mDiscountDesc">
-          Giảm ngay 20% cho tất cả mâm cơm khi đặt trong khoảng thời gian này
         </div>
       </div>
       <!-- Phân loại món ăn 2 tầng (Category Filter: Chính ở trên, Phụ ở dưới) -->
@@ -7766,12 +7772,15 @@
     try {
       localStorage.setItem(DISCOUNT_CONFIG_KEY, JSON.stringify(cfg));
     } catch(e){}
-    if(USE_SUPABASE && typeof SUPABASE !== "undefined" && SUPABASE && SUPABASE.from){
-      try {
-        SUPABASE.from("state").upsert({ key: "discount", value: JSON.stringify(cfg) }, { onConflict: "key" }).then(function(){}).catch(function(){});
-      } catch(e){}
+    if(sharedStore && typeof sharedStore.saveDiscount === "function"){
+      return sharedStore.saveDiscount(cfg).then(function(){
+        syncDiscountUI();
+      }).catch(function(){
+        syncDiscountUI();
+      });
     }
     syncDiscountUI();
+    return Promise.resolve(cfg);
   }
 
   var discountCountdownTimer = null;
@@ -7815,18 +7824,14 @@
     }
     if(badgeEl) badgeEl.textContent = displayBadge;
 
-    if(descEl){
-      var descStr = cfg.type === "percent"
-        ? ("Giảm ngay " + cfg.value + "% cho tất cả mâm cơm khi đặt trong khoảng thời gian này")
-        : ("Giảm trực tiếp " + (cfg.value >= 1000 ? (formatVnNumber(cfg.value) + "đ") : (cfg.value + "đ")) + " cho tất cả mâm cơm khi đặt trong khoảng thời gian này");
-      descEl.textContent = descStr;
-    }
-
-    // Giá trên header Mâm - hiển thị nổi bật và chuẩn tone màu trên nền
+    // Giá trên header Mâm - hiển thị nổi bật và thu hút chuẩn yêu cầu: "61đ 49đ /1 người -20%"
     if(menuPriceBadge){
       var discP = calculateDiscount(PRICE_PER_MAM, cfg);
       menuPriceBadge.className = "panel__price-badge panel__price-badge--sale";
-      menuPriceBadge.innerHTML = '<del>' + PRICE_PER_MAM + 'đ</del> <span class="price-final">' + discP.finalTotal + 'đ</span><span class="price-unit">/1 người</span> <span class="badge-disc-tag">' + tagText + '</span>';
+      menuPriceBadge.innerHTML = '<span class="price-orig">' + PRICE_PER_MAM + 'đ</span> '
+        + '<span class="price-final">' + discP.finalTotal + 'đ</span>'
+        + '<span class="price-unit">/1 người</span>'
+        + '<span class="badge-disc-tag">' + tagText + '</span>';
     }
 
     // Countdown Clock
@@ -9062,6 +9067,37 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin: getOwnerPin(), price: n })
       }).then(function(r){ return r.json(); }).then(function(){ return n; }).catch(function(){ return n; });
+    },
+
+    // ---- discount & countdown config ----
+    saveDiscount: function(cfg){
+      try { localStorage.setItem(DISCOUNT_CONFIG_KEY, JSON.stringify(cfg)); } catch(e){}
+      if(USE_SUPABASE){
+        return SUPABASE.rpc("admin_save_discount", { p_pin: getOwnerPin(), p_discount: JSON.stringify(cfg) })
+          .then(function(res){
+            if(res.error) throw res.error;
+            return cfg;
+          }).catch(function(err){
+            console.warn("admin_save_discount RPC error:", err);
+            return cfg;
+          });
+      }
+      return Promise.resolve(cfg);
+    },
+    getDiscount: function(){
+      if(USE_SUPABASE){
+        return SUPABASE.from("state").select("value").eq("key", "discount").single()
+          .then(function(res){
+            if(res && res.data && res.data.value){
+              try {
+                var c = typeof res.data.value === "string" ? JSON.parse(res.data.value) : res.data.value;
+                if(c && typeof c === "object") return c;
+              } catch(e){}
+            }
+            return null;
+          }).catch(function(){ return null; });
+      }
+      return Promise.resolve(null);
     },
 
     // ---- category config (global order & styles) ----
@@ -10330,7 +10366,7 @@
 
   if (btnSaveDiscount) {
     btnSaveDiscount.addEventListener("click", function() {
-      if (!isOwner()) {
+      if (!isOwner() || !getOwnerPin()) {
         requestPin(function(ok) { if (ok) btnSaveDiscount.click(); }, "Cần PIN của chủ để lưu khuyến mãi");
         return;
       }
@@ -10367,32 +10403,54 @@
         endTime: endTime,
         label: label
       };
-      saveDiscountConfig(cfg);
-      updateOrderTotal();
-      if (setDiscStatusMsg) {
-        setDiscStatusMsg.style.color = "#16a34a";
-        setDiscStatusMsg.textContent = "✓ Đã lưu & cập nhật giá + khuyến mãi thành công!";
-        setTimeout(function() { if (setDiscStatusMsg) setDiscStatusMsg.textContent = ""; }, 3500);
-      }
+
+      btnSaveDiscount.disabled = true;
+      btnSaveDiscount.textContent = "⏳ Đang lưu...";
+      saveDiscountConfig(cfg).then(function() {
+        btnSaveDiscount.disabled = false;
+        btnSaveDiscount.textContent = "💾 Lưu & Kích hoạt khuyến mãi";
+        updateOrderTotal();
+        if (setDiscStatusMsg) {
+          setDiscStatusMsg.style.color = "#16a34a";
+          setDiscStatusMsg.textContent = "✓ Đã lưu & cập nhật giá + khuyến mãi thành công!";
+          setTimeout(function() { if (setDiscStatusMsg) setDiscStatusMsg.textContent = ""; }, 3500);
+        }
+      }).catch(function(err) {
+        btnSaveDiscount.disabled = false;
+        btnSaveDiscount.textContent = "💾 Lưu & Kích hoạt khuyến mãi";
+        if (setDiscStatusMsg) {
+          setDiscStatusMsg.style.color = "#da241c";
+          setDiscStatusMsg.textContent = "Lỗi lưu: " + ((err && err.message) || "Không thể kết nối máy chủ");
+        }
+      });
     });
   }
 
   if (btnDisableDiscount) {
     btnDisableDiscount.addEventListener("click", function() {
-      if (!isOwner()) {
+      if (!isOwner() || !getOwnerPin()) {
         requestPin(function(ok) { if (ok) btnDisableDiscount.click(); }, "Cần PIN của chủ để tắt khuyến mãi");
         return;
       }
       var cfg = loadDiscountConfig();
       cfg.enabled = false;
-      saveDiscountConfig(cfg);
-      var setDiscEnabled = document.getElementById("setDiscEnabled");
-      if (setDiscEnabled) setDiscEnabled.checked = false;
-      if (setDiscStatusMsg) {
-        setDiscStatusMsg.style.color = "#64748b";
-        setDiscStatusMsg.textContent = "✓ Đã tắt chương trình khuyến mãi";
-        setTimeout(function() { if (setDiscStatusMsg) setDiscStatusMsg.textContent = ""; }, 3000);
-      }
+      btnDisableDiscount.disabled = true;
+      saveDiscountConfig(cfg).then(function() {
+        btnDisableDiscount.disabled = false;
+        var setDiscEnabled = document.getElementById("setDiscEnabled");
+        if (setDiscEnabled) setDiscEnabled.checked = false;
+        if (setDiscStatusMsg) {
+          setDiscStatusMsg.style.color = "#64748b";
+          setDiscStatusMsg.textContent = "✓ Đã tắt chương trình khuyến mãi";
+          setTimeout(function() { if (setDiscStatusMsg) setDiscStatusMsg.textContent = ""; }, 3000);
+        }
+      }).catch(function(err) {
+        btnDisableDiscount.disabled = false;
+        if (setDiscStatusMsg) {
+          setDiscStatusMsg.style.color = "#da241c";
+          setDiscStatusMsg.textContent = "Lỗi: " + ((err && err.message) || "Không thể tắt khuyến mãi");
+        }
+      });
     });
   }
 
@@ -10498,24 +10556,26 @@
     } catch (e) {}
   }
 
-  function initConfettiTrigger() {
+  function checkAndFireConfetti() {
+    if (hasConfettiFired) return;
+    var splash = document.getElementById("splash");
+    if (splash && !splash.classList.contains("hide") && splash.style.display !== "none") return;
+    if (window.scrollY < 120) return;
     var card = document.getElementById("mDiscountCard");
-    if (!card) return;
-
-    if ("IntersectionObserver" in window) {
-      var obs = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting && !hasConfettiFired) {
-            var cfg = loadDiscountConfig();
-            if (isDiscountActive(cfg)) {
-              triggerCelebrationConfetti();
-              obs.disconnect();
-            }
-          }
-        });
-      }, { threshold: 0.35 });
-      obs.observe(card);
+    if (!card || card.style.display === "none") return;
+    var cfg = loadDiscountConfig();
+    if (!isDiscountActive(cfg)) return;
+    var rect = card.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.85 && rect.bottom > 60) {
+      triggerCelebrationConfetti();
+      window.removeEventListener("scroll", checkAndFireConfetti);
+      window.removeEventListener("touchmove", checkAndFireConfetti);
     }
+  }
+
+  function initConfettiTrigger() {
+    window.addEventListener("scroll", checkAndFireConfetti, { passive: true });
+    window.addEventListener("touchmove", checkAndFireConfetti, { passive: true });
   }
 
   function syncDiscountFromServer(){
@@ -11092,17 +11152,18 @@
   if (qrAccountNameText) qrAccountNameText.textContent = ACCOUNT_NAME;
   if (qrCardStk) qrCardStk.textContent = "STK: " + ACCOUNT_NO + " • MBBank";
 
-  // Lấy tổng tiền giỏ hàng
+  // Lấy tổng tiền giỏ hàng (áp dụng chuẩn 100% logic giảm giá và làm tròn)
   function getCartTotal() {
     if (window.mamcomApp && typeof window.mamcomApp.getTotalAmount === "function") {
       return window.mamcomApp.getTotalAmount();
     }
-    var totalEl = document.getElementById("orderTotal");
-    if (totalEl) {
-      var num = parseInt((totalEl.textContent || "").replace(/\D/g, ""), 10);
-      if (!isNaN(num) && num > 0) return num;
-    }
-    return 49000;
+    var peopleEl = document.getElementById("cPeople");
+    var people = (peopleEl && parseInt(peopleEl.value, 10)) || 1;
+    var mams = (typeof totalTraysAllWeeks === "function") ? totalTraysAllWeeks() : 1;
+    var price = (typeof PRICE_PER_MAM !== "undefined") ? PRICE_PER_MAM : 61;
+    var raw = price * (mams > 0 ? mams : 1) * people;
+    var disc = calculateDiscount(raw);
+    return Math.round(disc.finalTotal * 1000);
   }
 
   // Sinh mã đơn ngẫu nhiên (Ví dụ: MC31414893)
