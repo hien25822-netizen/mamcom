@@ -184,16 +184,29 @@
 
     </div>
 
-    <!-- Active Orders Metric strip -->
-    <div class="max-w-6xl mx-auto mt-2 pt-2 border-t border-[#F0EBE1] flex items-center justify-between text-xs text-stone-600 overflow-x-auto gap-3">
-      <div class="flex items-center gap-3">
-        <span class="font-medium text-stone-500">Tiến độ hôm nay:</span>
-        <span id="metricTrays" class="font-bold text-stone-800 bg-white px-2 py-0.5 rounded-lg border border-[#EAE3D7]">0 Khay</span>
-        <span id="metricProgress" class="font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg border border-brand-100">0% Đóng gói</span>
+    <!-- Active Orders & Quick Date Filter strip -->
+    <div class="max-w-6xl mx-auto mt-2 pt-2 border-t border-[#F0EBE1] flex flex-wrap items-center justify-between text-xs text-stone-600 gap-2">
+      <!-- Date Filter Quick Pills -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="dateFilterQuickBar">
+        <button onclick="setDateFilterMode('today')" id="btnDateMode-today" class="date-mode-btn px-3 py-1.5 rounded-xl font-bold text-xs bg-stone-900 text-white shadow-sm whitespace-nowrap active:scale-95 transition-all">
+          ☀️ Hôm nay <span id="countDateToday" class="ml-1 opacity-80">(0)</span>
+        </button>
+        <button onclick="setDateFilterMode('tomorrow')" id="btnDateMode-tomorrow" class="date-mode-btn px-3 py-1.5 rounded-xl font-semibold text-xs bg-white text-stone-700 border border-[#E0D9CE] hover:bg-stone-50 whitespace-nowrap active:scale-95 transition-all">
+          🌙 Ngày mai <span id="countDateTomorrow" class="ml-1 opacity-80">(0)</span>
+        </button>
+        <button onclick="setDateFilterMode('all')" id="btnDateMode-all" class="date-mode-btn px-3 py-1.5 rounded-xl font-semibold text-xs bg-white text-stone-700 border border-[#E0D9CE] hover:bg-stone-50 whitespace-nowrap active:scale-95 transition-all">
+          📋 Tất cả đơn <span id="countDateAll" class="ml-1 opacity-80">(0)</span>
+        </button>
+        <button onclick="setDateFilterMode('custom')" id="btnDateMode-custom" class="date-mode-btn px-3 py-1.5 rounded-xl font-semibold text-xs bg-white text-stone-700 border border-[#E0D9CE] hover:bg-stone-50 whitespace-nowrap active:scale-95 transition-all">
+          📅 Chọn ngày
+        </button>
       </div>
+
       <div class="flex items-center gap-2">
-        <button onclick="refreshData()" class="text-brand-600 hover:text-brand-700 font-semibold flex items-center gap-1">
-          <span>🔄</span> <span>Đồng bộ</span>
+        <span id="metricTrays" class="font-bold text-stone-800 bg-white px-2.5 py-1 rounded-xl border border-[#EAE3D7] shadow-sm whitespace-nowrap">0 Khay</span>
+        <span id="metricProgress" class="font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-xl border border-brand-100 shadow-sm whitespace-nowrap">0% Đóng gói</span>
+        <button onclick="refreshData()" class="px-2.5 py-1 rounded-xl bg-white border border-[#E0D9CE] text-brand-600 hover:text-brand-700 font-bold flex items-center gap-1 active:scale-95 shadow-sm whitespace-nowrap" title="Làm mới dữ liệu từ máy chủ">
+          <span>🔄</span> <span class="hidden sm:inline">Đồng bộ</span>
         </button>
       </div>
     </div>
@@ -309,36 +322,83 @@
     <!-- ---------------------------------------------------------- -->
     <section id="view-orders" class="space-y-4 hidden">
       
-      <!-- Top Action: Add Order Button -->
-      <div class="flex items-center justify-between">
+      <!-- Top Action: Add Order Button & Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#E8E2D8] shadow-sm">
         <div>
-          <h2 class="text-lg font-bold text-stone-900">Quản Lý Đơn Hàng Trong Ngày</h2>
-          <p class="text-xs text-stone-500">Nhập đơn nhanh, hệ thống tự động gán STT Khay #01, #02... và sinh checklist</p>
+          <h2 class="text-base sm:text-lg font-extrabold text-stone-900 flex items-center gap-2">
+            <span>📝 Quản Lý &amp; Điều Phối Đơn Hàng</span>
+            <span id="orderSourceBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Liên kết Web Trực Tiếp</span>
+          </h2>
+          <p class="text-xs text-stone-500 mt-0.5">Tất cả đơn từ website và bếp sơ chế tự động đồng bộ thời gian thực</p>
         </div>
-        <button onclick="openOrderModal()" class="touch-btn px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-sm flex items-center gap-2 active:scale-95">
-          <span>+</span>
-          <span>Tạo Đơn Hàng Mới</span>
-        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="openOrderModal()" class="touch-btn px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-sm flex items-center gap-1.5 active:scale-95">
+            <span>+</span>
+            <span>Tạo Đơn Thủ Công</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Orders List Table / Cards -->
+      <!-- Quick Summary Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="ordersSummaryGrid">
+        <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm">
+          <div class="text-[11px] font-bold text-stone-500 uppercase">Tổng số đơn</div>
+          <div class="text-xl font-extrabold text-stone-900 font-mono mt-0.5" id="sumTotalOrders">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-sm">
+          <div class="text-[11px] font-bold text-amber-700 uppercase">Chờ chuẩn bị</div>
+          <div class="text-xl font-extrabold text-amber-800 font-mono mt-0.5" id="sumPendingOrders">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-sm">
+          <div class="text-[11px] font-bold text-emerald-700 uppercase">Đã đóng gói đủ</div>
+          <div class="text-xl font-extrabold text-emerald-800 font-mono mt-0.5" id="sumReadyOrders">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm">
+          <div class="text-[11px] font-bold text-stone-500 uppercase">Doanh thu dự kiến</div>
+          <div class="text-xl font-extrabold text-brand-600 font-mono mt-0.5" id="sumTotalRevenue">0 đ</div>
+        </div>
+      </div>
+
+      <!-- Search & Status Filter Bar -->
+      <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <!-- Search box -->
+          <div class="relative flex-1">
+            <span class="absolute left-3 top-2.5 text-stone-400">🔍</span>
+            <input type="text" id="orderSearchInput" oninput="handleOrderSearch(this.value)" placeholder="Tìm kiếm theo mã đơn, SĐT khách, địa chỉ, món ăn..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm focus:border-brand-500 focus:outline-none">
+          </div>
+
+          <!-- Status filter chips -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            <button onclick="filterOrderStatus('ALL')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-st="ALL">Tất cả</button>
+            <button onclick="filterOrderStatus('pending')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="pending">⏳ Chờ xử lý</button>
+            <button onclick="filterOrderStatus('prepping')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="prepping">🔪 Đang sơ chế</button>
+            <button onclick="filterOrderStatus('completed')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="completed">✓ Hoàn thành</button>
+            <button onclick="filterOrderStatus('cancelled')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="cancelled">✕ Đã hủy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders List Table -->
       <div class="bg-white rounded-2xl border border-[#E8E2D8] shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm">
             <thead class="bg-[#F8F5F0] text-stone-600 text-xs uppercase font-bold border-b border-[#E8E2D8]">
               <tr>
-                <th class="px-4 py-3">STT Khay</th>
-                <th class="px-4 py-3">Khách Hàng / Mã Đơn</th>
-                <th class="px-4 py-3">Món Đặt</th>
-                <th class="px-4 py-3">Note Đặc Biệt</th>
-                <th class="px-4 py-3">Tiến Độ Checklist</th>
-                <th class="px-4 py-3 text-right">Thao Tác</th>
+                <th class="px-4 py-3 whitespace-nowrap">Khay / Mã đơn</th>
+                <th class="px-4 py-3 whitespace-nowrap">Khách hàng &amp; SĐT</th>
+                <th class="px-4 py-3 whitespace-nowrap">Thời gian nhận</th>
+                <th class="px-4 py-3 min-w-[200px]">Món ăn &amp; Suất</th>
+                <th class="px-4 py-3 min-w-[150px]">Lưu ý đặc biệt</th>
+                <th class="px-4 py-3 whitespace-nowrap">Tiến độ gói</th>
+                <th class="px-4 py-3 whitespace-nowrap">Trạng thái bếp</th>
+                <th class="px-4 py-3 text-right whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
             <tbody id="ordersTableBody" class="divide-y divide-[#EFEAE2]">
               <!-- Dynamic rows -->
               <tr>
-                <td colspan="6" class="px-4 py-8 text-center text-stone-400">Đang tải danh sách đơn...</td>
+                <td colspan="8" class="px-4 py-8 text-center text-stone-400">Đang tải danh sách đơn...</td>
               </tr>
             </tbody>
           </table>
@@ -771,9 +831,90 @@
       supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
     }
 
+    // Official 6 Mâm Cơm recipes fallback definitions for guaranteed offline/realtime reliability
+    const FALLBACK_RECIPE_DEFS = {
+      'MC01': {
+        name: 'Thịt rang cháy cạnh và Canh rau muống',
+        code: 'MC01',
+        category: 'Mâm Cơm Nhà',
+        description: 'Thịt ba chỉ heo rang giòn xém cạnh cùng canh rau muống luộc thanh mát',
+        ingredients: [
+          { name: 'Thịt ba chỉ heo tươi', quantity: 200, unit: 'g', category: 'Thịt & Hải sản', prep: 'Thái con chì 1x3cm' },
+          { name: 'Rau muống ngọn sạch', quantity: 250, unit: 'g', category: 'Rau củ quả', prep: 'Nhặt ngọn tươi rửa sạch' },
+          { name: 'Hành tím băm', quantity: 15, unit: 'g', category: 'Gia vị & Sốt', prep: 'Băm nhuyễn đóng hộp nhỏ' },
+          { name: 'Sốt mắm đường tiêu Mâm Cơm', quantity: 35, unit: 'ml', category: 'Gia vị & Sốt', prep: 'Túi sốt zip 35ml' }
+        ]
+      },
+      'MC02': {
+        name: 'Thịt băm trứng rang hành & Canh rau cải',
+        code: 'MC02',
+        category: 'Mâm Cơm Nhà',
+        description: 'Thịt nạc băm rang trứng thơm hành lá kèm canh rau cải ngọt nấu gừng',
+        ingredients: [
+          { name: 'Thịt nạc heo băm', quantity: 150, unit: 'g', category: 'Thịt & Hải sản', prep: 'Xay vừa nạc 8 mỡ 2' },
+          { name: 'Trứng gà tươi', quantity: 2, unit: 'quả', category: 'Topping & Khác', prep: 'Trứng gà sạch vỏ khô ráo' },
+          { name: 'Hành hoa & ngò rí', quantity: 30, unit: 'g', category: 'Rau củ quả', prep: 'Cắt nhỏ 0.5cm' },
+          { name: 'Rau cải ngọt tươi', quantity: 200, unit: 'g', category: 'Rau củ quả', prep: 'Cắt khúc 4-5cm' },
+          { name: 'Gừng tươi đập dập', quantity: 10, unit: 'g', category: 'Rau củ quả', prep: 'Cạo vỏ đập dập nấu canh' }
+        ]
+      },
+      'MC03': {
+        name: 'Thịt viên sốt mắm tỏi và Canh bắp cải luộc',
+        code: 'MC03',
+        category: 'Mâm Cơm Nhà',
+        description: 'Thịt viên mềm thơm sốt mắm tỏi đậm đà kèm canh bắp cải luộc ngọt lành',
+        ingredients: [
+          { name: 'Thịt viên sốt mắm tỏi', quantity: 200, unit: 'g', category: 'Thịt & Hải sản', prep: 'Nặn viên tròn 30g' },
+          { name: 'Bắp cải trắng giòn', quantity: 250, unit: 'g', category: 'Rau củ quả', prep: 'Cắt miếng vuông 4cm' },
+          { name: 'Sốt mắm tỏi ớt sánh cay', quantity: 35, unit: 'ml', category: 'Gia vị & Sốt', prep: 'Túi sốt zip 35ml' }
+        ]
+      },
+      'MC04': {
+        name: 'Gà chiên mắm và Canh chua thịt băm',
+        code: 'MC04',
+        category: 'Mâm Cơm Nhà',
+        description: 'Gà má đùi rim sốt nước mắm thơm phức kèm bát canh chua dọc mùng thịt băm',
+        ingredients: [
+          { name: 'Thịt gà má đùi tươi', quantity: 220, unit: 'g', category: 'Thịt & Hải sản', prep: 'Chặt miếng vừa ăn 3cm' },
+          { name: 'Sốt mắm chiên gà thơm lừng', quantity: 40, unit: 'ml', category: 'Gia vị & Sốt', prep: 'Túi sốt zip 40ml' },
+          { name: 'Thịt nạc heo băm', quantity: 50, unit: 'g', category: 'Thịt & Hải sản', prep: 'Nấu canh chua' },
+          { name: 'Cà chua & Dứa canh chua', quantity: 120, unit: 'g', category: 'Rau củ quả', prep: 'Cà chua bổ múi, dứa cắt rẻ quạt' },
+          { name: 'Dọc mùng & Giá đỗ tươi', quantity: 80, unit: 'g', category: 'Rau củ quả', prep: 'Tước vỏ bóp muối rửa sạch' }
+        ]
+      },
+      'MC05': {
+        name: 'Gà xào nấm và Canh cải cúc thịt băm',
+        code: 'MC05',
+        category: 'Mâm Cơm Nhà',
+        description: 'Gà má đùi xào nấm thơm ngọt kèm bát canh tần ô cải cúc thịt nạc xay',
+        ingredients: [
+          { name: 'Thịt gà má đùi tươi', quantity: 180, unit: 'g', category: 'Thịt & Hải sản', prep: 'Chặt miếng vừa ăn 3cm' },
+          { name: 'Nấm đùi gà & Nấm hương tươi', quantity: 100, unit: 'g', category: 'Rau củ quả', prep: 'Thái lát chéo 0.5cm' },
+          { name: 'Thịt nạc heo băm', quantity: 50, unit: 'g', category: 'Thịt & Hải sản', prep: 'Nấu canh cải cúc' },
+          { name: 'Rau cải cúc (tần ô) sạch', quantity: 180, unit: 'g', category: 'Rau củ quả', prep: 'Nhặt ngọn rửa sạch ráo nước' }
+        ]
+      },
+      'MC06': {
+        name: 'Gà om nấm và Rau muống xào tỏi',
+        code: 'MC06',
+        category: 'Mâm Cơm Nhà',
+        description: 'Gà om nấm đông cô đậm đà thơm ngậy ăn kèm rau muống non xào tỏi thơm nức',
+        ingredients: [
+          { name: 'Thịt gà má đùi tươi', quantity: 200, unit: 'g', category: 'Thịt & Hải sản', prep: 'Chặt miếng om' },
+          { name: 'Nấm đông cô om gà', quantity: 80, unit: 'g', category: 'Rau củ quả', prep: 'Ngâm mềm khía hoa chữ thập' },
+          { name: 'Sốt om gà bí truyền Mâm Cơm', quantity: 35, unit: 'ml', category: 'Gia vị & Sốt', prep: 'Túi sốt zip 35ml' },
+          { name: 'Rau muống ngọn sạch', quantity: 200, unit: 'g', category: 'Rau củ quả', prep: 'Nhặt ngọn xào' },
+          { name: 'Tỏi băm', quantity: 15, unit: 'g', category: 'Gia vị & Sốt', prep: 'Đập dập xào rau' }
+        ]
+      }
+    };
+
     // Application state
     let state = {
       currentDate: getTodayYMD(),
+      dateFilterMode: 'today', // 'today' | 'tomorrow' | 'all' | 'custom'
+      orderStatusFilter: 'ALL', // 'ALL' | 'pending' | 'prepping' | 'completed' | 'cancelled'
+      orderSearchQuery: '',
       activeTab: 'batch', // 'batch' | 'assembly' | 'orders' | 'recipes'
       recipeSubTab: 'recipes', // 'recipes' | 'ingredients'
       batchCategoryFilter: 'ALL',
@@ -781,8 +922,10 @@
       soundEnabled: true,
       
       // Loaded data
-      orders: [],
-      checklist: [],
+      allOrders: [], // all normalized orders across all dates
+      orders: [],    // orders for active date view
+      allChecklist: [],
+      checklist: [], // checklist for active view
       recipes: [],
       recipeIngredients: [],
       ingredients: [],
@@ -803,6 +946,129 @@
       return `${year}-${month}-${day}`;
     }
 
+    function getTomorrowYMD() {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function parseOrderYMD(order) {
+      if (!order) return getTodayYMD();
+      var raw = (order.date || '').trim().toLowerCase();
+      if (raw === 'hôm nay' || raw === 'today') {
+        return getTodayYMD();
+      }
+      if (/^\d{1,2}\/\d{1,2}(\/\d{2,4})?$/.test(raw)) {
+        var parts = raw.split('/');
+        var day = parts[0].padStart(2, '0');
+        var month = parts[1].padStart(2, '0');
+        var year = parts[2] ? (parts[2].length === 2 ? '20' + parts[2] : parts[2]) : new Date().getFullYear();
+        return `${year}-${month}-${day}`;
+      }
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        return raw;
+      }
+      if (Array.isArray(order.products) && order.products[0] && order.products[0].day) {
+        var m = order.products[0].day.match(/(\d{1,2})\/(\d{1,2})/);
+        if (m) {
+          var d = m[1].padStart(2, '0');
+          var mo = m[2].padStart(2, '0');
+          var y = new Date().getFullYear();
+          return `${y}-${mo}-${d}`;
+        }
+      }
+      if (order.created_at) {
+        return order.created_at.split('T')[0];
+      }
+      return getTodayYMD();
+    }
+
+    function extractDishesFromOrder(order) {
+      const dishes = [];
+      if (Array.isArray(order.products)) {
+        order.products.forEach(p => {
+          if (typeof p === 'string') {
+            dishes.push(p);
+          } else if (p && Array.isArray(p.dishes)) {
+            p.dishes.forEach(d => {
+              if (typeof d === 'string') dishes.push(d);
+              else if (d && d.name) dishes.push(d.name);
+            });
+          } else if (p && p.name) {
+            dishes.push(p.name);
+          }
+        });
+      }
+      if (dishes.length === 0 && Array.isArray(order.schedule)) {
+        order.schedule.forEach(s => {
+          if (s && s.dish) dishes.push(s.dish);
+        });
+      }
+      return dishes;
+    }
+
+    function matchRecipe(dishName, recipes) {
+      if (!dishName) return null;
+      const clean = (s) => (s || '').toLowerCase().replace(/&/g, 'và').replace(/\s+/g, ' ').trim();
+      const target = clean(dishName);
+
+      let found = (recipes || []).find(r => clean(r.name) === target);
+      if (found) return found;
+
+      const keywords = [
+        { key: 'cháy cạnh', code: 'MC01' },
+        { key: 'trứng rang hành', code: 'MC02' },
+        { key: 'thịt băm trứng', code: 'MC02' },
+        { key: 'thịt viên', code: 'MC03' },
+        { key: 'gà chiên mắm', code: 'MC04' },
+        { key: 'gà xào nấm', code: 'MC05' },
+        { key: 'gà om nấm', code: 'MC06' }
+      ];
+
+      for (const kw of keywords) {
+        if (target.includes(kw.key)) {
+          found = (recipes || []).find(r => r.code === kw.code || clean(r.name).includes(kw.key));
+          if (found) return found;
+        }
+      }
+
+      return (recipes || []).find(r => target.split(' ').some(w => w.length > 3 && clean(r.name).includes(w))) || null;
+    }
+
+    function getSavedChecklistStates() {
+      try {
+        const raw = localStorage.getItem('mamcom_prep_chk_states_v1');
+        return raw ? JSON.parse(raw) : {};
+      } catch(e) {
+        return {};
+      }
+    }
+
+    function saveChecklistStateItem(chkId, patch) {
+      try {
+        const states = getSavedChecklistStates();
+        states[chkId] = Object.assign(states[chkId] || {}, patch);
+        localStorage.setItem('mamcom_prep_chk_states_v1', JSON.stringify(states));
+      } catch(e){}
+    }
+
+    function getOwnerPin() {
+      try {
+        return sessionStorage.getItem('mamcom.ownerPin.session') || 
+               localStorage.getItem('mamcom.ownerPin.session') || 
+               localStorage.getItem('mamcom_owner_pin') || '';
+      } catch(e) {
+        return '';
+      }
+    }
+
+    function formatVND(n) {
+      return (Number(n) || 0).toLocaleString('vi-VN') + ' đ';
+    }
+
     // Audio feedback using Web Audio API (tactile kitchen chime)
     let audioCtx = null;
     function playBeep(type = 'success') {
@@ -818,7 +1084,6 @@
 
         const now = audioCtx.currentTime;
         if (type === 'success') {
-          // Warm double beep
           osc.type = 'sine';
           osc.frequency.setValueAtTime(587.33, now); // D5
           osc.frequency.exponentialRampToValueAtTime(880, now + 0.12); // A5
@@ -827,7 +1092,6 @@
           osc.start(now);
           osc.stop(now + 0.18);
         } else if (type === 'complete') {
-          // Celebratory chord
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(523.25, now); // C5
           osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
@@ -837,11 +1101,8 @@
           osc.start(now);
           osc.stop(now + 0.35);
         }
-      } catch (e) {
-        // Audio context may be blocked before user interaction
-      }
+      } catch (e) {}
 
-      // Haptic feedback if supported on mobile
       if (navigator.vibrate) {
         if (type === 'complete') navigator.vibrate([30, 40, 50]);
         else navigator.vibrate(20);
@@ -890,7 +1151,6 @@
       if (savedPin) {
         if (savedPin === 'unlocked' || savedPin.length >= 4) {
           hidePrepGate();
-          // Kiểm tra ngầm với Supabase RPC
           if (supabase && typeof supabase.rpc === 'function' && savedPin !== 'unlocked') {
             supabase.rpc('admin_verify_pin', { p_pin: savedPin }).then(function(res){
               if (res.error || res.data !== true) {
@@ -941,7 +1201,6 @@
           }
         }
 
-        // Kiểm tra dự phòng nếu kết nối RPC tạm gián đoạn
         const localPin = localStorage.getItem('mamcom.ownerPin.session');
         if (!isOk && localPin && (localPin === pin || localPin === 'unlocked')) {
           isOk = true;
@@ -992,9 +1251,8 @@
       await checkPrepAuth();
       await refreshData();
 
-      // Lắng nghe sự kiện đơn mới vừa sao chép từ web Mâm Cơm
       window.addEventListener('storage', (e) => {
-        if (e.key === 'mamcom_inbox_orders_v1') {
+        if (e.key === 'mamcom_inbox_orders_v1' || e.key === 'mamcom_prep_chk_states_v1') {
           refreshData(true);
         }
       });
@@ -1009,41 +1267,81 @@
 
     function setupDateControls() {
       const dateInput = document.getElementById('orderDateInput');
-      const dateLabel = document.getElementById('dateDisplayLabel');
-      
       dateInput.value = state.currentDate;
       updateDateLabel();
 
       dateInput.addEventListener('change', (e) => {
         state.currentDate = e.target.value;
+        state.dateFilterMode = 'custom';
         updateDateLabel();
-        refreshData();
+        updateDateFilterPills();
+        filterStateOrders();
+        renderAllViews();
       });
 
       document.getElementById('btnPrevDate').addEventListener('click', () => {
         const d = new Date(state.currentDate);
         d.setDate(d.getDate() - 1);
         state.currentDate = d.toISOString().split('T')[0];
+        state.dateFilterMode = 'custom';
         dateInput.value = state.currentDate;
         updateDateLabel();
-        refreshData();
+        updateDateFilterPills();
+        filterStateOrders();
+        renderAllViews();
       });
 
       document.getElementById('btnNextDate').addEventListener('click', () => {
         const d = new Date(state.currentDate);
         d.setDate(d.getDate() + 1);
         state.currentDate = d.toISOString().split('T')[0];
+        state.dateFilterMode = 'custom';
         dateInput.value = state.currentDate;
         updateDateLabel();
-        refreshData();
+        updateDateFilterPills();
+        filterStateOrders();
+        renderAllViews();
+      });
+    }
+
+    function setDateFilterMode(mode) {
+      state.dateFilterMode = mode;
+      if (mode === 'today') {
+        state.currentDate = getTodayYMD();
+      } else if (mode === 'tomorrow') {
+        state.currentDate = getTomorrowYMD();
+      }
+      document.getElementById('orderDateInput').value = state.currentDate;
+      updateDateLabel();
+      updateDateFilterPills();
+      filterStateOrders();
+      renderAllViews();
+    }
+
+    function updateDateFilterPills() {
+      const mode = state.dateFilterMode;
+      const modes = ['today', 'tomorrow', 'all', 'custom'];
+      modes.forEach(m => {
+        const btn = document.getElementById(`btnDateMode-${m}`);
+        if (!btn) return;
+        if (m === mode) {
+          btn.className = "date-mode-btn px-3 py-1.5 rounded-xl font-bold text-xs bg-stone-900 text-white shadow-sm whitespace-nowrap active:scale-95 transition-all";
+        } else {
+          btn.className = "date-mode-btn px-3 py-1.5 rounded-xl font-semibold text-xs bg-white text-stone-700 border border-[#E0D9CE] hover:bg-stone-50 whitespace-nowrap active:scale-95 transition-all";
+        }
       });
     }
 
     function updateDateLabel() {
       const today = getTodayYMD();
+      const tomorrow = getTomorrowYMD();
       const label = document.getElementById('dateDisplayLabel');
-      if (state.currentDate === today) {
+      if (state.dateFilterMode === 'all') {
+        label.innerText = 'Tất cả các ngày';
+      } else if (state.currentDate === today) {
         label.innerText = 'Hôm nay (' + formatDateVN(state.currentDate) + ')';
+      } else if (state.currentDate === tomorrow) {
+        label.innerText = 'Ngày mai (' + formatDateVN(state.currentDate) + ')';
       } else {
         label.innerText = formatDateVN(state.currentDate);
       }
@@ -1066,10 +1364,11 @@
       });
     }
 
-    // Setup Supabase Realtime Channels
+    // Setup Supabase Realtime Channels for Web Orders & Kitchen Prep
     function setupRealtime() {
       if (!supabase) return;
-      const channel = supabase.channel('kitchen-prep-realtime')
+      supabase.channel('kitchen-prep-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => refreshData(true))
         .on('postgres_changes', { event: '*', schema: 'public', table: 'prep_orders' }, () => refreshData(true))
         .on('postgres_changes', { event: '*', schema: 'public', table: 'prep_order_checklist' }, () => refreshData(true))
         .on('postgres_changes', { event: '*', schema: 'public', table: 'prep_order_items' }, () => refreshData(true))
@@ -1077,31 +1376,31 @@
         .on('postgres_changes', { event: '*', schema: 'public', table: 'prep_ingredients' }, () => refreshData(true))
         .subscribe((status) => {
           const badge = document.getElementById('realtimeBadge');
-          if (status === 'SUBSCRIBED') {
+          if (badge && status === 'SUBSCRIBED') {
             badge.classList.remove('hidden');
           }
         });
     }
 
     // ------------------------------------------------------------
-    // 3. DATA FETCHING
+    // 3. DATA FETCHING & SYNCHRONIZATION
     // ------------------------------------------------------------
     async function refreshData(isBackground = false) {
       if (!supabase) return;
 
       try {
-        // Fetch all catalog ingredients
+        // A. Load catalog ingredients
         const { data: ingData } = await supabase
           .from('prep_ingredients')
           .select('*')
           .order('name');
         state.ingredients = ingData || [];
 
-        // Fetch recipes and recipe_ingredients
+        // B. Load recipes and recipe_ingredients
         const { data: recData } = await supabase
           .from('prep_recipes')
           .select('*')
-          .order('name');
+          .order('code');
         state.recipes = recData || [];
 
         const { data: recIngData } = await supabase
@@ -1110,72 +1409,297 @@
           .order('created_at');
         state.recipeIngredients = recIngData || [];
 
-        // Fetch orders for currentDate
-        const { data: orderData } = await supabase
-          .from('prep_orders')
-          .select('*, prep_order_items(*, prep_recipes(name, code))')
-          .eq('order_date', state.currentDate)
-          .order('tray_number');
-        state.orders = orderData || [];
+        // C. Load all orders from Supabase (bypassing RLS via admin_get_orders RPC or direct orders select)
+        const pin = getOwnerPin();
+        let rawOrders = [];
 
-        // Đồng bộ các đơn inbox vừa bấm Sao Chép từ trang chủ Mâm Cơm
+        // 1. Try admin_get_orders RPC with PIN
+        if (pin && typeof supabase.rpc === 'function') {
+          try {
+            const { data: rpcOrders, error: rpcErr } = await supabase.rpc('admin_get_orders', { p_pin: pin });
+            if (!rpcErr && Array.isArray(rpcOrders)) {
+              rawOrders = rpcOrders;
+            }
+          } catch(e) {
+            console.warn('RPC admin_get_orders failed:', e);
+          }
+        }
+
+        // 2. Direct select fallback from orders
+        if (rawOrders.length === 0) {
+          try {
+            const { data: directOrders } = await supabase
+              .from('orders')
+              .select('*')
+              .order('created_at', { ascending: false })
+              .limit(100);
+            if (Array.isArray(directOrders)) {
+              rawOrders = directOrders;
+            }
+          } catch(e){}
+        }
+
+        // 3. Fetch any internal prep_orders table entries
+        let rawPrepOrders = [];
+        try {
+          const { data: pOrders } = await supabase
+            .from('prep_orders')
+            .select('*, prep_order_items(*, prep_recipes(name, code))')
+            .order('created_at', { ascending: false });
+          if (Array.isArray(pOrders)) rawPrepOrders = pOrders;
+        } catch(e){}
+
+        // 4. Fetch local inbox orders
         let localInboxOrders = [];
         try {
           const rawInbox = localStorage.getItem('mamcom_inbox_orders_v1');
           if (rawInbox) localInboxOrders = JSON.parse(rawInbox) || [];
         } catch(e){}
 
-        if (Array.isArray(localInboxOrders) && localInboxOrders.length > 0) {
-          localInboxOrders.forEach((ord, idx) => {
-            if (!state.orders.some(o => o.id === ord.id)) {
-              const items = [];
-              if (ord.meals && Array.isArray(ord.meals)) {
-                ord.meals.forEach(m => {
-                  (m.dishes || []).forEach(dishName => {
-                    const matchedRecipe = state.recipes.find(r => r.name.toLowerCase().trim() === dishName.toLowerCase().trim());
-                    items.push({
-                      id: 'inbox_item_' + ord.id + '_' + Math.random().toString(36).substring(2, 6),
-                      order_id: ord.id,
-                      recipe_id: matchedRecipe ? matchedRecipe.id : null,
-                      quantity: 1,
-                      prep_recipes: matchedRecipe ? { name: matchedRecipe.name, code: matchedRecipe.code } : { name: dishName, code: 'MC' }
-                    });
-                  });
-                });
-              }
+        // D. Normalize all orders into unified kitchen order model
+        const savedChecklistStates = getSavedChecklistStates();
+        const mergedOrders = [];
+        const seenIds = new Set();
+        let autoTrayIndex = 1;
 
-              state.orders.push({
-                id: ord.id,
-                tray_number: ord.code || (state.orders.length + 1),
-                customer_name: (ord.people ? ord.people + ' • ' : '') + (ord.phone || 'Khách Inbox'),
-                customer_phone: ord.phone || '',
-                delivery_time: ord.delivery_time || '',
-                special_notes: (ord.address ? 'Đ/c: ' + ord.address + '. ' : '') + (ord.note || ''),
-                status: ord.status === 'done' ? 'packaged' : (ord.status === 'in_prep' ? 'prepping' : 'not_started'),
-                is_inbox: true,
-                prep_order_items: items
-              });
-            }
+        // Process real web orders from public.orders
+        rawOrders.forEach(o => {
+          if (!o || !o.id || seenIds.has(o.id)) return;
+          seenIds.add(o.id);
+
+          const orderYMD = parseOrderYMD(o);
+          const servings = parseInt(o.people, 10) || 1;
+          const dishNames = extractDishesFromOrder(o);
+          const rawStatus = (o.status || 'pending').toLowerCase();
+
+          let kitchenStatus = 'pending';
+          if (rawStatus === 'done') kitchenStatus = 'completed';
+          else if (rawStatus === 'preparing') kitchenStatus = 'prepping';
+          else if (rawStatus === 'cancelled') kitchenStatus = 'cancelled';
+          else kitchenStatus = 'pending';
+
+          const prepItems = [];
+          dishNames.forEach((dishName, idx) => {
+            const matched = matchRecipe(dishName, state.recipes);
+            prepItems.push({
+              id: `item_${o.id}_${idx}`,
+              order_id: o.id,
+              recipe_id: matched ? matched.id : null,
+              recipe_name: matched ? matched.name : dishName,
+              recipe_code: matched ? matched.code : 'MC',
+              quantity: 1,
+              servings: servings,
+              prep_recipes: matched ? { name: matched.name, code: matched.code } : { name: dishName, code: 'MC' }
+            });
           });
-        }
 
-        // Fetch checklist items for today's orders
-        if (state.orders.length > 0) {
-          const orderIds = state.orders.map(o => o.id);
-          const { data: checkData } = await supabase
-            .from('prep_order_checklist')
-            .select('*, prep_ingredients(name, unit, category)')
-            .in('order_id', orderIds)
-            .order('created_at');
-          state.checklist = checkData || [];
-        } else {
-          state.checklist = [];
-        }
+          mergedOrders.push({
+            id: o.id,
+            tray_number: autoTrayIndex++,
+            customer_name: (o.phone ? o.phone : o.id) + (servings > 1 ? ` (${servings} người)` : ''),
+            customer_phone: o.phone || '',
+            address: o.address || '',
+            order_date: orderYMD,
+            display_date: o.date || formatDateVN(orderYMD),
+            delivery_time: o.time || '18:00',
+            servings: servings,
+            total: o.total || 0,
+            special_notes: o.note || '',
+            raw_status: rawStatus,
+            status: kitchenStatus,
+            created_at: o.created_at || new Date().toISOString(),
+            _source: 'web_orders',
+            dishes: dishNames,
+            prep_order_items: prepItems
+          });
+        });
+
+        // Merge prep_orders (manual internal kitchen orders)
+        rawPrepOrders.forEach(po => {
+          if (!po || !po.id || seenIds.has(po.id)) return;
+          seenIds.add(po.id);
+
+          const orderYMD = po.order_date || getTodayYMD();
+          const pStatus = (po.status || 'pending').toLowerCase();
+          let kitchenStatus = 'pending';
+          if (pStatus === 'completed' || pStatus === 'ready') kitchenStatus = 'completed';
+          else if (pStatus === 'prepping') kitchenStatus = 'prepping';
+          else if (pStatus === 'cancelled') kitchenStatus = 'cancelled';
+
+          mergedOrders.push({
+            id: po.id,
+            tray_number: po.tray_number || (autoTrayIndex++),
+            customer_name: po.customer_name || 'Khách thủ công',
+            customer_phone: po.customer_phone || '',
+            address: '',
+            order_date: orderYMD,
+            display_date: formatDateVN(orderYMD),
+            delivery_time: po.delivery_time || '18:00',
+            servings: 1,
+            total: 0,
+            special_notes: po.special_notes || '',
+            raw_status: pStatus,
+            status: kitchenStatus,
+            created_at: po.created_at || new Date().toISOString(),
+            _source: 'prep_orders',
+            dishes: (po.prep_order_items || []).map(i => i.prep_recipes ? i.prep_recipes.name : 'Món'),
+            prep_order_items: po.prep_order_items || []
+          });
+        });
+
+        // Merge local inbox orders
+        localInboxOrders.forEach(lo => {
+          if (!lo || !lo.id || seenIds.has(lo.id)) return;
+          seenIds.add(lo.id);
+
+          const orderYMD = parseOrderYMD(lo);
+          const servings = parseInt(lo.people, 10) || 1;
+          const dishNames = extractDishesFromOrder(lo);
+
+          const prepItems = [];
+          dishNames.forEach((dishName, idx) => {
+            const matched = matchRecipe(dishName, state.recipes);
+            prepItems.push({
+              id: `item_${lo.id}_${idx}`,
+              order_id: lo.id,
+              recipe_id: matched ? matched.id : null,
+              recipe_name: matched ? matched.name : dishName,
+              recipe_code: matched ? matched.code : 'MC',
+              quantity: 1,
+              servings: servings,
+              prep_recipes: matched ? { name: matched.name, code: matched.code } : { name: dishName, code: 'MC' }
+            });
+          });
+
+          mergedOrders.push({
+            id: lo.id,
+            tray_number: autoTrayIndex++,
+            customer_name: (lo.phone ? lo.phone : lo.id) + (servings > 1 ? ` (${servings} người)` : ''),
+            customer_phone: lo.phone || '',
+            address: lo.address || '',
+            order_date: orderYMD,
+            display_date: lo.date || formatDateVN(orderYMD),
+            delivery_time: lo.delivery_time || lo.time || '18:00',
+            servings: servings,
+            total: lo.total || 0,
+            special_notes: (lo.address ? 'Đ/c: ' + lo.address + '. ' : '') + (lo.note || ''),
+            raw_status: lo.status || 'pending',
+            status: lo.status === 'done' ? 'completed' : 'pending',
+            created_at: lo.created_at || new Date().toISOString(),
+            _source: 'inbox_orders',
+            dishes: dishNames,
+            prep_order_items: prepItems
+          });
+        });
+
+        state.allOrders = mergedOrders;
+
+        // E. Generate itemized checklist across all orders
+        const allChecklist = [];
+        state.allOrders.forEach(order => {
+          const isDone = (order.status === 'completed');
+
+          order.prep_order_items.forEach(item => {
+            let ingredients = [];
+
+            // 1. Check Supabase recipe_ingredients
+            if (item.recipe_id) {
+              ingredients = state.recipeIngredients.filter(ri => ri.recipe_id === item.recipe_id);
+            }
+
+            // 2. Fallback to embedded FALLBACK_RECIPE_DEFS
+            if (ingredients.length === 0) {
+              const code = item.recipe_code || 'MC01';
+              const def = FALLBACK_RECIPE_DEFS[code] || Object.values(FALLBACK_RECIPE_DEFS).find(d => d.name.toLowerCase() === (item.recipe_name || '').toLowerCase());
+              if (def && def.ingredients) {
+                ingredients = def.ingredients.map(ing => ({
+                  ingredient_id: 'ing_' + ing.name.replace(/\s+/g, '_'),
+                  quantity: ing.quantity,
+                  unit: ing.unit,
+                  prep_instruction: ing.prep,
+                  prep_ingredients: {
+                    name: ing.name,
+                    unit: ing.unit,
+                    category: ing.category
+                  }
+                }));
+              }
+            }
+
+            ingredients.forEach((ing, ingIdx) => {
+              const chkId = `chk_${order.id}_${ing.ingredient_id || ingIdx}`;
+              const saved = savedChecklistStates[chkId] || {};
+
+              const isBatchPrepped = saved.is_batch_prepped !== undefined ? saved.is_batch_prepped : isDone;
+              const isAssembled = saved.is_assembled !== undefined ? saved.is_assembled : isDone;
+
+              allChecklist.push({
+                id: chkId,
+                order_id: order.id,
+                ingredient_id: ing.ingredient_id || `ing_${ingIdx}`,
+                recipe_id: item.recipe_id,
+                total_quantity: Number(ing.quantity || 1) * order.servings,
+                unit: ing.unit || (ing.prep_ingredients ? ing.prep_ingredients.unit : 'g'),
+                prep_instruction: ing.prep_instruction || (ing.prep_ingredients ? ing.prep_ingredients.default_prep : ''),
+                is_batch_prepped: isBatchPrepped,
+                is_assembled: isAssembled,
+                issue_type: saved.issue_type || '',
+                issue_note: saved.issue_note || '',
+                prep_ingredients: ing.prep_ingredients || { name: 'Nguyên liệu', unit: 'g', category: 'Khác' }
+              });
+            });
+          });
+        });
+
+        state.allChecklist = allChecklist;
+
+        // F. Update quick count badges
+        updateDateCountBadges();
+
+        // G. Filter orders and checklist for active view
+        filterStateOrders();
 
         renderAllViews();
       } catch (err) {
         console.error("Error refreshing prep data:", err);
       }
+    }
+
+    function updateDateCountBadges() {
+      const today = getTodayYMD();
+      const tomorrow = getTomorrowYMD();
+
+      const todayCount = state.allOrders.filter(o => o.order_date === today && o.status !== 'cancelled').length;
+      const tomorrowCount = state.allOrders.filter(o => o.order_date === tomorrow && o.status !== 'cancelled').length;
+      const allCount = state.allOrders.filter(o => o.status !== 'cancelled').length;
+
+      const elToday = document.getElementById('countDateToday');
+      if (elToday) elToday.innerText = `(${todayCount})`;
+
+      const elTomorrow = document.getElementById('countDateTomorrow');
+      if (elTomorrow) elTomorrow.innerText = `(${tomorrowCount})`;
+
+      const elAll = document.getElementById('countDateAll');
+      if (elAll) elAll.innerText = `(${allCount})`;
+    }
+
+    function filterStateOrders() {
+      const today = getTodayYMD();
+      const tomorrow = getTomorrowYMD();
+      let filtered = [];
+
+      if (state.dateFilterMode === 'all') {
+        filtered = state.allOrders;
+      } else if (state.dateFilterMode === 'today') {
+        filtered = state.allOrders.filter(o => o.order_date === today);
+      } else if (state.dateFilterMode === 'tomorrow') {
+        filtered = state.allOrders.filter(o => o.order_date === tomorrow);
+      } else {
+        filtered = state.allOrders.filter(o => o.order_date === state.currentDate);
+      }
+
+      state.orders = filtered;
+      state.checklist = state.allChecklist.filter(c => state.orders.some(o => o.id === c.order_id));
     }
 
     // ------------------------------------------------------------
@@ -1191,7 +1715,8 @@
     }
 
     function updateTopMetrics() {
-      const totalTrays = state.orders.length;
+      const activeOrders = state.orders.filter(o => o.status !== 'cancelled');
+      const totalTrays = activeOrders.length;
       document.getElementById('metricTrays').innerText = `${totalTrays} Khay`;
       document.getElementById('badgeOrderCount').innerText = totalTrays;
       document.getElementById('badgeAssemblyCount').innerText = totalTrays;
@@ -1209,14 +1734,16 @@
       const container = document.getElementById('batchList');
       if (!container) return;
 
-      if (state.orders.length === 0) {
+      const activeOrders = state.orders.filter(o => o.status !== 'cancelled');
+
+      if (activeOrders.length === 0) {
         container.innerHTML = `
           <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
             <span class="text-4xl">🍃</span>
-            <h3 class="font-bold text-stone-800 text-base">Chưa có đơn hàng nào cho ngày ${formatDateVN(state.currentDate)}</h3>
-            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chuyển sang tab "3. Đơn hàng" để tạo đơn mới hoặc chọn ngày khác ở thanh trên cùng.</p>
-            <button onclick="openOrderModal()" class="touch-btn px-4 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-sm">
-              + Tạo Đơn Hàng Ngay
+            <h3 class="font-bold text-stone-800 text-base">Chưa có đơn hàng nào cần sơ chế (${state.dateFilterMode === 'all' ? 'Tất cả các ngày' : formatDateVN(state.currentDate)})</h3>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chọn bộ lọc "☀️ Hôm nay", "🌙 Ngày mai" hoặc "📋 Tất cả đơn" ở thanh trên để kiểm tra toàn bộ danh sách.</p>
+            <button onclick="setDateFilterMode('all')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
+              Xem Toàn Bộ Các Đơn
             </button>
           </div>
         `;
@@ -1224,17 +1751,20 @@
         return;
       }
 
-      // Group checklist by ingredient_id
+      // Group checklist by ingredient name or ID
       const batchMap = {};
       state.checklist.forEach(item => {
-        const ingId = item.ingredient_id;
+        const parentOrder = state.orders.find(o => o.id === item.order_id);
+        if (parentOrder && parentOrder.status === 'cancelled') return;
+
+        const ingKey = (item.prep_ingredients && item.prep_ingredients.name) ? item.prep_ingredients.name : item.ingredient_id;
         const ingName = item.prep_ingredients ? item.prep_ingredients.name : 'Nguyên liệu';
         const ingCategory = item.prep_ingredients ? item.prep_ingredients.category : 'Khác';
         const ingUnit = item.unit || 'g';
 
-        if (!batchMap[ingId]) {
-          batchMap[ingId] = {
-            ingredient_id: ingId,
+        if (!batchMap[ingKey]) {
+          batchMap[ingKey] = {
+            ingredient_id: item.ingredient_id,
             name: ingName,
             category: ingCategory,
             unit: ingUnit,
@@ -1247,16 +1777,14 @@
           };
         }
 
-        batchMap[ingId].totalQuantity += Number(item.total_quantity);
-        batchMap[ingId].items.push(item);
+        batchMap[ingKey].totalQuantity += Number(item.total_quantity);
+        batchMap[ingKey].items.push(item);
 
-        if (!item.is_batch_prepped) batchMap[ingId].isAllPrepped = false;
-        if (item.issue_type) batchMap[ingId].hasIssue = true;
+        if (!item.is_batch_prepped) batchMap[ingKey].isAllPrepped = false;
+        if (item.issue_type) batchMap[ingKey].hasIssue = true;
 
-        // Check if the order holding this item has special notes
-        const parentOrder = state.orders.find(o => o.id === item.order_id);
         if (parentOrder && parentOrder.special_notes) {
-          batchMap[ingId].hasSpecialNote = true;
+          batchMap[ingKey].hasSpecialNote = true;
         }
       });
 
@@ -1282,7 +1810,6 @@
       container.innerHTML = filtered.map(b => {
         const isDone = b.isAllPrepped;
 
-        // Trays chips breakdown
         const trayPills = b.items.map(item => {
           const ord = state.orders.find(o => o.id === item.order_id);
           const trayNum = ord ? ord.tray_number : '?';
@@ -1306,7 +1833,6 @@
         return `
           <div class="bg-white rounded-2xl border ${isDone ? 'border-emerald-300 bg-emerald-50/20' : 'border-[#E4DDD2]'} p-4 shadow-sm flex flex-col justify-between gap-3 smooth-transition">
             
-            <!-- Card Header -->
             <div class="space-y-1.5">
               <div class="flex items-start justify-between gap-2">
                 <div>
@@ -1314,12 +1840,11 @@
                     ${b.category}
                   </span>
                   <h3 class="font-extrabold text-stone-900 text-base sm:text-lg mt-1 flex items-center gap-1.5">
-                    <span>${b.name}</span>
-                    ${b.hasSpecialNote ? '<span class="text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200" title="Có đơn dặn riêng">Lưu ý đơn!</span>' : ''}
+                    <span>${escapeHtml(b.name)}</span>
+                    ${b.hasSpecialNote ? '<span class="text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 font-bold" title="Có đơn dặn riêng">Lưu ý đơn!</span>' : ''}
                   </h3>
                 </div>
 
-                <!-- Total Amount Badge -->
                 <div class="text-right">
                   <span class="text-xs text-stone-500 font-medium">Tổng mẻ:</span>
                   <div class="font-mono font-extrabold text-lg sm:text-xl ${isDone ? 'text-emerald-700' : 'text-brand-600'}">
@@ -1328,15 +1853,13 @@
                 </div>
               </div>
 
-              <!-- Prep Instruction -->
               ${b.prep_instruction ? `
                 <p class="text-xs font-semibold text-stone-600 bg-[#F9F7F4] px-2.5 py-1.5 rounded-xl border border-[#ECE5DB] flex items-center gap-1.5">
                   <span>🔪</span>
-                  <span>Cách sơ chế: <b>${b.prep_instruction}</b></span>
+                  <span>Cách sơ chế: <b>${escapeHtml(b.prep_instruction)}</b></span>
                 </p>
               ` : ''}
 
-              <!-- Tray breakdown list -->
               <div class="pt-1">
                 <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Chia vào các khay:</span>
                 <div class="flex flex-wrap gap-1 mt-1">
@@ -1345,9 +1868,8 @@
               </div>
             </div>
 
-            <!-- Card Actions (One-tap completion & Report issue) -->
             <div class="pt-2 border-t border-[#EFEAE2] flex items-center gap-2">
-              <button onclick="toggleBatchPrep('${b.ingredient_id}', ${!isDone})" class="touch-btn flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95 smooth-transition ${
+              <button onclick="toggleBatchPrepByName('${escapeHtml(b.name)}', ${!isDone})" class="touch-btn flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95 smooth-transition ${
                 isDone 
                   ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
                   : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-2 border-emerald-500'
@@ -1379,36 +1901,17 @@
       renderBatchPrepView();
     }
 
-    async function toggleBatchPrep(ingredientId, markAsDone) {
-      // Find all checklist items matching this ingredientId for today's orders
-      const targetItems = state.checklist.filter(c => c.ingredient_id === ingredientId);
+    async function toggleBatchPrepByName(ingName, markAsDone) {
+      const targetItems = state.checklist.filter(c => (c.prep_ingredients && c.prep_ingredients.name === ingName) || c.ingredient_id === ingName);
       if (targetItems.length === 0) return;
 
-      const itemIds = targetItems.map(i => i.id);
-
-      // Save previous state for Undo
-      const prevStates = targetItems.map(i => ({ id: i.id, is_batch_prepped: i.is_batch_prepped }));
-      registerUndoAction({
-        type: 'batch_prep',
-        ingredientId,
-        items: prevStates,
-        message: markAsDone ? 'Đã đánh dấu xong mẻ' : 'Đã chuyển về chưa xong'
+      targetItems.forEach(i => {
+        i.is_batch_prepped = markAsDone;
+        saveChecklistStateItem(i.id, { is_batch_prepped: markAsDone });
       });
 
-      // Optimistic update
-      targetItems.forEach(i => i.is_batch_prepped = markAsDone);
       renderBatchPrepView();
       if (markAsDone) playBeep('success');
-
-      // Database update
-      try {
-        await supabase
-          .from('prep_order_checklist')
-          .update({ is_batch_prepped: markAsDone })
-          .in('id', itemIds);
-      } catch (err) {
-        console.error("Error updating batch prep:", err);
-      }
     }
 
     // ------------------------------------------------------------
@@ -1418,21 +1921,22 @@
       const container = document.getElementById('assemblyGrid');
       if (!container) return;
 
-      if (state.orders.length === 0) {
+      const activeOrders = state.orders.filter(o => o.status !== 'cancelled');
+
+      if (activeOrders.length === 0) {
         container.innerHTML = `
           <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
             <span class="text-4xl">📦</span>
             <h3 class="font-bold text-stone-800 text-base">Chưa có khay nào cần đóng gói</h3>
-            <p class="text-xs text-stone-500">Tạo đơn hàng mới để bắt đầu checklist đóng gói.</p>
+            <p class="text-xs text-stone-500">Chuyển sang "☀️ Hôm nay", "🌙 Ngày mai" hoặc "📋 Tất cả đơn" ở thanh trên để xem khay.</p>
           </div>
         `;
         return;
       }
 
-      // Filter by status
-      let filteredOrders = state.orders;
+      let filteredOrders = activeOrders;
       if (state.trayStatusFilter !== 'ALL') {
-        filteredOrders = state.orders.filter(o => o.status === state.trayStatusFilter);
+        filteredOrders = activeOrders.filter(o => o.status === state.trayStatusFilter);
       }
 
       container.innerHTML = filteredOrders.map(order => {
@@ -1442,33 +1946,30 @@
         const progressPct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
         const isReady = totalItems > 0 && assembledItems === totalItems;
 
-        // Has special note?
         const hasSpecialNote = !!(order.special_notes && order.special_notes.trim());
+        const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
 
-        // Dishes names summary
         const dishesSummary = order.prep_order_items && order.prep_order_items.length > 0
-          ? order.prep_order_items.map(i => `${i.quantity}x ${i.prep_recipes ? i.prep_recipes.name : 'Món'}`).join(', ')
-          : 'Đơn mealkit';
+          ? order.prep_order_items.map(i => `${i.servings}x ${i.recipe_name}`).join(', ')
+          : (order.dishes && order.dishes.length > 0 ? order.dishes.join(', ') : 'Đơn Mâm Cơm');
 
         return `
           <div class="bg-white rounded-3xl border-2 ${
             hasSpecialNote ? 'border-amber-400 shadow-amber-100' : (isReady ? 'border-emerald-400' : 'border-[#E4DDD2]')
           } shadow-sm overflow-hidden flex flex-col justify-between smooth-transition">
             
-            <!-- CRITICAL SPECIAL NOTE BANNER (CORE REQUIREMENT C.2) -->
             ${hasSpecialNote ? `
               <div class="bg-gradient-to-r from-red-600 to-amber-600 text-white p-3 flex items-start gap-2.5 alert-priority-box">
                 <span class="text-lg flex-shrink-0">⚠️</span>
                 <div class="min-w-0">
-                  <div class="text-[10px] font-black tracking-wider uppercase opacity-90">LƯU Ý ĐẶC BIỆT (BẮT BUỘC ĐỌC):</div>
+                  <div class="text-[10px] font-black tracking-wider uppercase opacity-90">LƯU Ý ĐẶC BIỆT CỦA KHÁCH:</div>
                   <div class="font-black text-sm leading-snug drop-shadow-sm">${escapeHtml(order.special_notes)}</div>
                 </div>
               </div>
             ` : ''}
 
-            <!-- Tray Header -->
             <div class="p-4 pb-2 space-y-2">
-              <div class="flex items-center justify-between">
+              <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-2">
                   <span class="px-2.5 py-1 rounded-xl bg-stone-900 text-white font-mono font-black text-sm tracking-wide">
                     KHAY #${String(order.tray_number).padStart(2, '0')}
@@ -1479,21 +1980,27 @@
                   </div>
                 </div>
 
-                <!-- Status pill -->
-                <span class="text-xs font-bold px-2 py-0.5 rounded-lg ${
-                  order.status === 'completed' ? 'bg-stone-100 text-stone-700' :
-                  (isReady ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800')
-                }">
-                  ${order.status === 'completed' ? '✓ Đã giao' : (isReady ? '🎉 Đủ 100%' : '⏳ Đang gói')}
-                </span>
+                <div class="text-right">
+                  <span class="text-xs font-bold px-2 py-0.5 rounded-lg ${
+                    order.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
+                    (isReady ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800')
+                  }">
+                    ${order.status === 'completed' ? '✓ Đã xong' : (isReady ? '🎉 Đủ 100%' : '⏳ Đang gói')}
+                  </span>
+                  <div class="text-[11px] font-bold text-brand-600 font-mono mt-0.5">${order.delivery_time} · ${order.display_date}</div>
+                </div>
               </div>
 
-              <!-- Dishes info -->
+              ${order.address ? `
+                <div class="text-xs text-stone-600 bg-stone-50 px-2.5 py-1.5 rounded-xl border border-stone-200 truncate">
+                  📍 <b>Địa chỉ:</b> ${escapeHtml(order.address)}
+                </div>
+              ` : ''}
+
               <div class="text-xs font-medium text-stone-600 bg-[#F9F7F4] px-2.5 py-1.5 rounded-xl border border-[#EAE3D7]">
                 🍲 <b>Món:</b> ${escapeHtml(dishesSummary)}
               </div>
 
-              <!-- PROGRESS BAR (CORE REQUIREMENT C.2) -->
               <div class="space-y-1 pt-1">
                 <div class="flex items-center justify-between text-xs font-bold">
                   <span class="text-stone-600">Tiến độ đóng gói:</span>
@@ -1505,7 +2012,7 @@
               </div>
             </div>
 
-            <!-- CHECKLIST OF INGREDIENTS (CORE REQUIREMENT C.2) -->
+            <!-- Checklist of ingredients -->
             <div class="px-4 py-2 divide-y divide-[#F2EDE5] max-h-72 overflow-y-auto">
               ${orderChecklist.map(item => {
                 const ingName = item.prep_ingredients ? item.prep_ingredients.name : 'Nguyên liệu';
@@ -1525,7 +2032,6 @@
                         </div>
                         ${item.prep_instruction ? `<p class="text-[11px] text-stone-500">${escapeHtml(item.prep_instruction)}</p>` : ''}
                         
-                        <!-- Badges -->
                         <div class="flex flex-wrap gap-1 mt-1">
                           ${isBatchDone ? '<span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Đã sơ chế</span>' : ''}
                           ${hasIssue ? `<span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-orange-100 text-orange-800 border border-orange-200">⚠️ ${escapeHtml(item.issue_note || 'Có sự cố')}</span>` : ''}
@@ -1533,7 +2039,6 @@
                       </div>
                     </div>
 
-                    <!-- Row action (Report issue) -->
                     <button onclick="openIssueModalForItem('${item.id}', '${escapeHtml(ingName)}', '${order.tray_number}', '${item.total_quantity}${item.unit}')" class="text-stone-400 hover:text-amber-600 text-xs p-1" title="Báo sự cố gói này">
                       ⚠️
                     </button>
@@ -1542,18 +2047,35 @@
               }).join('')}
             </div>
 
-            <!-- Card Bottom Action -->
-            <div class="p-3 bg-[#FAF8F5] border-t border-[#EFEAE2] flex items-center justify-between gap-2">
-              ${isReady ? `
-                <button onclick="markOrderCompleted('${order.id}')" class="touch-btn flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 flex items-center justify-center gap-1.5">
-                  <span>🎉</span>
-                  <span>${order.status === 'completed' ? 'Đã Hoàn Thành (Bấm để mở lại)' : 'Niêm Phong Khay & Sẵn Sàng Giao'}</span>
+            <!-- Card Bottom Action & Quick Contacts -->
+            <div class="p-3 bg-[#FAF8F5] border-t border-[#EFEAE2] space-y-2">
+              <div class="flex items-center gap-1.5">
+                ${isReady ? `
+                  <button onclick="markOrderCompleted('${order.id}')" class="touch-btn flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 flex items-center justify-center gap-1.5">
+                    <span>🎉</span>
+                    <span>${order.status === 'completed' ? 'Đã Hoàn Thành (Bấm mở lại)' : 'Niêm Phong Khay & Sẵn Sàng Giao'}</span>
+                  </button>
+                ` : `
+                  <button onclick="packAllItemsForOrder('${order.id}')" class="touch-btn flex-1 py-2 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs active:scale-95">
+                    Tích Chọn Toàn Bộ Khay
+                  </button>
+                `}
+              </div>
+
+              <!-- Quick Communication Tools -->
+              <div class="flex items-center gap-1.5 pt-1 border-t border-stone-200">
+                ${cleanPhone ? `
+                  <a href="tel:${cleanPhone}" class="touch-btn px-2.5 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 text-xs font-bold flex items-center gap-1 active:scale-95">
+                    <span>📞</span> <span>Gọi</span>
+                  </a>
+                  <a href="https://zalo.me/${cleanPhone}" target="_blank" class="touch-btn px-2.5 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 text-xs font-bold flex items-center gap-1 active:scale-95">
+                    <span>💬</span> <span>Zalo</span>
+                  </a>
+                ` : ''}
+                <button onclick="copyOrderTicket('${order.id}')" class="touch-btn px-2.5 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 text-xs font-bold flex items-center gap-1 active:scale-95 flex-1 justify-center">
+                  <span>📋</span> <span>Sao chép đơn</span>
                 </button>
-              ` : `
-                <button onclick="packAllItemsForOrder('${order.id}')" class="touch-btn flex-1 py-2 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs active:scale-95">
-                  Tích Chọn Toàn Bộ Khay
-                </button>
-              `}
+              </div>
             </div>
 
           </div>
@@ -1574,76 +2096,73 @@
     }
 
     async function toggleAssembleItem(itemId, markAsDone) {
-      const item = state.checklist.find(c => c.id === itemId);
+      const item = state.allChecklist.find(c => c.id === itemId);
       if (!item) return;
 
-      const prev = item.is_assembled;
-      registerUndoAction({
-        type: 'assemble_item',
-        itemId,
-        prevState: prev,
-        message: markAsDone ? 'Đã đóng gói vào khay' : 'Đã bỏ tích đóng gói'
-      });
-
       item.is_assembled = markAsDone;
-      item.assembled_at = markAsDone ? new Date().toISOString() : null;
+      saveChecklistStateItem(itemId, { is_assembled: markAsDone });
+
       renderAssemblyView();
       updateTopMetrics();
 
       if (markAsDone) {
-        // Check if all items in this order are now done
-        const orderItems = state.checklist.filter(c => c.order_id === item.order_id);
+        const orderItems = state.allChecklist.filter(c => c.order_id === item.order_id);
         const allDone = orderItems.every(c => c.is_assembled);
         if (allDone) playBeep('complete');
         else playBeep('success');
       }
-
-      try {
-        await supabase
-          .from('prep_order_checklist')
-          .update({ is_assembled: markAsDone, assembled_at: item.assembled_at })
-          .eq('id', itemId);
-      } catch (err) {
-        console.error("Error toggling assemble item:", err);
-      }
     }
 
     async function packAllItemsForOrder(orderId) {
-      const items = state.checklist.filter(c => c.order_id === orderId);
+      const items = state.allChecklist.filter(c => c.order_id === orderId);
       if (items.length === 0) return;
 
-      const itemIds = items.map(i => i.id);
-      items.forEach(i => i.is_assembled = true);
+      items.forEach(i => {
+        i.is_assembled = true;
+        saveChecklistStateItem(i.id, { is_assembled: true });
+      });
+
       renderAssemblyView();
       updateTopMetrics();
       playBeep('complete');
-
-      try {
-        await supabase
-          .from('prep_order_checklist')
-          .update({ is_assembled: true, assembled_at: new Date().toISOString() })
-          .in('id', itemIds);
-      } catch (e) {
-        console.error(e);
-      }
     }
 
     async function markOrderCompleted(orderId) {
-      const order = state.orders.find(o => o.id === orderId);
+      const order = state.allOrders.find(o => o.id === orderId);
       if (!order) return;
-      const nextStatus = order.status === 'completed' ? 'ready' : 'completed';
-      order.status = nextStatus;
-      renderAssemblyView();
-      renderOrdersView();
-      playBeep('complete');
 
-      try {
-        await supabase
-          .from('prep_orders')
-          .update({ status: nextStatus })
-          .eq('id', orderId);
-      } catch (e) {
-        console.error(e);
+      const willBeDone = (order.status !== 'completed');
+      order.status = willBeDone ? 'completed' : 'pending';
+      order.raw_status = willBeDone ? 'done' : 'pending';
+
+      // Mark all checklist items for this order as assembled
+      state.allChecklist.filter(c => c.order_id === orderId).forEach(c => {
+        c.is_assembled = willBeDone;
+        saveChecklistStateItem(c.id, { is_assembled: willBeDone });
+      });
+
+      renderAllViews();
+      playBeep(willBeDone ? 'complete' : 'success');
+
+      // Two-way synchronization with Supabase public.orders
+      const pin = getOwnerPin();
+      const nextDbStatus = willBeDone ? 'done' : 'pending';
+      if (pin && supabase && typeof supabase.rpc === 'function') {
+        try {
+          await supabase.rpc('admin_set_order_status', {
+            p_pin: pin,
+            p_order_id: orderId,
+            p_status: nextDbStatus
+          });
+        } catch(err) {
+          console.warn('Sync order status via RPC failed:', err);
+        }
+      }
+
+      if (order._source === 'prep_orders' && supabase) {
+        try {
+          await supabase.from('prep_orders').update({ status: willBeDone ? 'completed' : 'pending' }).eq('id', orderId);
+        } catch(e){}
       }
     }
 
@@ -1654,40 +2173,85 @@
       const tbody = document.getElementById('ordersTableBody');
       if (!tbody) return;
 
-      if (state.orders.length === 0) {
+      // Update Summary Cards
+      const ordersForSummary = state.dateFilterMode === 'all' ? state.allOrders : state.orders;
+      const totalOrders = ordersForSummary.length;
+      const pendingOrders = ordersForSummary.filter(o => o.status === 'pending' || o.status === 'prepping').length;
+      const readyOrders = ordersForSummary.filter(o => o.status === 'completed' || o.status === 'ready').length;
+      const totalRevenue = ordersForSummary.filter(o => o.status !== 'cancelled').reduce((acc, cur) => acc + (Number(cur.total) || 0), 0);
+
+      document.getElementById('sumTotalOrders').innerText = totalOrders;
+      document.getElementById('sumPendingOrders').innerText = pendingOrders;
+      document.getElementById('sumReadyOrders').innerText = readyOrders;
+      document.getElementById('sumTotalRevenue').innerText = formatVND(totalRevenue);
+
+      // Filter by status & search
+      let displayOrders = state.orders;
+      if (state.orderStatusFilter !== 'ALL') {
+        displayOrders = displayOrders.filter(o => o.status === state.orderStatusFilter);
+      }
+
+      if (state.orderSearchQuery) {
+        const q = state.orderSearchQuery.toLowerCase();
+        displayOrders = displayOrders.filter(o => 
+          (o.id && o.id.toLowerCase().includes(q)) ||
+          (o.customer_name && o.customer_name.toLowerCase().includes(q)) ||
+          (o.customer_phone && o.customer_phone.includes(q)) ||
+          (o.address && o.address.toLowerCase().includes(q)) ||
+          (o.special_notes && o.special_notes.toLowerCase().includes(q)) ||
+          (o.dishes && o.dishes.some(d => d.toLowerCase().includes(q)))
+        );
+      }
+
+      if (displayOrders.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="6" class="px-4 py-12 text-center text-stone-400">
-              Chưa có đơn hàng nào cho ngày ${formatDateVN(state.currentDate)}. Bấm "Tạo Đơn Hàng Mới" ở trên để bắt đầu!
+            <td colspan="8" class="px-4 py-12 text-center text-stone-400">
+              Không có đơn hàng nào khớp với bộ lọc hiện tại. Bấm "Tạo Đơn Thủ Công" để lên đơn mới!
             </td>
           </tr>
         `;
         return;
       }
 
-      tbody.innerHTML = state.orders.map(order => {
-        const orderChecklist = state.checklist.filter(c => c.order_id === order.id);
+      tbody.innerHTML = displayOrders.map(order => {
+        const orderChecklist = state.allChecklist.filter(c => c.order_id === order.id);
         const totalItems = orderChecklist.length;
         const assembledItems = orderChecklist.filter(c => c.is_assembled).length;
         const pct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
+        const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
 
         const dishesSummary = order.prep_order_items && order.prep_order_items.length > 0
-          ? order.prep_order_items.map(i => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${i.quantity}x ${i.prep_recipes ? i.prep_recipes.name : 'Món'}</span>`).join('')
-          : '—';
+          ? order.prep_order_items.map(i => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${i.servings}x ${escapeHtml(i.recipe_name)}</span>`).join('')
+          : (order.dishes && order.dishes.length > 0 ? order.dishes.map(d => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${escapeHtml(d)}</span>`).join('') : '—');
 
         return `
           <tr class="hover:bg-stone-50/60 transition-colors">
-            <td class="px-4 py-3 font-mono font-bold text-stone-900">
-              #${String(order.tray_number).padStart(2, '0')}
+            <td class="px-4 py-3 whitespace-nowrap">
+              <div class="font-mono font-black text-stone-900 text-sm">#${String(order.tray_number).padStart(2, '0')}</div>
+              <div class="text-[11px] font-mono font-bold text-brand-600">${escapeHtml(order.id)}</div>
             </td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 whitespace-nowrap">
               <div class="font-bold text-stone-900">${escapeHtml(order.customer_name || 'Khách lẻ')}</div>
-              <div class="text-xs text-stone-500 font-mono">${order.customer_phone || ''}</div>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                ${cleanPhone ? `
+                  <a href="tel:${cleanPhone}" class="text-xs font-mono font-bold text-stone-600 hover:text-stone-900 flex items-center gap-0.5">
+                    <span>📞</span> <span>${order.customer_phone}</span>
+                  </a>
+                  <a href="https://zalo.me/${cleanPhone}" target="_blank" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
+                    Zalo
+                  </a>
+                ` : '<span class="text-xs text-stone-400 font-mono">Chưa có SĐT</span>'}
+              </div>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <div class="font-bold text-stone-900 text-xs">${escapeHtml(order.display_date)}</div>
+              <div class="text-xs font-mono font-semibold text-brand-600">${escapeHtml(order.delivery_time)}</div>
             </td>
             <td class="px-4 py-3 max-w-xs">
               <div class="flex flex-wrap">${dishesSummary}</div>
             </td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 max-w-[180px]">
               ${order.special_notes ? `
                 <span class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-lg">
                   <span>⚠️</span>
@@ -1695,17 +2259,28 @@
                 </span>
               ` : '<span class="text-stone-400 text-xs">Không có</span>'}
             </td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 whitespace-nowrap">
               <div class="flex items-center gap-2">
-                <div class="w-24 h-2 bg-stone-200 rounded-full overflow-hidden">
-                  <div class="h-full bg-emerald-500 rounded-full" style="width: ${pct}%"></div>
+                <div class="w-20 h-2 bg-stone-200 rounded-full overflow-hidden">
+                  <div class="h-full bg-emerald-500 rounded-full transition-all" style="width: ${pct}%"></div>
                 </div>
                 <span class="text-xs font-mono font-bold text-stone-700">${pct}%</span>
               </div>
             </td>
-            <td class="px-4 py-3 text-right">
+            <td class="px-4 py-3 whitespace-nowrap">
+              <select onchange="changeOrderStatus('${order.id}', this.value)" class="text-xs font-bold rounded-xl px-2.5 py-1.5 border border-stone-300 bg-white cursor-pointer focus:border-brand-500 focus:outline-none">
+                <option value="pending" ${order.raw_status === 'pending' || order.raw_status === 'confirmed' ? 'selected' : ''}>⏳ Chờ xử lý</option>
+                <option value="preparing" ${order.raw_status === 'preparing' ? 'selected' : ''}>🔪 Đang sơ chế</option>
+                <option value="done" ${order.raw_status === 'done' ? 'selected' : ''}>✓ Hoàn thành</option>
+                <option value="cancelled" ${order.raw_status === 'cancelled' ? 'selected' : ''}>✕ Đã hủy</option>
+              </select>
+            </td>
+            <td class="px-4 py-3 text-right whitespace-nowrap">
               <div class="flex items-center justify-end gap-1.5">
-                <button onclick="deleteOrder('${order.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50" title="Xóa đơn">
+                <button onclick="copyOrderTicket('${order.id}')" class="text-stone-600 hover:text-stone-900 p-1.5 rounded-lg hover:bg-stone-100" title="Sao chép phiếu đơn">
+                  📋
+                </button>
+                <button onclick="deleteOrder('${order.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50" title="Xóa/Hủy đơn">
                   🗑️
                 </button>
               </div>
@@ -1713,6 +2288,86 @@
           </tr>
         `;
       }).join('');
+    }
+
+    function filterOrderStatus(status) {
+      state.orderStatusFilter = status;
+      document.querySelectorAll('.order-status-chip').forEach(btn => {
+        if (btn.getAttribute('data-st') === status) {
+          btn.className = "order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95";
+        } else {
+          btn.className = "order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95";
+        }
+      });
+      renderOrdersView();
+    }
+
+    function handleOrderSearch(val) {
+      state.orderSearchQuery = (val || '').trim();
+      renderOrdersView();
+    }
+
+    async function changeOrderStatus(orderId, newStatus) {
+      const order = state.allOrders.find(o => o.id === orderId);
+      if (!order) return;
+
+      order.raw_status = newStatus;
+      if (newStatus === 'done') {
+        order.status = 'completed';
+        state.allChecklist.filter(c => c.order_id === orderId).forEach(c => {
+          c.is_assembled = true;
+          saveChecklistStateItem(c.id, { is_assembled: true });
+        });
+      } else if (newStatus === 'preparing') {
+        order.status = 'prepping';
+      } else if (newStatus === 'cancelled') {
+        order.status = 'cancelled';
+      } else {
+        order.status = 'pending';
+      }
+
+      renderAllViews();
+      playBeep('success');
+
+      // Sync to Supabase public.orders
+      const pin = getOwnerPin();
+      if (pin && supabase && typeof supabase.rpc === 'function') {
+        try {
+          await supabase.rpc('admin_set_order_status', {
+            p_pin: pin,
+            p_order_id: orderId,
+            p_status: newStatus
+          });
+        } catch(err) {
+          console.error("Error setting order status:", err);
+        }
+      }
+    }
+
+    function copyOrderTicket(orderId) {
+      const order = state.allOrders.find(o => o.id === orderId);
+      if (!order) return;
+
+      const dishesText = order.prep_order_items && order.prep_order_items.length > 0
+        ? order.prep_order_items.map(i => `• ${i.servings} suất: ${i.recipe_name}`).join('\n')
+        : (order.dishes && order.dishes.length > 0 ? order.dishes.map(d => `• ${d}`).join('\n') : '• Món Mâm Cơm');
+
+      const text = `[MÂM CƠM - PHIẾU BẾP KHAY #${String(order.tray_number).padStart(2, '0')}]
+Mã đơn: ${order.id}
+Khách hàng: ${order.customer_name}
+SĐT: ${order.customer_phone || 'Không có'}
+Địa chỉ: ${order.address || 'Không có'}
+Thời gian nhận: ${order.delivery_time} ngày ${order.display_date}
+Món ăn:
+${dishesText}
+Lưu ý đặc biệt: ${order.special_notes || 'Không có'}
+Tổng tiền: ${formatVND(order.total)}`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Đã sao chép phiếu bếp cho đơn ' + order.id);
+      }).catch(() => {
+        prompt('Sao chép phiếu bếp:', text);
+      });
     }
 
     function openOrderModal() {
@@ -1864,15 +2519,42 @@
     }
 
     async function deleteOrder(orderId) {
-      if (!confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Tất cả checklist của khay sẽ bị xóa theo.')) return;
+      if (!confirm('Bạn có chắc chắn muốn hủy / xóa đơn hàng này?')) return;
       try {
+        const order = state.allOrders.find(o => o.id === orderId);
+        
+        // Remove from local inbox if present
         let rawInbox = localStorage.getItem('mamcom_inbox_orders_v1');
         if (rawInbox) {
           let list = JSON.parse(rawInbox) || [];
           list = list.filter(o => o.id !== orderId);
           localStorage.setItem('mamcom_inbox_orders_v1', JSON.stringify(list));
         }
-        await supabase.from('prep_orders').delete().eq('id', orderId);
+
+        // Clean saved checklist states for this order
+        const savedStates = getSavedChecklistStates();
+        Object.keys(savedStates).forEach(k => {
+          if (k.includes(orderId)) delete savedStates[k];
+        });
+        localStorage.setItem('mamcom_prep_chk_states_v1', JSON.stringify(savedStates));
+
+        // If from prep_orders table: delete
+        if (order && order._source === 'prep_orders') {
+          await supabase.from('prep_orders').delete().eq('id', orderId);
+        }
+
+        // If from web orders: update status to cancelled
+        const pin = getOwnerPin();
+        if (pin && supabase && typeof supabase.rpc === 'function') {
+          try {
+            await supabase.rpc('admin_set_order_status', {
+              p_pin: pin,
+              p_order_id: orderId,
+              p_status: 'cancelled'
+            });
+          } catch(e){}
+        }
+
         playBeep('success');
         await refreshData();
       } catch (err) {
