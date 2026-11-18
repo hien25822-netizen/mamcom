@@ -511,7 +511,7 @@
   <!-- ============================================================ -->
   <!-- PIN AUTH GUARD MODAL (CHỈ CHỦ BẾP CÓ PIN MỚI ĐƯỢC VÀO) -->
   <!-- ============================================================ -->
-  <div id="prepPinGate" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/80 backdrop-blur-md transition-all duration-300">
+  <div id="prepPinGate" class="fixed inset-0 z-50 items-center justify-center p-4 bg-stone-900/80 backdrop-blur-md transition-all duration-300" style="display: none;">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-2 border-[#dfb027] transform scale-100 transition-all">
       <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
         🥦
@@ -853,8 +853,27 @@
     // ------------------------------------------------------------
     let prepUnlocked = false;
 
-    async function checkPrepAuth(){
+    function hidePrepGate(){
+      prepUnlocked = true;
       const pinGate = document.getElementById('prepPinGate');
+      if (pinGate) {
+        pinGate.classList.remove('flex');
+        pinGate.classList.add('hidden');
+        pinGate.style.setProperty('display', 'none', 'important');
+      }
+    }
+
+    function showPrepGate(){
+      prepUnlocked = false;
+      const pinGate = document.getElementById('prepPinGate');
+      if (pinGate) {
+        pinGate.classList.remove('hidden');
+        pinGate.classList.add('flex');
+        pinGate.style.setProperty('display', 'flex', 'important');
+      }
+    }
+
+    async function checkPrepAuth(){
       let savedPin = '';
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -868,37 +887,27 @@
         }
       } catch(e){}
 
-      if (savedPin && savedPin !== 'unlocked') {
-        try {
-          if (supabase && typeof supabase.rpc === 'function') {
-            const { data, error } = await supabase.rpc('admin_verify_pin', { p_pin: savedPin });
-            if (!error && data === true) {
-              prepUnlocked = true;
-              if (pinGate) pinGate.classList.add('hidden');
-              return;
-            }
+      if (savedPin) {
+        if (savedPin === 'unlocked' || savedPin.length >= 4) {
+          hidePrepGate();
+          // Kiểm tra ngầm với Supabase RPC
+          if (supabase && typeof supabase.rpc === 'function' && savedPin !== 'unlocked') {
+            supabase.rpc('admin_verify_pin', { p_pin: savedPin }).then(function(res){
+              if (res.error || res.data !== true) {
+                console.warn('Session PIN invalid, re-locking');
+                lockPrepGate();
+              }
+            }).catch(function(){});
           }
-        } catch(err){}
-        // Nếu đã có session active trên thiết bị này
-        if (localStorage.getItem('mamcom.ownerPin.session')) {
-          prepUnlocked = true;
-          if (pinGate) pinGate.classList.add('hidden');
           return;
         }
-      } else if (savedPin === 'unlocked') {
-        prepUnlocked = true;
-        if (pinGate) pinGate.classList.add('hidden');
-        return;
       }
 
-      prepUnlocked = false;
-      if (pinGate) {
-        pinGate.classList.remove('hidden');
-        setTimeout(() => {
-          const pinInp = document.getElementById('prepPinInput');
-          if (pinInp) pinInp.focus();
-        }, 120);
-      }
+      showPrepGate();
+      setTimeout(function(){
+        const pinInp = document.getElementById('prepPinInput');
+        if (pinInp) pinInp.focus();
+      }, 120);
     }
 
     async function verifyPrepPin(){
@@ -941,13 +950,11 @@
         if (btn) { btn.disabled = false; btn.innerText = 'Mở khóa Bếp Sơ Chế'; }
 
         if (isOk) {
-          prepUnlocked = true;
           try {
             sessionStorage.setItem('mamcom.ownerPin.session', pin);
             localStorage.setItem('mamcom.ownerPin.session', pin);
           } catch(e){}
-          const pinGate = document.getElementById('prepPinGate');
-          if (pinGate) pinGate.classList.add('hidden');
+          hidePrepGate();
           playBeep('success');
           await refreshData(true);
         } else {
@@ -956,7 +963,7 @@
         }
       } catch(err) {
         if (btn) { btn.disabled = false; btn.innerText = 'Mở khóa Bếp Sơ Chế'; }
-        if (errEl) errEl.textContent = 'Lỗi: ' + ((err && err.message) || err);
+        if (errEl) errEl.textContent = 'Lỗi kết nối: ' + ((err && err.message) || err);
       }
     }
 
@@ -965,15 +972,13 @@
         sessionStorage.removeItem('mamcom.ownerPin.session');
         localStorage.removeItem('mamcom.ownerPin.session');
       } catch(e){}
-      prepUnlocked = false;
-      const pinGate = document.getElementById('prepPinGate');
+      showPrepGate();
       const pinInp = document.getElementById('prepPinInput');
       const errEl = document.getElementById('prepPinError');
       if (errEl) errEl.textContent = '';
-      if (pinInp) pinInp.value = '';
-      if (pinGate) {
-        pinGate.classList.remove('hidden');
-        setTimeout(() => { if (pinInp) pinInp.focus(); }, 120);
+      if (pinInp) {
+        pinInp.value = '';
+        setTimeout(function(){ pinInp.focus(); }, 120);
       }
     }
 

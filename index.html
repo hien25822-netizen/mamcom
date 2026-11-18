@@ -5133,10 +5133,14 @@
     return "";
   }
 
-  // Xóa sạch session lưu PIN cũ để đảm bảo khi mở web luôn ở trạng thái khóa (chỉ mở khi chủ nhập đúng PIN)
+  // Tự động gắn token PIN vào các liên kết sang Bếp sơ chế nếu phiên chủ đang hoạt động
   try {
-    sessionStorage.removeItem("mamcom.ownerPin.session");
-    localStorage.removeItem("mamcom.ownerPin.session");
+    var initSavedPin = localStorage.getItem("mamcom.ownerPin.session") || sessionStorage.getItem("mamcom.ownerPin.session");
+    if (initSavedPin) {
+      document.querySelectorAll('a[href^="/prep"]').forEach(function(a){
+        a.setAttribute("href", "/prep?pin=" + encodeURIComponent(initSavedPin));
+      });
+    }
   } catch(e){}
 
   function escHtml(str){
@@ -5158,6 +5162,10 @@
     try {
       sessionStorage.setItem("mamcom.ownerPin.session", pin || "unlocked");
       localStorage.setItem("mamcom.ownerPin.session", pin || "unlocked");
+      var actPin = pin || currentOwnerPin || "unlocked";
+      document.querySelectorAll('a[href^="/prep"]').forEach(function(a){
+        a.setAttribute("href", "/prep?pin=" + encodeURIComponent(actPin));
+      });
     } catch(e){}
     var ownerBar = document.getElementById("ownerStatusBar");
     if(ownerBar) ownerBar.hidden = false;
