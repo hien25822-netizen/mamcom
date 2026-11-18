@@ -1025,59 +1025,69 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 13px 18px;
-    background: linear-gradient(135deg, #fffdfa 0%, #fff7ed 100%);
-    border-radius: var(--radius-lg, 16px);
+    padding: 14px 18px;
+    background: #ffff04 !important;
     transition: background 0.2s ease, opacity 0.15s ease;
   }
+  .saved.is-collapsed .saved__head-bar {
+    border-bottom: none !important;
+  }
+  .saved:not(.is-collapsed) .saved__head-bar {
+    border-bottom: 1.5px solid #d4c800 !important;
+  }
   .saved__head-bar:hover {
-    background: linear-gradient(135deg, #fff9f0 0%, #ffedd5 100%);
+    filter: brightness(0.98);
   }
   .saved__headline {
     margin: 0;
-    font-size: 15.5px;
+    font-size: 16px;
     font-weight: 800;
-    color: #1e293b;
+    color: #261109;
     letter-spacing: -0.2px;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 6px;
     line-height: 1.4;
   }
   .saved-hl-hours {
-    color: #dc2626 !important;
+    color: #ffffff !important;
     font-weight: 900 !important;
-    background: #fee2e2 !important;
-    border: 1px solid rgba(220, 38, 38, 0.25) !important;
-    padding: 2px 10px !important;
+    background: #da241c !important;
+    border: 1.5px solid #b91c1c !important;
+    padding: 2.5px 12px !important;
     border-radius: 999px !important;
-    box-shadow: 0 1px 3px rgba(220, 38, 38, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(218, 36, 28, 0.4) !important;
     display: inline-block !important;
     letter-spacing: -0.2px !important;
+    font-size: 15px !important;
   }
   .saved__expand-btn {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 5px 12px;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #261109;
+    border: none;
     border-radius: 999px;
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 700;
-    color: #475569;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(38, 17, 9, 0.25);
     transition: all 0.2s ease;
     flex-shrink: 0;
+    cursor: pointer;
   }
   .saved__head-bar:hover .saved__expand-btn {
-    border-color: #dc2626;
-    color: #dc2626;
-    background: #ffffff;
-    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
+    background: #000000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(38, 17, 9, 0.35);
   }
   .saved__toggle-icon {
+    display: inline-flex;
+    stroke: #ffffff;
+    transition: transform 0.25s var(--spring-bounce);
+  }
     display: inline-flex;
     transition: transform 0.25s var(--spring-bounce);
   }
@@ -2604,24 +2614,25 @@
   /* ---- 3 BUTTON MỞ APP: INSTAGRAM, TIKTOK & THREADS ---- */
   .order__social-apps {
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 10px !important;
+    gap: 8px !important;
     width: 100% !important;
-    margin-top: 12px;
+    margin: 12px 0 16px !important;
+    box-sizing: border-box !important;
   }
   .order__app-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 7px;
-    flex: 0 0 calc(50% - 6px);
-    max-width: 230px;
-    min-height: 44px;
-    padding: 11px 12px;
+    flex: 1 1 0;
+    max-width: 175px;
+    min-height: 42px;
+    padding: 10px 10px;
     border-radius: var(--radius-pill);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 800;
     text-decoration: none;
     color: #ffffff !important;
@@ -2930,33 +2941,34 @@
   }
   .saved__kpi {
     background: #ffffff;
-    border: 1.5px solid #dcb732;
-    border-radius: var(--radius-lg);
-    padding: 13px 16px;
+    border: 1.5px solid #fde047;
+    border-radius: 16px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
     gap: 3px;
-    box-shadow: 0 4px 12px rgba(180, 40, 20, 0.05);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
     transition: transform 0.16s var(--ease-out), border-color 0.15s ease, box-shadow 0.16s var(--ease-out);
   }
   .saved__kpi:hover {
     transform: translateY(-2px);
-    border-color: #da241c;
-    box-shadow: 0 8px 20px rgba(218, 36, 28, 0.15);
+    border-color: #eab308;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   }
   .saved__kpi--primary {
-    background: linear-gradient(135deg, rgba(255, 253, 230, 0.95), rgba(253, 242, 241, 0.9));
-    border-color: #da241c;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef2f2 100%);
+    border: 1.5px solid #ef4444;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.12);
   }
   .saved__kpi-label {
     font-size: 11px;
     font-weight: 800;
-    color: #5d4a18;
+    color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
   .saved__kpi-val {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 900;
     color: var(--red);
     font-variant-numeric: tabular-nums;
@@ -2965,7 +2977,7 @@
   .saved__kpi-sub {
     font-size: 11px;
     font-weight: 600;
-    color: var(--ink-light);
+    color: #64748b;
   }
 
   /* 2 Cột: Mỗi Tuần & Cả Năm */
@@ -2976,19 +2988,21 @@
     margin-bottom: 20px;
   }
   .saved__col {
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid var(--glass-border-hairline);
-    border-radius: var(--radius-lg);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
     padding: 16px 16px 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   }
   .saved__col--highlight {
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(218, 36, 28, 0.25);
+    background: #ffffff;
+    border-color: rgba(218, 36, 28, 0.3);
+    box-shadow: 0 4px 14px rgba(218, 36, 28, 0.06);
   }
   .saved__col-head {
     margin-bottom: 12px;
     padding-bottom: 9px;
-    border-bottom: 1px solid var(--line-subtle);
+    border-bottom: 1px solid #f1f5f9;
   }
   .saved__col-tag {
     display: inline-block;
@@ -2997,20 +3011,20 @@
     letter-spacing: 0.5px;
     padding: 2.5px 8px;
     border-radius: var(--radius-pill);
-    background: var(--yellow-soft);
-    color: var(--black);
-    border: 1px solid var(--yellow-border);
+    background: #fef08a;
+    color: #854d0e;
+    border: 1px solid #fde047;
     margin-bottom: 5px;
   }
   .saved__col-tag--year {
-    background: var(--red-soft);
-    color: var(--red);
-    border-color: rgba(218, 36, 28, 0.3);
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fecaca;
   }
   .saved__col-title {
     font-size: 13.5px;
     font-weight: 700;
-    color: var(--ink);
+    color: #1e293b;
     line-height: 1.4;
   }
   .saved__col-title strong {
@@ -3026,22 +3040,24 @@
     align-items: flex-start;
     gap: 11px;
     padding: 11px 12px;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(220, 183, 50, 0.4);
-    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
     transition: transform 0.16s var(--ease-out), border-color 0.15s ease, box-shadow 0.16s var(--ease-out);
   }
   .saved__card:hover {
     transform: translateX(3px);
-    border-color: #da241c;
-    box-shadow: 0 4px 12px rgba(218, 36, 28, 0.1);
+    border-color: #cbd5e1;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
   .saved__card-icon {
     flex: 0 0 34px;
     width: 34px;
     height: 34px;
     border-radius: 10px;
-    background: var(--red-soft);
+    background: #fef2f2;
+    border: 1px solid #fecaca;
     display: grid;
     place-items: center;
     font-size: 17px;
@@ -3053,7 +3069,7 @@
   .saved__card-title {
     font-size: 12.5px;
     font-weight: 800;
-    color: var(--black);
+    color: #0f172a;
     line-height: 1.35;
     margin-bottom: 2px;
   }
@@ -3062,11 +3078,11 @@
   }
   .saved__card-desc {
     font-size: 11.5px;
-    color: #5d4a18;
+    color: #475569;
     line-height: 1.45;
   }
   .saved__card-desc b {
-    color: #1e1917;
+    color: #0f172a;
     font-weight: 800;
   }
 
@@ -3701,19 +3717,29 @@
     .saved__card-desc { font-size: 11px; }
   }
 
-  @media (max-width: 375px) {
+  @media (max-width: 480px) {
     .order__social-apps {
       gap: 6px !important;
+      margin: 10px 0 14px !important;
     }
     .order__app-btn {
-      flex: 0 0 calc(50% - 4px) !important;
-      padding: 9px 4px !important;
-      font-size: 10px !important;
-      gap: 3px !important;
+      flex: 1 1 0 !important;
+      max-width: none !important;
+      padding: 9px 6px !important;
+      font-size: 11.5px !important;
+      gap: 4px !important;
+      min-height: 38px !important;
     }
     .order__app-icon {
-      width: 14px !important;
-      height: 14px !important;
+      width: 15px !important;
+      height: 15px !important;
+    }
+  }
+  @media (max-width: 360px) {
+    .order__app-btn {
+      padding: 8px 3px !important;
+      font-size: 10.5px !important;
+      gap: 3px !important;
     }
   }
 
@@ -4218,6 +4244,24 @@
       </div>
       </form>
 
+      <!-- KẾT NỐI MẠNG XÃ HỘI (Ở NGAY DƯỚI Ô THÔNG TIN ĐƠN) -->
+      <div class="site-social-section" id="orderSocialSection" style="margin: 12px auto 16px; text-align: center; width: 100%;">
+        <div class="order__social-apps" id="orderSocialApps">
+          <a class="order__app-btn order__app-btn--ig" id="btnOpenInstagram" href="instagram://user?username=mamcomvn" target="_blank" rel="noopener">
+            <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            <span>Instagram</span>
+          </a>
+          <a class="order__app-btn order__app-btn--tiktok" id="btnOpenTiktok" href="tiktok://user?username=mamcomvn" target="_blank" rel="noopener">
+            <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"/></svg>
+            <span>Tiktok</span>
+          </a>
+          <a class="order__app-btn order__app-btn--threads" id="btnOpenThreads" href="https://www.threads.net/@mamcomvn" target="_blank" rel="noopener">
+            <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098c1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015c-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164c1.43 1.783 3.631 2.698 6.54 2.717c2.623-.02 4.358-.631 5.8-2.045c1.647-1.613 1.618-3.593 1.09-4.798c-.31-.71-.873-1.3-1.634-1.75c-.192 1.352-.622 2.446-1.284 3.272c-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801c-1.063-.689-1.685-1.74-1.752-2.964c-.065-1.19.408-2.285 1.33-3.082c.88-.76 2.119-1.207 3.583-1.291a14 14 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757c-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32l-1.757-1.18c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388q.163.07.321.142c1.49.7 2.58 1.761 3.154 3.07c.797 1.82.871 4.79-1.548 7.158c-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69q-.362 0-.739.021c-1.836.103-2.98.946-2.916 2.143c.067 1.256 1.452 1.839 2.784 1.767c1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221"/></svg>
+            <span>Threads</span>
+          </a>
+        </div>
+      </div>
+
       <!-- TIME SAVED (BẠN TIẾT KIỆM ĐƯỢC ... GIỜ KHI ĐẶT MÂM - TỰ ĐỘNG THU GỌN KHI MỚI MỞ WEB) -->
 
       <div class="saved is-collapsed" id="savedBox">
@@ -4341,27 +4385,6 @@
       </div>
     </div> <!-- closes board__main -->
   </div> <!-- closes board -->
-
-    <!-- KẾT NỐI MẠNG XÃ HỘI (ĐƯỢC ĐƯA RA NGOÀI Ô ĐƠN ĐỂ KHÁCH TẬP TRUNG 100% VÀO NÚT THANH TOÁN) -->
-    <div class="site-social-section" style="max-width: 680px; margin: 26px auto 12px; text-align: center; padding: 0 16px;">
-      <p style="font-size: 13.5px; font-weight: 800; color: #1e293b; margin-bottom: 10px; letter-spacing: -0.1px;">
-        ✨ Theo dõi &amp; kết nối cùng Mâm Cơm trên mạng xã hội
-      </p>
-      <div class="order__social-apps" id="orderSocialApps" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-        <a class="order__app-btn order__app-btn--ig" id="btnOpenInstagram" href="instagram://user?username=mamcomvn" target="_blank" rel="noopener">
-          <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-          <span>Mở Instagram Mâm Cơm</span>
-        </a>
-        <a class="order__app-btn order__app-btn--tiktok" id="btnOpenTiktok" href="tiktok://user?username=mamcomvn" target="_blank" rel="noopener">
-          <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"/></svg>
-          <span>Mở Tiktok Mâm Cơm</span>
-        </a>
-        <a class="order__app-btn order__app-btn--threads" id="btnOpenThreads" href="https://www.threads.net/@mamcomvn" target="_blank" rel="noopener">
-          <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098c1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015c-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164c1.43 1.783 3.631 2.698 6.54 2.717c2.623-.02 4.358-.631 5.8-2.045c1.647-1.613 1.618-3.593 1.09-4.798c-.31-.71-.873-1.3-1.634-1.75c-.192 1.352-.622 2.446-1.284 3.272c-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801c-1.063-.689-1.685-1.74-1.752-2.964c-.065-1.19.408-2.285 1.33-3.082c.88-.76 2.119-1.207 3.583-1.291a14 14 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757c-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32l-1.757-1.18c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388q.163.07.321.142c1.49.7 2.58 1.761 3.154 3.07c.797 1.82.871 4.79-1.548 7.158c-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69q-.362 0-.739.021c-1.836.103-2.98.946-2.916 2.143c.067 1.256 1.452 1.839 2.784 1.767c1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221"/></svg>
-          <span>Mở Threads Mâm Cơm</span>
-        </a>
-      </div>
-    </div>
 
     <!-- FOOTER: Tinh tế, gọn gàng, có nút mở Quản trị PIN dễ bấm cho mobile -->
 
