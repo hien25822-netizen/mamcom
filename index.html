@@ -4448,9 +4448,14 @@
         <h3 id="setTitle">Cài đặt chủ Bếp</h3>
         <span class="modal__badge">Quản trị viên • Bảo mật 100%</span>
       </div>
-      <button class="modal__close-btn" type="button" id="setClose" aria-label="Đóng cài đặt">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <a href="/prep" target="_blank" class="btn btn--primary" id="btnHeadGoPrep" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;background:#166534;color:#fff;border-radius:99px;padding:6px 12px;font-size:11.5px;font-weight:700;box-shadow:0 2px 6px rgba(22,101,52,0.25);" title="Mở web app Bếp Sơ Chế Mealkit">
+          🥦 Mở Bếp Sơ Chế →
+        </a>
+        <button class="modal__close-btn" type="button" id="setClose" aria-label="Đóng cài đặt">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
     </div>
 
     <!-- TABS NAVIGATION (SẮP XẾP LOGIC & TRẬT TỰ QUẢN TRỊ CHUẨN) -->
@@ -4502,141 +4507,7 @@
       <p class="set__empty" id="setOrdersEmpty" hidden style="text-align:center;padding:32px 16px;color:#94a3b8;font-size:13px;font-weight:600;">Chưa có đơn hàng nào trong mục này.</p>
     </div>
 
-    <!-- PANE 2: THỐNG KÊ HIỆU QUẢ -->
-    <div class="set__pane" id="setPaneStats">
-      <div class="set__sec set__sec--stats" style="border-top:0;padding-top:0">
-        <div class="set__head-row">
-          <div class="set__label">Hiệu quả đơn hàng</div>
-          <button class="set__refresh-btn" type="button" id="setRefreshStats" title="Cập nhật số liệu mới nhất">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
-            Làm mới
-          </button>
-        </div>
-        <div class="set__stat-grid">
-          <div class="set__stat-card">
-            <div class="set__stat-top">
-              <span class="set__stat-lbl">LƯỢT XEM WEB</span>
-              <div class="set__stat-icon-wrap set__stat-icon-wrap--views">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-              </div>
-            </div>
-            <div class="set__stat-num" id="statPageViews">0</div>
-          </div>
-          <div class="set__stat-card set__stat-card--highlight">
-            <div class="set__stat-top">
-              <span class="set__stat-lbl">ĐÃ BẤM ĐẶT ĐƠN</span>
-              <div class="set__stat-icon-wrap set__stat-icon-wrap--orders">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              </div>
-            </div>
-            <div class="set__stat-num" id="statOrderClicks">0</div>
-          </div>
-          <div class="set__stat-card">
-            <div class="set__stat-top">
-              <span class="set__stat-lbl">MÂM ĐÃ PHỤC VỤ</span>
-              <div class="set__stat-icon-wrap set__stat-icon-wrap--meals">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-              </div>
-            </div>
-            <div class="set__stat-num" id="statMealsCount">0</div>
-          </div>
-          <div class="set__stat-card">
-            <div class="set__stat-top">
-              <span class="set__stat-lbl">TỶ LỆ CHỐT ĐƠN</span>
-              <div class="set__stat-icon-wrap set__stat-icon-wrap--conv">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-              </div>
-            </div>
-            <div class="set__stat-num" id="statConvRate">0%</div>
-          </div>
-        </div>
-        <p class="set__hint" style="margin-top:8px">🟢 Dữ liệu đồng bộ trực tiếp máy chủ PostgreSQL với cơ chế chống giả lập.</p>
-      </div>
-    </div>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-              </div>
-            </div>
-            <div class="set__stat-num" id="statMealsCount">0</div>
-          </div>
-          <div class="set__stat-card">
-            <div class="set__stat-top">
-              <span class="set__stat-lbl">TỶ LỆ CHỐT ĐƠN</span>
-              <div class="set__stat-icon-wrap set__stat-icon-wrap--conv">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-              </div>
-            </div>
-            <div class="set__stat-num" id="statConvRate">0%</div>
-          </div>
-        </div>
-        <p class="set__hint" style="margin-top:8px">🟢 Dữ liệu đồng bộ trực tiếp máy chủ PostgreSQL với cơ chế chống giả lập.</p>
-      </div>
-    </div>
-
-
-
-    <!-- PANE 3: CONFIG & BACKUP -->
-    <div class="set__pane" id="setPaneConfig">
-      <div class="set__sec" style="border-top:0;padding-top:0">
-        <div class="set__label">Giá mỗi mâm (đ / 1 người)</div>
-        <div class="set__row">
-          <input class="set__input" id="setPrice" type="number" min="1" step="1" inputmode="numeric" placeholder="VD: 49">
-          <button class="btn" id="setPriceSave" type="button">Lưu giá</button>
-        </div>
-        <p class="set__hint">Thay đổi giá sẽ đồng bộ bảo mật lên máy chủ và hiển thị ở huy hiệu Mâm (ví dụ: 49đ/1 người).</p>
-      </div>
-
-      <div class="set__sec">
-        <div class="set__label">Thay đổi món</div>
-        <button class="set__btn" id="setResetMenu" type="button">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-1px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-          Khôi phục 6 món mặc định
-        </button>
-      </div>
-
-      <div class="set__sec">
-        <div class="set__label">Xóa đánh giá / bình luận</div>
-        <div class="set__list" id="setCmtList"></div>
-        <p class="set__empty" id="setCmtEmpty" hidden>Chưa có đánh giá nào để xóa.</p>
-      </div>
-
-      <div class="set__sec">
-        <div class="set__label">Sao lưu &amp; Bảo toàn dữ liệu vĩnh viễn</div>
-        <button class="set__backup-btn" id="setExportBackup" type="button">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Tải bản sao lưu (.JSON) về máy
-        </button>
-        <p class="set__hint" style="margin-top:6px">Tải xuống gói snapshot gồm toàn bộ đơn hàng, đánh giá, thống kê và menu để lưu trữ dự phòng.</p>
-      </div>
-
-      <div class="set__sec">
-        <div class="set__label">Đổi mã PIN Quản trị</div>
-        <div style="display:flex;flex-direction:column;gap:8px;max-width:320px;">
-          <input class="set__input" id="setOldPin" type="password" inputmode="numeric" placeholder="Mã PIN hiện tại">
-          <input class="set__input" id="setNewPin" type="password" inputmode="numeric" placeholder="Mã PIN mới (ít nhất 4 số)">
-          <div style="display:flex;gap:10px;align-items:center;">
-            <button class="btn btn--primary" id="btnDoChangePin" type="button" style="padding:7px 16px;font-size:12.5px;border-radius:10px;">Lưu mã PIN mới</button>
-            <span class="set__hint" id="setPinChangeMsg" style="margin:0;font-weight:600;"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="set__sec">
-        <div class="set__label">Phiên đăng nhập trên thiết bị</div>
-        <button class="link-btn" id="btnLogoutOwner" type="button" style="color:#da241c;font-weight:700;font-size:13px;">
-          🔒 Đăng xuất khỏi thiết bị này
-        </button>
-        <p class="set__hint" style="margin-top:6px">Khi đăng nhập, hệ thống sẽ tự động ghi nhớ phiên chủ an toàn trên thiết bị này kể cả khi làm mới trang hoặc cập nhật web.</p>
-      </div>
-
-      <div class="set__security-card">
-        <div class="set__security-icon">🛡️</div>
-        <div class="set__security-text">
-          <strong>Hệ thống An toàn &amp; Bảo mật:</strong> Đang hoạt động với chuẩn PostgreSQL Row-Level Security, mã hóa Bcrypt PBKDF2 và chống tấn công dò quét Brute-force.
-        </div>
-      </div>
-    </div>
-
-    <!-- PANE 4: KHUYẾN MÃI & GIẢM GIÁ (PIN CHỦ) -->
+    <!-- PANE 2: KHUYẾN MÃI & GIẢM GIÁ (PIN CHỦ) -->
     <div class="set__pane" id="setPaneDiscount">
       <div class="set__sec" style="border-top:0;padding-top:0">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -4742,6 +4613,120 @@
           </button>
         </div>
         <div id="setDiscStatusMsg" style="font-size:12px;font-weight:600;margin-top:8px;text-align:center;"></div>
+      </div>
+    </div>
+
+    <!-- PANE 3: THỐNG KÊ HIỆU QUẢ -->
+    <div class="set__pane" id="setPaneStats">
+      <div class="set__sec set__sec--stats" style="border-top:0;padding-top:0">
+        <div class="set__head-row">
+          <div class="set__label">Hiệu quả đơn hàng</div>
+          <button class="set__refresh-btn" type="button" id="setRefreshStats" title="Cập nhật số liệu mới nhất">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            Làm mới
+          </button>
+        </div>
+        <div class="set__stat-grid">
+          <div class="set__stat-card">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">LƯỢT XEM WEB</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--views">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statPageViews">0</div>
+          </div>
+          <div class="set__stat-card set__stat-card--highlight">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">ĐÃ BẤM ĐẶT ĐƠN</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--orders">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statOrderClicks">0</div>
+          </div>
+          <div class="set__stat-card">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">MÂM ĐÃ PHỤC VỤ</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--meals">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statMealsCount">0</div>
+          </div>
+          <div class="set__stat-card">
+            <div class="set__stat-top">
+              <span class="set__stat-lbl">TỶ LỆ CHỐT ĐƠN</span>
+              <div class="set__stat-icon-wrap set__stat-icon-wrap--conv">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+            </div>
+            <div class="set__stat-num" id="statConvRate">0%</div>
+          </div>
+        </div>
+        <p class="set__hint" style="margin-top:8px">🟢 Dữ liệu đồng bộ trực tiếp máy chủ PostgreSQL với cơ chế chống giả lập.</p>
+      </div>
+    </div>
+
+    <!-- PANE 4: CONFIG & BACKUP -->
+    <div class="set__pane" id="setPaneConfig">
+      <div class="set__sec" style="border-top:0;padding-top:0">
+        <div class="set__label">Giá mỗi mâm (đ / 1 người)</div>
+        <div class="set__row">
+          <input class="set__input" id="setPrice" type="number" min="1" step="1" inputmode="numeric" placeholder="VD: 49">
+          <button class="btn" id="setPriceSave" type="button">Lưu giá</button>
+        </div>
+        <p class="set__hint">Thay đổi giá sẽ đồng bộ bảo mật lên máy chủ và hiển thị ở huy hiệu Mâm (ví dụ: 49đ/1 người).</p>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Thay đổi món</div>
+        <button class="set__btn" id="setResetMenu" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-1px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Khôi phục 6 món mặc định
+        </button>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Xóa đánh giá / bình luận</div>
+        <div class="set__list" id="setCmtList"></div>
+        <p class="set__empty" id="setCmtEmpty" hidden>Chưa có đánh giá nào để xóa.</p>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Sao lưu &amp; Bảo toàn dữ liệu vĩnh viễn</div>
+        <button class="set__backup-btn" id="setExportBackup" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Tải bản sao lưu (.JSON) về máy
+        </button>
+        <p class="set__hint" style="margin-top:6px">Tải xuống gói snapshot gồm toàn bộ đơn hàng, đánh giá, thống kê và menu để lưu trữ dự phòng.</p>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Đổi mã PIN Quản trị</div>
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:320px;">
+          <input class="set__input" id="setOldPin" type="password" inputmode="numeric" placeholder="Mã PIN hiện tại">
+          <input class="set__input" id="setNewPin" type="password" inputmode="numeric" placeholder="Mã PIN mới (ít nhất 4 số)">
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button class="btn btn--primary" id="btnDoChangePin" type="button" style="padding:7px 16px;font-size:12.5px;border-radius:10px;">Lưu mã PIN mới</button>
+            <span class="set__hint" id="setPinChangeMsg" style="margin:0;font-weight:600;"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="set__sec">
+        <div class="set__label">Phiên đăng nhập trên thiết bị</div>
+        <button class="link-btn" id="btnLogoutOwner" type="button" style="color:#da241c;font-weight:700;font-size:13px;">
+          🔒 Đăng xuất khỏi thiết bị này
+        </button>
+        <p class="set__hint" style="margin-top:6px">Khi đăng nhập, hệ thống sẽ tự động ghi nhớ phiên chủ an toàn trên thiết bị này kể cả khi làm mới trang hoặc cập nhật web.</p>
+      </div>
+
+      <div class="set__security-card">
+        <div class="set__security-icon">🛡️</div>
+        <div class="set__security-text">
+          <strong>Hệ thống An toàn &amp; Bảo mật:</strong> Đang hoạt động với chuẩn PostgreSQL Row-Level Security, mã hóa Bcrypt PBKDF2 và chống tấn công dò quét Brute-force.
+        </div>
       </div>
     </div>
   </div>
@@ -10139,6 +10124,79 @@
   var currentOrderFilter = "all";
   var cachedOwnerOrders = [];
 
+  // Trích xuất timestamp thời gian khách muốn nhận hàng (để sắp xếp theo ngày nhận)
+  function parseDeliveryTimestamp(o) {
+    if (!o) return 0;
+    var dStr = String(o.date || o.delivery_date || "").trim();
+    var tStr = String(o.time || o.delivery_time || "").trim();
+
+    // Khớp định dạng ngày: DD/MM hoặc DD/MM/YYYY
+    var matchD = dStr.match(/(\d{1,2})[\/\-\.](\d{1,2})(?:[\/\-\.](\d{4}))?/);
+    if (matchD) {
+      var d = parseInt(matchD[1], 10);
+      var m = parseInt(matchD[2], 10) - 1;
+      var curYr = new Date().getFullYear();
+      var y = matchD[3] ? parseInt(matchD[3], 10) : curYr;
+
+      var hrs = 12;
+      var mins = 0;
+      if (tStr) {
+        var matchT = tStr.match(/(\d{1,2})[:h](\d{2})/i);
+        if (matchT) {
+          hrs = parseInt(matchT[1], 10);
+          mins = parseInt(matchT[2], 10);
+        }
+      }
+      var targetDt = new Date(y, m, d, hrs, mins);
+      if (!isNaN(targetDt.getTime())) {
+        return targetDt.getTime();
+      }
+    }
+
+    // Nếu không có ngày nhận cụ thể, dùng thời điểm tạo đơn
+    if (o.created_at) {
+      var cTime = new Date(o.created_at).getTime();
+      if (!isNaN(cTime)) return cTime;
+    }
+    return 0;
+  }
+
+  // Sắp xếp đơn theo ngày khách muốn nhận hàng (đơn cần giao sớm nhất xếp lên đầu)
+  function sortOrdersByDeliveryDate(list) {
+    if (!Array.isArray(list)) return [];
+    return list.slice().sort(function(a, b) {
+      var tsA = parseDeliveryTimestamp(a);
+      var tsB = parseDeliveryTimestamp(b);
+      if (tsA !== tsB) {
+        if (!tsA) return 1;
+        if (!tsB) return -1;
+        return tsA - tsB;
+      }
+      // Nếu cùng ngày giờ nhận, đơn đặt mới hơn xếp trước
+      var crA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      var crB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      return crB - crA;
+    });
+  }
+
+  // Định dạng chuẩn thời gian khách đặt mua hàng (giờ:phút • ngày/tháng/năm)
+  function fmtOrderCreatedTime(val) {
+    if (!val) return "";
+    var d;
+    if (typeof val === "number") {
+      d = val > 1e11 ? new Date(val) : new Date(val * 1000);
+    } else {
+      d = new Date(val);
+    }
+    if (isNaN(d.getTime())) return "";
+    var hrs = ("0" + d.getHours()).slice(-2);
+    var mins = ("0" + d.getMinutes()).slice(-2);
+    var day = ("0" + d.getDate()).slice(-2);
+    var mon = ("0" + (d.getMonth() + 1)).slice(-2);
+    var yr = d.getFullYear();
+    return hrs + ":" + mins + " • " + day + "/" + mon + "/" + yr;
+  }
+
   function updateOrderFilterCounts(orders) {
     orders = orders || [];
     var counts = { all: orders.length, pending: 0, confirmed: 0, preparing: 0, done: 0, cancelled: 0 };
@@ -10168,7 +10226,8 @@
 
   function applyOrderFilter() {
     if (!setOrdersList) return;
-    var filtered = (cachedOwnerOrders || []).filter(function(o) {
+    var list = sortOrdersByDeliveryDate(cachedOwnerOrders || []);
+    var filtered = list.filter(function(o) {
       if (currentOrderFilter === "all") return true;
       return (o.status || "pending") === currentOrderFilter;
     });
@@ -10181,7 +10240,7 @@
     if (setOrdersEmpty) setOrdersEmpty.hidden = true;
 
     setOrdersList.innerHTML = filtered.map(function(o) {
-      var timeStr = o.created_at ? fmtTs(new Date(o.created_at).getTime()) : "";
+      var timeStr = o.created_at ? ("Đặt lúc: " + fmtOrderCreatedTime(o.created_at)) : "";
       var rawTotal = typeof o.total === "number" ? o.total : parseInt(o.total, 10) || 0;
       var totalFmt = rawTotal >= 1000 ? (rawTotal.toLocaleString("vi-VN") + "đ") : ((rawTotal * 1000).toLocaleString("vi-VN") + "đ");
 
@@ -10358,11 +10417,11 @@
     if(setRefreshOrders) setRefreshOrders.classList.add("is-loading");
     sharedStore.loadOrders().then(function(rows){
       var orders = Array.isArray(rows) ? rows : loadOrders();
-      cachedOwnerOrders = orders;
-      updateOrderFilterCounts(orders);
+      cachedOwnerOrders = sortOrdersByDeliveryDate(orders);
+      updateOrderFilterCounts(cachedOwnerOrders);
       applyOrderFilter();
     }).catch(function(){
-      cachedOwnerOrders = loadOrders();
+      cachedOwnerOrders = sortOrdersByDeliveryDate(loadOrders());
       updateOrderFilterCounts(cachedOwnerOrders);
       applyOrderFilter();
     }).then(function(){
