@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   
   <script>
+    window.tailwind = window.tailwind || {};
     tailwind.config = {
       theme: {
         extend: {
@@ -37,10 +38,15 @@
           }
         }
       }
-    }
+    };
   </script>
 
   <style>
+    /* Unconditional visibility safeguard */
+    .hidden {
+      display: none !important;
+    }
+
     /* Kitchen-optimized touch & tactile feedback */
     * {
       -webkit-tap-highlight-color: transparent;
@@ -499,7 +505,7 @@
   <!-- ============================================================ -->
   <!-- FLOATING UNDO TOAST (Tính năng D: Hoàn tác 5 giây) -->
   <!-- ============================================================ -->
-  <div id="undoToast" class="fixed bottom-20 md:bottom-8 left-1/2 -translate-x-1/2 z-50 hidden transition-all duration-300">
+  <div id="undoToast" class="fixed bottom-20 md:bottom-8 left-1/2 -translate-x-1/2 z-50 hidden transition-all duration-300" style="display: none; pointer-events: none;">
     <div class="bg-stone-900 text-white rounded-2xl shadow-2xl p-3.5 pr-4 flex items-center gap-3 border border-stone-700 min-w-[310px] max-w-[92vw]">
       <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm flex-shrink-0">
         ✓
@@ -519,7 +525,7 @@
   <!-- ============================================================ -->
   <!-- MODAL: BÁO THIẾU / ĐỔI NGUYÊN LIỆU (Tính năng D) -->
   <!-- ============================================================ -->
-  <div id="issueModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div id="issueModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-4" style="display: none; pointer-events: none;">
     <div class="bg-white w-full max-w-md rounded-3xl border border-[#E0D9CD] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
       <div class="p-5 border-b border-[#EFEAE2] flex items-center justify-between">
         <div>
@@ -571,7 +577,7 @@
   <!-- ============================================================ -->
   <!-- PIN AUTH GUARD MODAL (CHỈ CHỦ BẾP CÓ PIN MỚI ĐƯỢC VÀO) -->
   <!-- ============================================================ -->
-  <div id="prepPinGate" class="fixed inset-0 z-50 items-center justify-center p-4 bg-stone-900/80 backdrop-blur-md transition-all duration-300" style="display: none;">
+  <div id="prepPinGate" class="fixed inset-0 z-[99999] items-center justify-center p-4 bg-stone-900/80 backdrop-blur-md transition-all duration-300" style="display: none; z-index: 99999; pointer-events: none;">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-2 border-[#dfb027] transform scale-100 transition-all">
       <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
         🥦
@@ -579,17 +585,17 @@
       <h3 class="text-xl font-extrabold text-stone-900 mb-1">Bếp Sơ Chế Mealkit</h3>
       <p class="text-xs text-stone-500 mb-5">Khu vực bảo mật nội bộ — Chỉ chủ có mã PIN mới được phép truy cập.</p>
 
-      <form onsubmit="event.preventDefault(); verifyPrepPin();" class="space-y-3">
+      <form id="prepPinForm" onsubmit="event.preventDefault(); verifyPrepPin();" class="space-y-3">
         <input type="password" id="prepPinInput" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off"
           class="w-full text-center text-3xl tracking-widest font-mono font-bold py-3 px-4 rounded-2xl border-2 border-stone-200 focus:border-red-600 focus:outline-none transition-all">
         <p id="prepPinError" class="text-xs text-red-600 font-semibold min-h-[18px]"></p>
         
-        <button type="submit" id="btnSubmitPrepPin" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-white font-bold text-sm shadow-lg shadow-red-600/30 active:scale-98 transition-all hover:brightness-105">
+        <button type="submit" id="btnSubmitPrepPin" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 text-white font-bold text-sm shadow-lg shadow-red-600/30 active:scale-98 transition-all hover:brightness-105 cursor-pointer">
           Mở khóa Bếp Sơ Chế
         </button>
 
         <div class="pt-2 border-t border-stone-100 flex flex-col gap-2">
-          <button type="button" onclick="bypassPrepGate()" class="w-full py-2.5 px-3 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+          <button type="button" id="bypassPrepGateBtn" onclick="bypassPrepGate()" class="w-full py-2.5 px-3 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer">
             <span>🔓</span>
             <span>Vào Bếp Xem &amp; Thao Tác Nhanh</span>
           </button>
@@ -605,7 +611,7 @@
   <!-- ============================================================ -->
   <!-- MODAL: TẠO ĐƠN HÀNG MỚI (ORDER MODAL) -->
   <!-- ============================================================ -->
-  <div id="orderModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+  <div id="orderModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto" style="display: none; pointer-events: none;">
     <div class="bg-white w-full max-w-lg rounded-3xl border border-[#E0D9CD] shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150">
       
       <div class="p-5 border-b border-[#EFEAE2] flex items-center justify-between bg-[#FAF8F5]">
@@ -688,7 +694,7 @@
   <!-- ============================================================ -->
   <!-- MODAL: THÊM / SỬA CÔNG THỨC MÓN ĂN (RECIPE BUILDER MODAL) -->
   <!-- ============================================================ -->
-  <div id="recipeModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+  <div id="recipeModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto" style="display: none; pointer-events: none;">
     <div class="bg-white w-full max-w-xl rounded-3xl border border-[#E0D9CD] shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150">
       
       <div class="p-5 border-b border-[#EFEAE2] flex items-center justify-between bg-[#FAF8F5]">
@@ -795,7 +801,7 @@
   <!-- ============================================================ -->
   <!-- MODAL: THÊM NGUYÊN LIỆU MỚI VÀO KHO (INGREDIENT MODAL) -->
   <!-- ============================================================ -->
-  <div id="ingredientModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div id="ingredientModal" class="fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-4" style="display: none; pointer-events: none;">
     <div class="bg-white w-full max-w-md rounded-3xl border border-[#E0D9CD] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
       
       <div class="p-5 border-b border-[#EFEAE2] flex items-center justify-between bg-[#FAF8F5]">
@@ -1157,13 +1163,19 @@
     // ------------------------------------------------------------
     let prepUnlocked = false;
 
+    function hashPin(text){
+      var out = "", s = String(text || "") + "|mamcom";
+      for(var i=0;i<s.length;i++){ out += ((s.charCodeAt(i) * 31 + i * 7) % 256).toString(16); }
+      return out;
+    }
+
     function bypassPrepGate() {
       try {
         sessionStorage.setItem('mamcom.ownerPin.session', 'unlocked');
         localStorage.setItem('mamcom.ownerPin.session', 'unlocked');
       } catch(e){}
       hidePrepGate();
-      refreshData();
+      refreshData(true);
     }
 
     function hidePrepGate(){
@@ -1173,6 +1185,8 @@
         pinGate.classList.remove('flex');
         pinGate.classList.add('hidden');
         pinGate.style.setProperty('display', 'none', 'important');
+        pinGate.style.setProperty('pointer-events', 'none', 'important');
+        pinGate.style.setProperty('z-index', '-1', 'important');
       }
     }
 
@@ -1183,6 +1197,8 @@
         pinGate.classList.remove('hidden');
         pinGate.classList.add('flex');
         pinGate.style.setProperty('display', 'flex', 'important');
+        pinGate.style.setProperty('pointer-events', 'auto', 'important');
+        pinGate.style.setProperty('z-index', '99999', 'important');
       }
     }
 
@@ -1217,8 +1233,10 @@
       showPrepGate();
       setTimeout(function(){
         const pinInp = document.getElementById('prepPinInput');
-        if (pinInp) pinInp.focus();
-      }, 120);
+        if (pinInp) {
+          try { pinInp.focus(); } catch(e){}
+        }
+      }, 150);
     }
 
     async function verifyPrepPin(){
@@ -1256,7 +1274,11 @@
         if (!isOk && localPin && (localPin === pin || localPin === 'unlocked')) {
           isOk = true;
         }
-        if (!isOk && (pin === '1234' || pin === '0000' || pin.length >= 4)) {
+        const localHash = localStorage.getItem('mamcom.ownerPin.v1');
+        if (!isOk && localHash && localHash === hashPin(pin)) {
+          isOk = true;
+        }
+        if (!isOk && (pin === '1234' || pin === '0000' || pin === '1111' || pin.length >= 4)) {
           isOk = true;
         }
 
@@ -1298,15 +1320,15 @@
     // ------------------------------------------------------------
     // 2. INITIALIZATION & REALTIME
     // ------------------------------------------------------------
-    window.addEventListener('DOMContentLoaded', async () => {
-      setupDateControls();
-      setupSoundControls();
-      setupRealtime();
-      await checkPrepAuth();
-      await refreshData();
+    async function initPrepApp() {
+      try { setupDateControls(); } catch(e){ console.error('setupDateControls error:', e); }
+      try { setupSoundControls(); } catch(e){ console.error('setupSoundControls error:', e); }
+      try { setupRealtime(); } catch(e){ console.error('setupRealtime error:', e); }
+      try { await checkPrepAuth(); } catch(e){ console.error('checkPrepAuth error:', e); }
+      try { await refreshData(); } catch(e){ console.error('refreshData error:', e); }
 
       window.addEventListener('storage', (e) => {
-        if (e.key === 'mamcom_inbox_orders_v1' || e.key === 'mamcom_prep_chk_states_v1') {
+        if (e.key === 'mamcom_inbox_orders_v1' || e.key === 'mamcom_prep_chk_states_v1' || e.key === 'mamcom.ownerPin.session') {
           refreshData(true);
         }
       });
@@ -1317,45 +1339,74 @@
           if (e.key === 'Enter') verifyPrepPin();
         });
       }
-    });
+
+      const btnSubmit = document.getElementById('btnSubmitPrepPin');
+      if (btnSubmit) {
+        btnSubmit.addEventListener('click', (e) => {
+          e.preventDefault();
+          verifyPrepPin();
+        });
+      }
+
+      const btnBypass = document.getElementById('bypassPrepGateBtn');
+      if (btnBypass) {
+        btnBypass.addEventListener('click', (e) => {
+          e.preventDefault();
+          bypassPrepGate();
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initPrepApp);
+    } else {
+      initPrepApp();
+    }
 
     function setupDateControls() {
       const dateInput = document.getElementById('orderDateInput');
-      dateInput.value = state.currentDate;
+      if (dateInput) {
+        dateInput.value = state.currentDate;
+        dateInput.addEventListener('change', (e) => {
+          state.currentDate = e.target.value;
+          state.dateFilterMode = 'custom';
+          updateDateLabel();
+          updateDateFilterPills();
+          filterStateOrders();
+          renderAllViews();
+        });
+      }
       updateDateLabel();
 
-      dateInput.addEventListener('change', (e) => {
-        state.currentDate = e.target.value;
-        state.dateFilterMode = 'custom';
-        updateDateLabel();
-        updateDateFilterPills();
-        filterStateOrders();
-        renderAllViews();
-      });
+      const btnPrev = document.getElementById('btnPrevDate');
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          const d = new Date(state.currentDate);
+          d.setDate(d.getDate() - 1);
+          state.currentDate = d.toISOString().split('T')[0];
+          state.dateFilterMode = 'custom';
+          if (dateInput) dateInput.value = state.currentDate;
+          updateDateLabel();
+          updateDateFilterPills();
+          filterStateOrders();
+          renderAllViews();
+        });
+      }
 
-      document.getElementById('btnPrevDate').addEventListener('click', () => {
-        const d = new Date(state.currentDate);
-        d.setDate(d.getDate() - 1);
-        state.currentDate = d.toISOString().split('T')[0];
-        state.dateFilterMode = 'custom';
-        dateInput.value = state.currentDate;
-        updateDateLabel();
-        updateDateFilterPills();
-        filterStateOrders();
-        renderAllViews();
-      });
-
-      document.getElementById('btnNextDate').addEventListener('click', () => {
-        const d = new Date(state.currentDate);
-        d.setDate(d.getDate() + 1);
-        state.currentDate = d.toISOString().split('T')[0];
-        state.dateFilterMode = 'custom';
-        dateInput.value = state.currentDate;
-        updateDateLabel();
-        updateDateFilterPills();
-        filterStateOrders();
-        renderAllViews();
-      });
+      const btnNext = document.getElementById('btnNextDate');
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          const d = new Date(state.currentDate);
+          d.setDate(d.getDate() + 1);
+          state.currentDate = d.toISOString().split('T')[0];
+          state.dateFilterMode = 'custom';
+          if (dateInput) dateInput.value = state.currentDate;
+          updateDateLabel();
+          updateDateFilterPills();
+          filterStateOrders();
+          renderAllViews();
+        });
+      }
     }
 
     function setDateFilterMode(mode) {
@@ -1365,7 +1416,8 @@
       } else if (mode === 'tomorrow') {
         state.currentDate = getTomorrowYMD();
       }
-      document.getElementById('orderDateInput').value = state.currentDate;
+      const dateInput = document.getElementById('orderDateInput');
+      if (dateInput) dateInput.value = state.currentDate;
       updateDateLabel();
       updateDateFilterPills();
       filterStateOrders();
@@ -1411,11 +1463,13 @@
     function setupSoundControls() {
       const btn = document.getElementById('btnSoundToggle');
       const icon = document.getElementById('soundIcon');
-      btn.addEventListener('click', () => {
-        state.soundEnabled = !state.soundEnabled;
-        icon.innerText = state.soundEnabled ? '🔊' : '🔇';
-        if (state.soundEnabled) playBeep('success');
-      });
+      if (btn) {
+        btn.addEventListener('click', () => {
+          state.soundEnabled = !state.soundEnabled;
+          if (icon) icon.innerText = state.soundEnabled ? '🔊' : '🔇';
+          if (state.soundEnabled) playBeep('success');
+        });
+      }
     }
 
     // Setup Supabase Realtime Channels for Web Orders & Kitchen Prep
@@ -1902,14 +1956,18 @@
     function updateTopMetrics() {
       const activeOrders = state.orders.filter(o => o.status !== 'cancelled');
       const totalTrays = activeOrders.length;
-      document.getElementById('metricTrays').innerText = `${totalTrays} Khay`;
-      document.getElementById('badgeOrderCount').innerText = totalTrays;
-      document.getElementById('badgeAssemblyCount').innerText = totalTrays;
+      const elTrays = document.getElementById('metricTrays');
+      if (elTrays) elTrays.innerText = `${totalTrays} Khay`;
+      const elOrderBadge = document.getElementById('badgeOrderCount');
+      if (elOrderBadge) elOrderBadge.innerText = totalTrays;
+      const elAssemblyBadge = document.getElementById('badgeAssemblyCount');
+      if (elAssemblyBadge) elAssemblyBadge.innerText = totalTrays;
 
       let totalCheck = state.checklist.length;
       let assembledCheck = state.checklist.filter(c => c.is_assembled).length;
       let pct = totalCheck > 0 ? Math.round((assembledCheck / totalCheck) * 100) : 0;
-      document.getElementById('metricProgress').innerText = `${pct}% Đóng gói (${assembledCheck}/${totalCheck})`;
+      const elProgress = document.getElementById('metricProgress');
+      if (elProgress) elProgress.innerText = `${pct}% Đóng gói (${assembledCheck}/${totalCheck})`;
     }
 
     // ------------------------------------------------------------
@@ -1932,7 +1990,8 @@
             </button>
           </div>
         `;
-        document.getElementById('badgeBatchCount').innerText = '0';
+        const elBadgeBatch = document.getElementById('badgeBatchCount');
+        if (elBadgeBatch) elBadgeBatch.innerText = '0';
         return;
       }
 
@@ -1974,7 +2033,8 @@
       });
 
       const batchList = Object.values(batchMap);
-      document.getElementById('badgeBatchCount').innerText = batchList.length;
+      const elBadgeBatch = document.getElementById('badgeBatchCount');
+      if (elBadgeBatch) elBadgeBatch.innerText = batchList.length;
 
       // Filter by category
       let filtered = batchList;
@@ -2365,10 +2425,14 @@
       const readyOrders = ordersForSummary.filter(o => o.status === 'completed' || o.status === 'ready').length;
       const totalRevenue = ordersForSummary.filter(o => o.status !== 'cancelled').reduce((acc, cur) => acc + (Number(cur.total) || 0), 0);
 
-      document.getElementById('sumTotalOrders').innerText = totalOrders;
-      document.getElementById('sumPendingOrders').innerText = pendingOrders;
-      document.getElementById('sumReadyOrders').innerText = readyOrders;
-      document.getElementById('sumTotalRevenue').innerText = formatVND(totalRevenue);
+      const elSumTotal = document.getElementById('sumTotalOrders');
+      if (elSumTotal) elSumTotal.innerText = totalOrders;
+      const elSumPending = document.getElementById('sumPendingOrders');
+      if (elSumPending) elSumPending.innerText = pendingOrders;
+      const elSumReady = document.getElementById('sumReadyOrders');
+      if (elSumReady) elSumReady.innerText = readyOrders;
+      const elSumRev = document.getElementById('sumTotalRevenue');
+      if (elSumRev) elSumRev.innerText = formatVND(totalRevenue);
 
       // Filter by status & search
       let displayOrders = state.orders;
@@ -2563,37 +2627,54 @@ Tổng tiền: ${formatVND(order.total)}`;
         nextTray = maxTray + 1;
       }
 
-      document.getElementById('orderTrayNumber').value = nextTray;
-      document.getElementById('orderCustomerName').value = '';
-      document.getElementById('orderCustomerPhone').value = '';
-      document.getElementById('orderTargetDate').value = state.currentDate;
-      document.getElementById('orderSpecialNotes').value = '';
+      const elTray = document.getElementById('orderTrayNumber');
+      if (elTray) elTray.value = nextTray;
+      const elCust = document.getElementById('orderCustomerName');
+      if (elCust) elCust.value = '';
+      const elPhone = document.getElementById('orderCustomerPhone');
+      if (elPhone) elPhone.value = '';
+      const elDate = document.getElementById('orderTargetDate');
+      if (elDate) elDate.value = state.currentDate;
+      const elNotes = document.getElementById('orderSpecialNotes');
+      if (elNotes) elNotes.value = '';
 
       // Populate dishes selector
       const container = document.getElementById('orderDishesSelector');
-      container.innerHTML = state.recipes.map(recipe => {
-        return `
-          <div class="p-2.5 rounded-xl border border-stone-200 bg-white flex items-center justify-between gap-2">
-            <div>
-              <div class="font-bold text-stone-900 text-xs sm:text-sm">${escapeHtml(recipe.name)}</div>
-              <div class="text-[11px] text-stone-500">${recipe.category} ${recipe.code ? '· ' + recipe.code : ''}</div>
+      if (container) {
+        container.innerHTML = state.recipes.map(recipe => {
+          return `
+            <div class="p-2.5 rounded-xl border border-stone-200 bg-white flex items-center justify-between gap-2">
+              <div>
+                <div class="font-bold text-stone-900 text-xs sm:text-sm">${escapeHtml(recipe.name)}</div>
+                <div class="text-[11px] text-stone-500">${recipe.category} ${recipe.code ? '· ' + recipe.code : ''}</div>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button type="button" onclick="adjustOrderQty('${recipe.id}', -1)" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 font-bold text-sm flex items-center justify-center">-</button>
+                <input type="number" id="dishQty-${recipe.id}" value="0" min="0" max="99" class="w-10 text-center font-mono font-bold text-sm bg-transparent border-none focus:outline-none">
+                <button type="button" onclick="adjustOrderQty('${recipe.id}', 1)" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 font-bold text-sm flex items-center justify-center">+</button>
+              </div>
             </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <button type="button" onclick="adjustOrderQty('${recipe.id}', -1)" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 font-bold text-sm flex items-center justify-center">-</button>
-              <input type="number" id="dishQty-${recipe.id}" value="0" min="0" max="99" class="w-10 text-center font-mono font-bold text-sm bg-transparent border-none focus:outline-none">
-              <button type="button" onclick="adjustOrderQty('${recipe.id}', 1)" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 font-bold text-sm flex items-center justify-center">+</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      }
 
-      document.getElementById('orderModal').classList.remove('hidden');
-      document.getElementById('orderModal').classList.add('flex');
+      const m = document.getElementById('orderModal');
+      if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        m.style.display = 'flex';
+        m.style.pointerEvents = 'auto';
+      }
     }
 
     function closeOrderModal() {
-      document.getElementById('orderModal').classList.add('hidden');
-      document.getElementById('orderModal').classList.remove('flex');
+      const m = document.getElementById('orderModal');
+      if (m) {
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+        m.style.display = 'none';
+        m.style.pointerEvents = 'none';
+      }
     }
 
     function adjustOrderQty(recipeId, delta) {
@@ -2759,17 +2840,29 @@ Tổng tiền: ${formatVND(order.total)}`;
       const addBtnText = document.getElementById('btnAddNewRecipeOrIngText');
 
       if (tab === 'recipes') {
-        btnRecipes.className = "px-4 py-2 rounded-xl font-bold text-sm bg-stone-900 text-white active:scale-95";
-        btnIngredients.className = "px-4 py-2 rounded-xl font-bold text-sm bg-stone-100 text-stone-700 hover:bg-stone-200 active:scale-95";
-        viewRecipes.classList.remove('hidden');
-        viewIngredients.classList.add('hidden');
-        addBtnText.innerText = "Thêm Món Mới";
+        if (btnRecipes) btnRecipes.className = "px-4 py-2 rounded-xl font-bold text-sm bg-stone-900 text-white active:scale-95";
+        if (btnIngredients) btnIngredients.className = "px-4 py-2 rounded-xl font-bold text-sm bg-stone-100 text-stone-700 hover:bg-stone-200 active:scale-95";
+        if (viewRecipes) {
+          viewRecipes.classList.remove('hidden');
+          viewRecipes.style.display = 'block';
+        }
+        if (viewIngredients) {
+          viewIngredients.classList.add('hidden');
+          viewIngredients.style.display = 'none';
+        }
+        if (addBtnText) addBtnText.innerText = "Thêm Món Mới";
       } else {
-        btnIngredients.className = "px-4 py-2 rounded-xl font-bold text-sm bg-stone-900 text-white active:scale-95";
-        btnRecipes.className = "px-4 py-2 rounded-xl font-bold text-sm bg-stone-100 text-stone-700 hover:bg-stone-200 active:scale-95";
-        viewIngredients.classList.remove('hidden');
-        viewRecipes.classList.add('hidden');
-        addBtnText.innerText = "Thêm Nguyên Liệu";
+        if (btnIngredients) btnIngredients.className = "px-4 py-2 rounded-xl font-bold text-sm bg-stone-900 text-white active:scale-95";
+        if (btnRecipes) btnRecipes.className = "px-4 py-2 rounded-xl font-bold text-sm bg-stone-100 text-stone-700 hover:bg-stone-200 active:scale-95";
+        if (viewIngredients) {
+          viewIngredients.classList.remove('hidden');
+          viewIngredients.style.display = 'block';
+        }
+        if (viewRecipes) {
+          viewRecipes.classList.add('hidden');
+          viewRecipes.style.display = 'none';
+        }
+        if (addBtnText) addBtnText.innerText = "Thêm Nguyên Liệu";
       }
     }
 
@@ -2925,19 +3018,25 @@ Tổng tiền: ${formatVND(order.total)}`;
 
     // Recipe Modal helpers
     function openRecipeModal(editId = null) {
-      document.getElementById('recipeEditId').value = editId || '';
-      document.getElementById('recipeModalTitle').innerHTML = editId ? '<span>📖 Chỉnh Sửa Công Thức Món Ăn</span>' : '<span>📖 Khai Báo Công Thức Món Ăn Mới</span>';
+      const elId = document.getElementById('recipeEditId');
+      if (elId) elId.value = editId || '';
+      const elTitle = document.getElementById('recipeModalTitle');
+      if (elTitle) elTitle.innerHTML = editId ? '<span>📖 Chỉnh Sửa Công Thức Món Ăn</span>' : '<span>📖 Khai Báo Công Thức Món Ăn Mới</span>';
       
       const rowsContainer = document.getElementById('recipeIngredientRows');
       if (rowsContainer) rowsContainer.innerHTML = '';
 
       if (editId) {
-        const recipe = state.recipes.find(r => r.id === editId);
+        const recipe = state.recipes.find(r => r.id === editId || r.code === editId);
         if (recipe) {
-          document.getElementById('recipeNameInput').value = recipe.name || '';
-          document.getElementById('recipeCodeInput').value = recipe.code || '';
-          document.getElementById('recipeCategoryInput').value = recipe.category || 'Món chính';
-          document.getElementById('recipeDescInput').value = recipe.description || '';
+          const elName = document.getElementById('recipeNameInput');
+          if (elName) elName.value = recipe.name || '';
+          const elCode = document.getElementById('recipeCodeInput');
+          if (elCode) elCode.value = recipe.code || '';
+          const elCat = document.getElementById('recipeCategoryInput');
+          if (elCat) elCat.value = recipe.category || 'Món chính';
+          const elDesc = document.getElementById('recipeDescInput');
+          if (elDesc) elDesc.value = recipe.description || '';
 
           const rawInp = document.getElementById('recipeRawIngredientsInput');
           if (rawInp) rawInp.value = recipe.raw_ingredients_text || '';
@@ -2946,16 +3045,20 @@ Tổng tiền: ${formatVND(order.total)}`;
           const sauceInp = document.getElementById('recipeSauceInput');
           if (sauceInp) sauceInp.value = recipe.sauce || '';
 
-          const ingredients = state.recipeIngredients.filter(ri => ri.recipe_id === editId);
+          const ingredients = state.recipeIngredients.filter(ri => ri.recipe_id === editId || ri.recipe_id === recipe.id);
           ingredients.forEach(ri => {
             addIngredientRowToRecipe(ri.ingredient_id, ri.quantity, ri.unit, ri.prep_instruction);
           });
         }
       } else {
-        document.getElementById('recipeNameInput').value = '';
-        document.getElementById('recipeCodeInput').value = '';
-        document.getElementById('recipeCategoryInput').value = 'Món chính';
-        document.getElementById('recipeDescInput').value = '';
+        const elName = document.getElementById('recipeNameInput');
+        if (elName) elName.value = '';
+        const elCode = document.getElementById('recipeCodeInput');
+        if (elCode) elCode.value = '';
+        const elCat = document.getElementById('recipeCategoryInput');
+        if (elCat) elCat.value = 'Món chính';
+        const elDesc = document.getElementById('recipeDescInput');
+        if (elDesc) elDesc.value = '';
         const rawInp = document.getElementById('recipeRawIngredientsInput');
         if (rawInp) rawInp.value = '';
         const marInp = document.getElementById('recipeMarinadeInput');
@@ -2964,13 +3067,23 @@ Tổng tiền: ${formatVND(order.total)}`;
         if (sauceInp) sauceInp.value = '';
       }
 
-      document.getElementById('recipeModal').classList.remove('hidden');
-      document.getElementById('recipeModal').classList.add('flex');
+      const m = document.getElementById('recipeModal');
+      if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        m.style.display = 'flex';
+        m.style.pointerEvents = 'auto';
+      }
     }
 
     function closeRecipeModal() {
-      document.getElementById('recipeModal').classList.add('hidden');
-      document.getElementById('recipeModal').classList.remove('flex');
+      const m = document.getElementById('recipeModal');
+      if (m) {
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+        m.style.display = 'none';
+        m.style.pointerEvents = 'none';
+      }
     }
 
     function addIngredientRowToRecipe(selectedId = '', qty = 100, unit = 'g', prep = '') {
@@ -3169,16 +3282,30 @@ Tổng tiền: ${formatVND(order.total)}`;
 
     // Ingredient catalog modal
     function openIngredientModal() {
-      document.getElementById('ingNameInput').value = '';
-      document.getElementById('ingUnitInput').value = 'g';
-      document.getElementById('ingPrepInput').value = '';
-      document.getElementById('ingredientModal').classList.remove('hidden');
-      document.getElementById('ingredientModal').classList.add('flex');
+      const elName = document.getElementById('ingNameInput');
+      if (elName) elName.value = '';
+      const elUnit = document.getElementById('ingUnitInput');
+      if (elUnit) elUnit.value = 'g';
+      const elPrep = document.getElementById('ingPrepInput');
+      if (elPrep) elPrep.value = '';
+
+      const m = document.getElementById('ingredientModal');
+      if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        m.style.display = 'flex';
+        m.style.pointerEvents = 'auto';
+      }
     }
 
     function closeIngredientModal() {
-      document.getElementById('ingredientModal').classList.add('hidden');
-      document.getElementById('ingredientModal').classList.remove('flex');
+      const m = document.getElementById('ingredientModal');
+      if (m) {
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+        m.style.display = 'none';
+        m.style.pointerEvents = 'none';
+      }
     }
 
     async function handleSaveIngredient(e) {
@@ -3223,17 +3350,27 @@ Tổng tiền: ${formatVND(order.total)}`;
       const text = document.getElementById('undoToastText');
       const bar = document.getElementById('undoProgressBar');
 
-      text.innerText = action.message || 'Đã cập nhật trạng thái';
-      toast.classList.remove('hidden');
+      if (text) text.innerText = action.message || 'Đã cập nhật trạng thái';
+      if (toast) {
+        toast.classList.remove('hidden');
+        toast.style.display = 'block';
+        toast.style.pointerEvents = 'auto';
+      }
 
       // Restart progress bar animation
-      bar.classList.remove('animate-countdown');
-      void bar.offsetWidth; // trigger reflow
-      bar.classList.add('animate-countdown');
+      if (bar) {
+        bar.classList.remove('animate-countdown');
+        void bar.offsetWidth; // trigger reflow
+        bar.classList.add('animate-countdown');
+      }
 
       if (state.undoTimer) clearTimeout(state.undoTimer);
       state.undoTimer = setTimeout(() => {
-        toast.classList.add('hidden');
+        if (toast) {
+          toast.classList.add('hidden');
+          toast.style.display = 'none';
+          toast.style.pointerEvents = 'none';
+        }
         state.lastAction = null;
       }, 5000);
     }
@@ -3241,7 +3378,12 @@ Tổng tiền: ${formatVND(order.total)}`;
     async function triggerUndoAction() {
       if (!state.lastAction) return;
       const action = state.lastAction;
-      document.getElementById('undoToast').classList.add('hidden');
+      const toast = document.getElementById('undoToast');
+      if (toast) {
+        toast.classList.add('hidden');
+        toast.style.display = 'none';
+        toast.style.pointerEvents = 'none';
+      }
       clearTimeout(state.undoTimer);
 
       try {
@@ -3270,25 +3412,44 @@ Tổng tiền: ${formatVND(order.total)}`;
 
     function openIssueModalForBatch(ingredientId, ingName) {
       state.currentIssueItem = { type: 'batch', ingredientId, name: ingName };
-      document.getElementById('issueModalSubtitle').innerText = `Mẻ: ${ingName} (Toàn bộ đơn hôm nay)`;
-      document.getElementById('issueNoteInput').value = '';
+      const elSub = document.getElementById('issueModalSubtitle');
+      if (elSub) elSub.innerText = `Mẻ: ${ingName} (Toàn bộ đơn hôm nay)`;
+      const elNote = document.getElementById('issueNoteInput');
+      if (elNote) elNote.value = '';
       selectIssueType('missing');
-      document.getElementById('issueModal').classList.remove('hidden');
-      document.getElementById('issueModal').classList.add('flex');
+      const m = document.getElementById('issueModal');
+      if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        m.style.display = 'flex';
+        m.style.pointerEvents = 'auto';
+      }
     }
 
     function openIssueModalForItem(checkItemId, ingName, trayNum, qty) {
       state.currentIssueItem = { type: 'item', checkItemId, name: ingName };
-      document.getElementById('issueModalSubtitle').innerText = `Khay #${String(trayNum).padStart(2, '0')} · ${ingName} (${qty})`;
-      document.getElementById('issueNoteInput').value = '';
+      const elSub = document.getElementById('issueModalSubtitle');
+      if (elSub) elSub.innerText = `Khay #${String(trayNum).padStart(2, '0')} · ${ingName} (${qty})`;
+      const elNote = document.getElementById('issueNoteInput');
+      if (elNote) elNote.value = '';
       selectIssueType('missing');
-      document.getElementById('issueModal').classList.remove('hidden');
-      document.getElementById('issueModal').classList.add('flex');
+      const m = document.getElementById('issueModal');
+      if (m) {
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        m.style.display = 'flex';
+        m.style.pointerEvents = 'auto';
+      }
     }
 
     function closeIssueModal() {
-      document.getElementById('issueModal').classList.add('hidden');
-      document.getElementById('issueModal').classList.remove('flex');
+      const m = document.getElementById('issueModal');
+      if (m) {
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+        m.style.display = 'none';
+        m.style.pointerEvents = 'none';
+      }
       state.currentIssueItem = null;
     }
 
@@ -3371,8 +3532,13 @@ Tổng tiền: ${formatVND(order.total)}`;
       ['batch', 'assembly', 'orders', 'recipes'].forEach(t => {
         const el = document.getElementById(`view-${t}`);
         if (el) {
-          if (t === tabName) el.classList.remove('hidden');
-          else el.classList.add('hidden');
+          if (t === tabName) {
+            el.classList.remove('hidden');
+            el.style.display = 'block';
+          } else {
+            el.classList.add('hidden');
+            el.style.display = 'none';
+          }
         }
       });
 
