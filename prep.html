@@ -866,10 +866,10 @@
       anonKey: "sb_publishable_9-Z47h5jf1Dtj2ZJ-RslwA_RjL1rz9_"
     };
 
-    let supabase = null;
-    if (window.supabase) {
-      supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-    }
+    const _sbLib = window.supabase;
+    var supabase = (_sbLib && typeof _sbLib.createClient === 'function')
+      ? _sbLib.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey)
+      : null;
 
     // Official 6 Mâm Cơm recipes fallback definitions for guaranteed offline/realtime reliability
     const FALLBACK_RECIPE_DEFS = {
