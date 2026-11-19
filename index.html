@@ -9550,12 +9550,16 @@
           if(res.error) throw res.error;
           return res.data || [];
         }).catch(function(){
-          return SUPABASE.from("orders")
-            .select("id, status, people, phone, address, note, date, time, products, schedule, total, created_at")
-            .order("created_at", { ascending:false })
-            .limit(50)
-            .then(function(r){ return r.data || []; })
-            .catch(function(){ return loadOrders(); });
+          return SUPABASE.rpc("get_kitchen_prep_orders").then(function(r){
+            return r.data || [];
+          }).catch(function(){
+            return SUPABASE.from("orders")
+              .select("id, status, people, phone, address, note, date, time, products, schedule, total, created_at")
+              .order("created_at", { ascending:false })
+              .limit(50)
+              .then(function(r){ return r.data || []; })
+              .catch(function(){ return loadOrders(); });
+          });
         });
       }
       return SUPABASE.rpc("get_customer_orders", { p_visitor_id: visitorId() }).then(function(res){
