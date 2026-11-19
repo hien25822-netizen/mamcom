@@ -217,31 +217,43 @@
   </header>
 
   <!-- ============================================================ -->
-  <!-- MAIN NAVIGATION TABS (Top on desktop, sticky bottom on mobile) -->
+  <!-- MAIN NAVIGATION TABS (5 Factory Pipeline Stages + Recipes) -->
   <!-- ============================================================ -->
   <nav class="max-w-6xl mx-auto px-4 mt-3 hidden md:block">
-    <div class="flex items-center gap-2 bg-[#EFEAE2] p-1.5 rounded-2xl">
-      <button onclick="switchTab('orders')" id="deskTab-orders" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 bg-white text-stone-900 shadow-sm">
-        <span class="text-lg">📝</span>
-        <span>1. Đơn hàng đã đặt</span>
+    <div class="flex items-center gap-1.5 bg-[#EFEAE2] p-1.5 rounded-2xl">
+      <button onclick="switchTab('orders')" id="deskTab-orders" class="nav-tab flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-1.5 bg-white text-stone-900 shadow-sm">
+        <span class="text-base sm:text-lg">📝</span>
+        <span>1. Đơn thanh toán</span>
         <span id="badgeOrderCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 font-mono">0</span>
       </button>
 
-      <button onclick="switchTab('batch')" id="deskTab-batch" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900">
-        <span class="text-lg">🥦</span>
-        <span>2. Gom mẻ sơ chế</span>
-        <span id="badgeBatchCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono">0</span>
+      <button onclick="switchTab('procurement')" id="deskTab-procurement" class="nav-tab flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-1.5 text-stone-600 hover:text-stone-900">
+        <span class="text-base sm:text-lg">🛒</span>
+        <span>2. Mua nguyên liệu</span>
+        <span id="badgeProcureCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono">0</span>
       </button>
 
-      <button onclick="switchTab('assembly')" id="deskTab-assembly" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900">
-        <span class="text-lg">📦</span>
-        <span>3. Đóng gói khay</span>
+      <button onclick="switchTab('prep')" id="deskTab-prep" class="nav-tab flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-1.5 text-stone-600 hover:text-stone-900">
+        <span class="text-base sm:text-lg">🥦</span>
+        <span>3. Sơ chế &amp; Tips</span>
+        <span id="badgePrepCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono">0</span>
+      </button>
+
+      <button onclick="switchTab('saucing')" id="deskTab-saucing" class="nav-tab flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-1.5 text-stone-600 hover:text-stone-900">
+        <span class="text-base sm:text-lg">🥣</span>
+        <span>4. Pha sốt mẻ</span>
+        <span id="badgeSaucingCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono">0</span>
+      </button>
+
+      <button onclick="switchTab('assembly')" id="deskTab-assembly" class="nav-tab flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-1.5 text-stone-600 hover:text-stone-900">
+        <span class="text-base sm:text-lg">📦</span>
+        <span>5. Đóng khay</span>
         <span id="badgeAssemblyCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono">0</span>
       </button>
 
-      <button onclick="switchTab('recipes')" id="deskTab-recipes" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900">
-        <span class="text-lg">📖</span>
-        <span>4. Món &amp; Công thức</span>
+      <button onclick="switchTab('recipes')" id="deskTab-recipes" class="nav-tab py-2.5 px-3.5 rounded-xl font-bold text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-1.5 text-stone-600 hover:text-stone-900" title="Thực đơn &amp; Công thức">
+        <span class="text-base sm:text-lg">📖</span>
+        <span class="hidden lg:inline">Công thức</span>
       </button>
     </div>
   </nav>
@@ -260,10 +272,10 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#E8E2D8] shadow-sm">
         <div>
           <h2 class="text-base sm:text-lg font-extrabold text-stone-900 flex items-center gap-2">
-            <span>📝 Đơn Hàng Đã Đặt</span>
-            <span id="orderSourceBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Đồng bộ Web &amp; Bếp</span>
+            <span>📝 1. Đơn Hàng Đã Thanh Toán (Vào Bếp)</span>
+            <span id="orderSourceBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Đã Xác Nhận</span>
           </h2>
-          <p class="text-xs text-stone-500 mt-0.5">Nắm rõ toàn bộ danh sách đơn, quy mô suất ăn và các lưu ý kiêng cữ trước khi sơ chế</p>
+          <p class="text-xs text-stone-500 mt-0.5">Chỉ các đơn đã thanh toán / xác nhận mới đưa vào quy trình sơ chế &amp; đóng gói. Đơn chờ thanh toán được duyệt riêng.</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="openOrderModal()" class="touch-btn px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-sm flex items-center gap-1.5 active:scale-95">
@@ -273,23 +285,23 @@
         </div>
       </div>
 
-      <!-- Quick Summary Cards (5 Key Metrics) -->
+      <!-- Quick Summary Cards (5 Key Metrics - CONFIRMED PIPELINE) -->
       <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="ordersSummaryGrid">
-        <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm">
-          <div class="text-[11px] font-bold text-stone-500 uppercase">Tổng số đơn</div>
-          <div class="text-xl font-extrabold text-stone-900 font-mono mt-0.5" id="sumTotalOrders">0</div>
+        <div class="bg-white p-3 rounded-2xl border border-emerald-200 bg-emerald-50/20 shadow-sm">
+          <div class="text-[11px] font-bold text-emerald-800 uppercase">Đơn Vào Bếp</div>
+          <div class="text-xl font-extrabold text-emerald-900 font-mono mt-0.5" id="sumTotalOrders">0</div>
         </div>
         <div class="bg-white p-3 rounded-2xl border border-blue-200 bg-blue-50/30 shadow-sm">
           <div class="text-[11px] font-bold text-blue-700 uppercase">Tổng suất ăn</div>
           <div class="text-xl font-extrabold text-blue-900 font-mono mt-0.5" id="sumTotalServings">0 suất</div>
         </div>
         <div class="bg-white p-3 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-sm">
-          <div class="text-[11px] font-bold text-amber-700 uppercase">Chờ chuẩn bị</div>
+          <div class="text-[11px] font-bold text-amber-700 uppercase">Chờ sơ chế</div>
           <div class="text-xl font-extrabold text-amber-800 font-mono mt-0.5" id="sumPendingOrders">0</div>
         </div>
-        <div class="bg-white p-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-sm">
-          <div class="text-[11px] font-bold text-emerald-700 uppercase">Đã đóng gói đủ</div>
-          <div class="text-xl font-extrabold text-emerald-800 font-mono mt-0.5" id="sumReadyOrders">0</div>
+        <div class="bg-white p-3 rounded-2xl border border-purple-200 bg-purple-50/30 shadow-sm">
+          <div class="text-[11px] font-bold text-purple-700 uppercase">Đang gói khay</div>
+          <div class="text-xl font-extrabold text-purple-800 font-mono mt-0.5" id="sumReadyOrders">0</div>
         </div>
         <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm col-span-2 sm:col-span-1">
           <div class="text-[11px] font-bold text-stone-500 uppercase">Doanh thu dự kiến</div>
@@ -298,19 +310,19 @@
       </div>
 
       <!-- Workflow Bridge Card: Step 1 -> Step 2 -->
-      <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div class="bg-gradient-to-r from-stone-900 to-stone-800 text-white p-4 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div class="space-y-1">
           <div class="flex items-center gap-2">
-            <span class="text-base">📋</span>
-            <h3 class="font-bold text-stone-900 text-sm sm:text-base">Quy trình sơ chế Mealkit khoa học</h3>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stone-200 text-stone-800 uppercase">Bước 1 / 3</span>
+            <span class="text-base">🏭</span>
+            <h3 class="font-bold text-white text-sm sm:text-base">Dây chuyền 5 công đoạn Mealkit chuẩn nhà máy</h3>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white uppercase">Công đoạn 1 / 5</span>
           </div>
-          <p class="text-xs text-stone-600 leading-relaxed max-w-2xl">
-            Sau khi nắm rõ số lượng <b id="bridgeTotalOrders" class="text-stone-900">0 đơn</b> (<b id="bridgeTotalServings" class="text-stone-900">0 suất ăn</b>) và các lưu ý kiêng cữ của khách, chuyển sang Gom mẻ sơ chế để chuẩn bị đủ nguyên liệu cho toàn bộ các khay một lần.
+          <p class="text-xs text-stone-300 leading-relaxed max-w-2xl">
+            Đã tiếp nhận <b id="bridgeTotalOrders" class="text-emerald-400">0 đơn</b> (<b id="bridgeTotalServings" class="text-emerald-400">0 suất ăn</b>) đã xác nhận thanh toán. Chuyển sang Bước 2 để xem toàn bộ danh mục nguyên liệu cần mua hoặc xuất kho.
           </p>
         </div>
-        <button onclick="switchTab('batch')" class="touch-btn px-5 py-2.5 rounded-xl bg-stone-900 hover:bg-black text-white font-bold text-xs sm:text-sm shadow-sm flex items-center justify-center gap-2 active:scale-95 whitespace-nowrap">
-          <span>🥦 Chuyển sang Bước 2: Gom mẻ sơ chế</span>
+        <button onclick="switchTab('procurement')" class="touch-btn px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-sm flex items-center justify-center gap-2 active:scale-95 whitespace-nowrap">
+          <span>🛒 Sang Bước 2: Xem toàn bộ nguyên liệu cần mua</span>
           <span class="text-base">→</span>
         </button>
       </div>
@@ -326,12 +338,19 @@
 
           <div class="flex flex-wrap items-center justify-between lg:justify-end gap-2">
             <!-- Status filter chips -->
-            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              <button onclick="filterOrderStatus('ALL')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-st="ALL">Tất cả (<span id="cntPrepActive">0</span>)</button>
-              <button onclick="filterOrderStatus('pending')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="pending">⏳ Chờ xử lý (<span id="cntPrepPending">0</span>)</button>
-              <button onclick="filterOrderStatus('prepping')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="prepping">🍳 Đang sơ chế (<span id="cntPrepPrepping">0</span>)</button>
-              <button onclick="filterOrderStatus('completed')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="completed">✓ Hoàn thành (<span id="cntPrepDone">0</span>)</button>
-              <button onclick="filterOrderStatus('cancelled')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 whitespace-nowrap active:scale-95" data-st="cancelled">🗑️ Sọt rác (<span id="cntPrepTrash">0</span>)</button>
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="orderStatusChipsBar">
+              <button onclick="filterOrderStatus('confirmed_pool')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-st="confirmed_pool">
+                ✓ Đã thanh toán / Vào Bếp (<span id="cntPrepConfirmed">0</span>)
+              </button>
+              <button onclick="filterOrderStatus('pending')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="pending">
+                ⏳ Chờ thanh toán (<span id="cntPrepPending">0</span>)
+              </button>
+              <button onclick="filterOrderStatus('ALL')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="ALL">
+                📋 Tất cả (<span id="cntPrepActive">0</span>)
+              </button>
+              <button onclick="filterOrderStatus('cancelled')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 whitespace-nowrap active:scale-95" data-st="cancelled">
+                🗑️ Sọt rác (<span id="cntPrepTrash">0</span>)
+              </button>
             </div>
 
             <!-- View mode switcher: Cards vs Table -->
@@ -385,25 +404,31 @@
     </section>
 
     <!-- ---------------------------------------------------------- -->
-    <!-- TAB 2: GOM MẺ SƠ CHẾ (BATCH PREP - THEO NGUYÊN LIỆU) -->
+    <!-- TAB 2: TOÀN BỘ NGUYÊN LIỆU CẦN MUA (PROCUREMENT & DRILL-DOWN) -->
     <!-- ---------------------------------------------------------- -->
-    <section id="view-batch" class="space-y-4 hidden" style="display: none;">
+    <section id="view-procurement" class="space-y-4 hidden" style="display: none;">
       
       <!-- Top Context Banner -->
-      <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 sm:p-5 rounded-2xl border border-emerald-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-base">🥦</span>
-            <h3 class="font-extrabold text-stone-900 text-sm sm:text-base">Bước 2: Gom mẻ sơ chế theo nguyên liệu</h3>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase">Sơ chế hàng loạt</span>
+            <span class="text-xl">🛒</span>
+            <h3 class="font-extrabold text-stone-900 text-sm sm:text-base">Công đoạn 2 / 5: Danh Sách Toàn Bộ Nguyên Liệu Cần Mua / Xuất Kho</h3>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase">Tổng hợp định lượng</span>
           </div>
-          <p class="text-xs text-stone-600 mt-1 max-w-2xl">
-            Toàn bộ thịt cá, rau củ quả, gia vị ướp và sốt đã được tính toán gộp từ các đơn hàng. Sơ chế, cắt thái và cân định lượng một lần để tiết kiệm thời gian tối đa.
+          <p class="text-xs text-stone-600 mt-1 max-w-2xl leading-relaxed">
+            Hệ thống tự động cộng gộp mọi loại thịt, rau củ, gia vị từ toàn bộ các đơn đã thanh toán. <b class="text-stone-900">Bấm vào bất kỳ nguyên liệu nào</b> để xem chi tiết món ăn sử dụng và danh sách đơn khách đặt.
           </p>
         </div>
-        <button onclick="switchTab('assembly')" class="touch-btn px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap">
-          <span>📦 Sang Bước 3: Đóng gói khay →</span>
-        </button>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="copyProcurementList()" class="touch-btn px-4 py-2.5 rounded-xl bg-white border border-stone-300 hover:bg-stone-50 text-stone-800 font-bold text-xs shadow-xs flex items-center gap-1.5 active:scale-95">
+            <span>📋</span>
+            <span>Sao chép đi chợ</span>
+          </button>
+          <button onclick="switchTab('prep')" class="touch-btn px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap">
+            <span>🥦 Sang Bước 3: Sơ chế &amp; Tips →</span>
+          </button>
+        </div>
       </div>
 
       <!-- Filter & Quick Action Bar -->
@@ -411,39 +436,39 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div>
             <h2 class="text-base sm:text-lg font-bold text-stone-900 flex items-center gap-2">
-              <span>🥦 Danh Sách Mẻ Cần Sơ Chế</span>
+              <span>🛒 Danh Mục Nguyên Liệu Xuất Kho / Mua Sắm</span>
             </h2>
-            <p class="text-xs text-stone-500">Cân định lượng một lần theo mẻ, sau đó chia theo số lượng từng khay</p>
+            <p class="text-xs text-stone-500">Bấm thẻ nguyên liệu để xem món ăn và danh sách đơn khách đặt</p>
           </div>
           
           <!-- Category Quick Filter Chips -->
-          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="batchCategoryChips">
-            <button onclick="filterBatchCategory('ALL')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-cat="ALL">Tất cả</button>
-            <button onclick="filterBatchCategory('Thịt & Hải sản')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Thịt & Hải sản">🥩 Thịt &amp; Cá</button>
-            <button onclick="filterBatchCategory('Rau củ quả')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Rau củ quả">🥬 Rau củ</button>
-            <button onclick="filterBatchCategory('Gia vị & Sốt')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Gia vị & Sốt">🥣 Sốt &amp; Gia vị</button>
-            <button onclick="filterBatchCategory('Topping & Khác')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Topping & Khác">✨ Topping</button>
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="procureCategoryChips">
+            <button onclick="filterProcurementCategory('ALL')" class="procure-cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-cat="ALL">Tất cả</button>
+            <button onclick="filterProcurementCategory('Thịt & Hải sản')" class="procure-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Thịt & Hải sản">🥩 Thịt &amp; Cá</button>
+            <button onclick="filterProcurementCategory('Rau củ quả')" class="procure-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Rau củ quả">🥬 Rau củ</button>
+            <button onclick="filterProcurementCategory('Gia vị & Sốt')" class="procure-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Gia vị & Sốt">🥣 Sốt &amp; Gia vị</button>
+            <button onclick="filterProcurementCategory('Topping & Khác')" class="procure-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Topping & Khác">✨ Topping</button>
           </div>
         </div>
       </div>
 
-      <!-- Batch Prep List Container -->
-      <div id="batchList" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      <!-- Procurement Grid Container -->
+      <div id="procurementList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
         <!-- Rendered dynamically -->
         <div class="col-span-full py-12 text-center text-stone-400 font-medium">
           <div class="inline-block animate-spin text-2xl mb-2">⏳</div>
-          <p>Đang tải danh sách nguyên liệu cần sơ chế...</p>
+          <p>Đang tổng hợp nguyên liệu cần mua...</p>
         </div>
       </div>
 
       <!-- Bottom Bridge to Step 3 -->
       <div class="bg-white p-4 rounded-2xl border border-[#E8E2D8] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
         <div>
-          <div class="font-bold text-stone-900 text-sm">Đã sơ chế xong toàn bộ mẻ nguyên liệu?</div>
-          <div class="text-xs text-stone-500">Chuyển sang Bước 3 để chia nguyên liệu vào từng khay theo yêu cầu riêng của từng khách hàng.</div>
+          <div class="font-bold text-stone-900 text-sm">Đã có đủ nguyên liệu mua sắm / xuất kho?</div>
+          <div class="text-xs text-stone-500">Chuyển sang Bước 3 để thực hiện sơ chế mẻ lớn với tips tiết kiệm thời gian (rửa chung, phân luồng thớt).</div>
         </div>
-        <button onclick="switchTab('assembly')" class="touch-btn px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 flex items-center gap-2 whitespace-nowrap">
-          <span>📦 Sang Bước 3: Kiểm tra đóng gói</span>
+        <button onclick="switchTab('prep')" class="touch-btn px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 flex items-center gap-2 whitespace-nowrap">
+          <span>🥦 Sang Bước 3: Sơ chế &amp; Tips siêu tốc</span>
           <span>→</span>
         </button>
       </div>
@@ -451,25 +476,202 @@
     </section>
 
     <!-- ---------------------------------------------------------- -->
-    <!-- TAB 3: KIỂM TRA ĐÓNG GÓI (ASSEMBLY - THEO TỪNG KHAY/ĐƠN) -->
+    <!-- TAB 3: TRẠM SƠ CHẾ & TIPS SIÊU TỐC (STATION BATCH PREP) -->
+    <!-- ---------------------------------------------------------- -->
+    <section id="view-prep" class="space-y-4 hidden" style="display: none;">
+      
+      <!-- Top Context Banner with Industrial Prep Tips -->
+      <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 sm:p-5 rounded-3xl border border-amber-300 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🥦</span>
+            <h3 class="font-extrabold text-stone-900 text-base sm:text-lg">Công đoạn 3 / 5: Trạm Sơ Chế Siêu Tốc (Industrial Batch Prep)</h3>
+          </div>
+          <span class="text-xs font-bold text-amber-900 bg-amber-100 border border-amber-300 px-3 py-1 rounded-xl self-start sm:self-auto">
+            Quy chuẩn bếp Mealkit
+          </span>
+        </div>
+
+        <!-- 3 Industrial Golden Tips Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <div class="bg-white p-3.5 rounded-2xl border border-amber-200 shadow-2xs space-y-1">
+            <div class="flex items-center gap-1.5 text-xs font-extrabold text-emerald-800">
+              <span>🥬</span> <span>1. RỬA NGÂM ĐỒNG LOẠT:</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              <b>Rửa hành lá và cà chua chung trong 1 bồn lớn</b> ngâm nước muối loãng 5 phút. Vớt rổ ráo cùng lúc thay vì rửa lẻ từng món!
+            </p>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-amber-200 shadow-2xs space-y-1">
+            <div class="flex items-center gap-1.5 text-xs font-extrabold text-blue-800">
+              <span>🔪</span> <span>2. BÀN THỚT PHÂN LUỒNG:</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              <b>Thớt Xanh</b> thái rau củ, <b>Thớt Đỏ</b> cắt thịt tươi. Bào bắp cải 1 mẻ lớn, băm toàn bộ hành tím &amp; tỏi 1 mẻ lớn rồi chia hũ ca!
+            </p>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-amber-200 shadow-2xs space-y-1">
+            <div class="flex items-center gap-1.5 text-xs font-extrabold text-purple-800">
+              <span>⚖️</span> <span>3. CÂN ĐỊNH LƯỢNG MẺ:</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Cân tổng mẻ nguyên liệu 1 lần duy nhất cho toàn bộ đơn ngày. Bảo quản trong hộp inox sạch có nắp trong tủ mát 0-4°C.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Station Filter Bar -->
+      <div class="bg-white p-3.5 rounded-2xl border border-[#E8E2D8] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h4 class="font-extrabold text-stone-900 text-sm sm:text-base">Checklist Sơ Chế Theo Từng Trạm</h4>
+          <p class="text-xs text-stone-500">Hoàn thành theo từng trạm để dây chuyền không bị ùn tắc</p>
+        </div>
+
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="prepStationChips">
+          <button onclick="filterPrepStation('ALL')" class="prep-station-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-station="ALL">Tất cả trạm</button>
+          <button onclick="filterPrepStation('station_wash')" class="prep-station-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-station="station_wash">🥬 Trạm Bồn Rửa &amp; Rau</button>
+          <button onclick="filterPrepStation('station_knife')" class="prep-station-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-station="station_knife">🔪 Trạm Bàn Thớt &amp; Băm</button>
+          <button onclick="filterPrepStation('station_meat')" class="prep-station-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-station="station_meat">🥩 Trạm Cân Thịt Tươi</button>
+        </div>
+      </div>
+
+      <!-- Prep Stations List Container -->
+      <div id="prepStationsList" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        <!-- Dynamic station cards -->
+      </div>
+
+      <!-- Bottom Bridge to Step 4 -->
+      <div class="bg-white p-4 rounded-2xl border border-[#E8E2D8] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+        <div>
+          <div class="font-bold text-stone-900 text-sm">Đã sơ chế xong toàn bộ rau củ và thịt tươi?</div>
+          <div class="text-xs text-stone-500">Chuyển sang Bước 4 để pha nước sốt &amp; gia vị ướp theo mẻ lớn (Master Batch) và chiết rót dây chuyền siêu tốc.</div>
+        </div>
+        <button onclick="switchTab('saucing')" class="touch-btn px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 flex items-center gap-2 whitespace-nowrap">
+          <span>🥣 Sang Bước 4: Pha sốt mẻ lớn</span>
+          <span>→</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ---------------------------------------------------------- -->
+    <!-- TAB 4: TRẠM PHA SỐT & GIA VỊ MẺ LỚN (MASTER BATCH SAUCING) -->
+    <!-- ---------------------------------------------------------- -->
+    <section id="view-saucing" class="space-y-4 hidden" style="display: none;">
+      
+      <!-- Top Context Banner with Master Batch Saucing Protocol -->
+      <div class="bg-gradient-to-r from-indigo-500/10 via-indigo-500/5 to-transparent p-4 sm:p-5 rounded-3xl border border-indigo-200 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🥣</span>
+            <h3 class="font-extrabold text-stone-900 text-base sm:text-lg">Công đoạn 4 / 5: Pha Sốt &amp; Gia Vị Mẻ Lớn (Master Batch Saucing)</h3>
+          </div>
+          <span class="text-xs font-bold text-indigo-900 bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-xl self-start sm:self-auto">
+            Chiết rót dây chuyền
+          </span>
+        </div>
+
+        <!-- 3 Industrial Saucing Protocol Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <div class="bg-white p-3.5 rounded-2xl border border-indigo-100 shadow-2xs space-y-1">
+            <div class="flex items-center gap-1.5 text-xs font-extrabold text-indigo-800">
+              <span>🥣</span> <span>1. NHÂN CÔNG THỨC TỔNG MẺ:</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              <b>Không nêm từng thìa cho từng suất!</b> Nhân toàn bộ công thức theo tổng suất của ngày (VD: 6 suất = 9 mắm + 6 đường + 6 nước). Đong vào 1 ca lớn đánh tan đều 1 lần duy nhất!
+            </p>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-indigo-100 shadow-2xs space-y-1">
+            <div class="flex items-center gap-1.5 text-xs font-extrabold text-teal-800">
+              <span>🫗</span> <span>2. RÓT DÂY CHUYỀN TÚI ZIP:</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Trải sẵn hàng loạt túi zip 40ml trên khay. Dùng <b>chai squeeze bottle</b> hoặc <b>ca rót mỏ vịt</b> rót liên tục 35-40ml/túi. Chỉ 30 giây để chia xong 10 túi sốt!
+            </p>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-indigo-100 shadow-2xs space-y-1">
+            <div class="flex items-center gap-1.5 text-xs font-extrabold text-amber-800">
+              <span>🧂</span> <span>3. GÓI ƯỚP KHÔ ĐÓNG RIÊNG:</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Gia vị ướp thịt (hạt nêm, mắm khô, tiêu, hành tím băm) được đóng túi zip riêng biệt để thịt không bị chảy nước khi vận chuyển.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Master Batch Sauce Grid -->
+      <div id="sauceBatchList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Rendered dynamically -->
+        <div class="col-span-full py-12 text-center text-stone-400 font-medium">
+          <div class="inline-block animate-spin text-2xl mb-2">⏳</div>
+          <p>Đang tính toán công thức mẻ lớn...</p>
+        </div>
+      </div>
+
+      <!-- Bottom Bridge to Step 5 -->
+      <div class="bg-white p-4 rounded-2xl border border-[#E8E2D8] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+        <div>
+          <div class="font-bold text-stone-900 text-sm">Đã chia xong toàn bộ các túi sốt và gói ướp?</div>
+          <div class="text-xs text-stone-500">Chuyển sang Bước 5 để đưa vào Dây chuyền đóng gói khay 1 chiều chuẩn nhà máy!</div>
+        </div>
+        <button onclick="switchTab('assembly')" class="touch-btn px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 flex items-center gap-2 whitespace-nowrap">
+          <span>📦 Sang Bước 5: Dây chuyền đóng khay</span>
+          <span>→</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ---------------------------------------------------------- -->
+    <!-- TAB 5: DÂY CHUYỀN ĐÓNG KHAY 1 CHIỀU (FACTORY ASSEMBLY LINE) -->
     <!-- ---------------------------------------------------------- -->
     <section id="view-assembly" class="space-y-4 hidden" style="display: none;">
       
-      <!-- Top Links & Step Info -->
-      <div class="flex items-center justify-between">
-        <button onclick="switchTab('orders')" class="text-xs font-bold text-stone-600 hover:text-stone-900 flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-stone-100">
-          <span>←</span> <span>Xem lại danh sách đơn hàng (Bước 1)</span>
-        </button>
-        <button onclick="switchTab('batch')" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-emerald-50">
-          <span>🥦 Xem lại mẻ sơ chế (Bước 2)</span>
-        </button>
+      <!-- Top Context Banner with Assembly Protocol -->
+      <div class="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent p-4 sm:p-5 rounded-3xl border border-emerald-300 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">📦</span>
+            <h3 class="font-extrabold text-stone-900 text-base sm:text-lg">Công đoạn 5 / 5: Dây Chuyền Đóng Khay 1 Chiều (Factory Assembly Line)</h3>
+          </div>
+          <span class="text-xs font-bold text-emerald-900 bg-emerald-100 border border-emerald-200 px-3 py-1 rounded-xl self-start sm:self-auto">
+            Quy trình xuất xưởng
+          </span>
+        </div>
+
+        <!-- 1-Way Flow Diagram -->
+        <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-2xs space-y-2">
+          <div class="text-xs font-bold text-stone-500 uppercase tracking-wider">Luồng thao tác 1 chiều trên bàn đóng gói:</div>
+          <div class="flex items-center gap-1.5 text-xs font-bold text-stone-800 overflow-x-auto py-1">
+            <span class="px-2.5 py-1.5 bg-stone-100 rounded-xl border border-stone-200 whitespace-nowrap">1. Khay sạch</span>
+            <span class="text-stone-400">➔</span>
+            <span class="px-2.5 py-1.5 bg-rose-50 text-rose-900 rounded-xl border border-rose-200 whitespace-nowrap">2. Hộp thịt cân</span>
+            <span class="text-stone-400">➔</span>
+            <span class="px-2.5 py-1.5 bg-emerald-50 text-emerald-900 rounded-xl border border-emerald-200 whitespace-nowrap">3. Túi rau củ ráo</span>
+            <span class="text-stone-400">➔</span>
+            <span class="px-2.5 py-1.5 bg-indigo-50 text-indigo-900 rounded-xl border border-indigo-200 whitespace-nowrap">4. Túi sốt &amp; ướp</span>
+            <span class="text-stone-400">➔</span>
+            <span class="px-2.5 py-1.5 bg-amber-50 text-amber-900 rounded-xl border border-amber-200 whitespace-nowrap">5. Menu &amp; Hướng dẫn</span>
+            <span class="text-stone-400">➔</span>
+            <span class="px-2.5 py-1.5 bg-stone-900 text-white rounded-xl whitespace-nowrap">6. Đậy nắp &amp; Dán tem mã</span>
+          </div>
+          <p class="text-xs text-stone-600 leading-relaxed pt-1">
+            ⚡ <b>Thao tác đồng loạt (Batch Insertion):</b> Xếp 5-10 khay rỗng cùng lúc. Đi 1 lượt đặt toàn bộ hộp thịt, lượt 2 đặt toàn bộ rau, lượt 3 đặt toàn bộ túi sốt. Nhanh gấp 3 lần đóng lẻ từng khay!
+          </p>
+        </div>
       </div>
 
       <!-- Filter Bar for Trays -->
       <div class="bg-white p-3.5 rounded-2xl border border-[#E8E2D8] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 class="text-base sm:text-lg font-bold text-stone-900 flex items-center gap-2">
-            <span>📦 Kiểm Tra Đóng Gói Từng Khay / Túi</span>
+            <span>📦 Kiểm Tra Đóng Gói Từng Khay</span>
           </h2>
           <p class="text-xs text-stone-500">Checklist từng món nguyên liệu cho từng khay trước khi xuất xưởng</p>
         </div>
@@ -554,29 +756,39 @@
   </main>
 
   <!-- ============================================================ -->
-  <!-- MOBILE BOTTOM STICKY NAVIGATION (Apple / Emil style) -->
+  <!-- MOBILE BOTTOM STICKY NAVIGATION (5 Factory Stages + Recipes) -->
   <!-- ============================================================ -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#E8E2D8] px-2 py-1.5 shadow-lg">
-    <div class="grid grid-cols-4 gap-1 max-w-md mx-auto">
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#E8E2D8] px-1 py-1 shadow-lg">
+    <div class="grid grid-cols-6 gap-0.5 max-w-md mx-auto">
       
-      <button onclick="switchTab('orders')" id="mobTab-orders" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-brand-600 font-bold text-[11px] active:scale-95 transition-all">
-        <span class="text-xl leading-none mb-1">📝</span>
-        <span class="truncate">Đơn hàng</span>
+      <button onclick="switchTab('orders')" id="mobTab-orders" class="flex flex-col items-center justify-center py-1 px-0.5 rounded-xl text-brand-600 font-bold text-[10px] active:scale-95 transition-all">
+        <span class="text-base leading-none mb-0.5">📝</span>
+        <span class="truncate">1. Đơn</span>
       </button>
 
-      <button onclick="switchTab('batch')" id="mobTab-batch" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-stone-500 font-semibold text-[11px] active:scale-95 transition-all">
-        <span class="text-xl leading-none mb-1">🥦</span>
-        <span class="truncate">Gom mẻ</span>
+      <button onclick="switchTab('procurement')" id="mobTab-procurement" class="flex flex-col items-center justify-center py-1 px-0.5 rounded-xl text-stone-500 font-semibold text-[10px] active:scale-95 transition-all">
+        <span class="text-base leading-none mb-0.5">🛒</span>
+        <span class="truncate">2. Mua</span>
       </button>
 
-      <button onclick="switchTab('assembly')" id="mobTab-assembly" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-stone-500 font-semibold text-[11px] active:scale-95 transition-all">
-        <span class="text-xl leading-none mb-1">📦</span>
-        <span class="truncate">Đóng gói</span>
+      <button onclick="switchTab('prep')" id="mobTab-prep" class="flex flex-col items-center justify-center py-1 px-0.5 rounded-xl text-stone-500 font-semibold text-[10px] active:scale-95 transition-all">
+        <span class="text-base leading-none mb-0.5">🥦</span>
+        <span class="truncate">3. Sơ chế</span>
       </button>
 
-      <button onclick="switchTab('recipes')" id="mobTab-recipes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-stone-500 font-semibold text-[11px] active:scale-95 transition-all">
-        <span class="text-xl leading-none mb-1">📖</span>
-        <span class="truncate">Thực đơn</span>
+      <button onclick="switchTab('saucing')" id="mobTab-saucing" class="flex flex-col items-center justify-center py-1 px-0.5 rounded-xl text-stone-500 font-semibold text-[10px] active:scale-95 transition-all">
+        <span class="text-base leading-none mb-0.5">🥣</span>
+        <span class="truncate">4. Sốt</span>
+      </button>
+
+      <button onclick="switchTab('assembly')" id="mobTab-assembly" class="flex flex-col items-center justify-center py-1 px-0.5 rounded-xl text-stone-500 font-semibold text-[10px] active:scale-95 transition-all">
+        <span class="text-base leading-none mb-0.5">📦</span>
+        <span class="truncate">5. Gói</span>
+      </button>
+
+      <button onclick="switchTab('recipes')" id="mobTab-recipes" class="flex flex-col items-center justify-center py-1 px-0.5 rounded-xl text-stone-500 font-semibold text-[10px] active:scale-95 transition-all">
+        <span class="text-base leading-none mb-0.5">📖</span>
+        <span class="truncate">Kho</span>
       </button>
 
     </div>
@@ -599,6 +811,74 @@
       <button onclick="triggerUndoAction()" class="touch-btn px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-brand-300 hover:text-white rounded-xl text-xs font-bold border border-stone-600 active:scale-95 flex-shrink-0">
         ↺ Hoàn tác
       </button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: CHI TIẾT NGUYÊN LIỆU & DANH SÁCH ĐƠN ĐẶT (DRILL-DOWN) -->
+  <!-- ============================================================ -->
+  <div id="modalIngredientDrillDown" class="fixed inset-0 z-50 bg-stone-950/65 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 overflow-y-auto" style="display: none;">
+    <div class="bg-white w-full max-w-2xl rounded-3xl border border-stone-200 shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 bg-gradient-to-r from-stone-900 to-stone-800 text-white flex items-start justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="drillCategoryBadge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-stone-700 text-stone-200">
+              Nguyên liệu
+            </span>
+            <span class="text-xs text-stone-300 font-mono">Bếp Sơ Chế Mealkit</span>
+          </div>
+          <h3 id="drillIngName" class="font-extrabold text-lg sm:text-xl text-white mt-1 flex items-center gap-2">
+            Thịt băm tươi
+          </h3>
+          <p id="drillIngSummary" class="text-xs text-stone-300 mt-0.5">
+            Tổng cần mua: <b class="text-emerald-400 font-mono text-sm">800g</b> (Dùng cho 2 món · 4 đơn hàng)
+          </p>
+        </div>
+        <button onclick="closeIngredientDrillDown()" class="w-8 h-8 rounded-full bg-stone-700 hover:bg-stone-600 text-stone-200 flex items-center justify-center text-sm font-bold active:scale-95 transition-all">
+          ✕
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-5 space-y-4 max-h-[72vh] overflow-y-auto">
+        <!-- Section 1: Các món ăn sử dụng nguyên liệu này -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>🍲</span> <span>Các Món Ăn Sử Dụng</span>
+            </h4>
+            <span id="drillDishCountBadge" class="text-xs font-bold text-stone-600 font-mono">2 món</span>
+          </div>
+          <div id="drillDishesList" class="space-y-2">
+            <!-- Dynamic dishes rows -->
+          </div>
+        </div>
+
+        <!-- Section 2: Danh sách đơn hàng cụ thể đặt món này -->
+        <div class="space-y-2 pt-2 border-t border-stone-200">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>📝</span> <span>Danh Sách Đơn Đặt Nguyên Liệu Này</span>
+            </h4>
+            <span id="drillOrderCountBadge" class="text-xs font-bold text-stone-600 font-mono">4 đơn</span>
+          </div>
+          <div id="drillOrdersList" class="space-y-2.5">
+            <!-- Dynamic order cards with Customer Phone, Delivery time, Recipe & special notes -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3.5 sm:p-4 bg-[#F8F5F0] border-t border-[#EAE3D7] flex items-center justify-between gap-2">
+        <button onclick="copyDrillDownText()" class="touch-btn px-4 py-2 rounded-xl bg-white border border-stone-300 hover:bg-stone-50 text-stone-800 text-xs font-bold flex items-center gap-1.5 active:scale-95 shadow-xs">
+          <span>📋</span> <span>Sao chép danh sách đơn này</span>
+        </button>
+        <button onclick="closeIngredientDrillDown()" class="touch-btn px-5 py-2 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-bold active:scale-95 shadow-sm">
+          Đóng
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -1042,11 +1322,13 @@
     let state = {
       currentDate: getTodayYMD(),
       dateFilterMode: 'all', // 'today' | 'tomorrow' | 'all' | 'custom'
-      orderStatusFilter: 'ALL', // 'ALL' | 'pending' | 'prepping' | 'completed' | 'cancelled'
+      orderStatusFilter: 'confirmed_pool', // 'confirmed_pool' (Đã thanh toán/bếp nhận) | 'pending' | 'ALL' | 'cancelled'
       orderSearchQuery: '',
-      activeTab: 'orders', // DEFAULT: 'orders' (Đơn hàng đã đặt xem trước)
+      activeTab: 'orders', // 'orders' | 'procurement' | 'prep' | 'saucing' | 'assembly' | 'recipes'
       orderViewMode: 'cards', // 'cards' | 'table'
       recipeSubTab: 'recipes', // 'recipes' | 'ingredients'
+      procurementCategoryFilter: 'ALL',
+      prepStationFilter: 'ALL',
       batchCategoryFilter: 'ALL',
       trayStatusFilter: 'ALL',
       soundEnabled: true,
@@ -1054,11 +1336,19 @@
       // Loaded data
       allOrders: [], // all normalized orders across all dates
       orders: [],    // orders for active date view
+      kitchenOrders: [], // ONLY confirmed/paid/prepping/completed orders in the active kitchen stream
       allChecklist: [],
       checklist: [], // checklist for active view
       recipes: [],
       recipeIngredients: [],
       ingredients: [],
+
+      // Industrial pipeline aggregated data
+      procurementMap: {},
+      procurementList: [],
+      sauceMap: {},
+      sauceList: [],
+      currentDrillIngredientKey: null,
 
       // Undo state
       lastAction: null,
@@ -1949,6 +2239,7 @@
           let kitchenStatus = 'pending';
           if (rawStatus === 'done') kitchenStatus = 'completed';
           else if (rawStatus === 'preparing') kitchenStatus = 'prepping';
+          else if (rawStatus === 'confirmed' || rawStatus === 'paid') kitchenStatus = 'confirmed';
           else if (rawStatus === 'cancelled') kitchenStatus = 'cancelled';
           else kitchenStatus = 'pending';
 
@@ -2002,6 +2293,7 @@
           let kitchenStatus = 'pending';
           if (pStatus === 'completed' || pStatus === 'ready') kitchenStatus = 'completed';
           else if (pStatus === 'prepping') kitchenStatus = 'prepping';
+          else if (pStatus === 'confirmed' || pStatus === 'paid') kitchenStatus = 'confirmed';
           else if (pStatus === 'cancelled') kitchenStatus = 'cancelled';
 
           mergedOrders.push({
@@ -2068,7 +2360,7 @@
             total: lo.total || 0,
             special_notes: (lo.address ? 'Đ/c: ' + lo.address + '. ' : '') + (lo.note || ''),
             raw_status: lo.status || 'pending',
-            status: lo.status === 'done' ? 'completed' : (lo.status === 'cancelled' ? 'cancelled' : 'pending'),
+            status: (lo.status === 'done') ? 'completed' : ((lo.status === 'preparing') ? 'prepping' : ((lo.status === 'confirmed' || lo.status === 'paid') ? 'confirmed' : ((lo.status === 'cancelled') ? 'cancelled' : 'pending'))),
             created_at: lo.created_at || new Date().toISOString(),
             _source: 'inbox_orders',
             raw_products: lo.meals || lo.products || [],
@@ -2081,7 +2373,8 @@
         const sortedOrders = sortOrdersByDeliveryDate(mergedOrders);
         let activeTrayNum = 1;
         sortedOrders.forEach((o) => {
-          if (o.status !== 'cancelled') {
+          // "Chỉ có đơn nào đã thanh toán (đã xác nhận) thì mới hiện ra trong bếp sơ chế"
+          if (o.status === 'confirmed' || o.status === 'prepping' || o.status === 'completed') {
             o.tray_number = activeTrayNum++;
           } else {
             o.tray_number = 0;
@@ -2089,10 +2382,11 @@
         });
         state.allOrders = sortedOrders;
 
-        // E. Generate itemized checklist across all orders (TRUTHFUL & ACCURATE - ONLY ACTIVE ORDERS)
+        // E. Generate itemized checklist across confirmed active orders (TRUTHFUL & ACCURATE)
         const allChecklist = [];
         state.allOrders.forEach(order => {
-          if (order.status === 'cancelled') return; // Do not generate checklist for cancelled orders
+          // Bếp sơ chế CHỈ tạo checklist cho các đơn đã thanh toán / xác nhận
+          if (order.status !== 'confirmed' && order.status !== 'prepping' && order.status !== 'completed') return;
           const isDone = (order.status === 'completed');
 
           order.prep_order_items.forEach(item => {
@@ -2300,29 +2594,266 @@
       }
 
       state.orders = filtered;
-      state.checklist = state.allChecklist.filter(c => state.orders.some(o => o.id === c.order_id && o.status !== 'cancelled'));
+
+      // CORE RULE: "Chỉ có đơn nào đã thanh toán (đã xác nhận) thì mới hiện ra trong bếp sơ chế"
+      state.kitchenOrders = filtered.filter(o => 
+        o.status === 'confirmed' || o.status === 'prepping' || o.status === 'completed'
+      );
+
+      // Active checklist strictly generated for kitchenOrders
+      state.checklist = state.allChecklist.filter(c => 
+        state.kitchenOrders.some(o => o.id === c.order_id)
+      );
+
+      // Build data for Stage 2 (Procurement) & Stage 4 (Master Saucing)
+      buildProcurementAndSauceData();
+    }
+
+    function scaleFormulaText(formula, totalServings) {
+      if (!formula || totalServings <= 1) return formula || '';
+      const parts = formula.split('+').map(p => p.trim());
+      const scaledParts = parts.map(part => {
+        const m = part.match(/^([\d.,]+)\s*(.*)$/);
+        if (m) {
+          const num = parseFloat(m[1].replace(',', '.'));
+          if (!isNaN(num)) {
+            const scaled = Math.round(num * totalServings * 10) / 10;
+            return `<b>${scaled}</b> ${m[2]}`;
+          }
+        }
+        return `${part} (cho ${totalServings} suất)`;
+      });
+      return scaledParts.join(' + ');
+    }
+
+    function buildProcurementAndSauceData() {
+      const activeOrders = state.kitchenOrders;
+      const procurementMap = {};
+      const sauceMap = {};
+
+      activeOrders.forEach(order => {
+        order.prep_order_items.forEach(item => {
+          let ingredients = [];
+
+          if (item.recipe_id) {
+            ingredients = state.recipeIngredients.filter(ri => ri.recipe_id === item.recipe_id);
+          }
+
+          const matchedRec = state.recipes.find(r => 
+            r.id === item.recipe_id || 
+            (r.code && r.code === item.recipe_code) || 
+            (r.name && r.name.toLowerCase() === (item.recipe_name || '').toLowerCase())
+          );
+
+          if (ingredients.length === 0 && matchedRec && matchedRec.raw_ingredients_text) {
+            const rawItems = parseRawIngredientsText(matchedRec.raw_ingredients_text);
+            if (rawItems.length > 0) {
+              ingredients = rawItems.map((ing, idx) => ({
+                ingredient_id: 'ing_' + (matchedRec.code || 'REC') + '_' + idx,
+                quantity: ing.quantity,
+                unit: ing.unit,
+                prep_instruction: ing.prep,
+                prep_ingredients: {
+                  name: ing.name,
+                  unit: ing.unit,
+                  category: ing.category
+                }
+              }));
+            }
+          }
+
+          if (ingredients.length === 0 && item.recipe_code && FALLBACK_RECIPE_DEFS[item.recipe_code]) {
+            const def = FALLBACK_RECIPE_DEFS[item.recipe_code];
+            if (def && def.ingredients) {
+              ingredients = def.ingredients.map(ing => ({
+                ingredient_id: 'ing_' + ing.name.replace(/\s+/g, '_'),
+                quantity: ing.quantity,
+                unit: ing.unit,
+                prep_instruction: ing.prep,
+                prep_ingredients: {
+                  name: ing.name,
+                  unit: ing.unit,
+                  category: ing.category
+                }
+              }));
+            }
+          } else if (ingredients.length === 0 && item.recipe_name) {
+            const defByName = Object.values(FALLBACK_RECIPE_DEFS).find(d => d.name.toLowerCase() === item.recipe_name.toLowerCase());
+            if (defByName && defByName.ingredients) {
+              ingredients = defByName.ingredients.map(ing => ({
+                ingredient_id: 'ing_' + ing.name.replace(/\s+/g, '_'),
+                quantity: ing.quantity,
+                unit: ing.unit,
+                prep_instruction: ing.prep,
+                prep_ingredients: {
+                  name: ing.name,
+                  unit: ing.unit,
+                  category: ing.category
+                }
+              }));
+            }
+          }
+
+          if (ingredients.length === 0) {
+            ingredients = [{
+              ingredient_id: 'unmapped_' + encodeURIComponent(item.recipe_name || 'mon'),
+              quantity: 1,
+              unit: 'suất',
+              is_unmapped: true,
+              prep_instruction: 'Chưa có công thức chi tiết',
+              prep_ingredients: {
+                name: (item.recipe_name || 'Món') + ' (Chưa có công thức)',
+                unit: 'suất',
+                category: 'Cần bổ sung công thức'
+              }
+            }];
+          }
+
+          const itemServings = item.servings || order.servings || 1;
+
+          ingredients.forEach(ing => {
+            const ingName = ing.prep_ingredients ? ing.prep_ingredients.name : (ing.name || 'Nguyên liệu');
+            const ingCategory = ing.prep_ingredients ? ing.prep_ingredients.category : (ing.category || 'Khác');
+            const ingUnit = ing.unit || (ing.prep_ingredients ? ing.prep_ingredients.unit : 'g');
+            const ingKey = ingName.trim().toLowerCase();
+            const qtyPerServing = Number(ing.quantity || 1);
+            const totalQty = qtyPerServing * itemServings;
+
+            if (!procurementMap[ingKey]) {
+              procurementMap[ingKey] = {
+                key: ingKey,
+                name: ingName,
+                category: ingCategory,
+                unit: ingUnit,
+                prep_instruction: ing.prep_instruction || '',
+                totalQuantity: 0,
+                dishes: [],
+                orders: [],
+                is_unmapped: !!ing.is_unmapped
+              };
+            }
+
+            procurementMap[ingKey].totalQuantity += totalQty;
+
+            let dishSummary = procurementMap[ingKey].dishes.find(d => d.dishName === item.recipe_name);
+            if (!dishSummary) {
+              dishSummary = {
+                dishName: item.recipe_name,
+                servings: 0,
+                qtyPerServing: qtyPerServing,
+                subTotalQty: 0
+              };
+              procurementMap[ingKey].dishes.push(dishSummary);
+            }
+            dishSummary.servings += itemServings;
+            dishSummary.subTotalQty += totalQty;
+
+            procurementMap[ingKey].orders.push({
+              orderId: order.id,
+              code: order.code,
+              trayNumber: order.tray_number,
+              customerName: order.customer_name,
+              customerPhone: order.customer_phone,
+              deliveryDate: order.display_date || order.order_date,
+              deliveryTime: order.delivery_time,
+              address: order.address,
+              dishName: item.recipe_name,
+              servings: itemServings,
+              orderQty: totalQty,
+              specialNotes: order.special_notes
+            });
+          });
+
+          // Marinade & Sauce for Master Batching
+          const defFallback = (item.recipe_code && FALLBACK_RECIPE_DEFS[item.recipe_code]) || {};
+          const marinadeFormula = (matchedRec && matchedRec.marinade) || defFallback.marinade;
+
+          if (marinadeFormula) {
+            const marKey = `mar_${item.recipe_name || item.recipe_code}`;
+            if (!sauceMap[marKey]) {
+              sauceMap[marKey] = {
+                key: marKey,
+                type: 'marinade',
+                title: `Gói gia vị ướp · ${item.recipe_name}`,
+                dishName: item.recipe_name,
+                baseFormula: marinadeFormula,
+                totalServings: 0,
+                orders: []
+              };
+            }
+            sauceMap[marKey].totalServings += itemServings;
+            sauceMap[marKey].orders.push({
+              orderId: order.id,
+              trayNumber: order.tray_number,
+              customerName: order.customer_name,
+              servings: itemServings
+            });
+          }
+
+          const sauceFormula = (matchedRec && matchedRec.sauce) || defFallback.sauce;
+          if (sauceFormula) {
+            const sauceKey = `sauce_${item.recipe_name || item.recipe_code}`;
+            if (!sauceMap[sauceKey]) {
+              sauceMap[sauceKey] = {
+                key: sauceKey,
+                type: 'sauce',
+                title: `Túi sốt chuẩn vị · ${item.recipe_name}`,
+                dishName: item.recipe_name,
+                baseFormula: sauceFormula,
+                totalServings: 0,
+                orders: []
+              };
+            }
+            sauceMap[sauceKey].totalServings += itemServings;
+            sauceMap[sauceKey].orders.push({
+              orderId: order.id,
+              trayNumber: order.tray_number,
+              customerName: order.customer_name,
+              servings: itemServings
+            });
+          }
+        });
+      });
+
+      state.procurementMap = procurementMap;
+      state.procurementList = Object.values(procurementMap);
+      state.sauceMap = sauceMap;
+      state.sauceList = Object.values(sauceMap);
     }
 
     // ------------------------------------------------------------
-    // 4. RENDERING ALL VIEWS
+    // 4. RENDERING ALL PIPELINE VIEWS
     // ------------------------------------------------------------
     function renderAllViews() {
       filterStateOrders();
       updateTopMetrics();
       renderOrdersView();
-      renderBatchPrepView();
+      renderProcurementView();
+      renderPrepStationsView();
+      renderSaucingView();
       renderAssemblyView();
       renderRecipesView();
       renderIngredientsView();
     }
 
     function updateTopMetrics() {
-      const activeOrders = state.orders.filter(o => o.status !== 'cancelled');
-      const totalTrays = activeOrders.length;
+      const activeKitchenOrders = state.kitchenOrders;
+      const totalTrays = activeKitchenOrders.length;
       const elTrays = document.getElementById('metricTrays');
-      if (elTrays) elTrays.innerText = `${totalTrays} Khay`;
+      if (elTrays) elTrays.innerText = `${totalTrays} Khay Bếp`;
+      
       const elOrderBadge = document.getElementById('badgeOrderCount');
       if (elOrderBadge) elOrderBadge.innerText = totalTrays;
+
+      const elProcureBadge = document.getElementById('badgeProcureCount');
+      if (elProcureBadge) elProcureBadge.innerText = state.procurementList.length;
+
+      const elPrepBadge = document.getElementById('badgePrepCount');
+      if (elPrepBadge) elPrepBadge.innerText = state.procurementList.length;
+
+      const elSaucingBadge = document.getElementById('badgeSaucingCount');
+      if (elSaucingBadge) elSaucingBadge.innerText = state.sauceList.length;
+
       const elAssemblyBadge = document.getElementById('badgeAssemblyCount');
       if (elAssemblyBadge) elAssemblyBadge.innerText = totalTrays;
 
@@ -2334,199 +2865,407 @@
     }
 
     // ------------------------------------------------------------
-    // 5. TAB 1: GOM MẺ SƠ CHẾ (BATCH PREP)
+    // 5. CÔNG ĐOẠN 2: TOÀN BỘ NGUYÊN LIỆU PHẢI MUA (PROCUREMENT)
     // ------------------------------------------------------------
-    function renderBatchPrepView() {
-      const container = document.getElementById('batchList');
+    function renderProcurementView() {
+      const container = document.getElementById('procurementList');
       if (!container) return;
 
-      const activeOrders = state.orders.filter(o => o.status !== 'cancelled');
+      const activeOrders = state.kitchenOrders;
 
       if (activeOrders.length === 0) {
         container.innerHTML = `
           <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
-            <span class="text-4xl">🍃</span>
-            <h3 class="font-bold text-stone-800 text-base">Chưa có đơn hàng nào cần sơ chế (${state.dateFilterMode === 'all' ? 'Tất cả các ngày' : formatDateVN(state.currentDate)})</h3>
-            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chọn bộ lọc "☀️ Hôm nay", "🌙 Ngày mai" hoặc "📋 Tất cả đơn" ở thanh trên để kiểm tra toàn bộ danh sách.</p>
-            <button onclick="setDateFilterMode('all')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
-              Xem Toàn Bộ Các Đơn
+            <span class="text-4xl">🛒</span>
+            <h3 class="font-bold text-stone-800 text-base">Chưa có nguyên liệu cần mua (${state.dateFilterMode === 'all' ? 'Tất cả các ngày' : formatDateVN(state.currentDate)})</h3>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chưa có đơn hàng nào đã thanh toán / xác nhận trong ngày này. Hãy quay lại Bước 1 để kiểm tra và duyệt đơn.</p>
+            <button onclick="switchTab('orders')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
+              ← Xem Danh Sách Đơn Hàng (Bước 1)
             </button>
           </div>
         `;
-        const elBadgeBatch = document.getElementById('badgeBatchCount');
-        if (elBadgeBatch) elBadgeBatch.innerText = '0';
+        const elBadge = document.getElementById('badgeProcureCount');
+        if (elBadge) elBadge.innerText = '0';
         return;
       }
 
-      // Group checklist by ingredient name or ID
-      const batchMap = {};
-      state.checklist.forEach(item => {
-        const parentOrder = state.orders.find(o => o.id === item.order_id);
-        if (parentOrder && parentOrder.status === 'cancelled') return;
-
-        const ingKey = (item.prep_ingredients && item.prep_ingredients.name) ? item.prep_ingredients.name : item.ingredient_id;
-        const ingName = item.prep_ingredients ? item.prep_ingredients.name : 'Nguyên liệu';
-        const ingCategory = item.prep_ingredients ? item.prep_ingredients.category : 'Khác';
-        const ingUnit = item.unit || 'g';
-
-        if (!batchMap[ingKey]) {
-          batchMap[ingKey] = {
-            ingredient_id: item.ingredient_id,
-            name: ingName,
-            category: ingCategory,
-            unit: ingUnit,
-            totalQuantity: 0,
-            prep_instruction: item.prep_instruction || '',
-            items: [],
-            isAllPrepped: true,
-            hasSpecialNote: false,
-            hasIssue: false
-          };
-        }
-
-        batchMap[ingKey].totalQuantity += Number(item.total_quantity);
-        batchMap[ingKey].items.push(item);
-
-        if (!item.is_batch_prepped) batchMap[ingKey].isAllPrepped = false;
-        if (item.issue_type) batchMap[ingKey].hasIssue = true;
-
-        if (parentOrder && parentOrder.special_notes) {
-          batchMap[ingKey].hasSpecialNote = true;
-        }
-      });
-
-      const batchList = Object.values(batchMap);
-      const elBadgeBatch = document.getElementById('badgeBatchCount');
-      if (elBadgeBatch) elBadgeBatch.innerText = batchList.length;
-
-      // Filter by category
-      let filtered = batchList;
-      if (state.batchCategoryFilter !== 'ALL') {
-        filtered = batchList.filter(b => b.category === state.batchCategoryFilter);
+      let list = state.procurementList;
+      if (state.procurementCategoryFilter !== 'ALL') {
+        list = list.filter(item => item.category === state.procurementCategoryFilter);
       }
 
-      if (filtered.length === 0) {
+      const elBadge = document.getElementById('badgeProcureCount');
+      if (elBadge) elBadge.innerText = state.procurementList.length;
+
+      if (list.length === 0) {
         container.innerHTML = `
           <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-stone-200 text-stone-500 text-sm">
-            Không có nguyên liệu thuộc nhóm "${state.batchCategoryFilter}".
+            Không có nguyên liệu thuộc nhóm "${state.procurementCategoryFilter}".
           </div>
         `;
         return;
       }
 
-      // Render cards
-      container.innerHTML = filtered.map(b => {
-        const isDone = b.isAllPrepped;
+      container.innerHTML = list.map(item => {
+        const catClass = getCategoryBadgeClass(item.category);
 
-        const trayPills = b.items.map(item => {
-          const ord = state.orders.find(o => o.id === item.order_id);
-          const trayNum = ord ? ord.tray_number : '?';
-          const isNoteAlert = ord && ord.special_notes;
-          const hasItemIssue = item.issue_type;
-
-          let pillClass = "bg-stone-100 text-stone-800 border-stone-200";
-          if (isNoteAlert) pillClass = "bg-amber-100 text-amber-900 border-amber-300 font-bold";
-          if (hasItemIssue) pillClass = "bg-orange-100 text-orange-900 border-orange-300 font-bold";
-
-          return `
-            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border text-xs ${pillClass}">
-              <span>Khay #${String(trayNum).padStart(2, '0')}:</span>
-              <span class="font-bold">${formatQty(item.total_quantity)}${b.unit}</span>
-              ${isNoteAlert ? '<span title="Đơn có lưu ý đặc biệt">⚠️</span>' : ''}
-              ${hasItemIssue ? '<span title="Có cảnh báo thiếu/đổi">⚡</span>' : ''}
-            </span>
-          `;
-        }).join('');
-
-        if (b.items.some(it => it.is_unmapped)) {
-          const rawDishName = b.name.replace(' (Chưa có công thức)', '');
-          return `
-            <div class="bg-amber-50/60 rounded-2xl border border-amber-300 p-4 shadow-sm flex flex-col justify-between gap-3">
-              <div class="space-y-1.5">
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-200 text-amber-900">
-                      Cần khai báo công thức
-                    </span>
-                    <h3 class="font-bold text-stone-900 text-base sm:text-lg mt-1">
-                      ${escapeHtml(rawDishName)}
-                    </h3>
-                  </div>
-                  <div class="text-right">
-                    <span class="text-xs text-stone-500 font-medium">Số lượng:</span>
-                    <div class="font-mono font-bold text-lg text-amber-800">
-                      ${formatQty(b.totalQuantity)} <span class="text-xs font-sans">suất</span>
-                    </div>
-                  </div>
-                </div>
-                <p class="text-xs text-stone-600 bg-white p-2.5 rounded-xl border border-amber-200">
-                  Món này từ đơn đặt của khách nhưng chưa được khai báo công thức định lượng (thịt, rau, gia vị ướp, sốt).
-                </p>
-                <div class="pt-1">
-                  <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Chia vào các khay:</span>
-                  <div class="flex flex-wrap gap-1 mt-1">${trayPills}</div>
-                </div>
-              </div>
-              <div class="pt-2 border-t border-amber-200">
-                <button onclick="openRecipeModalForDish('${escapeHtml(rawDishName)}')" class="touch-btn w-full py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-black text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
-                  <span>➕ Khai báo công thức món này ngay</span>
-                </button>
-              </div>
-            </div>
-          `;
-        }
+        const dishBadges = item.dishes.map(d => `
+          <span class="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-800 border border-stone-200 text-xs">
+            ${escapeHtml(d.dishName)}: <b>${formatQty(d.subTotalQty)}${item.unit}</b>
+          </span>
+        `).join('');
 
         return `
-          <div class="bg-white rounded-2xl border ${isDone ? 'border-emerald-300 bg-emerald-50/20' : 'border-[#E4DDD2]'} p-4 shadow-sm flex flex-col justify-between gap-3 smooth-transition">
+          <div onclick="openIngredientDrillDown('${item.key}')" class="bg-white rounded-3xl border border-[#E4DDD2] hover:border-brand-500 p-4 sm:p-5 shadow-sm hover:shadow-md cursor-pointer smooth-transition flex flex-col justify-between gap-3 group">
             
-            <div class="space-y-1.5">
+            <div class="space-y-2">
               <div class="flex items-start justify-between gap-2">
                 <div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${getCategoryBadgeClass(b.category)}">
-                    ${b.category}
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${catClass}">
+                    ${item.category}
                   </span>
-                  <h3 class="font-bold text-stone-900 text-base sm:text-lg mt-1 flex items-center gap-1.5">
-                    <span>${escapeHtml(b.name)}</span>
-                    ${b.hasSpecialNote ? '<span class="text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 font-bold" title="Có đơn dặn riêng">Lưu ý đơn!</span>' : ''}
+                  <h3 class="font-extrabold text-stone-900 text-base sm:text-lg mt-1 group-hover:text-brand-600 transition-colors flex items-center gap-1.5">
+                    <span>${escapeHtml(item.name)}</span>
                   </h3>
                 </div>
 
                 <div class="text-right">
-                  <span class="text-xs text-stone-500 font-medium">Tổng mẻ:</span>
-                  <div class="font-mono font-bold text-lg sm:text-xl ${isDone ? 'text-emerald-700' : 'text-stone-900'}">
-                    ${formatQty(b.totalQuantity)} <span class="text-xs font-sans font-bold">${b.unit}</span>
+                  <span class="text-[11px] text-stone-400 font-bold uppercase tracking-wider block">Tổng cần mua</span>
+                  <div class="font-mono font-black text-xl sm:text-2xl text-stone-900 group-hover:text-brand-600">
+                    ${formatQty(item.totalQuantity)} <span class="text-xs font-sans font-bold text-stone-500">${item.unit}</span>
                   </div>
                 </div>
               </div>
 
-              ${b.prep_instruction ? `
-                <p class="text-xs font-medium text-stone-600 bg-stone-50 px-2.5 py-1.5 rounded-xl border border-stone-200 flex items-center gap-1.5">
-                  <span>🔪</span>
-                  <span>Cách sơ chế: <b>${escapeHtml(b.prep_instruction)}</b></span>
-                </p>
-              ` : ''}
+              <div class="flex items-center gap-1.5 text-xs text-stone-500">
+                <span>Dùng trong: <b class="text-stone-800">${item.dishes.length} món</b></span>
+                <span>•</span>
+                <span>Khách đặt: <b class="text-stone-800">${item.orders.length} đơn</b></span>
+              </div>
+
+              <div class="flex flex-wrap gap-1 pt-1">
+                ${dishBadges}
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-[#F0EBE1] flex items-center justify-between text-xs">
+              <span class="text-stone-400 group-hover:text-stone-600 font-medium flex items-center gap-1">
+                <span>🔍</span> <span>Bấm để xem món &amp; đơn đặt</span>
+              </span>
+              <span class="font-bold text-brand-600 group-hover:translate-x-1 transition-transform">
+                Xem chi tiết →
+              </span>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterProcurementCategory(cat) {
+      state.procurementCategoryFilter = cat;
+      document.querySelectorAll('.procure-cat-btn').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = "procure-cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95";
+        } else {
+          btn.className = "procure-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95";
+        }
+      });
+      renderProcurementView();
+    }
+
+    function copyProcurementList() {
+      if (!state.procurementList || state.procurementList.length === 0) {
+        alert("Chưa có nguyên liệu nào cần mua.");
+        return;
+      }
+      const dateStr = state.dateFilterMode === 'all' ? 'Tất cả các ngày' : formatDateVN(state.currentDate);
+      const groups = {
+        'Thịt & Hải sản': [],
+        'Rau củ quả': [],
+        'Gia vị & Sốt': [],
+        'Topping & Khác': [],
+        'Khác': []
+      };
+
+      state.procurementList.forEach(item => {
+        const cat = groups[item.category] ? item.category : 'Khác';
+        groups[cat].push(item);
+      });
+
+      let text = `[MÂM CƠM - DANH SÁCH MUA NGUYÊN LIỆU / ĐI CHỢ]\n`;
+      text += `Ngày: ${dateStr}\n`;
+      text += `Tổng số đơn: ${state.kitchenOrders.length} đơn (${state.kitchenOrders.reduce((a,b)=>a+(b.servings||1),0)} suất ăn mealkit)\n\n`;
+
+      const catIcons = {
+        'Thịt & Hải sản': '🥩 THỊT & HẢI SẢN',
+        'Rau củ quả': '🥬 RAU CỦ QUẢ (Rửa ngâm chung)',
+        'Gia vị & Sốt': '🥣 GIA VỊ & SỐT',
+        'Topping & Khác': '✨ TOPPING & KHÁC',
+        'Khác': '📦 KHÁC'
+      };
+
+      Object.entries(groups).forEach(([cat, list]) => {
+        if (list.length > 0) {
+          text += `${catIcons[cat] || cat}:\n`;
+          list.forEach(i => {
+            const dishNames = i.dishes.map(d => `${d.dishName} (${d.servings}s)`).join(', ');
+            text += `• ${i.name}: ${formatQty(i.totalQuantity)} ${i.unit} (${dishNames})\n`;
+          });
+          text += `\n`;
+        }
+      });
+
+      text += `(Được xuất tự động từ hệ thống Bếp Sơ Chế Mâm Cơm)\n`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        showUndoToast('📋 Đã sao chép danh sách đi chợ vào bộ nhớ tạm!');
+      }).catch(() => {
+        prompt('Sao chép danh sách đi chợ:', text);
+      });
+    }
+
+    // ------------------------------------------------------------
+    // MODAL DRILL-DOWN: XEM MÓN ĂN & ĐƠN ĐẶT CỦA TỪNG NGUYÊN LIỆU
+    // ------------------------------------------------------------
+    function openIngredientDrillDown(ingKey) {
+      state.currentDrillIngredientKey = ingKey;
+      const item = state.procurementMap[ingKey];
+      if (!item) return;
+
+      const m = document.getElementById('modalIngredientDrillDown');
+      if (!m) return;
+
+      const elName = document.getElementById('drillIngName');
+      if (elName) elName.innerText = item.name;
+
+      const elCat = document.getElementById('drillCategoryBadge');
+      if (elCat) {
+        elCat.innerText = item.category;
+        elCat.className = `text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${getCategoryBadgeClass(item.category)}`;
+      }
+
+      const elSummary = document.getElementById('drillIngSummary');
+      if (elSummary) {
+        elSummary.innerHTML = `Tổng cần mua: <b class="text-emerald-400 font-mono text-sm">${formatQty(item.totalQuantity)} ${item.unit}</b> (Dùng cho ${item.dishes.length} món · ${item.orders.length} đơn khách đặt)`;
+      }
+
+      const elDishBadge = document.getElementById('drillDishCountBadge');
+      if (elDishBadge) elDishBadge.innerText = `${item.dishes.length} món`;
+
+      const elOrderBadge = document.getElementById('drillOrderCountBadge');
+      if (elOrderBadge) elOrderBadge.innerText = `${item.orders.length} đơn đặt`;
+
+      const elDishes = document.getElementById('drillDishesList');
+      if (elDishes) {
+        elDishes.innerHTML = item.dishes.map(d => `
+          <div class="p-3 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-between gap-2">
+            <div>
+              <div class="font-extrabold text-stone-900 text-sm flex items-center gap-1.5">
+                <span>🍲</span> <span>${escapeHtml(d.dishName)}</span>
+              </div>
+              <div class="text-xs text-stone-500 mt-0.5">
+                ${d.servings} suất · Định lượng: <span class="font-mono font-bold text-stone-700">${formatQty(d.qtyPerServing)}${item.unit}</span> / suất
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-mono font-black text-stone-900 text-base">
+                ${formatQty(d.subTotalQty)} <span class="text-xs font-sans font-bold">${item.unit}</span>
+              </div>
+              <div class="text-[10px] text-stone-400 uppercase font-bold tracking-wider">Tổng món này</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const elOrders = document.getElementById('drillOrdersList');
+      if (elOrders) {
+        elOrders.innerHTML = item.orders.map(o => `
+          <div class="p-3.5 rounded-2xl bg-white border ${o.specialNotes ? 'border-amber-300 bg-amber-50/20' : 'border-stone-200'} shadow-xs space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-xl bg-stone-900 text-white font-mono font-bold text-xs">
+                  KHAY #${String(o.trayNumber || 1).padStart(2, '0')}
+                </span>
+                <div>
+                  <div class="font-extrabold text-stone-900 text-xs sm:text-sm">${escapeHtml(o.customerName)}</div>
+                  <div class="text-[11px] text-stone-500 font-mono">${o.customerPhone || ''}</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-black text-emerald-700 text-sm bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+                  +${formatQty(o.orderQty)} ${item.unit}
+                </span>
+              </div>
+            </div>
+
+            <div class="text-xs text-stone-600 bg-stone-50 p-2 rounded-xl border border-stone-200 space-y-1">
+              <div>⏰ <b>Thời gian nhận:</b> ${escapeHtml(o.deliveryTime)} · ${escapeHtml(o.deliveryDate)}</div>
+              <div>🍲 <b>Món khách đặt:</b> ${escapeHtml(o.dishName)} (<b class="text-stone-900">${o.servings} suất</b>)</div>
+              ${o.address ? `<div>📍 <b>Địa chỉ:</b> ${escapeHtml(o.address)}</div>` : ''}
+              ${o.specialNotes ? `<div class="text-amber-800 font-bold bg-amber-100 p-1.5 rounded-lg">⚠️ Lưu ý riêng: ${escapeHtml(o.specialNotes)}</div>` : ''}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      m.classList.remove('hidden');
+      m.style.display = 'flex';
+    }
+
+    function closeIngredientDrillDown() {
+      const m = document.getElementById('modalIngredientDrillDown');
+      if (m) {
+        m.classList.add('hidden');
+        m.style.display = 'none';
+      }
+    }
+
+    function copyDrillDownText() {
+      const ingKey = state.currentDrillIngredientKey;
+      if (!ingKey || !state.procurementMap[ingKey]) return;
+      const item = state.procurementMap[ingKey];
+
+      let text = `[MÂM CƠM - CHI TIẾT NGUYÊN LIỆU: ${item.name.toUpperCase()}]\n`;
+      text += `Tổng cần dùng: ${formatQty(item.totalQuantity)} ${item.unit}\n`;
+      text += `Phân loại: ${item.category}\n\n`;
+
+      text += `MÓN ĂN SỬ DỤNG:\n`;
+      item.dishes.forEach(d => {
+        text += `• ${d.dishName}: ${d.servings} suất (${formatQty(d.qtyPerServing)}${item.unit}/suất) ➔ Tổng: ${formatQty(d.subTotalQty)} ${item.unit}\n`;
+      });
+      text += `\n`;
+
+      text += `DANH SÁCH ĐƠN HÀNG ĐẶT:\n`;
+      item.orders.forEach(o => {
+        text += `• Khay #${String(o.trayNumber || 1).padStart(2, '0')} - ${o.customerName} (${o.customerPhone || 'Không SĐT'}): ${formatQty(o.orderQty)}${item.unit} cho món ${o.dishName} (${o.servings} suất) - Nhận lúc ${o.deliveryTime} (${o.deliveryDate})${o.specialNotes ? ' [Lưu ý: ' + o.specialNotes + ']' : ''}\n`;
+      });
+
+      navigator.clipboard.writeText(text).then(() => {
+        showUndoToast('📋 Đã sao chép chi tiết nguyên liệu và đơn đặt!');
+      }).catch(() => {
+        prompt('Sao chép chi tiết:', text);
+      });
+    }
+
+    // ------------------------------------------------------------
+    // 6. CÔNG ĐOẠN 3: TRẠM SƠ CHẾ & TIPS SIÊU TỐC
+    // ------------------------------------------------------------
+    function renderPrepStationsView() {
+      const container = document.getElementById('prepStationsList');
+      if (!container) return;
+
+      const activeOrders = state.kitchenOrders;
+
+      if (activeOrders.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
+            <span class="text-4xl">🥦</span>
+            <h3 class="font-bold text-stone-800 text-base">Chưa có nguyên liệu cần sơ chế</h3>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chưa có đơn hàng nào đã thanh toán trong khung ngày này.</p>
+            <button onclick="switchTab('orders')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
+              ← Quay lại Bước 1: Xem đơn hàng
+            </button>
+          </div>
+        `;
+        const elBadge = document.getElementById('badgePrepCount');
+        if (elBadge) elBadge.innerText = '0';
+        return;
+      }
+
+      let list = state.procurementList;
+      if (state.prepStationFilter === 'station_wash') {
+        list = list.filter(i => i.category === 'Rau củ quả');
+      } else if (state.prepStationFilter === 'station_knife') {
+        list = list.filter(i => i.category === 'Gia vị & Sốt' || /(hành tím|tỏi|gừng|ớt|sả|tiêu)/i.test(i.name));
+      } else if (state.prepStationFilter === 'station_meat') {
+        list = list.filter(i => i.category === 'Thịt & Hải sản');
+      }
+
+      const elBadge = document.getElementById('badgePrepCount');
+      if (elBadge) elBadge.innerText = state.procurementList.length;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-stone-200 text-stone-500 text-sm">
+            Không có nguyên liệu ở trạm này.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const isDone = localStorage.getItem(`mamcom_prep_done_${item.key}`) === '1';
+
+        let specificTip = '';
+        const nLow = item.name.toLowerCase();
+        if (nLow.includes('hành lá') || nLow.includes('cà chua')) {
+          specificTip = '🥬 <b>Tip vàng:</b> Rửa ngâm chung hành lá &amp; cà chua trong bồn nước muối loãng 5 phút. Vớt ráo cùng lúc!';
+        } else if (nLow.includes('bắp cải')) {
+          specificTip = '🔪 <b>Tip bào mẻ:</b> Bào bắp cải 1 lượt bằng dao bào bản rộng, ngâm nước đá 3 phút cho giòn rồi vắt ráo.';
+        } else if (nLow.includes('hành tím') || nLow.includes('tỏi')) {
+          specificTip = '⚡ <b>Tip băm nhanh:</b> Bóc vỏ hàng loạt, cho vào cối xay xung nhịp hoặc băm dao bản to 1 mẻ lớn.';
+        } else if (item.category === 'Thịt & Hải sản') {
+          specificTip = '🥩 <b>Tip thịt tươi:</b> Thớt đỏ chuyên dụng. Cân đúng định lượng, chia hộp lót giấy thấm thịt tươi, trữ ngăn mát 0-4°C.';
+        }
+
+        const trayPills = item.orders.map(o => `
+          <span class="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-800 border border-stone-200 text-xs">
+            Khay #${String(o.trayNumber || 1).padStart(2, '0')}: <b>${formatQty(o.orderQty)}${item.unit}</b>
+          </span>
+        `).join('');
+
+        return `
+          <div class="bg-white rounded-3xl border ${isDone ? 'border-emerald-400 bg-emerald-50/15' : 'border-[#E4DDD2]'} p-4 sm:p-5 shadow-sm flex flex-col justify-between gap-3 smooth-transition">
+            
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${getCategoryBadgeClass(item.category)}">
+                    ${item.category}
+                  </span>
+                  <h3 class="font-extrabold text-stone-900 text-base sm:text-lg mt-1 flex items-center gap-1.5">
+                    <span>${escapeHtml(item.name)}</span>
+                  </h3>
+                </div>
+
+                <div class="text-right">
+                  <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider block">Tổng sơ chế mẻ</span>
+                  <div class="font-mono font-black text-xl sm:text-2xl ${isDone ? 'text-emerald-700' : 'text-stone-900'}">
+                    ${formatQty(item.totalQuantity)} <span class="text-xs font-sans font-bold text-stone-500">${item.unit}</span>
+                  </div>
+                </div>
+              </div>
+
+              ${specificTip ? `
+                <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-xs text-amber-950">
+                  ${specificTip}
+                </div>
+              ` : (item.prep_instruction ? `
+                <div class="bg-stone-50 p-2 rounded-xl border border-stone-200 text-xs text-stone-600">
+                  🔪 <b>Hướng dẫn:</b> ${escapeHtml(item.prep_instruction)}
+                </div>
+              ` : '')}
 
               <div class="pt-1">
-                <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Chia vào các khay:</span>
+                <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Chia theo từng khay:</span>
                 <div class="flex flex-wrap gap-1 mt-1">
                   ${trayPills}
                 </div>
               </div>
             </div>
 
-            <div class="pt-2 border-t border-[#EFEAE2] flex items-center gap-2">
-              <button onclick="toggleBatchPrepByName('${escapeHtml(b.name)}', ${!isDone})" class="touch-btn flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95 smooth-transition ${
+            <div class="pt-3 border-t border-[#F0EBE1] flex items-center gap-2">
+              <button onclick="togglePrepItemDone('${item.key}', ${!isDone})" class="touch-btn flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95 smooth-transition ${
                 isDone 
                   ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
                   : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-2 border-emerald-500'
               }">
                 <span>${isDone ? '✓ ĐÃ SƠ CHẾ XONG MẺ' : '⏱️ ĐÁNH DẤU XONG MẺ'}</span>
-                <span class="text-xs opacity-80">(${b.items.length} phần)</span>
+                <span class="text-xs opacity-80">(${item.orders.length} khay)</span>
               </button>
-
-              <button onclick="openIssueModalForBatch('${b.ingredient_id}', '${escapeHtml(b.name)}')" class="touch-btn px-3 py-2.5 rounded-xl border border-stone-300 hover:bg-stone-50 text-stone-700 text-xs font-bold active:scale-95 flex items-center gap-1" title="Báo thiếu hoặc đổi nguyên liệu">
-                <span>⚠️</span>
-                <span class="hidden sm:inline">Báo Thiếu</span>
+              <button onclick="openIngredientDrillDown('${item.key}')" class="touch-btn px-3 py-2.5 rounded-xl border border-stone-300 hover:bg-stone-50 text-stone-700 text-xs font-bold active:scale-95 flex items-center gap-1" title="Xem chi tiết đơn">
+                <span>🔍</span> <span class="hidden sm:inline">Xem Đơn</span>
               </button>
             </div>
 
@@ -2535,29 +3274,142 @@
       }).join('');
     }
 
-    function filterBatchCategory(cat) {
-      state.batchCategoryFilter = cat;
-      document.querySelectorAll('.batch-cat-btn').forEach(btn => {
-        if (btn.getAttribute('data-cat') === cat) {
-          btn.className = "batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95";
+    function filterPrepStation(station) {
+      state.prepStationFilter = station;
+      document.querySelectorAll('.prep-station-btn').forEach(btn => {
+        if (btn.getAttribute('data-station') === station) {
+          btn.className = "prep-station-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95";
         } else {
-          btn.className = "batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95";
+          btn.className = "prep-station-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95";
         }
       });
-      renderBatchPrepView();
+      renderPrepStationsView();
     }
 
-    async function toggleBatchPrepByName(ingName, markAsDone) {
-      const targetItems = state.checklist.filter(c => (c.prep_ingredients && c.prep_ingredients.name === ingName) || c.ingredient_id === ingName);
-      if (targetItems.length === 0) return;
+    function togglePrepItemDone(ingKey, isDone) {
+      if (isDone) {
+        localStorage.setItem(`mamcom_prep_done_${ingKey}`, '1');
+        playBeep('success');
+      } else {
+        localStorage.removeItem(`mamcom_prep_done_${ingKey}`);
+      }
+      renderPrepStationsView();
+    }
 
-      targetItems.forEach(i => {
-        i.is_batch_prepped = markAsDone;
-        saveChecklistStateItem(i.id, { is_batch_prepped: markAsDone });
-      });
+    // ------------------------------------------------------------
+    // 7. CÔNG ĐOẠN 4: TRẠM PHA SỐT & GIA VỊ MẺ LỚN (MASTER BATCH)
+    // ------------------------------------------------------------
+    function renderSaucingView() {
+      const container = document.getElementById('sauceBatchList');
+      if (!container) return;
 
-      renderBatchPrepView();
-      if (markAsDone) playBeep('success');
+      const activeOrders = state.kitchenOrders;
+
+      if (activeOrders.length === 0 || state.sauceList.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
+            <span class="text-4xl">🥣</span>
+            <h3 class="font-bold text-stone-800 text-base">Chưa có mẻ sốt hoặc gia vị cần pha</h3>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chưa có đơn hàng nào vào bếp hoặc các món chưa khai báo công thức sốt.</p>
+            <button onclick="switchTab('recipes')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
+              📖 Bổ sung công thức sốt &amp; ướp
+            </button>
+          </div>
+        `;
+        const elBadge = document.getElementById('badgeSaucingCount');
+        if (elBadge) elBadge.innerText = '0';
+        return;
+      }
+
+      const elBadge = document.getElementById('badgeSaucingCount');
+      if (elBadge) elBadge.innerText = state.sauceList.length;
+
+      container.innerHTML = state.sauceList.map(s => {
+        const isSauce = s.type === 'sauce';
+        const scaledFormula = scaleFormulaText(s.baseFormula, s.totalServings);
+        const saved = localStorage.getItem(`mamcom_sauce_done_${s.key}`) === '1';
+
+        return `
+          <div class="bg-white rounded-3xl border ${saved ? 'border-emerald-400 bg-emerald-50/15' : 'border-[#E4DDD2]'} p-4 sm:p-5 shadow-sm flex flex-col justify-between gap-4 smooth-transition">
+            
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2 border-b border-[#F0EBE1] pb-3">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${isSauce ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800'}">
+                    ${isSauce ? '🥣 Túi Sốt Nấu' : '🧂 Gói Ướp Khô'}
+                  </span>
+                  <h3 class="font-extrabold text-stone-900 text-base sm:text-lg mt-1">
+                    ${escapeHtml(s.title)}
+                  </h3>
+                  <p class="text-xs text-stone-500">Món: <b>${escapeHtml(s.dishName)}</b> · Dùng cho <b>${s.orders.length} đơn hàng</b></p>
+                </div>
+
+                <div class="text-right">
+                  <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider block">Quy mô mẻ</span>
+                  <div class="font-mono font-black text-lg sm:text-xl ${saved ? 'text-emerald-700' : 'text-stone-900'}">
+                    ${s.totalServings} <span class="text-xs font-sans font-bold">suất</span>
+                  </div>
+                  <span class="text-[11px] font-bold text-brand-600 block">➔ ${s.totalServings} túi zip</span>
+                </div>
+              </div>
+
+              <!-- Formula Comparison -->
+              <div class="space-y-2">
+                <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-200 text-xs">
+                  <span class="text-stone-500 font-medium">Công thức gốc 1 suất:</span>
+                  <div class="font-bold text-stone-800 mt-0.5">${escapeHtml(s.baseFormula)}</div>
+                </div>
+
+                <div class="bg-indigo-50/60 p-3 rounded-2xl border border-indigo-200 text-xs sm:text-sm space-y-1">
+                  <div class="flex items-center gap-1.5 text-indigo-900 font-bold">
+                    <span>🥣</span> <span>CÔNG THỨC MẺ LỚN MASTER BATCH (${s.totalServings} suất):</span>
+                  </div>
+                  <div class="font-black text-stone-900 text-sm sm:text-base leading-relaxed pl-1">
+                    ${scaledFormula}
+                  </div>
+                  <div class="text-[11px] text-indigo-800/80 pt-1 flex items-center gap-1">
+                    <span>🫗</span> <span>${isSauce ? 'Đong ca lớn, khuấy tan đều, dùng chai rót squeeze bottle hoặc ca mỏ vịt chiết 35-40ml/túi zip.' : 'Trộn đều gia vị khô, chia N túi zip nhỏ để thịt không bị ỉu/chảy nước.'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tray Pills -->
+              <div class="pt-1">
+                <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Chia cho các khay:</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  ${s.orders.map(o => `
+                    <span class="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-800 border border-stone-200 text-xs">
+                      Khay #${String(o.trayNumber || 1).padStart(2, '0')}: <b>${o.servings} gói</b>
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-[#F0EBE1] flex items-center justify-between gap-2">
+              <button onclick="toggleSauceBatchDone('${s.key}', ${!saved})" class="touch-btn flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95 smooth-transition ${
+                saved 
+                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'
+                  : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
+              }">
+                <span>${saved ? '✓ ĐÃ PHA & CHIA ĐỦ TÚI' : '⚡ ĐÁNH DẤU ĐÃ PHA XONG MẺ'}</span>
+                <span class="text-xs opacity-80">(${s.totalServings} túi)</span>
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleSauceBatchDone(sauceKey, isDone) {
+      if (isDone) {
+        localStorage.setItem(`mamcom_sauce_done_${sauceKey}`, '1');
+        playBeep('success');
+      } else {
+        localStorage.removeItem(`mamcom_sauce_done_${sauceKey}`);
+      }
+      renderSaucingView();
     }
 
     // ------------------------------------------------------------
@@ -2567,14 +3419,18 @@
       const container = document.getElementById('assemblyGrid');
       if (!container) return;
 
-      const activeOrders = state.orders.filter(o => o.status !== 'cancelled');
+      // CORE RULE: Chỉ có đơn đã thanh toán / xác nhận mới đưa vào dây chuyền đóng khay
+      const activeOrders = state.kitchenOrders;
 
       if (activeOrders.length === 0) {
         container.innerHTML = `
           <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
             <span class="text-4xl">📦</span>
-            <h3 class="font-bold text-stone-800 text-base">Chưa có khay nào cần đóng gói</h3>
-            <p class="text-xs text-stone-500">Chuyển sang "☀️ Hôm nay", "🌙 Ngày mai" hoặc "📋 Tất cả đơn" ở thanh trên để xem khay.</p>
+            <h3 class="font-bold text-stone-800 text-base">Chưa có khay nào cần đóng gói (${state.dateFilterMode === 'all' ? 'Tất cả các ngày' : formatDateVN(state.currentDate)})</h3>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chưa có đơn hàng nào đã thanh toán / xác nhận trong ngày này để đưa vào dây chuyền đóng gói. Hãy quay lại Bước 1 để duyệt đơn.</p>
+            <button onclick="switchTab('orders')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
+              ← Quay lại Bước 1: Xem đơn hàng
+            </button>
           </div>
         `;
         return;
@@ -2869,20 +3725,17 @@
 
     function updateOrderStatusCounts() {
       const orders = state.dateFilterMode === 'all' ? state.allOrders : state.orders;
-      const active = orders.filter(o => o.status !== 'cancelled').length;
+      const confirmedPool = orders.filter(o => o.status === 'confirmed' || o.status === 'prepping' || o.status === 'completed').length;
       const pending = orders.filter(o => o.status === 'pending').length;
-      const prepping = orders.filter(o => o.status === 'prepping').length;
-      const completed = orders.filter(o => o.status === 'completed').length;
+      const active = orders.filter(o => o.status !== 'cancelled').length;
       const trash = (state.dateFilterMode === 'all' ? state.allOrders : state.orders).filter(o => o.status === 'cancelled').length;
 
-      const elActive = document.getElementById('cntPrepActive');
-      if (elActive) elActive.innerText = active;
+      const elConfirmed = document.getElementById('cntPrepConfirmed');
+      if (elConfirmed) elConfirmed.innerText = confirmedPool;
       const elPending = document.getElementById('cntPrepPending');
       if (elPending) elPending.innerText = pending;
-      const elPrepping = document.getElementById('cntPrepPrepping');
-      if (elPrepping) elPrepping.innerText = prepping;
-      const elDone = document.getElementById('cntPrepDone');
-      if (elDone) elDone.innerText = completed;
+      const elActive = document.getElementById('cntPrepActive');
+      if (elActive) elActive.innerText = active;
       const elTrash = document.getElementById('cntPrepTrash');
       if (elTrash) elTrash.innerText = trash;
     }
@@ -2981,13 +3834,30 @@
             </div>
           ` : ''}
 
+          ${order.status === 'pending' ? `
+            <div class="bg-amber-500/10 border-b border-amber-300 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div class="flex items-center gap-2 text-amber-900 font-bold text-xs">
+                <span class="text-base">⏳</span> <span>Chưa xác nhận thanh toán (Chưa vào bếp)</span>
+              </div>
+              <button onclick="confirmOrderPayment('${order.id}')" class="touch-btn px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap">
+                <span>💰</span> <span>Xác nhận ĐÃ THANH TOÁN ➔ Vào Bếp</span>
+              </button>
+            </div>
+          ` : ''}
+
           <div class="p-4 space-y-3">
             <!-- Card Top: Tray #, Code, Status Dropdown -->
             <div class="flex items-start justify-between gap-2 border-b border-[#F0EBE1] pb-2.5">
               <div class="flex items-center gap-2">
-                <span class="px-2.5 py-1 rounded-xl bg-stone-900 text-white font-mono font-bold text-xs tracking-wide">
-                  KHAY #${String(order.tray_number || 1).padStart(2, '0')}
-                </span>
+                ${order.tray_number > 0 ? `
+                  <span class="px-2.5 py-1 rounded-xl bg-stone-900 text-white font-mono font-bold text-xs tracking-wide">
+                    KHAY #${String(order.tray_number).padStart(2, '0')}
+                  </span>
+                ` : `
+                  <span class="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-900 font-bold text-xs border border-amber-300">
+                    ⏳ Chờ thanh toán
+                  </span>
+                `}
                 <div>
                   <div class="text-xs font-mono font-bold text-stone-900">#${escapeHtml(String(order.id).slice(-8))}</div>
                   <div class="text-[10px] text-stone-400 font-mono">${order.created_at ? 'Đặt: ' + order.created_at.replace('T', ' ').slice(0, 16) : ''}</div>
@@ -3070,12 +3940,18 @@
             </div>
 
             <div class="flex items-center gap-1.5 pt-1 border-t border-stone-200">
-              <button onclick="copyOrderTicket('${order.id}')" class="touch-btn px-2.5 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 text-xs font-bold flex items-center gap-1 active:scale-95 flex-1 justify-center">
-                <span>📋</span> <span>Sao chép đơn</span>
-              </button>
-              <button onclick="goToTrayAssembly('${order.id}')" class="touch-btn px-3 py-1.5 rounded-xl bg-stone-900 text-white hover:bg-black text-xs font-bold flex items-center gap-1 active:scale-95">
-                <span>📦</span> <span>Kiểm tra khay →</span>
-              </button>
+              ${order.status === 'pending' ? `
+                <button onclick="confirmOrderPayment('${order.id}')" class="touch-btn flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1 active:scale-95 shadow-sm">
+                  <span>💰</span> <span>Duyệt Thanh Toán ➔ Vào Bếp</span>
+                </button>
+              ` : `
+                <button onclick="copyOrderTicket('${order.id}')" class="touch-btn px-2.5 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 text-xs font-bold flex items-center gap-1 active:scale-95 flex-1 justify-center">
+                  <span>📋</span> <span>Sao chép đơn</span>
+                </button>
+                <button onclick="goToTrayAssembly('${order.id}')" class="touch-btn px-3 py-1.5 rounded-xl bg-stone-900 text-white hover:bg-black text-xs font-bold flex items-center gap-1 active:scale-95">
+                  <span>📦</span> <span>Kiểm tra khay →</span>
+                </button>
+              `}
               <button onclick="deleteOrder('${order.id}')" class="touch-btn p-1.5 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 text-xs active:scale-95" title="Chuyển vào Sọt rác">
                 🗑️
               </button>
@@ -3215,13 +4091,12 @@
       updateDateCountBadges();
       updateOrderStatusCounts();
 
-      // Update Summary Cards (5 Key Metrics - ACTIVE ORDERS ONLY)
-      const ordersForSummary = state.dateFilterMode === 'all' ? state.allOrders : state.orders;
-      const activeSummaryOrders = ordersForSummary.filter(o => o.status !== 'cancelled');
+      // Update Summary Cards (5 Key Metrics - STRICTLY CONFIRMED KITCHEN PIPELINE)
+      const activeSummaryOrders = state.kitchenOrders;
       const totalOrders = activeSummaryOrders.length;
       const totalServings = activeSummaryOrders.reduce((acc, cur) => acc + (cur.servings || 1), 0);
-      const pendingOrders = activeSummaryOrders.filter(o => o.status === 'pending' || o.status === 'prepping').length;
-      const readyOrders = activeSummaryOrders.filter(o => o.status === 'completed' || o.status === 'ready').length;
+      const pendingOrders = activeSummaryOrders.filter(o => o.status === 'confirmed').length;
+      const readyOrders = activeSummaryOrders.filter(o => o.status === 'prepping').length;
       const totalRevenue = activeSummaryOrders.reduce((acc, cur) => acc + (Number(cur.total) || 0), 0);
 
       const elSumTotal = document.getElementById('sumTotalOrders');
@@ -3245,7 +4120,13 @@
       let displayOrders = [];
       const baseOrders = state.dateFilterMode === 'all' ? state.allOrders : state.orders;
 
-      if (state.orderStatusFilter === 'ALL') {
+      if (state.orderStatusFilter === 'confirmed_pool') {
+        // "Đã thanh toán / Vào Bếp": CHỈ HIỂN THỊ CÁC ĐƠN ĐÃ THANH TOÁN / XÁC NHẬN
+        displayOrders = state.orders.filter(o => o.status === 'confirmed' || o.status === 'prepping' || o.status === 'completed');
+      } else if (state.orderStatusFilter === 'pending') {
+        // "Chờ thanh toán": các đơn khách tạo nhưng chưa duyệt tiền vào bếp
+        displayOrders = state.orders.filter(o => o.status === 'pending');
+      } else if (state.orderStatusFilter === 'ALL') {
         // "Tất cả" CHỈ HIỂN THỊ ĐƠN ĐANG HOẠT ĐỘNG, TUYỆT ĐỐI KHÔNG LẪN ĐƠN HỦY
         displayOrders = state.orders.filter(o => o.status !== 'cancelled');
       } else if (state.orderStatusFilter === 'cancelled') {
@@ -3516,6 +4397,11 @@
       renderOrdersView();
     }
 
+    async function confirmOrderPayment(orderId) {
+      await changeOrderStatus(orderId, 'confirmed');
+      showUndoToast('💰 Đã xác nhận thanh toán! Đơn đã được chuyển vào Bếp sơ chế.');
+    }
+
     async function changeOrderStatus(orderId, newStatus) {
       const order = state.allOrders.find(o => o.id === orderId);
       if (!order) return;
@@ -3529,6 +4415,8 @@
         });
       } else if (newStatus === 'preparing') {
         order.status = 'prepping';
+      } else if (newStatus === 'confirmed' || newStatus === 'paid') {
+        order.status = 'confirmed';
       } else if (newStatus === 'cancelled') {
         order.status = 'cancelled';
       } else {
@@ -4596,9 +5484,10 @@ Tổng tiền: ${formatVND(order.total)}`;
     // ------------------------------------------------------------
     function switchTab(tabName) {
       state.activeTab = tabName;
+      const allTabs = ['orders', 'procurement', 'prep', 'saucing', 'assembly', 'recipes'];
 
       // Views
-      ['orders', 'batch', 'assembly', 'recipes'].forEach(t => {
+      allTabs.forEach(t => {
         const el = document.getElementById(`view-${t}`);
         if (el) {
           if (t === tabName) {
@@ -4612,25 +5501,25 @@ Tổng tiền: ${formatVND(order.total)}`;
       });
 
       // Desktop tabs
-      ['orders', 'batch', 'assembly', 'recipes'].forEach(t => {
+      allTabs.forEach(t => {
         const deskBtn = document.getElementById(`deskTab-${t}`);
         if (deskBtn) {
           if (t === tabName) {
-            deskBtn.className = "nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 bg-white text-stone-900 shadow-sm";
+            deskBtn.className = "nav-tab flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-1.5 bg-white text-stone-900 shadow-sm";
           } else {
-            deskBtn.className = "nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900";
+            deskBtn.className = "nav-tab flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-1.5 text-stone-600 hover:text-stone-900";
           }
         }
       });
 
       // Mobile bottom bar tabs
-      ['orders', 'batch', 'assembly', 'recipes'].forEach(t => {
+      allTabs.forEach(t => {
         const mobBtn = document.getElementById(`mobTab-${t}`);
         if (mobBtn) {
           if (t === tabName) {
-            mobBtn.className = "flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-brand-600 font-bold text-[11px] active:scale-95 transition-all";
+            mobBtn.className = "flex flex-col items-center justify-center py-1 px-0.5 rounded-xl text-brand-600 font-bold text-[10px] active:scale-95 transition-all";
           } else {
-            mobBtn.className = "flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-stone-500 font-semibold text-[11px] active:scale-95 transition-all";
+            mobBtn.className = "flex flex-col items-center justify-center py-1 px-0.5 rounded-xl text-stone-500 font-semibold text-[10px] active:scale-95 transition-all";
           }
         }
       });
