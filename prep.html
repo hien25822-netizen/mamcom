@@ -223,27 +223,27 @@
   <!-- ============================================================ -->
   <nav class="max-w-6xl mx-auto px-4 mt-3 hidden md:block">
     <div class="flex items-center gap-2 bg-[#EFEAE2] p-1.5 rounded-2xl">
-      <button onclick="switchTab('batch')" id="deskTab-batch" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 bg-white text-stone-900 shadow-sm">
+      <button onclick="switchTab('orders')" id="deskTab-orders" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 bg-white text-stone-900 shadow-sm">
+        <span class="text-lg">📝</span>
+        <span>1. Đơn hàng đã đặt</span>
+        <span id="badgeOrderCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 font-mono">0</span>
+      </button>
+
+      <button onclick="switchTab('batch')" id="deskTab-batch" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900">
         <span class="text-lg">🥦</span>
-        <span>1. Gom mẻ sơ chế</span>
-        <span id="badgeBatchCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 font-mono">0</span>
+        <span>2. Gom mẻ sơ chế</span>
+        <span id="badgeBatchCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono">0</span>
       </button>
 
       <button onclick="switchTab('assembly')" id="deskTab-assembly" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900">
         <span class="text-lg">📦</span>
-        <span>2. Kiểm tra đóng gói</span>
+        <span>3. Đóng gói khay</span>
         <span id="badgeAssemblyCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono">0</span>
-      </button>
-
-      <button onclick="switchTab('orders')" id="deskTab-orders" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900">
-        <span class="text-lg">📝</span>
-        <span>3. Đơn hàng</span>
-        <span id="badgeOrderCount" class="text-xs px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono">0</span>
       </button>
 
       <button onclick="switchTab('recipes')" id="deskTab-recipes" class="nav-tab flex-1 py-2.5 px-4 rounded-xl font-bold text-sm text-center transition-all flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900">
         <span class="text-lg">📖</span>
-        <span>4. Món & Công thức</span>
+        <span>4. Món &amp; Công thức</span>
       </button>
     </div>
   </nav>
@@ -254,26 +254,176 @@
   <main class="max-w-6xl mx-auto px-4 mt-3">
 
     <!-- ---------------------------------------------------------- -->
-    <!-- TAB 1: GOM MẺ SƠ CHẾ (BATCH PREP - THEO NGUYÊN LIỆU) -->
+    <!-- TAB 1: ĐƠN HÀNG ĐÃ ĐẶT (ORDER STREAM & TRIAGE) -->
     <!-- ---------------------------------------------------------- -->
-    <section id="view-batch" class="space-y-4">
+    <section id="view-orders" class="space-y-4">
       
+      <!-- Top Action: Add Order Button & Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#E8E2D8] shadow-sm">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold text-stone-900 flex items-center gap-2">
+            <span>📝 Đơn Hàng Đã Đặt</span>
+            <span id="orderSourceBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Đồng bộ Web &amp; Bếp</span>
+          </h2>
+          <p class="text-xs text-stone-500 mt-0.5">Nắm rõ toàn bộ danh sách đơn, quy mô suất ăn và các lưu ý kiêng cữ trước khi sơ chế</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="openOrderModal()" class="touch-btn px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-sm flex items-center gap-1.5 active:scale-95">
+            <span>+</span>
+            <span>Tạo Đơn Thủ Công</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Summary Cards (5 Key Metrics) -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="ordersSummaryGrid">
+        <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm">
+          <div class="text-[11px] font-bold text-stone-500 uppercase">Tổng số đơn</div>
+          <div class="text-xl font-extrabold text-stone-900 font-mono mt-0.5" id="sumTotalOrders">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-blue-200 bg-blue-50/30 shadow-sm">
+          <div class="text-[11px] font-bold text-blue-700 uppercase">Tổng suất ăn</div>
+          <div class="text-xl font-extrabold text-blue-900 font-mono mt-0.5" id="sumTotalServings">0 suất</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-sm">
+          <div class="text-[11px] font-bold text-amber-700 uppercase">Chờ chuẩn bị</div>
+          <div class="text-xl font-extrabold text-amber-800 font-mono mt-0.5" id="sumPendingOrders">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-sm">
+          <div class="text-[11px] font-bold text-emerald-700 uppercase">Đã đóng gói đủ</div>
+          <div class="text-xl font-extrabold text-emerald-800 font-mono mt-0.5" id="sumReadyOrders">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm col-span-2 sm:col-span-1">
+          <div class="text-[11px] font-bold text-stone-500 uppercase">Doanh thu dự kiến</div>
+          <div class="text-xl font-extrabold text-brand-600 font-mono mt-0.5" id="sumTotalRevenue">0 đ</div>
+        </div>
+      </div>
+
+      <!-- Workflow Bridge Card: Step 1 -> Step 2 -->
+      <div class="bg-gradient-to-r from-orange-50 via-amber-50 to-emerald-50 p-4 rounded-2xl border border-amber-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="text-base">💡</span>
+            <h3 class="font-extrabold text-stone-900 text-sm sm:text-base">Quy trình sơ chế Mealkit khoa học</h3>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 uppercase">Bước 1 / 3</span>
+          </div>
+          <p class="text-xs text-stone-600 leading-relaxed max-w-2xl">
+            Sau khi kiểm tra số lượng <b id="bridgeTotalOrders">0 đơn</b> (<b id="bridgeTotalServings">0 suất ăn</b>) và các lưu ý kiêng cữ của khách dưới đây, hãy bấm nút bên phải để chuyển sang gom mẻ sơ chế toàn bộ nguyên liệu một lần!
+          </p>
+        </div>
+        <button onclick="switchTab('batch')" class="touch-btn px-5 py-3 rounded-xl bg-stone-900 hover:bg-black text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 active:scale-95 whitespace-nowrap">
+          <span>🥦 Chuyển sang Bước 2: Gom mẻ sơ chế</span>
+          <span class="text-base">→</span>
+        </button>
+      </div>
+
+      <!-- Search, Status Filter & View Mode Bar -->
+      <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm space-y-3">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <!-- Search box -->
+          <div class="relative flex-1">
+            <span class="absolute left-3 top-2.5 text-stone-400">🔍</span>
+            <input type="text" id="orderSearchInput" oninput="handleOrderSearch(this.value)" placeholder="Tìm kiếm theo mã đơn, SĐT khách, địa chỉ, món ăn..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm focus:border-brand-500 focus:outline-none">
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between lg:justify-end gap-2">
+            <!-- Status filter chips -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+              <button onclick="filterOrderStatus('ALL')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-st="ALL">Tất cả</button>
+              <button onclick="filterOrderStatus('pending')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="pending">⏳ Chờ xử lý</button>
+              <button onclick="filterOrderStatus('prepping')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="prepping">🍳 Đang sơ chế</button>
+              <button onclick="filterOrderStatus('completed')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="completed">✓ Hoàn thành</button>
+              <button onclick="filterOrderStatus('cancelled')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="cancelled">✕ Đã hủy</button>
+            </div>
+
+            <!-- View mode switcher: Cards vs Table -->
+            <div class="flex items-center bg-stone-100 p-0.5 rounded-xl border border-stone-200">
+              <button onclick="setOrderViewMode('cards')" id="btnOrderView-cards" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-stone-900 shadow-sm active:scale-95 transition-all">
+                🎴 Thẻ đơn
+              </button>
+              <button onclick="setOrderViewMode('table')" id="btnOrderView-table" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-stone-600 hover:text-stone-900 active:scale-95 transition-all">
+                📋 Bảng
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders List Container: Cards Mode -->
+      <div id="ordersCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered dynamically -->
+        <div class="col-span-full py-12 text-center text-stone-400 font-medium">
+          <div class="inline-block animate-spin text-2xl mb-2">⏳</div>
+          <p>Đang tải danh sách đơn hàng...</p>
+        </div>
+      </div>
+
+      <!-- Orders List Container: Table Mode -->
+      <div id="ordersTableContainer" class="bg-white rounded-2xl border border-[#E8E2D8] shadow-sm overflow-hidden hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-[#F8F5F0] text-stone-600 text-xs uppercase font-bold border-b border-[#E8E2D8]">
+              <tr>
+                <th class="px-4 py-3 whitespace-nowrap">Khay / Mã đơn</th>
+                <th class="px-4 py-3 whitespace-nowrap">Khách hàng &amp; SĐT</th>
+                <th class="px-4 py-3 whitespace-nowrap">Thời gian nhận</th>
+                <th class="px-4 py-3 min-w-[200px]">Món ăn &amp; Suất</th>
+                <th class="px-4 py-3 min-w-[150px]">Lưu ý đặc biệt</th>
+                <th class="px-4 py-3 whitespace-nowrap">Tiến độ gói</th>
+                <th class="px-4 py-3 whitespace-nowrap">Trạng thái bếp</th>
+                <th class="px-4 py-3 text-right whitespace-nowrap">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody" class="divide-y divide-[#EFEAE2]">
+              <!-- Dynamic rows -->
+              <tr>
+                <td colspan="8" class="px-4 py-8 text-center text-stone-400">Đang tải danh sách đơn...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ---------------------------------------------------------- -->
+    <!-- TAB 2: GOM MẺ SƠ CHẾ (BATCH PREP - THEO NGUYÊN LIỆU) -->
+    <!-- ---------------------------------------------------------- -->
+    <section id="view-batch" class="space-y-4 hidden" style="display: none;">
+      
+      <!-- Top Context Banner -->
+      <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-base">🥦</span>
+            <h3 class="font-extrabold text-stone-900 text-sm sm:text-base">Bước 2: Gom mẻ sơ chế theo nguyên liệu</h3>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase">Sơ chế hàng loạt</span>
+          </div>
+          <p class="text-xs text-stone-600 mt-1 max-w-2xl">
+            Toàn bộ thịt cá, rau củ quả, gia vị ướp và sốt đã được tính toán gộp từ các đơn hàng. Sơ chế, cắt thái và cân định lượng một lần để tiết kiệm thời gian tối đa.
+          </p>
+        </div>
+        <button onclick="switchTab('assembly')" class="touch-btn px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap">
+          <span>📦 Sang Bước 3: Đóng gói khay →</span>
+        </button>
+      </div>
+
       <!-- Filter & Quick Action Bar -->
       <div class="bg-white p-3.5 rounded-2xl border border-[#E8E2D8] shadow-sm space-y-3">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div>
             <h2 class="text-base sm:text-lg font-bold text-stone-900 flex items-center gap-2">
-              <span>🥦 Gom Mẻ Sơ Chế Theo Nguyên Liệu</span>
+              <span>🥦 Danh Sách Mẻ Cần Sơ Chế</span>
             </h2>
-            <p class="text-xs text-stone-500">Tổng hợp toàn bộ nguyên liệu cần gọt, thái, chia cho các khay hôm nay</p>
+            <p class="text-xs text-stone-500">Cân định lượng một lần theo mẻ, sau đó chia theo số lượng từng khay</p>
           </div>
           
           <!-- Category Quick Filter Chips -->
           <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="batchCategoryChips">
             <button onclick="filterBatchCategory('ALL')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-cat="ALL">Tất cả</button>
-            <button onclick="filterBatchCategory('Thịt & Hải sản')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Thịt & Hải sản">🥩 Thịt & Cá</button>
+            <button onclick="filterBatchCategory('Thịt & Hải sản')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Thịt & Hải sản">🥩 Thịt &amp; Cá</button>
             <button onclick="filterBatchCategory('Rau củ quả')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Rau củ quả">🥬 Rau củ</button>
-            <button onclick="filterBatchCategory('Gia vị & Sốt')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Gia vị & Sốt">🥣 Sốt & Gia vị</button>
+            <button onclick="filterBatchCategory('Gia vị & Sốt')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Gia vị & Sốt">🥣 Sốt &amp; Gia vị</button>
             <button onclick="filterBatchCategory('Topping & Khác')" class="batch-cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-cat="Topping & Khác">✨ Topping</button>
           </div>
         </div>
@@ -288,13 +438,35 @@
         </div>
       </div>
 
+      <!-- Bottom Bridge to Step 3 -->
+      <div class="bg-white p-4 rounded-2xl border border-[#E8E2D8] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+        <div>
+          <div class="font-bold text-stone-900 text-sm">Đã sơ chế xong toàn bộ mẻ nguyên liệu?</div>
+          <div class="text-xs text-stone-500">Chuyển sang Bước 3 để chia nguyên liệu vào từng khay theo yêu cầu riêng của từng khách hàng.</div>
+        </div>
+        <button onclick="switchTab('assembly')" class="touch-btn px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 flex items-center gap-2 whitespace-nowrap">
+          <span>📦 Sang Bước 3: Kiểm tra đóng gói</span>
+          <span>→</span>
+        </button>
+      </div>
+
     </section>
 
     <!-- ---------------------------------------------------------- -->
-    <!-- TAB 2: KIỂM TRA ĐÓNG GÓI (ASSEMBLY - THEO TỪNG KHAY/ĐƠN) -->
+    <!-- TAB 3: KIỂM TRA ĐÓNG GÓI (ASSEMBLY - THEO TỪNG KHAY/ĐƠN) -->
     <!-- ---------------------------------------------------------- -->
-    <section id="view-assembly" class="space-y-4 hidden">
+    <section id="view-assembly" class="space-y-4 hidden" style="display: none;">
       
+      <!-- Top Links & Step Info -->
+      <div class="flex items-center justify-between">
+        <button onclick="switchTab('orders')" class="text-xs font-bold text-stone-600 hover:text-stone-900 flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-stone-100">
+          <span>←</span> <span>Xem lại danh sách đơn hàng (Bước 1)</span>
+        </button>
+        <button onclick="switchTab('batch')" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-emerald-50">
+          <span>🥦 Xem lại mẻ sơ chế (Bước 2)</span>
+        </button>
+      </div>
+
       <!-- Filter Bar for Trays -->
       <div class="bg-white p-3.5 rounded-2xl border border-[#E8E2D8] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -324,99 +496,9 @@
     </section>
 
     <!-- ---------------------------------------------------------- -->
-    <!-- TAB 3: TẠO & QUẢN LÝ ĐƠN HÀNG (ORDER MANAGEMENT) -->
-    <!-- ---------------------------------------------------------- -->
-    <section id="view-orders" class="space-y-4 hidden">
-      
-      <!-- Top Action: Add Order Button & Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#E8E2D8] shadow-sm">
-        <div>
-          <h2 class="text-base sm:text-lg font-extrabold text-stone-900 flex items-center gap-2">
-            <span>📝 Quản Lý &amp; Điều Phối Đơn Hàng</span>
-            <span id="orderSourceBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Liên kết Web Trực Tiếp</span>
-          </h2>
-          <p class="text-xs text-stone-500 mt-0.5">Tất cả đơn từ website và bếp sơ chế tự động đồng bộ thời gian thực</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <button onclick="openOrderModal()" class="touch-btn px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-sm flex items-center gap-1.5 active:scale-95">
-            <span>+</span>
-            <span>Tạo Đơn Thủ Công</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Quick Summary Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="ordersSummaryGrid">
-        <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm">
-          <div class="text-[11px] font-bold text-stone-500 uppercase">Tổng số đơn</div>
-          <div class="text-xl font-extrabold text-stone-900 font-mono mt-0.5" id="sumTotalOrders">0</div>
-        </div>
-        <div class="bg-white p-3 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-sm">
-          <div class="text-[11px] font-bold text-amber-700 uppercase">Chờ chuẩn bị</div>
-          <div class="text-xl font-extrabold text-amber-800 font-mono mt-0.5" id="sumPendingOrders">0</div>
-        </div>
-        <div class="bg-white p-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-sm">
-          <div class="text-[11px] font-bold text-emerald-700 uppercase">Đã đóng gói đủ</div>
-          <div class="text-xl font-extrabold text-emerald-800 font-mono mt-0.5" id="sumReadyOrders">0</div>
-        </div>
-        <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm">
-          <div class="text-[11px] font-bold text-stone-500 uppercase">Doanh thu dự kiến</div>
-          <div class="text-xl font-extrabold text-brand-600 font-mono mt-0.5" id="sumTotalRevenue">0 đ</div>
-        </div>
-      </div>
-
-      <!-- Search & Status Filter Bar -->
-      <div class="bg-white p-3 rounded-2xl border border-[#E8E2D8] shadow-sm space-y-3">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <!-- Search box -->
-          <div class="relative flex-1">
-            <span class="absolute left-3 top-2.5 text-stone-400">🔍</span>
-            <input type="text" id="orderSearchInput" oninput="handleOrderSearch(this.value)" placeholder="Tìm kiếm theo mã đơn, SĐT khách, địa chỉ, món ăn..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm focus:border-brand-500 focus:outline-none">
-          </div>
-
-          <!-- Status filter chips -->
-          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-            <button onclick="filterOrderStatus('ALL')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-st="ALL">Tất cả</button>
-            <button onclick="filterOrderStatus('pending')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="pending">⏳ Chờ xử lý</button>
-            <button onclick="filterOrderStatus('prepping')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="prepping">🔪 Đang sơ chế</button>
-            <button onclick="filterOrderStatus('completed')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="completed">✓ Hoàn thành</button>
-            <button onclick="filterOrderStatus('cancelled')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="cancelled">✕ Đã hủy</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Orders List Table -->
-      <div class="bg-white rounded-2xl border border-[#E8E2D8] shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-[#F8F5F0] text-stone-600 text-xs uppercase font-bold border-b border-[#E8E2D8]">
-              <tr>
-                <th class="px-4 py-3 whitespace-nowrap">Khay / Mã đơn</th>
-                <th class="px-4 py-3 whitespace-nowrap">Khách hàng &amp; SĐT</th>
-                <th class="px-4 py-3 whitespace-nowrap">Thời gian nhận</th>
-                <th class="px-4 py-3 min-w-[200px]">Món ăn &amp; Suất</th>
-                <th class="px-4 py-3 min-w-[150px]">Lưu ý đặc biệt</th>
-                <th class="px-4 py-3 whitespace-nowrap">Tiến độ gói</th>
-                <th class="px-4 py-3 whitespace-nowrap">Trạng thái bếp</th>
-                <th class="px-4 py-3 text-right whitespace-nowrap">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody id="ordersTableBody" class="divide-y divide-[#EFEAE2]">
-              <!-- Dynamic rows -->
-              <tr>
-                <td colspan="8" class="px-4 py-8 text-center text-stone-400">Đang tải danh sách đơn...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ---------------------------------------------------------- -->
     <!-- TAB 4: THỰC ĐƠN & CÔNG THỨC (MENU & RECIPE BUILDER) -->
     <!-- ---------------------------------------------------------- -->
-    <section id="view-recipes" class="space-y-5 hidden">
+    <section id="view-recipes" class="space-y-5 hidden" style="display: none;">
       
       <!-- Sub-tabs: Recipes vs Ingredient Catalog -->
       <div class="flex items-center justify-between border-b border-[#E2DBD0] pb-3">
@@ -479,7 +561,12 @@
   <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#E8E2D8] px-2 py-1.5 shadow-lg">
     <div class="grid grid-cols-4 gap-1 max-w-md mx-auto">
       
-      <button onclick="switchTab('batch')" id="mobTab-batch" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-brand-600 font-bold text-[11px] active:scale-95 transition-all">
+      <button onclick="switchTab('orders')" id="mobTab-orders" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-brand-600 font-bold text-[11px] active:scale-95 transition-all">
+        <span class="text-xl leading-none mb-1">📝</span>
+        <span class="truncate">Đơn hàng</span>
+      </button>
+
+      <button onclick="switchTab('batch')" id="mobTab-batch" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-stone-500 font-semibold text-[11px] active:scale-95 transition-all">
         <span class="text-xl leading-none mb-1">🥦</span>
         <span class="truncate">Gom mẻ</span>
       </button>
@@ -487,11 +574,6 @@
       <button onclick="switchTab('assembly')" id="mobTab-assembly" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-stone-500 font-semibold text-[11px] active:scale-95 transition-all">
         <span class="text-xl leading-none mb-1">📦</span>
         <span class="truncate">Đóng gói</span>
-      </button>
-
-      <button onclick="switchTab('orders')" id="mobTab-orders" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-stone-500 font-semibold text-[11px] active:scale-95 transition-all">
-        <span class="text-xl leading-none mb-1">📝</span>
-        <span class="truncate">Đơn hàng</span>
       </button>
 
       <button onclick="switchTab('recipes')" id="mobTab-recipes" class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl text-stone-500 font-semibold text-[11px] active:scale-95 transition-all">
@@ -964,7 +1046,8 @@
       dateFilterMode: 'today', // 'today' | 'tomorrow' | 'all' | 'custom'
       orderStatusFilter: 'ALL', // 'ALL' | 'pending' | 'prepping' | 'completed' | 'cancelled'
       orderSearchQuery: '',
-      activeTab: 'batch', // 'batch' | 'assembly' | 'orders' | 'recipes'
+      activeTab: 'orders', // DEFAULT: 'orders' (Đơn hàng đã đặt xem trước)
+      orderViewMode: 'cards', // 'cards' | 'table'
       recipeSubTab: 'recipes', // 'recipes' | 'ingredients'
       batchCategoryFilter: 'ALL',
       trayStatusFilter: 'ALL',
@@ -1002,6 +1085,82 @@
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
+    }
+
+    // Trích xuất timestamp hẹn giao hàng để sắp xếp theo thứ tự thời gian
+    function parseDeliveryTimestamp(o) {
+      if (!o) return 0;
+      var dStr = String(o.date || o.order_date || o.delivery_date || "").trim().toLowerCase();
+      var tStr = String(o.time || o.delivery_time || "").trim();
+
+      var cur = new Date();
+      var curYr = cur.getFullYear();
+      var curMo = cur.getMonth();
+      var curDay = cur.getDate();
+
+      var y = curYr, m = curMo, d = curDay;
+
+      if (dStr === 'hôm nay' || dStr === 'today') {
+        // Hôm nay
+      } else if (dStr === 'ngày mai' || dStr === 'tomorrow') {
+        var tm = new Date();
+        tm.setDate(tm.getDate() + 1);
+        y = tm.getFullYear();
+        m = tm.getMonth();
+        d = tm.getDate();
+      } else if (/^\d{4}-\d{2}-\d{2}$/.test(dStr)) {
+        var parts = dStr.split('-');
+        y = parseInt(parts[0], 10);
+        m = parseInt(parts[1], 10) - 1;
+        d = parseInt(parts[2], 10);
+      } else {
+        var matchD = dStr.match(/(\d{1,2})[\/\-\.](\d{1,2})(?:[\/\-\.](\d{2,4}))?/);
+        if (matchD) {
+          d = parseInt(matchD[1], 10);
+          m = parseInt(matchD[2], 10) - 1;
+          if (matchD[3]) {
+            y = matchD[3].length === 2 ? parseInt('20' + matchD[3], 10) : parseInt(matchD[3], 10);
+          }
+        }
+      }
+
+      var hrs = 12, mins = 0;
+      if (tStr) {
+        var matchT = tStr.match(/(\d{1,2})[:h](\d{2})/i);
+        if (matchT) {
+          hrs = parseInt(matchT[1], 10);
+          mins = parseInt(matchT[2], 10);
+        }
+      }
+
+      var targetDt = new Date(y, m, d, hrs, mins);
+      if (!isNaN(targetDt.getTime())) {
+        return targetDt.getTime();
+      }
+
+      if (o.created_at) {
+        var cTime = new Date(o.created_at).getTime();
+        if (!isNaN(cTime)) return cTime;
+      }
+      return 0;
+    }
+
+    // Sắp xếp đơn theo ngày & giờ khách muốn nhận hàng (đơn cần giao sớm nhất xếp lên đầu làm Khay #01)
+    function sortOrdersByDeliveryDate(list) {
+      if (!Array.isArray(list)) return [];
+      return list.slice().sort(function(a, b) {
+        var tsA = parseDeliveryTimestamp(a);
+        var tsB = parseDeliveryTimestamp(b);
+        if (tsA !== tsB) {
+          if (!tsA) return 1;
+          if (!tsB) return -1;
+          return tsA - tsB;
+        }
+        // Nếu cùng giờ nhận, đơn đặt mới hơn xếp trước
+        var crA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        var crB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return crB - crA;
+      });
     }
 
     function parseOrderYMD(order) {
@@ -1048,12 +1207,21 @@
             });
           } else if (p && p.name) {
             dishes.push(p.name);
+          } else if (p && p.dish) {
+            dishes.push(p.dish);
           }
         });
       }
       if (dishes.length === 0 && Array.isArray(order.schedule)) {
         order.schedule.forEach(s => {
-          if (s && s.dish) dishes.push(s.dish);
+          if (typeof s === 'string') dishes.push(s);
+          else if (s && Array.isArray(s.dishes)) {
+            s.dishes.forEach(d => {
+              if (typeof d === 'string') dishes.push(d);
+              else if (d && d.name) dishes.push(d.name);
+            });
+          } else if (s && s.dish) dishes.push(s.dish);
+          else if (s && s.name) dishes.push(s.name);
         });
       }
       return dishes;
@@ -1605,7 +1773,22 @@
           } catch(e){}
         }
 
-        // 3. Fetch any internal prep_orders table entries
+        // 3. Load from localStorage 'mamcom.orders.v1' (Orders placed on web client)
+        try {
+          const rawOrdersV1 = localStorage.getItem('mamcom.orders.v1');
+          if (rawOrdersV1) {
+            const listV1 = JSON.parse(rawOrdersV1);
+            if (Array.isArray(listV1)) {
+              listV1.forEach(lo => {
+                if (lo && lo.id && !rawOrders.some(x => x.id === lo.id)) {
+                  rawOrders.push(lo);
+                }
+              });
+            }
+          }
+        } catch(e){}
+
+        // 4. Fetch any internal prep_orders table entries
         let rawPrepOrders = [];
         try {
           const { data: pOrders } = await supabase
@@ -1615,7 +1798,7 @@
           if (Array.isArray(pOrders)) rawPrepOrders = pOrders;
         } catch(e){}
 
-        // 4. Fetch local inbox orders
+        // 5. Fetch local inbox orders
         let localInboxOrders = [];
         try {
           const rawInbox = localStorage.getItem('mamcom_inbox_orders_v1');
@@ -1626,9 +1809,8 @@
         const savedChecklistStates = getSavedChecklistStates();
         const mergedOrders = [];
         const seenIds = new Set();
-        let autoTrayIndex = 1;
 
-        // Process real web orders from public.orders
+        // Process real web orders from public.orders & localStorage
         rawOrders.forEach(o => {
           if (!o || !o.id || seenIds.has(o.id)) return;
           seenIds.add(o.id);
@@ -1661,7 +1843,8 @@
 
           mergedOrders.push({
             id: o.id,
-            tray_number: autoTrayIndex++,
+            code: o.code || '',
+            tray_number: 1, // Will be re-indexed after chronological sorting
             customer_name: (o.phone ? o.phone : o.id) + (servings > 1 ? ` (${servings} người)` : ''),
             customer_phone: o.phone || '',
             address: o.address || '',
@@ -1694,7 +1877,8 @@
 
           mergedOrders.push({
             id: po.id,
-            tray_number: po.tray_number || (autoTrayIndex++),
+            code: '',
+            tray_number: 1,
             customer_name: po.customer_name || 'Khách thủ công',
             customer_phone: po.customer_phone || '',
             address: '',
@@ -1739,7 +1923,8 @@
 
           mergedOrders.push({
             id: lo.id,
-            tray_number: autoTrayIndex++,
+            code: lo.code || '',
+            tray_number: 1,
             customer_name: (lo.phone ? lo.phone : lo.id) + (servings > 1 ? ` (${servings} người)` : ''),
             customer_phone: lo.phone || '',
             address: lo.address || '',
@@ -1758,7 +1943,12 @@
           });
         });
 
-        state.allOrders = mergedOrders;
+        // Sắp xếp đơn theo ngày & giờ nhận hàng (đơn cần giao sớm nhất luôn là Khay #01)
+        const sortedOrders = sortOrdersByDeliveryDate(mergedOrders);
+        sortedOrders.forEach((o, idx) => {
+          o.tray_number = idx + 1;
+        });
+        state.allOrders = sortedOrders;
 
         // E. Generate itemized checklist across all orders
         const allChecklist = [];
@@ -1946,9 +2136,9 @@
     // ------------------------------------------------------------
     function renderAllViews() {
       updateTopMetrics();
+      renderOrdersView();
       renderBatchPrepView();
       renderAssemblyView();
-      renderOrdersView();
       renderRecipesView();
       renderIngredientsView();
     }
@@ -2199,7 +2389,7 @@
           : (order.dishes && order.dishes.length > 0 ? order.dishes.join(', ') : 'Đơn Mâm Cơm');
 
         return `
-          <div class="bg-white rounded-3xl border-2 ${
+          <div id="tray-card-${order.id}" class="bg-white rounded-3xl border-2 ${
             hasSpecialNote ? 'border-amber-400 shadow-amber-100' : (isReady ? 'border-emerald-400' : 'border-[#E4DDD2]')
           } shadow-sm overflow-hidden flex flex-col justify-between smooth-transition">
             
@@ -2412,27 +2602,82 @@
     }
 
     // ------------------------------------------------------------
-    // 7. TAB 3: TẠO & QUẢN LÝ ĐƠN HÀNG (ORDER MANAGEMENT)
+    // 7. TAB 1: TIẾP NHẬN & QUẢN LÝ ĐƠN HÀNG (ORDER MANAGEMENT)
     // ------------------------------------------------------------
-    function renderOrdersView() {
-      const tbody = document.getElementById('ordersTableBody');
-      if (!tbody) return;
+    function setOrderViewMode(mode) {
+      state.orderViewMode = mode;
+      const btnCards = document.getElementById('btnOrderView-cards');
+      const btnTable = document.getElementById('btnOrderView-table');
+      const contCards = document.getElementById('ordersCardsContainer');
+      const contTable = document.getElementById('ordersTableContainer');
 
-      // Update Summary Cards
+      if (mode === 'cards') {
+        if (btnCards) btnCards.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-stone-900 shadow-sm active:scale-95 transition-all";
+        if (btnTable) btnTable.className = "px-2.5 py-1 rounded-lg text-xs font-semibold text-stone-600 hover:text-stone-900 active:scale-95 transition-all";
+        if (contCards) contCards.classList.remove('hidden');
+        if (contTable) contTable.classList.add('hidden');
+      } else {
+        if (btnTable) btnTable.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-stone-900 shadow-sm active:scale-95 transition-all";
+        if (btnCards) btnCards.className = "px-2.5 py-1 rounded-lg text-xs font-semibold text-stone-600 hover:text-stone-900 active:scale-95 transition-all";
+        if (contTable) contTable.classList.remove('hidden');
+        if (contCards) contCards.classList.add('hidden');
+      }
+    }
+
+    function copyPhone(phone, btn) {
+      if (!phone) return;
+      navigator.clipboard.writeText(phone).then(() => {
+        if (btn) {
+          const old = btn.innerText;
+          btn.innerText = '✓ Copy';
+          setTimeout(() => btn.innerText = old, 1500);
+        }
+      }).catch(() => {
+        prompt('Copy số điện thoại:', phone);
+      });
+    }
+
+    function goToTrayAssembly(orderId) {
+      switchTab('assembly');
+      setTimeout(() => {
+        const el = document.getElementById(`tray-card-${orderId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('ring-4', 'ring-brand-500');
+          setTimeout(() => el.classList.remove('ring-4', 'ring-brand-500'), 2200);
+        }
+      }, 150);
+    }
+
+    function renderOrdersView() {
+      const cardsContainer = document.getElementById('ordersCardsContainer');
+      const tableBody = document.getElementById('ordersTableBody');
+      if (!cardsContainer && !tableBody) return;
+
+      // Update Summary Cards (5 Key Metrics)
       const ordersForSummary = state.dateFilterMode === 'all' ? state.allOrders : state.orders;
       const totalOrders = ordersForSummary.length;
+      const totalServings = ordersForSummary.filter(o => o.status !== 'cancelled').reduce((acc, cur) => acc + (cur.servings || 1), 0);
       const pendingOrders = ordersForSummary.filter(o => o.status === 'pending' || o.status === 'prepping').length;
       const readyOrders = ordersForSummary.filter(o => o.status === 'completed' || o.status === 'ready').length;
       const totalRevenue = ordersForSummary.filter(o => o.status !== 'cancelled').reduce((acc, cur) => acc + (Number(cur.total) || 0), 0);
 
       const elSumTotal = document.getElementById('sumTotalOrders');
       if (elSumTotal) elSumTotal.innerText = totalOrders;
+      const elSumServings = document.getElementById('sumTotalServings');
+      if (elSumServings) elSumServings.innerText = `${totalServings} suất`;
       const elSumPending = document.getElementById('sumPendingOrders');
       if (elSumPending) elSumPending.innerText = pendingOrders;
       const elSumReady = document.getElementById('sumReadyOrders');
       if (elSumReady) elSumReady.innerText = readyOrders;
       const elSumRev = document.getElementById('sumTotalRevenue');
       if (elSumRev) elSumRev.innerText = formatVND(totalRevenue);
+
+      // Update Workflow Bridge Banner counters
+      const elBridgeOrders = document.getElementById('bridgeTotalOrders');
+      if (elBridgeOrders) elBridgeOrders.innerText = `${totalOrders} đơn`;
+      const elBridgeServings = document.getElementById('bridgeTotalServings');
+      if (elBridgeServings) elBridgeServings.innerText = `${totalServings} suất ăn`;
 
       // Filter by status & search
       let displayOrders = state.orders;
@@ -2453,90 +2698,250 @@
       }
 
       if (displayOrders.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="8" class="px-4 py-12 text-center text-stone-400">
-              Không có đơn hàng nào khớp với bộ lọc hiện tại. Bấm "Tạo Đơn Thủ Công" để lên đơn mới!
-            </td>
-          </tr>
+        const emptyMsg = `
+          <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
+            <span class="text-4xl">📝</span>
+            <h3 class="font-bold text-stone-800 text-base">Chưa có đơn hàng nào khớp với bộ lọc hiện tại</h3>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chuyển sang "☀️ Hôm nay", "🌙 Ngày mai" hoặc "📋 Tất cả đơn" ở thanh trên để kiểm tra toàn bộ danh sách đơn.</p>
+            <div class="flex items-center justify-center gap-2 pt-1">
+              <button onclick="setDateFilterMode('all')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
+                Xem Toàn Bộ Các Đơn
+              </button>
+              <button onclick="openOrderModal()" class="touch-btn px-4 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-sm">
+                + Tạo Đơn Thủ Công
+              </button>
+            </div>
+          </div>
         `;
+        if (cardsContainer) cardsContainer.innerHTML = emptyMsg;
+        if (tableBody) tableBody.innerHTML = `<tr><td colspan="8" class="px-4 py-12 text-center text-stone-400">Không có đơn hàng nào khớp với bộ lọc hiện tại.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = displayOrders.map(order => {
-        const orderChecklist = state.allChecklist.filter(c => c.order_id === order.id);
-        const totalItems = orderChecklist.length;
-        const assembledItems = orderChecklist.filter(c => c.is_assembled).length;
-        const pct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
-        const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
+      // Render Cards Mode
+      if (cardsContainer) {
+        cardsContainer.innerHTML = displayOrders.map(order => {
+          const orderChecklist = state.allChecklist.filter(c => c.order_id === order.id);
+          const totalItems = orderChecklist.length;
+          const assembledItems = orderChecklist.filter(c => c.is_assembled).length;
+          const pct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
+          const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
+          const hasSpecialNotes = !!(order.special_notes && order.special_notes.trim());
 
-        const dishesSummary = order.prep_order_items && order.prep_order_items.length > 0
-          ? order.prep_order_items.map(i => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${i.servings}x ${escapeHtml(i.recipe_name)}</span>`).join('')
-          : (order.dishes && order.dishes.length > 0 ? order.dishes.map(d => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${escapeHtml(d)}</span>`).join('') : '—');
+          const rawTotal = typeof order.total === "number" ? order.total : parseInt(order.total, 10) || 0;
+          const totalFmt = rawTotal >= 1000 ? (rawTotal.toLocaleString("vi-VN") + "đ") : ((rawTotal * 1000).toLocaleString("vi-VN") + "đ");
 
-        return `
-          <tr class="hover:bg-stone-50/60 transition-colors">
-            <td class="px-4 py-3 whitespace-nowrap">
-              <div class="font-mono font-black text-stone-900 text-sm">#${String(order.tray_number).padStart(2, '0')}</div>
-              <div class="text-[11px] font-mono font-bold text-brand-600">${escapeHtml(order.id)}</div>
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap">
-              <div class="font-bold text-stone-900">${escapeHtml(order.customer_name || 'Khách lẻ')}</div>
-              <div class="flex items-center gap-1.5 mt-0.5">
-                ${cleanPhone ? `
-                  <a href="tel:${cleanPhone}" class="text-xs font-mono font-bold text-stone-600 hover:text-stone-900 flex items-center gap-0.5">
-                    <span>📞</span> <span>${order.customer_phone}</span>
-                  </a>
-                  <a href="https://zalo.me/${cleanPhone}" target="_blank" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
-                    Zalo
-                  </a>
-                ` : '<span class="text-xs text-stone-400 font-mono">Chưa có SĐT</span>'}
-              </div>
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap">
-              <div class="font-bold text-stone-900 text-xs">${escapeHtml(order.display_date)}</div>
-              <div class="text-xs font-mono font-semibold text-brand-600">${escapeHtml(order.delivery_time)}</div>
-            </td>
-            <td class="px-4 py-3 max-w-xs">
-              <div class="flex flex-wrap">${dishesSummary}</div>
-            </td>
-            <td class="px-4 py-3 max-w-[180px]">
-              ${order.special_notes ? `
-                <span class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-lg">
-                  <span>⚠️</span>
-                  <span>${escapeHtml(order.special_notes)}</span>
-                </span>
-              ` : '<span class="text-stone-400 text-xs">Không có</span>'}
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap">
-              <div class="flex items-center gap-2">
-                <div class="w-20 h-2 bg-stone-200 rounded-full overflow-hidden">
-                  <div class="h-full bg-emerald-500 rounded-full transition-all" style="width: ${pct}%"></div>
+          let dishesHtml = '';
+          if (order.prep_order_items && order.prep_order_items.length > 0) {
+            dishesHtml = order.prep_order_items.map(i => {
+              return `<div class="text-xs text-stone-800 leading-snug py-1">• <strong>${i.servings} suất:</strong> ${escapeHtml(i.recipe_name)}</div>`;
+            }).join('');
+          } else if (order.dishes && order.dishes.length > 0) {
+            dishesHtml = order.dishes.map(d => {
+              return `<div class="text-xs text-stone-800 leading-snug py-1">• ${escapeHtml(d)}</div>`;
+            }).join('');
+          } else {
+            dishesHtml = '<div class="text-xs text-stone-400 py-1">Mâm cơm tiêu chuẩn</div>';
+          }
+
+          return `
+            <div class="bg-white rounded-3xl border-2 ${hasSpecialNotes ? 'border-amber-400 shadow-md' : 'border-[#E4DDD2] shadow-sm'} overflow-hidden flex flex-col justify-between smooth-transition hover:border-brand-300">
+              
+              ${hasSpecialNotes ? `
+                <div class="bg-gradient-to-r from-red-600 to-amber-600 text-white p-3 flex items-start gap-2.5 alert-priority-box">
+                  <span class="text-lg flex-shrink-0">⚠️</span>
+                  <div class="min-w-0">
+                    <div class="text-[10px] font-black tracking-wider uppercase opacity-90">LƯU Ý DẶN DÒ / KIÊNG CỮ:</div>
+                    <div class="font-black text-sm leading-snug drop-shadow-sm">${escapeHtml(order.special_notes)}</div>
+                  </div>
                 </div>
-                <span class="text-xs font-mono font-bold text-stone-700">${pct}%</span>
+              ` : ''}
+
+              <div class="p-4 space-y-3">
+                <!-- Card Top: Tray #, Code, Status Dropdown -->
+                <div class="flex items-start justify-between gap-2 border-b border-[#F0EBE1] pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-1 rounded-xl bg-stone-900 text-white font-mono font-black text-sm tracking-wide">
+                      KHAY #${String(order.tray_number).padStart(2, '0')}
+                    </span>
+                    <div>
+                      <div class="text-xs font-mono font-bold text-stone-900">#${escapeHtml(String(order.id).slice(-8))}</div>
+                      <div class="text-[10px] text-stone-400 font-mono">${order.created_at ? 'Đặt: ' + order.created_at.replace('T', ' ').slice(0, 16) : ''}</div>
+                    </div>
+                  </div>
+
+                  <select onchange="changeOrderStatus('${order.id}', this.value)" class="text-xs font-bold rounded-xl px-2 py-1.5 border border-stone-300 bg-stone-50 cursor-pointer focus:border-brand-500 focus:outline-none">
+                    <option value="pending" ${order.raw_status === 'pending' ? 'selected' : ''}>⏳ Chờ xác nhận</option>
+                    <option value="confirmed" ${order.raw_status === 'confirmed' ? 'selected' : ''}>👨‍🍳 Đã xác nhận</option>
+                    <option value="preparing" ${order.raw_status === 'preparing' ? 'selected' : ''}>🍳 Đang sơ chế</option>
+                    <option value="done" ${order.raw_status === 'done' ? 'selected' : ''}>✓ Hoàn thành</option>
+                    <option value="cancelled" ${order.raw_status === 'cancelled' ? 'selected' : ''}>✕ Đã hủy</option>
+                  </select>
+                </div>
+
+                <!-- Customer & Contact Info -->
+                <div>
+                  <div class="flex items-center justify-between">
+                    <h4 class="font-black text-stone-900 text-base leading-tight">${escapeHtml(order.customer_name || 'Khách Mâm Cơm')}</h4>
+                    <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
+                      👥 ${order.servings} người ăn
+                    </span>
+                  </div>
+
+                  <div class="flex items-center gap-1.5 flex-wrap mt-2">
+                    ${cleanPhone ? `
+                      <a href="tel:${cleanPhone}" class="touch-btn px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold flex items-center gap-1 active:scale-95">
+                        <span>📞</span> <span>${order.customer_phone}</span>
+                      </a>
+                      <button type="button" onclick="copyPhone('${cleanPhone}', this)" class="px-2 py-1 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-bold active:scale-95">
+                        Copy
+                      </button>
+                      <a href="https://zalo.me/${cleanPhone}" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-xl bg-blue-600 text-white text-xs font-bold flex items-center gap-1 hover:bg-blue-700 active:scale-95">
+                        <span>💬</span> <span>Zalo</span>
+                      </a>
+                    ` : '<span class="text-xs text-stone-400 font-mono">Chưa có SĐT</span>'}
+                  </div>
+                </div>
+
+                <!-- Delivery info & Address -->
+                <div class="space-y-1.5 text-xs">
+                  <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 font-bold">
+                    <span>⏰</span> <span>Nhận hàng:</span> <span>${escapeHtml(order.display_date)}</span> • <span>${escapeHtml(order.delivery_time)}</span>
+                  </div>
+
+                  ${order.address ? `
+                    <div class="text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-200 leading-relaxed">
+                      📍 <strong>Địa chỉ:</strong> ${escapeHtml(order.address)}
+                    </div>
+                  ` : ''}
+                </div>
+
+                <!-- Dishes Detail -->
+                <div class="bg-[#FBF9F5] p-2.5 rounded-2xl border border-[#EBE4D8] space-y-1">
+                  <div class="text-[11px] font-black uppercase tracking-wider text-stone-500">🍲 Mâm cơm chi tiết:</div>
+                  <div class="divide-y divide-[#F0EBE1]">
+                    ${dishesHtml}
+                  </div>
+                </div>
+
+                <!-- Packaging Progress -->
+                <div class="space-y-1 pt-1">
+                  <div class="flex items-center justify-between text-xs font-bold">
+                    <span class="text-stone-600">Tiến độ đóng gói khay:</span>
+                    <span class="${pct === 100 ? 'text-emerald-700' : 'text-stone-800'} font-mono">${assembledItems}/${totalItems} món (${pct}%)</span>
+                  </div>
+                  <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden border border-stone-200">
+                    <div class="h-full rounded-full transition-all duration-300 ${pct === 100 ? 'bg-emerald-500' : 'bg-brand-500'}" style="width: ${pct}%"></div>
+                  </div>
+                </div>
               </div>
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap">
-              <select onchange="changeOrderStatus('${order.id}', this.value)" class="text-xs font-bold rounded-xl px-2.5 py-1.5 border border-stone-300 bg-white cursor-pointer focus:border-brand-500 focus:outline-none">
-                <option value="pending" ${order.raw_status === 'pending' || order.raw_status === 'confirmed' ? 'selected' : ''}>⏳ Chờ xử lý</option>
-                <option value="preparing" ${order.raw_status === 'preparing' ? 'selected' : ''}>🔪 Đang sơ chế</option>
-                <option value="done" ${order.raw_status === 'done' ? 'selected' : ''}>✓ Hoàn thành</option>
-                <option value="cancelled" ${order.raw_status === 'cancelled' ? 'selected' : ''}>✕ Đã hủy</option>
-              </select>
-            </td>
-            <td class="px-4 py-3 text-right whitespace-nowrap">
-              <div class="flex items-center justify-end gap-1.5">
-                <button onclick="copyOrderTicket('${order.id}')" class="text-stone-600 hover:text-stone-900 p-1.5 rounded-lg hover:bg-stone-100" title="Sao chép phiếu đơn">
-                  📋
-                </button>
-                <button onclick="deleteOrder('${order.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50" title="Xóa/Hủy đơn">
-                  🗑️
-                </button>
+
+              <!-- Card Footer -->
+              <div class="p-3 bg-[#FAF8F5] border-t border-[#EFEAE2] space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-stone-500">Tổng tiền:</span>
+                  <strong class="text-base font-black text-brand-600 font-mono">${escapeHtml(totalFmt)}</strong>
+                </div>
+
+                <div class="flex items-center gap-1.5 pt-1 border-t border-stone-200">
+                  <button onclick="copyOrderTicket('${order.id}')" class="touch-btn px-2.5 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 text-xs font-bold flex items-center gap-1 active:scale-95 flex-1 justify-center">
+                    <span>📋</span> <span>Sao chép đơn</span>
+                  </button>
+                  <button onclick="goToTrayAssembly('${order.id}')" class="touch-btn px-3 py-1.5 rounded-xl bg-stone-900 text-white hover:bg-black text-xs font-bold flex items-center gap-1 active:scale-95">
+                    <span>📦</span> <span>Kiểm tra khay →</span>
+                  </button>
+                  <button onclick="deleteOrder('${order.id}')" class="touch-btn p-1.5 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 text-xs active:scale-95" title="Xóa/Hủy đơn">
+                    🗑️
+                  </button>
+                </div>
               </div>
-            </td>
-          </tr>
-        `;
-      }).join('');
+
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render Table Mode
+      if (tableBody) {
+        tableBody.innerHTML = displayOrders.map(order => {
+          const orderChecklist = state.allChecklist.filter(c => c.order_id === order.id);
+          const totalItems = orderChecklist.length;
+          const assembledItems = orderChecklist.filter(c => c.is_assembled).length;
+          const pct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
+          const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
+
+          const dishesSummary = order.prep_order_items && order.prep_order_items.length > 0
+            ? order.prep_order_items.map(i => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${i.servings}x ${escapeHtml(i.recipe_name)}</span>`).join('')
+            : (order.dishes && order.dishes.length > 0 ? order.dishes.map(d => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${escapeHtml(d)}</span>`).join('') : '—');
+
+          return `
+            <tr class="hover:bg-stone-50/60 transition-colors">
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="font-mono font-black text-stone-900 text-sm">#${String(order.tray_number).padStart(2, '0')}</div>
+                <div class="text-[11px] font-mono font-bold text-brand-600">${escapeHtml(order.id)}</div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="font-bold text-stone-900">${escapeHtml(order.customer_name || 'Khách lẻ')}</div>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  ${cleanPhone ? `
+                    <a href="tel:${cleanPhone}" class="text-xs font-mono font-bold text-stone-600 hover:text-stone-900 flex items-center gap-0.5">
+                      <span>📞</span> <span>${order.customer_phone}</span>
+                    </a>
+                    <a href="https://zalo.me/${cleanPhone}" target="_blank" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
+                      Zalo
+                    </a>
+                  ` : '<span class="text-xs text-stone-400 font-mono">Chưa có SĐT</span>'}
+                </div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="font-bold text-stone-900 text-xs">${escapeHtml(order.display_date)}</div>
+                <div class="text-xs font-mono font-semibold text-brand-600">${escapeHtml(order.delivery_time)}</div>
+              </td>
+              <td class="px-4 py-3 max-w-xs">
+                <div class="flex flex-wrap">${dishesSummary}</div>
+              </td>
+              <td class="px-4 py-3 max-w-[180px]">
+                ${order.special_notes ? `
+                  <span class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-lg">
+                    <span>⚠️</span>
+                    <span>${escapeHtml(order.special_notes)}</span>
+                  </span>
+                ` : '<span class="text-stone-400 text-xs">Không có</span>'}
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="flex items-center gap-2">
+                  <div class="w-20 h-2 bg-stone-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-emerald-500 rounded-full transition-all" style="width: ${pct}%"></div>
+                  </div>
+                  <span class="text-xs font-mono font-bold text-stone-700">${pct}%</span>
+                </div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <select onchange="changeOrderStatus('${order.id}', this.value)" class="text-xs font-bold rounded-xl px-2.5 py-1.5 border border-stone-300 bg-white cursor-pointer focus:border-brand-500 focus:outline-none">
+                  <option value="pending" ${order.raw_status === 'pending' ? 'selected' : ''}>⏳ Chờ xác nhận</option>
+                  <option value="confirmed" ${order.raw_status === 'confirmed' ? 'selected' : ''}>👨‍🍳 Đã xác nhận</option>
+                  <option value="preparing" ${order.raw_status === 'preparing' ? 'selected' : ''}>🍳 Đang sơ chế</option>
+                  <option value="done" ${order.raw_status === 'done' ? 'selected' : ''}>✓ Hoàn thành</option>
+                  <option value="cancelled" ${order.raw_status === 'cancelled' ? 'selected' : ''}>✕ Đã hủy</option>
+                </select>
+              </td>
+              <td class="px-4 py-3 text-right whitespace-nowrap">
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="copyOrderTicket('${order.id}')" class="text-stone-600 hover:text-stone-900 p-1.5 rounded-lg hover:bg-stone-100" title="Sao chép phiếu đơn">
+                    📋
+                  </button>
+                  <button onclick="goToTrayAssembly('${order.id}')" class="text-stone-600 hover:text-brand-600 p-1.5 rounded-lg hover:bg-stone-100" title="Kiểm tra đóng gói khay này">
+                    📦
+                  </button>
+                  <button onclick="deleteOrder('${order.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50" title="Xóa/Hủy đơn">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
     }
 
     function filterOrderStatus(status) {
@@ -2574,6 +2979,36 @@
       } else {
         order.status = 'pending';
       }
+
+      // Sync to localStorage 'mamcom.orders.v1'
+      try {
+        const rawLocal = localStorage.getItem('mamcom.orders.v1');
+        if (rawLocal) {
+          const list = JSON.parse(rawLocal);
+          if (Array.isArray(list)) {
+            const item = list.find(x => x.id === orderId);
+            if (item) {
+              item.status = newStatus;
+              localStorage.setItem('mamcom.orders.v1', JSON.stringify(list));
+            }
+          }
+        }
+      } catch(e){}
+
+      // Sync to localStorage 'mamcom_inbox_orders_v1'
+      try {
+        const rawInbox = localStorage.getItem('mamcom_inbox_orders_v1');
+        if (rawInbox) {
+          const list = JSON.parse(rawInbox);
+          if (Array.isArray(list)) {
+            const item = list.find(x => x.id === orderId);
+            if (item) {
+              item.status = newStatus;
+              localStorage.setItem('mamcom_inbox_orders_v1', JSON.stringify(list));
+            }
+          }
+        }
+      } catch(e){}
 
       renderAllViews();
       playBeep('success');
@@ -3529,7 +3964,7 @@ Tổng tiền: ${formatVND(order.total)}`;
       state.activeTab = tabName;
 
       // Views
-      ['batch', 'assembly', 'orders', 'recipes'].forEach(t => {
+      ['orders', 'batch', 'assembly', 'recipes'].forEach(t => {
         const el = document.getElementById(`view-${t}`);
         if (el) {
           if (t === tabName) {
@@ -3543,7 +3978,7 @@ Tổng tiền: ${formatVND(order.total)}`;
       });
 
       // Desktop tabs
-      ['batch', 'assembly', 'orders', 'recipes'].forEach(t => {
+      ['orders', 'batch', 'assembly', 'recipes'].forEach(t => {
         const deskBtn = document.getElementById(`deskTab-${t}`);
         if (deskBtn) {
           if (t === tabName) {
@@ -3555,7 +3990,7 @@ Tổng tiền: ${formatVND(order.total)}`;
       });
 
       // Mobile bottom bar tabs
-      ['batch', 'assembly', 'orders', 'recipes'].forEach(t => {
+      ['orders', 'batch', 'assembly', 'recipes'].forEach(t => {
         const mobBtn = document.getElementById(`mobTab-${t}`);
         if (mobBtn) {
           if (t === tabName) {
