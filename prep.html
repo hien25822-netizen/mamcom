@@ -327,11 +327,11 @@
           <div class="flex flex-wrap items-center justify-between lg:justify-end gap-2">
             <!-- Status filter chips -->
             <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              <button onclick="filterOrderStatus('ALL')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-st="ALL">Tất cả</button>
-              <button onclick="filterOrderStatus('pending')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="pending">⏳ Chờ xử lý</button>
-              <button onclick="filterOrderStatus('prepping')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="prepping">🍳 Đang sơ chế</button>
-              <button onclick="filterOrderStatus('completed')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="completed">✓ Hoàn thành</button>
-              <button onclick="filterOrderStatus('cancelled')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="cancelled">✕ Đã hủy</button>
+              <button onclick="filterOrderStatus('ALL')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95" data-st="ALL">Tất cả (<span id="cntPrepActive">0</span>)</button>
+              <button onclick="filterOrderStatus('pending')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="pending">⏳ Chờ xử lý (<span id="cntPrepPending">0</span>)</button>
+              <button onclick="filterOrderStatus('prepping')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="prepping">🍳 Đang sơ chế (<span id="cntPrepPrepping">0</span>)</button>
+              <button onclick="filterOrderStatus('completed')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95" data-st="completed">✓ Hoàn thành (<span id="cntPrepDone">0</span>)</button>
+              <button onclick="filterOrderStatus('cancelled')" class="order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 whitespace-nowrap active:scale-95" data-st="cancelled">🗑️ Sọt rác (<span id="cntPrepTrash">0</span>)</button>
             </div>
 
             <!-- View mode switcher: Cards vs Table -->
@@ -348,9 +348,9 @@
       </div>
 
       <!-- Orders List Container: Cards Mode -->
-      <div id="ordersCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div id="ordersCardsContainer" class="space-y-6">
         <!-- Rendered dynamically -->
-        <div class="col-span-full py-12 text-center text-stone-400 font-medium">
+        <div class="py-12 text-center text-stone-400 font-medium bg-white rounded-3xl border border-[#E8E2D8] p-6">
           <div class="inline-block animate-spin text-2xl mb-2">⏳</div>
           <p>Đang tải danh sách đơn hàng...</p>
         </div>
@@ -1068,6 +1068,35 @@
       currentIssueItem: null
     };
 
+    function getDeletedOrderIds() {
+      try {
+        const raw = localStorage.getItem('mamcom_deleted_order_ids_v1');
+        if (!raw) return new Set();
+        const arr = JSON.parse(raw);
+        return new Set(Array.isArray(arr) ? arr : []);
+      } catch(e) {
+        return new Set();
+      }
+    }
+
+    function saveDeletedOrderId(id) {
+      if (!id) return;
+      try {
+        const s = getDeletedOrderIds();
+        s.add(id);
+        localStorage.setItem('mamcom_deleted_order_ids_v1', JSON.stringify(Array.from(s)));
+      } catch(e) {}
+    }
+
+    function removeDeletedOrderId(id) {
+      if (!id) return;
+      try {
+        const s = getDeletedOrderIds();
+        s.delete(id);
+        localStorage.setItem('mamcom_deleted_order_ids_v1', JSON.stringify(Array.from(s)));
+      } catch(e) {}
+    }
+
     function getTodayYMD() {
       const now = new Date();
       const year = now.getFullYear();
@@ -1085,27 +1114,34 @@
       return `${year}-${month}-${day}`;
     }
 
+    function getDayOfWeekVN(ymdStr) {
+      if (!ymdStr || ymdStr === 'none') return '';
+      try {
+        const parts = ymdStr.split('-');
+        if (parts.length < 3) return '';
+        const dt = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+        return days[dt.getDay()] || '';
+      } catch(e) {
+        return '';
+      }
+    }
+
     // Trích xuất timestamp hẹn giao hàng để sắp xếp theo thứ tự thời gian
     function parseDeliveryTimestamp(o) {
       if (!o) return 0;
       var dStr = String(o.date || o.order_date || o.delivery_date || "").trim().toLowerCase();
       var tStr = String(o.time || o.delivery_time || "").trim();
 
-      var cur = new Date();
-      var curYr = cur.getFullYear();
-      var curMo = cur.getMonth();
-      var curDay = cur.getDate();
-
-      var y = curYr, m = curMo, d = curDay;
+      var y = null, m = null, d = null;
 
       if (dStr === 'hôm nay' || dStr === 'today') {
-        // Hôm nay
+        var cur = new Date();
+        y = cur.getFullYear(); m = cur.getMonth(); d = cur.getDate();
       } else if (dStr === 'ngày mai' || dStr === 'tomorrow') {
         var tm = new Date();
         tm.setDate(tm.getDate() + 1);
-        y = tm.getFullYear();
-        m = tm.getMonth();
-        d = tm.getDate();
+        y = tm.getFullYear(); m = tm.getMonth(); d = tm.getDate();
       } else if (/^\d{4}-\d{2}-\d{2}$/.test(dStr)) {
         var parts = dStr.split('-');
         y = parseInt(parts[0], 10);
@@ -1116,24 +1152,34 @@
         if (matchD) {
           d = parseInt(matchD[1], 10);
           m = parseInt(matchD[2], 10) - 1;
-          if (matchD[3]) {
-            y = matchD[3].length === 2 ? parseInt('20' + matchD[3], 10) : parseInt(matchD[3], 10);
+          var curYr = new Date().getFullYear();
+          y = matchD[3] ? (matchD[3].length === 2 ? parseInt('20' + matchD[3], 10) : parseInt(matchD[3], 10)) : curYr;
+        } else {
+          var prods = o.raw_products || o.products || o.schedule;
+          if (Array.isArray(prods) && prods[0] && prods[0].day) {
+            var matchP = String(prods[0].day).match(/(\d{1,2})[\/\-\.](\d{1,2})/);
+            if (matchP) {
+              d = parseInt(matchP[1], 10);
+              m = parseInt(matchP[2], 10) - 1;
+              y = new Date().getFullYear();
+            }
           }
         }
       }
 
-      var hrs = 12, mins = 0;
-      if (tStr) {
-        var matchT = tStr.match(/(\d{1,2})[:h](\d{2})/i);
-        if (matchT) {
-          hrs = parseInt(matchT[1], 10);
-          mins = parseInt(matchT[2], 10);
+      if (y !== null && m !== null && d !== null) {
+        var hrs = 12, mins = 0;
+        if (tStr) {
+          var matchT = tStr.match(/(\d{1,2})[:h](\d{2})/i);
+          if (matchT) {
+            hrs = parseInt(matchT[1], 10);
+            mins = parseInt(matchT[2], 10);
+          }
         }
-      }
-
-      var targetDt = new Date(y, m, d, hrs, mins);
-      if (!isNaN(targetDt.getTime())) {
-        return targetDt.getTime();
+        var targetDt = new Date(y, m, d, hrs, mins);
+        if (!isNaN(targetDt.getTime())) {
+          return targetDt.getTime();
+        }
       }
 
       if (o.created_at) {
@@ -1162,10 +1208,16 @@
     }
 
     function parseOrderYMD(order) {
-      if (!order) return getTodayYMD();
-      var raw = (order.date || '').trim().toLowerCase();
+      if (!order) return '';
+      var raw = (order.order_date || order.delivery_date || order.date || '').trim().toLowerCase();
       if (raw === 'hôm nay' || raw === 'today') {
         return getTodayYMD();
+      }
+      if (raw === 'ngày mai' || raw === 'tomorrow') {
+        return getTomorrowYMD();
+      }
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        return raw;
       }
       if (/^\d{1,2}\/\d{1,2}(\/\d{2,4})?$/.test(raw)) {
         var parts = raw.split('/');
@@ -1174,11 +1226,9 @@
         var year = parts[2] ? (parts[2].length === 2 ? '20' + parts[2] : parts[2]) : new Date().getFullYear();
         return `${year}-${month}-${day}`;
       }
-      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
-        return raw;
-      }
-      if (Array.isArray(order.products) && order.products[0] && order.products[0].day) {
-        var m = order.products[0].day.match(/(\d{1,2})\/(\d{1,2})/);
+      var prods = order.raw_products || order.products || order.schedule;
+      if (Array.isArray(prods) && prods[0] && prods[0].day) {
+        var m = String(prods[0].day).match(/(\d{1,2})\/(\d{1,2})/);
         if (m) {
           var d = m[1].padStart(2, '0');
           var mo = m[2].padStart(2, '0');
@@ -1187,9 +1237,9 @@
         }
       }
       if (order.created_at) {
-        return order.created_at.split('T')[0];
+        return String(order.created_at).split('T')[0];
       }
-      return getTodayYMD();
+      return '';
     }
 
     function extractOrderItems(order) {
@@ -1659,6 +1709,23 @@
       return ymd;
     }
 
+    function showPrepToast(msg) {
+      let toast = document.getElementById('globalPrepNotification');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'globalPrepNotification';
+        toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-stone-900/95 text-white text-xs font-bold shadow-xl border border-stone-700 pointer-events-none transition-all duration-300 opacity-0 transform translate-y-2';
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 2200);
+    }
+
     function setupSoundControls() {
       const btn = document.getElementById('btnSoundToggle');
       const icon = document.getElementById('soundIcon');
@@ -1866,10 +1933,11 @@
         const savedChecklistStates = getSavedChecklistStates();
         const mergedOrders = [];
         const seenIds = new Set();
+        const deletedIds = getDeletedOrderIds();
 
         // Process real web orders from public.orders & localStorage
         rawOrders.forEach(o => {
-          if (!o || !o.id || seenIds.has(o.id)) return;
+          if (!o || !o.id || seenIds.has(o.id) || deletedIds.has(o.id)) return;
           seenIds.add(o.id);
 
           const orderYMD = parseOrderYMD(o);
@@ -1926,7 +1994,7 @@
 
         // Merge prep_orders (manual internal kitchen orders)
         rawPrepOrders.forEach(po => {
-          if (!po || !po.id || seenIds.has(po.id)) return;
+          if (!po || !po.id || seenIds.has(po.id) || deletedIds.has(po.id)) return;
           seenIds.add(po.id);
 
           const orderYMD = po.order_date || getTodayYMD();
@@ -1961,7 +2029,7 @@
 
         // Merge local inbox orders
         localInboxOrders.forEach(lo => {
-          if (!lo || !lo.id || seenIds.has(lo.id)) return;
+          if (!lo || !lo.id || seenIds.has(lo.id) || deletedIds.has(lo.id)) return;
           seenIds.add(lo.id);
 
           const orderYMD = parseOrderYMD(lo);
@@ -2000,7 +2068,7 @@
             total: lo.total || 0,
             special_notes: (lo.address ? 'Đ/c: ' + lo.address + '. ' : '') + (lo.note || ''),
             raw_status: lo.status || 'pending',
-            status: lo.status === 'done' ? 'completed' : 'pending',
+            status: lo.status === 'done' ? 'completed' : (lo.status === 'cancelled' ? 'cancelled' : 'pending'),
             created_at: lo.created_at || new Date().toISOString(),
             _source: 'inbox_orders',
             raw_products: lo.meals || lo.products || [],
@@ -2011,14 +2079,20 @@
 
         // Sắp xếp đơn theo ngày & giờ nhận hàng (đơn cần giao sớm nhất luôn là Khay #01)
         const sortedOrders = sortOrdersByDeliveryDate(mergedOrders);
-        sortedOrders.forEach((o, idx) => {
-          o.tray_number = idx + 1;
+        let activeTrayNum = 1;
+        sortedOrders.forEach((o) => {
+          if (o.status !== 'cancelled') {
+            o.tray_number = activeTrayNum++;
+          } else {
+            o.tray_number = 0;
+          }
         });
         state.allOrders = sortedOrders;
 
-        // E. Generate itemized checklist across all orders (TRUTHFUL & ACCURATE - NEVER INVENT DATA)
+        // E. Generate itemized checklist across all orders (TRUTHFUL & ACCURATE - ONLY ACTIVE ORDERS)
         const allChecklist = [];
         state.allOrders.forEach(order => {
+          if (order.status === 'cancelled') return; // Do not generate checklist for cancelled orders
           const isDone = (order.status === 'completed');
 
           order.prep_order_items.forEach(item => {
@@ -2226,13 +2300,14 @@
       }
 
       state.orders = filtered;
-      state.checklist = state.allChecklist.filter(c => state.orders.some(o => o.id === c.order_id));
+      state.checklist = state.allChecklist.filter(c => state.orders.some(o => o.id === c.order_id && o.status !== 'cancelled'));
     }
 
     // ------------------------------------------------------------
     // 4. RENDERING ALL VIEWS
     // ------------------------------------------------------------
     function renderAllViews() {
+      filterStateOrders();
       updateTopMetrics();
       renderOrdersView();
       renderBatchPrepView();
@@ -2792,18 +2867,362 @@
       }, 150);
     }
 
+    function updateOrderStatusCounts() {
+      const orders = state.dateFilterMode === 'all' ? state.allOrders : state.orders;
+      const active = orders.filter(o => o.status !== 'cancelled').length;
+      const pending = orders.filter(o => o.status === 'pending').length;
+      const prepping = orders.filter(o => o.status === 'prepping').length;
+      const completed = orders.filter(o => o.status === 'completed').length;
+      const trash = (state.dateFilterMode === 'all' ? state.allOrders : state.orders).filter(o => o.status === 'cancelled').length;
+
+      const elActive = document.getElementById('cntPrepActive');
+      if (elActive) elActive.innerText = active;
+      const elPending = document.getElementById('cntPrepPending');
+      if (elPending) elPending.innerText = pending;
+      const elPrepping = document.getElementById('cntPrepPrepping');
+      if (elPrepping) elPrepping.innerText = prepping;
+      const elDone = document.getElementById('cntPrepDone');
+      if (elDone) elDone.innerText = completed;
+      const elTrash = document.getElementById('cntPrepTrash');
+      if (elTrash) elTrash.innerText = trash;
+    }
+
+    function renderOrderCardHtml(order, isTrash = false) {
+      const orderChecklist = state.allChecklist.filter(c => c.order_id === order.id);
+      const totalItems = orderChecklist.length;
+      const assembledItems = orderChecklist.filter(c => c.is_assembled).length;
+      const pct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
+      const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
+      const hasSpecialNotes = !!(order.special_notes && order.special_notes.trim());
+
+      const rawTotal = typeof order.total === "number" ? order.total : parseInt(order.total, 10) || 0;
+      const totalFmt = rawTotal >= 1000 ? (rawTotal.toLocaleString("vi-VN") + "đ") : ((rawTotal * 1000).toLocaleString("vi-VN") + "đ");
+
+      let dishesHtml = '';
+      if (Array.isArray(order.raw_products) && order.raw_products.length > 0 && order.raw_products[0] && order.raw_products[0].day) {
+        dishesHtml = order.raw_products.map(p => {
+          const dList = Array.isArray(p.dishes) ? p.dishes.join(', ') : (p.dish || p.name || '');
+          return `<div class="text-xs text-stone-800 leading-snug py-1"><b class="text-stone-900">${escapeHtml(p.day)}:</b> ${escapeHtml(dList)}</div>`;
+        }).join('');
+      } else if (order.prep_order_items && order.prep_order_items.length > 0) {
+        dishesHtml = order.prep_order_items.map(i => {
+          const dayStr = i.day ? `<b class="text-stone-900">${escapeHtml(i.day)}:</b> ` : '';
+          return `<div class="text-xs text-stone-800 leading-snug py-1">• ${dayStr}${escapeHtml(i.recipe_name)} <span class="text-stone-500">(${i.servings} suất)</span></div>`;
+        }).join('');
+      } else if (order.dishes && order.dishes.length > 0) {
+        dishesHtml = order.dishes.map(d => {
+          return `<div class="text-xs text-stone-800 leading-snug py-1">• ${escapeHtml(d)}</div>`;
+        }).join('');
+      } else {
+        dishesHtml = '<div class="text-xs text-stone-400 py-1">Mâm cơm tiêu chuẩn</div>';
+      }
+
+      if (isTrash) {
+        return `
+          <div class="bg-white rounded-2xl border border-red-200/90 bg-red-50/20 shadow-xs overflow-hidden flex flex-col justify-between smooth-transition hover:border-red-400">
+            <div class="bg-red-100/70 border-b border-red-200 px-3.5 py-2 flex items-center justify-between">
+              <span class="text-xs font-bold text-red-800 flex items-center gap-1.5">
+                <span>🗑️</span> <span>ĐƠN ĐÃ HỦY (TRONG SỌT RÁC)</span>
+              </span>
+              <span class="text-[11px] font-mono text-stone-500">#${escapeHtml(String(order.id).slice(-8))}</span>
+            </div>
+
+            <div class="p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-stone-900 text-sm">
+                  ${cleanPhone ? `📞 ${order.customer_phone}` : `<span class="text-stone-400 font-normal">Chưa có SĐT</span>`}
+                </span>
+                <span class="text-xs font-bold px-2 py-0.5 rounded-lg bg-stone-100 text-stone-700 border border-stone-200">
+                  👥 ${order.servings} suất
+                </span>
+              </div>
+
+              <div class="text-xs text-stone-600 bg-stone-50 p-2 rounded-xl border border-stone-200 space-y-1">
+                <div>⏰ <strong>Lịch hẹn:</strong> ${escapeHtml(order.display_date)} • ${escapeHtml(order.delivery_time)}</div>
+                ${order.address ? `<div>📍 <strong>Địa chỉ:</strong> ${escapeHtml(order.address)}</div>` : ''}
+                ${hasSpecialNotes ? `<div class="text-red-700">⚠️ <strong>Ghi chú:</strong> ${escapeHtml(order.special_notes)}</div>` : ''}
+              </div>
+
+              <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-200 space-y-1">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-stone-500">🍲 Mâm cơm:</div>
+                <div class="divide-y divide-stone-200/60">${dishesHtml}</div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-[#FAF8F5] border-t border-[#EFEAE2] flex items-center justify-between gap-2">
+              <div>
+                <span class="text-[11px] text-stone-500 font-medium">Tổng tiền:</span>
+                <strong class="text-sm font-black text-stone-700 font-mono block">${escapeHtml(totalFmt)}</strong>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="restoreOrder('${order.id}')" class="touch-btn px-3 py-1.5 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-bold flex items-center gap-1 active:scale-95 shadow-xs">
+                  <span>🔄</span> <span>Khôi phục đơn</span>
+                </button>
+                <button onclick="permanentDeleteOrder('${order.id}')" class="touch-btn px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-1 active:scale-95" title="Xóa vĩnh viễn đơn">
+                  <span>❌</span> <span>Xóa</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Active Order Card
+      return `
+        <div class="bg-white rounded-2xl border ${hasSpecialNotes ? 'border-amber-300 shadow-sm' : 'border-[#E4DDD2] shadow-sm'} overflow-hidden flex flex-col justify-between smooth-transition hover:border-stone-400">
+          
+          ${hasSpecialNotes ? `
+            <div class="bg-amber-50 border-b border-amber-200 p-3 flex items-start gap-2.5 alert-priority-box">
+              <span class="text-base flex-shrink-0 text-amber-700">⚠️</span>
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold tracking-wider uppercase text-amber-800">Lưu ý / Kiêng cữ của khách:</div>
+                <div class="font-bold text-xs sm:text-sm text-stone-900 leading-snug">${escapeHtml(order.special_notes)}</div>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="p-4 space-y-3">
+            <!-- Card Top: Tray #, Code, Status Dropdown -->
+            <div class="flex items-start justify-between gap-2 border-b border-[#F0EBE1] pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-xl bg-stone-900 text-white font-mono font-bold text-xs tracking-wide">
+                  KHAY #${String(order.tray_number || 1).padStart(2, '0')}
+                </span>
+                <div>
+                  <div class="text-xs font-mono font-bold text-stone-900">#${escapeHtml(String(order.id).slice(-8))}</div>
+                  <div class="text-[10px] text-stone-400 font-mono">${order.created_at ? 'Đặt: ' + order.created_at.replace('T', ' ').slice(0, 16) : ''}</div>
+                </div>
+              </div>
+
+              <select onchange="changeOrderStatus('${order.id}', this.value)" class="text-xs font-bold rounded-xl px-2 py-1.5 border border-stone-300 bg-stone-50 cursor-pointer focus:border-brand-500 focus:outline-none">
+                <option value="pending" ${order.raw_status === 'pending' ? 'selected' : ''}>⏳ Chờ xác nhận</option>
+                <option value="confirmed" ${order.raw_status === 'confirmed' ? 'selected' : ''}>👨‍🍳 Đã xác nhận</option>
+                <option value="preparing" ${order.raw_status === 'preparing' ? 'selected' : ''}>🍳 Đang sơ chế</option>
+                <option value="done" ${order.raw_status === 'done' ? 'selected' : ''}>✓ Hoàn thành</option>
+                <option value="cancelled" ${order.raw_status === 'cancelled' ? 'selected' : ''}>🗑️ Hủy đơn → Sọt rác</option>
+              </select>
+            </div>
+
+            <!-- Customer & Contact Info -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-stone-900 text-sm">
+                  ${cleanPhone ? `📞 ${order.customer_phone}` : `<span class="text-stone-400 font-normal">Chưa có SĐT</span>`}
+                </span>
+                <span class="text-xs font-bold px-2 py-0.5 rounded-lg bg-stone-100 text-stone-800 border border-stone-200">
+                  👥 ${order.servings} suất ăn
+                </span>
+              </div>
+
+              ${cleanPhone ? `
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <a href="tel:${cleanPhone}" class="touch-btn px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold flex items-center gap-1 active:scale-95">
+                    <span>📞 Gọi</span>
+                  </a>
+                  <button type="button" onclick="copyPhone('${cleanPhone}', this)" class="px-2 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-semibold active:scale-95">
+                    Sao chép SĐT
+                  </button>
+                  <a href="https://zalo.me/${cleanPhone}" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold flex items-center gap-1 hover:bg-blue-100 active:scale-95">
+                    <span>💬 Zalo</span>
+                  </a>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Delivery info & Address -->
+            <div class="space-y-1.5 text-xs">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-stone-100 text-stone-800 border border-stone-200 font-bold">
+                <span>⏰</span> <span>Nhận:</span> <span>${escapeHtml(order.display_date)}</span> • <span>${escapeHtml(order.delivery_time)}</span>
+              </div>
+
+              ${order.address ? `
+                <div class="text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-200 leading-relaxed">
+                  📍 <strong>Địa chỉ:</strong> ${escapeHtml(order.address)}
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Dishes Detail -->
+            <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-200 space-y-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-stone-500">🍲 Mâm cơm chi tiết:</div>
+              <div class="divide-y divide-stone-200/60">
+                ${dishesHtml}
+              </div>
+            </div>
+
+            <!-- Packaging Progress -->
+            <div class="space-y-1 pt-1">
+              <div class="flex items-center justify-between text-xs font-bold">
+                <span class="text-stone-600">Tiến độ đóng gói khay:</span>
+                <span class="${pct === 100 ? 'text-emerald-700' : 'text-stone-800'} font-mono">${assembledItems}/${totalItems} món (${pct}%)</span>
+              </div>
+              <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden border border-stone-200">
+                <div class="h-full rounded-full transition-all duration-300 ${pct === 100 ? 'bg-emerald-500' : 'bg-stone-900'}" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div class="p-3 bg-[#FAF8F5] border-t border-[#EFEAE2] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-stone-500">Tổng tiền:</span>
+              <strong class="text-base font-black text-brand-600 font-mono">${escapeHtml(totalFmt)}</strong>
+            </div>
+
+            <div class="flex items-center gap-1.5 pt-1 border-t border-stone-200">
+              <button onclick="copyOrderTicket('${order.id}')" class="touch-btn px-2.5 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 text-xs font-bold flex items-center gap-1 active:scale-95 flex-1 justify-center">
+                <span>📋</span> <span>Sao chép đơn</span>
+              </button>
+              <button onclick="goToTrayAssembly('${order.id}')" class="touch-btn px-3 py-1.5 rounded-xl bg-stone-900 text-white hover:bg-black text-xs font-bold flex items-center gap-1 active:scale-95">
+                <span>📦</span> <span>Kiểm tra khay →</span>
+              </button>
+              <button onclick="deleteOrder('${order.id}')" class="touch-btn p-1.5 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 text-xs active:scale-95" title="Chuyển vào Sọt rác">
+                🗑️
+              </button>
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function renderOrderTableRowHtml(order, isTrash = false) {
+      const orderChecklist = state.allChecklist.filter(c => c.order_id === order.id);
+      const totalItems = orderChecklist.length;
+      const assembledItems = orderChecklist.filter(c => c.is_assembled).length;
+      const pct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
+      const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
+
+      const dishesSummary = order.prep_order_items && order.prep_order_items.length > 0
+        ? order.prep_order_items.map(i => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${i.servings}x ${escapeHtml(i.recipe_name)}</span>`).join('')
+        : (order.dishes && order.dishes.length > 0 ? order.dishes.map(d => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${escapeHtml(d)}</span>`).join('') : '—');
+
+      if (isTrash) {
+        return `
+          <tr class="hover:bg-red-50/50 bg-red-50/20 transition-colors">
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded-md bg-red-100 text-red-800 font-bold text-[10px]">ĐÃ HỦY</span>
+              <div class="text-[11px] font-mono font-bold text-stone-700 mt-0.5">#${escapeHtml(order.id)}</div>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <div class="font-bold text-stone-900">${escapeHtml(order.customer_name || 'Khách')}</div>
+              <div class="text-xs font-mono text-stone-600">${order.customer_phone || '---'}</div>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <div class="font-bold text-stone-900 text-xs">${escapeHtml(order.display_date)}</div>
+              <div class="text-xs font-mono font-semibold text-stone-500">${escapeHtml(order.delivery_time)}</div>
+            </td>
+            <td class="px-4 py-3 max-w-xs">
+              <div class="flex flex-wrap">${dishesSummary}</div>
+            </td>
+            <td class="px-4 py-3 max-w-[180px]">
+              <span class="text-xs text-stone-500">${escapeHtml(order.special_notes || '—')}</span>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap text-xs text-stone-400">
+              Đã dừng
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="px-2 py-1 rounded-lg bg-red-100 text-red-800 text-xs font-bold">🗑️ Sọt rác</span>
+            </td>
+            <td class="px-4 py-3 text-right whitespace-nowrap">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="restoreOrder('${order.id}')" class="px-2.5 py-1 rounded-lg bg-stone-900 text-white font-bold text-xs active:scale-95 shadow-xs">
+                  🔄 Khôi phục
+                </button>
+                <button onclick="permanentDeleteOrder('${order.id}')" class="px-2 py-1 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 font-bold text-xs active:scale-95" title="Xóa vĩnh viễn">
+                  ❌ Xóa
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+
+      return `
+        <tr class="hover:bg-stone-50/60 transition-colors">
+          <td class="px-4 py-3 whitespace-nowrap">
+            <div class="font-mono font-black text-stone-900 text-sm">#${String(order.tray_number || 1).padStart(2, '0')}</div>
+            <div class="text-[11px] font-mono font-bold text-brand-600">${escapeHtml(order.id)}</div>
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <div class="font-bold text-stone-900">${escapeHtml(order.customer_name || 'Khách')}</div>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              ${cleanPhone ? `
+                <a href="tel:${cleanPhone}" class="text-xs font-mono font-bold text-stone-600 hover:text-stone-900 flex items-center gap-0.5">
+                  <span>📞</span> <span>${order.customer_phone}</span>
+                </a>
+                <a href="https://zalo.me/${cleanPhone}" target="_blank" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
+                  Zalo
+                </a>
+              ` : '<span class="text-xs text-stone-400 font-mono">Chưa có SĐT</span>'}
+            </div>
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <div class="font-bold text-stone-900 text-xs">${escapeHtml(order.display_date)}</div>
+            <div class="text-xs font-mono font-semibold text-brand-600">${escapeHtml(order.delivery_time)}</div>
+          </td>
+          <td class="px-4 py-3 max-w-xs">
+            <div class="flex flex-wrap">${dishesSummary}</div>
+          </td>
+          <td class="px-4 py-3 max-w-[180px]">
+            ${order.special_notes ? `
+              <span class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-lg">
+                <span>⚠️</span>
+                <span>${escapeHtml(order.special_notes)}</span>
+              </span>
+            ` : '<span class="text-stone-400 text-xs">Không có</span>'}
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <div class="flex items-center gap-2">
+              <div class="w-20 h-2 bg-stone-200 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full transition-all" style="width: ${pct}%"></div>
+              </div>
+              <span class="text-xs font-mono font-bold text-stone-700">${pct}%</span>
+            </div>
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <select onchange="changeOrderStatus('${order.id}', this.value)" class="text-xs font-bold rounded-xl px-2.5 py-1.5 border border-stone-300 bg-white cursor-pointer focus:border-brand-500 focus:outline-none">
+              <option value="pending" ${order.raw_status === 'pending' ? 'selected' : ''}>⏳ Chờ xác nhận</option>
+              <option value="confirmed" ${order.raw_status === 'confirmed' ? 'selected' : ''}>👨‍🍳 Đã xác nhận</option>
+              <option value="preparing" ${order.raw_status === 'preparing' ? 'selected' : ''}>🍳 Đang sơ chế</option>
+              <option value="done" ${order.raw_status === 'done' ? 'selected' : ''}>✓ Hoàn thành</option>
+              <option value="cancelled" ${order.raw_status === 'cancelled' ? 'selected' : ''}>🗑️ Hủy đơn → Sọt rác</option>
+            </select>
+          </td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick="copyOrderTicket('${order.id}')" class="text-stone-600 hover:text-stone-900 p-1.5 rounded-lg hover:bg-stone-100" title="Sao chép phiếu đơn">
+                📋
+              </button>
+              <button onclick="goToTrayAssembly('${order.id}')" class="text-stone-600 hover:text-brand-600 p-1.5 rounded-lg hover:bg-stone-100" title="Kiểm tra đóng gói khay này">
+                📦
+              </button>
+              <button onclick="deleteOrder('${order.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50" title="Chuyển vào Sọt rác">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
     function renderOrdersView() {
       const cardsContainer = document.getElementById('ordersCardsContainer');
       const tableBody = document.getElementById('ordersTableBody');
       if (!cardsContainer && !tableBody) return;
 
-      // Update Summary Cards (5 Key Metrics)
+      // Update Top Metrics & Chips Count
+      updateDateCountBadges();
+      updateOrderStatusCounts();
+
+      // Update Summary Cards (5 Key Metrics - ACTIVE ORDERS ONLY)
       const ordersForSummary = state.dateFilterMode === 'all' ? state.allOrders : state.orders;
-      const totalOrders = ordersForSummary.length;
-      const totalServings = ordersForSummary.filter(o => o.status !== 'cancelled').reduce((acc, cur) => acc + (cur.servings || 1), 0);
-      const pendingOrders = ordersForSummary.filter(o => o.status === 'pending' || o.status === 'prepping').length;
-      const readyOrders = ordersForSummary.filter(o => o.status === 'completed' || o.status === 'ready').length;
-      const totalRevenue = ordersForSummary.filter(o => o.status !== 'cancelled').reduce((acc, cur) => acc + (Number(cur.total) || 0), 0);
+      const activeSummaryOrders = ordersForSummary.filter(o => o.status !== 'cancelled');
+      const totalOrders = activeSummaryOrders.length;
+      const totalServings = activeSummaryOrders.reduce((acc, cur) => acc + (cur.servings || 1), 0);
+      const pendingOrders = activeSummaryOrders.filter(o => o.status === 'pending' || o.status === 'prepping').length;
+      const readyOrders = activeSummaryOrders.filter(o => o.status === 'completed' || o.status === 'ready').length;
+      const totalRevenue = activeSummaryOrders.reduce((acc, cur) => acc + (Number(cur.total) || 0), 0);
 
       const elSumTotal = document.getElementById('sumTotalOrders');
       if (elSumTotal) elSumTotal.innerText = totalOrders;
@@ -2823,9 +3242,17 @@
       if (elBridgeServings) elBridgeServings.innerText = `${totalServings} suất ăn`;
 
       // Filter by status & search
-      let displayOrders = state.orders;
-      if (state.orderStatusFilter !== 'ALL') {
-        displayOrders = displayOrders.filter(o => o.status === state.orderStatusFilter);
+      let displayOrders = [];
+      const baseOrders = state.dateFilterMode === 'all' ? state.allOrders : state.orders;
+
+      if (state.orderStatusFilter === 'ALL') {
+        // "Tất cả" CHỈ HIỂN THỊ ĐƠN ĐANG HOẠT ĐỘNG, TUYỆT ĐỐI KHÔNG LẪN ĐƠN HỦY
+        displayOrders = state.orders.filter(o => o.status !== 'cancelled');
+      } else if (state.orderStatusFilter === 'cancelled') {
+        // "Sọt rác": hiển thị tất cả các đơn đã hủy
+        displayOrders = baseOrders.filter(o => o.status === 'cancelled');
+      } else {
+        displayOrders = state.orders.filter(o => o.status === state.orderStatusFilter);
       }
 
       if (state.orderSearchQuery) {
@@ -2840,256 +3267,224 @@
         );
       }
 
+      // Handle Empty State
       if (displayOrders.length === 0) {
-        const emptyMsg = `
-          <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
-            <span class="text-4xl">📝</span>
-            <h3 class="font-bold text-stone-800 text-base">Chưa có đơn hàng nào khớp với bộ lọc hiện tại</h3>
-            <p class="text-xs text-stone-500 max-w-sm mx-auto">Chuyển sang "☀️ Hôm nay", "🌙 Ngày mai" hoặc "📋 Tất cả đơn" ở thanh trên để kiểm tra toàn bộ danh sách đơn.</p>
-            <div class="flex items-center justify-center gap-2 pt-1">
-              <button onclick="setDateFilterMode('all')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
-                Xem Toàn Bộ Các Đơn
-              </button>
-              <button onclick="openOrderModal()" class="touch-btn px-4 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-sm">
-                + Tạo Đơn Thủ Công
+        if (state.orderStatusFilter === 'cancelled') {
+          const trashEmptyMsg = `
+            <div class="py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
+              <span class="text-4xl">🗑️</span>
+              <h3 class="font-bold text-stone-800 text-base">Sọt rác đang trống</h3>
+              <p class="text-xs text-stone-500 max-w-sm mx-auto">Chưa có đơn hàng nào bị hủy. Mọi đơn khi chuyển sang trạng thái đã hủy sẽ tự động được cách ly vào đây để không làm rối quy trình bếp.</p>
+              <button onclick="filterOrderStatus('ALL')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
+                Quay lại danh sách đơn hoạt động
               </button>
             </div>
-          </div>
-        `;
-        if (cardsContainer) cardsContainer.innerHTML = emptyMsg;
-        if (tableBody) tableBody.innerHTML = `<tr><td colspan="8" class="px-4 py-12 text-center text-stone-400">Không có đơn hàng nào khớp với bộ lọc hiện tại.</td></tr>`;
+          `;
+          if (cardsContainer) cardsContainer.innerHTML = trashEmptyMsg;
+          if (tableBody) tableBody.innerHTML = `<tr><td colspan="8" class="px-4 py-12 text-center text-stone-400">Sọt rác đang trống. Không có đơn đã hủy.</td></tr>`;
+        } else {
+          const emptyMsg = `
+            <div class="py-16 text-center bg-white rounded-3xl border border-[#E8E2D8] p-6 space-y-3">
+              <span class="text-4xl">📝</span>
+              <h3 class="font-bold text-stone-800 text-base">Chưa có đơn hàng nào khớp với bộ lọc hiện tại</h3>
+              <p class="text-xs text-stone-500 max-w-sm mx-auto">Chuyển sang "☀️ Hôm nay", "🌙 Ngày mai" hoặc "📋 Tất cả đơn" ở thanh trên để kiểm tra toàn bộ danh sách đơn.</p>
+              <div class="flex items-center justify-center gap-2 pt-1">
+                <button onclick="setDateFilterMode('all')" class="touch-btn px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs shadow-sm">
+                  Xem Toàn Bộ Các Đơn
+                </button>
+                <button onclick="openOrderModal()" class="touch-btn px-4 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-sm">
+                  + Tạo Đơn Thủ Công
+                </button>
+              </div>
+            </div>
+          `;
+          if (cardsContainer) cardsContainer.innerHTML = emptyMsg;
+          if (tableBody) tableBody.innerHTML = `<tr><td colspan="8" class="px-4 py-12 text-center text-stone-400">Không có đơn hàng nào khớp với bộ lọc hiện tại.</td></tr>`;
+        }
         return;
       }
 
-      // Render Cards Mode
-      if (cardsContainer) {
-        cardsContainer.innerHTML = displayOrders.map(order => {
-          const orderChecklist = state.allChecklist.filter(c => c.order_id === order.id);
-          const totalItems = orderChecklist.length;
-          const assembledItems = orderChecklist.filter(c => c.is_assembled).length;
-          const pct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
-          const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
-          const hasSpecialNotes = !!(order.special_notes && order.special_notes.trim());
+      // If in Trash Mode: Render Dedicated Trash Bin View
+      if (state.orderStatusFilter === 'cancelled') {
+        if (cardsContainer) {
+          cardsContainer.innerHTML = `
+            <div class="bg-red-50 border border-red-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">🗑️</span>
+                <div>
+                  <h3 class="font-extrabold text-red-900 text-sm sm:text-base">Sọt rác đơn hàng đã hủy (${displayOrders.length} đơn)</h3>
+                  <p class="text-xs text-red-700 mt-0.5">Các đơn này đã bị hủy và được cách ly khỏi quy trình sơ chế. Bạn có thể khôi phục lại đơn về trạng thái chờ xử lý hoặc xóa vĩnh viễn.</p>
+                </div>
+              </div>
+              <div>
+                <button onclick="permanentDeleteAllCancelled()" class="touch-btn px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-sm flex items-center gap-1 active:scale-95">
+                  <span>🧹</span> <span>Dọn sạch sọt rác</span>
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${displayOrders.map(order => renderOrderCardHtml(order, true)).join('')}
+            </div>
+          `;
+        }
 
-          const rawTotal = typeof order.total === "number" ? order.total : parseInt(order.total, 10) || 0;
-          const totalFmt = rawTotal >= 1000 ? (rawTotal.toLocaleString("vi-VN") + "đ") : ((rawTotal * 1000).toLocaleString("vi-VN") + "đ");
+        if (tableBody) {
+          tableBody.innerHTML = `
+            <tr class="bg-red-50 text-red-900 font-bold border-b border-red-200">
+              <td colspan="8" class="px-4 py-3 text-xs">
+                🗑️ Sọt rác đơn hàng đã hủy (${displayOrders.length} đơn) • <button onclick="permanentDeleteAllCancelled()" class="underline hover:text-red-700 ml-2 font-bold">Dọn sạch sọt rác</button>
+              </td>
+            </tr>
+          ` + displayOrders.map(order => renderOrderTableRowHtml(order, true)).join('');
+        }
+        return;
+      }
 
-          let dishesHtml = '';
-          if (Array.isArray(order.raw_products) && order.raw_products.length > 0 && order.raw_products[0] && order.raw_products[0].day) {
-            dishesHtml = order.raw_products.map(p => {
-              const dList = Array.isArray(p.dishes) ? p.dishes.join(', ') : (p.dish || p.name || '');
-              return `<div class="text-xs text-stone-800 leading-snug py-1"><b class="text-stone-900">${escapeHtml(p.day)}:</b> ${escapeHtml(dList)}</div>`;
-            }).join('');
-          } else if (order.prep_order_items && order.prep_order_items.length > 0) {
-            dishesHtml = order.prep_order_items.map(i => {
-              const dayStr = i.day ? `<b class="text-stone-900">${escapeHtml(i.day)}:</b> ` : '';
-              return `<div class="text-xs text-stone-800 leading-snug py-1">• ${dayStr}${escapeHtml(i.recipe_name)} <span class="text-stone-500">(${i.servings} suất)</span></div>`;
-            }).join('');
-          } else if (order.dishes && order.dishes.length > 0) {
-            dishesHtml = order.dishes.map(d => {
-              return `<div class="text-xs text-stone-800 leading-snug py-1">• ${escapeHtml(d)}</div>`;
-            }).join('');
+      // ACTIVE ORDERS: SẮP XẾP & HIỂN THỊ THEO TỪNG NGÀY GIAO HÀNG (HÔM NAY / NGÀY MAI / THEO NGÀY)
+      const todayYMD = getTodayYMD();
+      const tomorrowYMD = getTomorrowYMD();
+      const groupsMap = new Map();
+
+      displayOrders.forEach(order => {
+        const ymd = order.order_date || parseOrderYMD(order) || 'none';
+        if (!groupsMap.has(ymd)) {
+          let label = '';
+          let icon = '📅';
+          let isToday = (ymd === todayYMD);
+          let isTomorrow = (ymd === tomorrowYMD);
+          let sortScore = 0;
+
+          if (isToday) {
+            label = `☀️ Hôm nay • ${formatDateVN(ymd)} (${getDayOfWeekVN(ymd)})`;
+            icon = '☀️';
+            sortScore = 1;
+          } else if (isTomorrow) {
+            label = `🌙 Ngày mai • ${formatDateVN(ymd)} (${getDayOfWeekVN(ymd)})`;
+            icon = '🌙';
+            sortScore = 2;
+          } else if (ymd === 'none' || !ymd) {
+            label = `📌 Chưa có ngày hẹn cụ thể`;
+            icon = '📌';
+            sortScore = 9999999999999;
           } else {
-            dishesHtml = '<div class="text-xs text-stone-400 py-1">Mâm cơm tiêu chuẩn</div>';
+            const dow = getDayOfWeekVN(ymd);
+            const dFmt = formatDateVN(ymd);
+            if (ymd < todayYMD) {
+              label = `⏳ Đơn ngày trước • ${dow ? dow + ', ' : ''}${dFmt}`;
+              icon = '⏳';
+              sortScore = new Date(ymd).getTime();
+            } else {
+              label = `📅 ${dow ? dow + ', ' : ''}${dFmt}`;
+              icon = '📅';
+              sortScore = new Date(ymd).getTime();
+            }
+          }
+
+          groupsMap.set(ymd, {
+            key: ymd,
+            label: label,
+            icon: icon,
+            isToday: isToday,
+            isTomorrow: isTomorrow,
+            sortScore: sortScore,
+            orders: [],
+            totalServings: 0,
+            totalRevenue: 0
+          });
+        }
+
+        const g = groupsMap.get(ymd);
+        g.orders.push(order);
+        g.totalServings += (order.servings || 1);
+        g.totalRevenue += (Number(order.total) || 0);
+      });
+
+      // Sort groups chronologically: Today, Tomorrow, Future dates, Past dates, None
+      const sortedGroups = Array.from(groupsMap.values()).sort((a, b) => {
+        if (a.isToday) return -1;
+        if (b.isToday) return 1;
+        if (a.isTomorrow) return -1;
+        if (b.isTomorrow) return 1;
+        return a.sortScore - b.sortScore;
+      });
+
+      // Inside each group, sort orders by delivery_time
+      sortedGroups.forEach(g => {
+        g.orders.sort((a, b) => {
+          const tA = a.delivery_time || '18:00';
+          const tB = b.delivery_time || '18:00';
+          return tA.localeCompare(tB);
+        });
+      });
+
+      // Render Cards Mode Grouped By Date
+      if (cardsContainer) {
+        cardsContainer.innerHTML = sortedGroups.map(group => {
+          const rawRev = group.totalRevenue;
+          const revFmt = rawRev >= 1000 ? (rawRev.toLocaleString("vi-VN") + "đ") : ((rawRev * 1000).toLocaleString("vi-VN") + "đ");
+
+          let pillClass = "bg-stone-200 text-stone-800";
+          let borderAccent = "border-stone-200";
+          if (group.isToday) {
+            pillClass = "bg-amber-100 text-amber-900 border border-amber-300";
+            borderAccent = "border-amber-300";
+          } else if (group.isTomorrow) {
+            pillClass = "bg-blue-100 text-blue-900 border border-blue-300";
+            borderAccent = "border-blue-300";
           }
 
           return `
-            <div class="bg-white rounded-2xl border ${hasSpecialNotes ? 'border-amber-300 shadow-sm' : 'border-[#E4DDD2] shadow-sm'} overflow-hidden flex flex-col justify-between smooth-transition hover:border-stone-400">
-              
-              ${hasSpecialNotes ? `
-                <div class="bg-amber-50 border-b border-amber-200 p-3 flex items-start gap-2.5 alert-priority-box">
-                  <span class="text-base flex-shrink-0 text-amber-700">⚠️</span>
-                  <div class="min-w-0">
-                    <div class="text-[10px] font-bold tracking-wider uppercase text-amber-800">Lưu ý / Kiêng cữ của khách:</div>
-                    <div class="font-bold text-xs sm:text-sm text-stone-900 leading-snug">${escapeHtml(order.special_notes)}</div>
-                  </div>
-                </div>
-              ` : ''}
-
-              <div class="p-4 space-y-3">
-                <!-- Card Top: Tray #, Code, Status Dropdown -->
-                <div class="flex items-start justify-between gap-2 border-b border-[#F0EBE1] pb-2.5">
-                  <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-1 rounded-xl bg-stone-900 text-white font-mono font-bold text-xs tracking-wide">
-                      KHAY #${String(order.tray_number).padStart(2, '0')}
+            <div class="space-y-3">
+              <!-- Date Section Header -->
+              <div class="bg-[#FBF9F6] border ${borderAccent} rounded-2xl px-4 py-2.5 flex items-center justify-between shadow-xs sticky top-14 z-10 backdrop-blur-sm bg-white/95">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-lg">${group.icon}</span>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="font-extrabold text-stone-900 text-sm sm:text-base">${group.label}</h3>
+                    <span class="px-2 py-0.5 rounded-lg text-xs font-bold ${pillClass}">
+                      ${group.orders.length} đơn
                     </span>
-                    <div>
-                      <div class="text-xs font-mono font-bold text-stone-900">#${escapeHtml(String(order.id).slice(-8))}</div>
-                      <div class="text-[10px] text-stone-400 font-mono">${order.created_at ? 'Đặt: ' + order.created_at.replace('T', ' ').slice(0, 16) : ''}</div>
-                    </div>
-                  </div>
-
-                  <select onchange="changeOrderStatus('${order.id}', this.value)" class="text-xs font-bold rounded-xl px-2 py-1.5 border border-stone-300 bg-stone-50 cursor-pointer focus:border-brand-500 focus:outline-none">
-                    <option value="pending" ${order.raw_status === 'pending' ? 'selected' : ''}>⏳ Chờ xác nhận</option>
-                    <option value="confirmed" ${order.raw_status === 'confirmed' ? 'selected' : ''}>👨‍🍳 Đã xác nhận</option>
-                    <option value="preparing" ${order.raw_status === 'preparing' ? 'selected' : ''}>🍳 Đang sơ chế</option>
-                    <option value="done" ${order.raw_status === 'done' ? 'selected' : ''}>✓ Hoàn thành</option>
-                    <option value="cancelled" ${order.raw_status === 'cancelled' ? 'selected' : ''}>✕ Đã hủy</option>
-                  </select>
-                </div>
-
-                <!-- Customer & Contact Info -->
-                <div class="space-y-1.5">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-stone-900 text-sm">
-                      ${cleanPhone ? `📞 ${order.customer_phone}` : `<span class="text-stone-400 font-normal">Chưa có SĐT</span>`}
-                    </span>
-                    <span class="text-xs font-bold px-2 py-0.5 rounded-lg bg-stone-100 text-stone-800 border border-stone-200">
-                      👥 ${order.servings} suất ăn
+                    <span class="text-xs font-semibold text-stone-500">
+                      • ${group.totalServings} suất ăn
                     </span>
                   </div>
-
-                  ${cleanPhone ? `
-                    <div class="flex items-center gap-1.5 flex-wrap">
-                      <a href="tel:${cleanPhone}" class="touch-btn px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold flex items-center gap-1 active:scale-95">
-                        <span>📞 Gọi</span>
-                      </a>
-                      <button type="button" onclick="copyPhone('${cleanPhone}', this)" class="px-2 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-semibold active:scale-95">
-                        Sao chép SĐT
-                      </button>
-                      <a href="https://zalo.me/${cleanPhone}" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold flex items-center gap-1 hover:bg-blue-100 active:scale-95">
-                        <span>💬 Zalo</span>
-                      </a>
-                    </div>
-                  ` : ''}
                 </div>
-
-                <!-- Delivery info & Address -->
-                <div class="space-y-1.5 text-xs">
-                  <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-stone-100 text-stone-800 border border-stone-200 font-bold">
-                    <span>⏰</span> <span>Nhận:</span> <span>${escapeHtml(order.display_date)}</span> • <span>${escapeHtml(order.delivery_time)}</span>
-                  </div>
-
-                  ${order.address ? `
-                    <div class="text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-200 leading-relaxed">
-                      📍 <strong>Địa chỉ:</strong> ${escapeHtml(order.address)}
-                    </div>
-                  ` : ''}
-                </div>
-
-                <!-- Dishes Detail -->
-                <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-200 space-y-1">
-                  <div class="text-[11px] font-bold uppercase tracking-wider text-stone-500">🍲 Mâm cơm chi tiết:</div>
-                  <div class="divide-y divide-stone-200/60">
-                    ${dishesHtml}
-                  </div>
-                </div>
-
-                <!-- Packaging Progress -->
-                <div class="space-y-1 pt-1">
-                  <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-stone-600">Tiến độ đóng gói khay:</span>
-                    <span class="${pct === 100 ? 'text-emerald-700' : 'text-stone-800'} font-mono">${assembledItems}/${totalItems} món (${pct}%)</span>
-                  </div>
-                  <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden border border-stone-200">
-                    <div class="h-full rounded-full transition-all duration-300 ${pct === 100 ? 'bg-emerald-500' : 'bg-stone-900'}" style="width: ${pct}%"></div>
-                  </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold text-stone-500 hidden sm:inline">Tổng ngày:</span>
+                  <strong class="text-xs sm:text-sm font-black font-mono text-brand-600 bg-white px-2.5 py-1 rounded-xl border border-stone-200 shadow-xs">
+                    ${revFmt}
+                  </strong>
                 </div>
               </div>
 
-              <!-- Card Footer -->
-              <div class="p-3 bg-[#FAF8F5] border-t border-[#EFEAE2] space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-stone-500">Tổng tiền:</span>
-                  <strong class="text-base font-black text-brand-600 font-mono">${escapeHtml(totalFmt)}</strong>
-                </div>
-
-                <div class="flex items-center gap-1.5 pt-1 border-t border-stone-200">
-                  <button onclick="copyOrderTicket('${order.id}')" class="touch-btn px-2.5 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 text-xs font-bold flex items-center gap-1 active:scale-95 flex-1 justify-center">
-                    <span>📋</span> <span>Sao chép đơn</span>
-                  </button>
-                  <button onclick="goToTrayAssembly('${order.id}')" class="touch-btn px-3 py-1.5 rounded-xl bg-stone-900 text-white hover:bg-black text-xs font-bold flex items-center gap-1 active:scale-95">
-                    <span>📦</span> <span>Kiểm tra khay →</span>
-                  </button>
-                  <button onclick="deleteOrder('${order.id}')" class="touch-btn p-1.5 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 text-xs active:scale-95" title="Xóa/Hủy đơn">
-                    🗑️
-                  </button>
-                </div>
+              <!-- Cards Grid for this Date -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${group.orders.map(order => renderOrderCardHtml(order, false)).join('')}
               </div>
-
             </div>
           `;
         }).join('');
       }
 
-      // Render Table Mode
+      // Render Table Mode Grouped By Date
       if (tableBody) {
-        tableBody.innerHTML = displayOrders.map(order => {
-          const orderChecklist = state.allChecklist.filter(c => c.order_id === order.id);
-          const totalItems = orderChecklist.length;
-          const assembledItems = orderChecklist.filter(c => c.is_assembled).length;
-          const pct = totalItems > 0 ? Math.round((assembledItems / totalItems) * 100) : 0;
-          const cleanPhone = (order.customer_phone || '').replace(/\D/g, '');
-
-          const dishesSummary = order.prep_order_items && order.prep_order_items.length > 0
-            ? order.prep_order_items.map(i => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${i.servings}x ${escapeHtml(i.recipe_name)}</span>`).join('')
-            : (order.dishes && order.dishes.length > 0 ? order.dishes.map(d => `<span class="inline-block bg-stone-100 px-2 py-0.5 rounded text-xs font-semibold mr-1 mb-1">${escapeHtml(d)}</span>`).join('') : '—');
-
+        tableBody.innerHTML = sortedGroups.map(group => {
+          const rawRev = group.totalRevenue;
+          const revFmt = rawRev >= 1000 ? (rawRev.toLocaleString("vi-VN") + "đ") : ((rawRev * 1000).toLocaleString("vi-VN") + "đ");
           return `
-            <tr class="hover:bg-stone-50/60 transition-colors">
-              <td class="px-4 py-3 whitespace-nowrap">
-                <div class="font-mono font-black text-stone-900 text-sm">#${String(order.tray_number).padStart(2, '0')}</div>
-                <div class="text-[11px] font-mono font-bold text-brand-600">${escapeHtml(order.id)}</div>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <div class="font-bold text-stone-900">${escapeHtml(order.customer_name || 'Khách lẻ')}</div>
-                <div class="flex items-center gap-1.5 mt-0.5">
-                  ${cleanPhone ? `
-                    <a href="tel:${cleanPhone}" class="text-xs font-mono font-bold text-stone-600 hover:text-stone-900 flex items-center gap-0.5">
-                      <span>📞</span> <span>${order.customer_phone}</span>
-                    </a>
-                    <a href="https://zalo.me/${cleanPhone}" target="_blank" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
-                      Zalo
-                    </a>
-                  ` : '<span class="text-xs text-stone-400 font-mono">Chưa có SĐT</span>'}
-                </div>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <div class="font-bold text-stone-900 text-xs">${escapeHtml(order.display_date)}</div>
-                <div class="text-xs font-mono font-semibold text-brand-600">${escapeHtml(order.delivery_time)}</div>
-              </td>
-              <td class="px-4 py-3 max-w-xs">
-                <div class="flex flex-wrap">${dishesSummary}</div>
-              </td>
-              <td class="px-4 py-3 max-w-[180px]">
-                ${order.special_notes ? `
-                  <span class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-lg">
-                    <span>⚠️</span>
-                    <span>${escapeHtml(order.special_notes)}</span>
-                  </span>
-                ` : '<span class="text-stone-400 text-xs">Không có</span>'}
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <div class="flex items-center gap-2">
-                  <div class="w-20 h-2 bg-stone-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-emerald-500 rounded-full transition-all" style="width: ${pct}%"></div>
+            <tr class="bg-stone-100/90 font-bold text-stone-800 border-y border-stone-200">
+              <td colspan="8" class="px-4 py-2.5 text-xs">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span>${group.icon}</span>
+                    <span class="text-stone-900 font-extrabold">${group.label}</span>
+                    <span class="text-stone-500 font-normal">(${group.orders.length} đơn • ${group.totalServings} suất ăn)</span>
                   </div>
-                  <span class="text-xs font-mono font-bold text-stone-700">${pct}%</span>
-                </div>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <select onchange="changeOrderStatus('${order.id}', this.value)" class="text-xs font-bold rounded-xl px-2.5 py-1.5 border border-stone-300 bg-white cursor-pointer focus:border-brand-500 focus:outline-none">
-                  <option value="pending" ${order.raw_status === 'pending' ? 'selected' : ''}>⏳ Chờ xác nhận</option>
-                  <option value="confirmed" ${order.raw_status === 'confirmed' ? 'selected' : ''}>👨‍🍳 Đã xác nhận</option>
-                  <option value="preparing" ${order.raw_status === 'preparing' ? 'selected' : ''}>🍳 Đang sơ chế</option>
-                  <option value="done" ${order.raw_status === 'done' ? 'selected' : ''}>✓ Hoàn thành</option>
-                  <option value="cancelled" ${order.raw_status === 'cancelled' ? 'selected' : ''}>✕ Đã hủy</option>
-                </select>
-              </td>
-              <td class="px-4 py-3 text-right whitespace-nowrap">
-                <div class="flex items-center justify-end gap-1.5">
-                  <button onclick="copyOrderTicket('${order.id}')" class="text-stone-600 hover:text-stone-900 p-1.5 rounded-lg hover:bg-stone-100" title="Sao chép phiếu đơn">
-                    📋
-                  </button>
-                  <button onclick="goToTrayAssembly('${order.id}')" class="text-stone-600 hover:text-brand-600 p-1.5 rounded-lg hover:bg-stone-100" title="Kiểm tra đóng gói khay này">
-                    📦
-                  </button>
-                  <button onclick="deleteOrder('${order.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50" title="Xóa/Hủy đơn">
-                    🗑️
-                  </button>
+                  <div class="text-brand-600 font-mono">${revFmt}</div>
                 </div>
               </td>
             </tr>
+            ${group.orders.map(order => renderOrderTableRowHtml(order, false)).join('')}
           `;
         }).join('');
       }
@@ -3098,10 +3493,19 @@
     function filterOrderStatus(status) {
       state.orderStatusFilter = status;
       document.querySelectorAll('.order-status-chip').forEach(btn => {
-        if (btn.getAttribute('data-st') === status) {
-          btn.className = "order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95";
+        const st = btn.getAttribute('data-st');
+        if (st === status) {
+          if (st === 'cancelled') {
+            btn.className = "order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-red-600 text-white whitespace-nowrap active:scale-95";
+          } else {
+            btn.className = "order-status-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-900 text-white whitespace-nowrap active:scale-95";
+          }
         } else {
-          btn.className = "order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95";
+          if (st === 'cancelled') {
+            btn.className = "order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 whitespace-nowrap active:scale-95";
+          } else {
+            btn.className = "order-status-chip px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 whitespace-nowrap active:scale-95";
+          }
         }
       });
       renderOrdersView();
@@ -3377,55 +3781,107 @@ Tổng tiền: ${formatVND(order.total)}`;
       }
     }
 
-    async function deleteOrder(orderId) {
-      if (!confirm('Bạn có chắc chắn muốn hủy / xóa đơn hàng này?')) return;
+    function cleanLocalStorageOrder(orderId) {
+      if (!orderId) return;
       try {
-        const order = state.allOrders.find(o => o.id === orderId);
-        
-        // Remove from local inbox if present
-        let rawInbox = localStorage.getItem('mamcom_inbox_orders_v1');
-        if (rawInbox) {
-          let list = JSON.parse(rawInbox) || [];
-          list = list.filter(o => o.id !== orderId);
-          localStorage.setItem('mamcom_inbox_orders_v1', JSON.stringify(list));
+        const rawLocal = localStorage.getItem('mamcom.orders.v1');
+        if (rawLocal) {
+          let list = JSON.parse(rawLocal);
+          if (Array.isArray(list)) {
+            list = list.filter(o => o.id !== orderId);
+            localStorage.setItem('mamcom.orders.v1', JSON.stringify(list));
+          }
         }
+      } catch(e){}
 
-        // Clean saved checklist states for this order
+      try {
+        const rawInbox = localStorage.getItem('mamcom_inbox_orders_v1');
+        if (rawInbox) {
+          let list = JSON.parse(rawInbox);
+          if (Array.isArray(list)) {
+            list = list.filter(o => o.id !== orderId);
+            localStorage.setItem('mamcom_inbox_orders_v1', JSON.stringify(list));
+          }
+        }
+      } catch(e){}
+
+      try {
         const savedStates = getSavedChecklistStates();
         Object.keys(savedStates).forEach(k => {
           if (k.includes(orderId)) delete savedStates[k];
         });
         localStorage.setItem('mamcom_prep_chk_states_v1', JSON.stringify(savedStates));
+      } catch(e){}
+    }
 
-        // If from prep_orders table: delete
-        if (order && order._source === 'prep_orders') {
-          await supabase.from('prep_orders').delete().eq('id', orderId);
-        }
+    async function deleteOrder(orderId) {
+      if (!confirm('Bạn có chắc chắn muốn hủy và chuyển đơn hàng này vào Sọt rác?')) return;
+      try {
+        await changeOrderStatus(orderId, 'cancelled');
+        playBeep('warning');
+        showPrepToast('Đã chuyển đơn vào Sọt rác');
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
-        // If from web orders: update status to cancelled
-        if (supabase && typeof supabase.rpc === 'function') {
-          try {
-            await supabase.rpc('set_kitchen_order_status', {
-              p_order_id: orderId,
-              p_status: 'cancelled'
-            });
-          } catch(e) {
-            const pin = getOwnerPin();
-            if (pin) {
-              try {
-                await supabase.rpc('admin_set_order_status', {
-                  p_pin: pin,
-                  p_order_id: orderId,
-                  p_status: 'cancelled'
-                });
-              } catch(err){}
-            }
-          }
+    async function restoreOrder(orderId) {
+      try {
+        removeDeletedOrderId(orderId);
+        await changeOrderStatus(orderId, 'pending');
+        playBeep('success');
+        showPrepToast('Đã khôi phục đơn về trạng thái Chờ xử lý');
+      } catch(err) {
+        console.error(err);
+      }
+    }
+
+    async function permanentDeleteOrder(orderId) {
+      if (!confirm('Bạn có chắc chắn muốn xóa vĩnh viễn đơn hàng này? Thao tác này không thể hoàn tác.')) return;
+      try {
+        saveDeletedOrderId(orderId);
+        cleanLocalStorageOrder(orderId);
+
+        state.allOrders = state.allOrders.filter(o => o.id !== orderId);
+        state.orders = state.orders.filter(o => o.id !== orderId);
+        state.allChecklist = state.allChecklist.filter(c => c.order_id !== orderId);
+        state.checklist = state.checklist.filter(c => c.order_id !== orderId);
+
+        if (supabase) {
+          try { await supabase.from('orders').delete().eq('id', orderId); } catch(e){}
+          try { await supabase.from('prep_orders').delete().eq('id', orderId); } catch(e){}
         }
 
         playBeep('success');
-        await refreshData();
-      } catch (err) {
+        renderAllViews();
+        showPrepToast('Đã xóa vĩnh viễn đơn hàng');
+      } catch(err) {
+        console.error(err);
+      }
+    }
+
+    async function permanentDeleteAllCancelled() {
+      const baseList = state.allOrders.filter(o => o.status === 'cancelled');
+      if (baseList.length === 0) {
+        alert("Sọt rác đang trống.");
+        return;
+      }
+      if (!confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn tất cả ${baseList.length} đơn hàng trong Sọt rác? Thao tác này không thể hoàn tác.`)) return;
+      try {
+        baseList.forEach(o => {
+          saveDeletedOrderId(o.id);
+          cleanLocalStorageOrder(o.id);
+          if (supabase) {
+            try { supabase.from('orders').delete().eq('id', o.id).then(()=>{}); } catch(e){}
+            try { supabase.from('prep_orders').delete().eq('id', o.id).then(()=>{}); } catch(e){}
+          }
+        });
+        state.allOrders = state.allOrders.filter(o => o.status !== 'cancelled');
+        state.orders = state.orders.filter(o => o.status !== 'cancelled');
+        playBeep('success');
+        renderAllViews();
+        showPrepToast(`Đã dọn sạch ${baseList.length} đơn trong Sọt rác`);
+      } catch(err) {
         console.error(err);
       }
     }

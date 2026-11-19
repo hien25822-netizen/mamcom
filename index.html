@@ -4523,7 +4523,7 @@
         <button type="button" class="btn-order-filter" data-filter="confirmed">👨‍🍳 Đã xác nhận (<span id="cntFilterConfirmed">0</span>)</button>
         <button type="button" class="btn-order-filter" data-filter="preparing">🍳 Đang chuẩn bị (<span id="cntFilterPreparing">0</span>)</button>
         <button type="button" class="btn-order-filter" data-filter="done">✓ Hoàn thành (<span id="cntFilterDone">0</span>)</button>
-        <button type="button" class="btn-order-filter" data-filter="cancelled">✕ Đã hủy (<span id="cntFilterCancelled">0</span>)</button>
+        <button type="button" class="btn-order-filter" data-filter="cancelled" style="color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;">🗑️ Sọt rác (<span id="cntFilterCancelled">0</span>)</button>
       </div>
 
       <div class="set__orders-list" id="setOrdersList"></div>
@@ -9536,8 +9536,16 @@
         if(res.error) throw res.error;
         return res.data;
       }).catch(function(){
-        return SUPABASE.from("orders").update({ status: status }).eq("id", id)
-          .select("id").single();
+        return SUPABASE.rpc("set_kitchen_order_status", {
+          p_order_id: id,
+          p_status: status
+        }).then(function(res){
+          if(res.error) throw res.error;
+          return res.data;
+        }).catch(function(){
+          return SUPABASE.from("orders").update({ status: status }).eq("id", id)
+            .select("id").single();
+        });
       });
     },
 
@@ -10159,22 +10167,72 @@
   var currentOrderFilter = "all";
   var cachedOwnerOrders = [];
 
+  function getDeletedOrderIds() {
+    try {
+      var raw = localStorage.getItem('mamcom_deleted_order_ids_v1');
+      if (!raw) return new Set();
+      var arr = JSON.parse(raw);
+      return new Set(Array.isArray(arr) ? arr : []);
+    } catch(e) {
+      return new Set();
+    }
+  }
+
+  function saveDeletedOrderId(id) {
+    if (!id) return;
+    try {
+      var s = getDeletedOrderIds();
+      s.add(id);
+      localStorage.setItem('mamcom_deleted_order_ids_v1', JSON.stringify(Array.from(s)));
+    } catch(e) {}
+  }
+
+  function removeDeletedOrderId(id) {
+    if (!id) return;
+    try {
+      var s = getDeletedOrderIds();
+      s.delete(id);
+      localStorage.setItem('mamcom_deleted_order_ids_v1', JSON.stringify(Array.from(s)));
+    } catch(e) {}
+  }
+
   // Trích xuất timestamp thời gian khách muốn nhận hàng (để sắp xếp theo ngày nhận)
   function parseDeliveryTimestamp(o) {
     if (!o) return 0;
-    var dStr = String(o.date || o.delivery_date || "").trim();
+    var dStr = String(o.date || o.delivery_date || "").trim().toLowerCase();
     var tStr = String(o.time || o.delivery_time || "").trim();
 
-    // Khớp định dạng ngày: DD/MM hoặc DD/MM/YYYY
-    var matchD = dStr.match(/(\d{1,2})[\/\-\.](\d{1,2})(?:[\/\-\.](\d{4}))?/);
-    if (matchD) {
-      var d = parseInt(matchD[1], 10);
-      var m = parseInt(matchD[2], 10) - 1;
-      var curYr = new Date().getFullYear();
-      var y = matchD[3] ? parseInt(matchD[3], 10) : curYr;
+    var y = null, m = null, d = null;
+    var cur = new Date();
 
-      var hrs = 12;
-      var mins = 0;
+    if (dStr === 'hôm nay' || dStr === 'today') {
+      y = cur.getFullYear(); m = cur.getMonth(); d = cur.getDate();
+    } else if (dStr === 'ngày mai' || dStr === 'tomorrow') {
+      var tm = new Date();
+      tm.setDate(tm.getDate() + 1);
+      y = tm.getFullYear(); m = tm.getMonth(); d = tm.getDate();
+    } else {
+      var matchD = dStr.match(/(\d{1,2})[\/\-\.](\d{1,2})(?:[\/\-\.](\d{2,4}))?/);
+      if (matchD) {
+        d = parseInt(matchD[1], 10);
+        m = parseInt(matchD[2], 10) - 1;
+        var curYr = cur.getFullYear();
+        y = matchD[3] ? (matchD[3].length === 2 ? parseInt('20' + matchD[3], 10) : parseInt(matchD[3], 10)) : curYr;
+      } else {
+        var dList = o.products || o.schedule || [];
+        if (Array.isArray(dList) && dList[0] && dList[0].day) {
+          var matchP = String(dList[0].day).match(/(\d{1,2})[\/\-\.](\d{1,2})/);
+          if (matchP) {
+            d = parseInt(matchP[1], 10);
+            m = parseInt(matchP[2], 10) - 1;
+            y = cur.getFullYear();
+          }
+        }
+      }
+    }
+
+    if (y !== null && m !== null && d !== null) {
+      var hrs = 12, mins = 0;
       if (tStr) {
         var matchT = tStr.match(/(\d{1,2})[:h](\d{2})/i);
         if (matchT) {
@@ -10183,12 +10241,9 @@
         }
       }
       var targetDt = new Date(y, m, d, hrs, mins);
-      if (!isNaN(targetDt.getTime())) {
-        return targetDt.getTime();
-      }
+      if (!isNaN(targetDt.getTime())) return targetDt.getTime();
     }
 
-    // Nếu không có ngày nhận cụ thể, dùng thời điểm tạo đơn
     if (o.created_at) {
       var cTime = new Date(o.created_at).getTime();
       if (!isNaN(cTime)) return cTime;
@@ -10214,6 +10269,51 @@
     });
   }
 
+  function parseOrderDeliveryDateKey(o) {
+    if (!o) return 'none';
+    var dStr = String(o.date || o.delivery_date || "").trim().toLowerCase();
+    var cur = new Date();
+    if (dStr === 'hôm nay' || dStr === 'today') {
+      return cur.getFullYear() + '-' + ('0' + (cur.getMonth() + 1)).slice(-2) + '-' + ('0' + cur.getDate()).slice(-2);
+    }
+    if (dStr === 'ngày mai' || dStr === 'tomorrow') {
+      var tm = new Date();
+      tm.setDate(tm.getDate() + 1);
+      return tm.getFullYear() + '-' + ('0' + (tm.getMonth() + 1)).slice(-2) + '-' + ('0' + tm.getDate()).slice(-2);
+    }
+    var m = dStr.match(/(\d{1,2})[\/\-\.](\d{1,2})(?:[\/\-\.](\d{2,4}))?/);
+    if (m) {
+      var day = ('0' + m[1]).slice(-2);
+      var mon = ('0' + m[2]).slice(-2);
+      var yr = m[3] ? (m[3].length === 2 ? '20' + m[3] : m[3]) : cur.getFullYear();
+      return yr + '-' + mon + '-' + day;
+    }
+    var dList = o.products || o.schedule || [];
+    if (Array.isArray(dList) && dList[0] && dList[0].day) {
+      var m2 = String(dList[0].day).match(/(\d{1,2})[\/\-\.](\d{1,2})/);
+      if (m2) {
+        var day2 = ('0' + m2[1]).slice(-2);
+        var mon2 = ('0' + m2[2]).slice(-2);
+        var yr2 = cur.getFullYear();
+        return yr2 + '-' + mon2 + '-' + day2;
+      }
+    }
+    return 'none';
+  }
+
+  function getDayOfWeekVN(ymdStr) {
+    if (!ymdStr || ymdStr === 'none') return '';
+    try {
+      var parts = ymdStr.split('-');
+      if (parts.length < 3) return '';
+      var dt = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      var days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+      return days[dt.getDay()] || '';
+    } catch(e) {
+      return '';
+    }
+  }
+
   // Định dạng chuẩn thời gian khách đặt mua hàng (giờ:phút • ngày/tháng/năm)
   function fmtOrderCreatedTime(val) {
     if (!val) return "";
@@ -10234,11 +10334,20 @@
 
   function updateOrderFilterCounts(orders) {
     orders = orders || [];
-    var counts = { all: orders.length, pending: 0, confirmed: 0, preparing: 0, done: 0, cancelled: 0 };
+    var deletedIds = getDeletedOrderIds();
+    orders = orders.filter(function(o){ return !deletedIds.has(o.id); });
+
+    var counts = { all: 0, pending: 0, confirmed: 0, preparing: 0, done: 0, cancelled: 0 };
     orders.forEach(function(o) {
-      var s = o.status || "pending";
-      if (counts[s] !== undefined) counts[s]++;
+      var s = (o.status || "pending").toLowerCase();
+      if (s === "cancelled") {
+        counts.cancelled++;
+      } else {
+        counts.all++;
+        if (counts[s] !== undefined) counts[s]++;
+      }
     });
+
     var elAll = document.getElementById("cntFilterAll");
     var elPend = document.getElementById("cntFilterPending");
     var elConf = document.getElementById("cntFilterConfirmed");
@@ -10262,19 +10371,37 @@
   function applyOrderFilter() {
     if (!setOrdersList) return;
     var list = sortOrdersByDeliveryDate(cachedOwnerOrders || []);
+    var deletedIds = getDeletedOrderIds();
+    list = list.filter(function(o){ return !deletedIds.has(o.id); });
+
     var filtered = list.filter(function(o) {
-      if (currentOrderFilter === "all") return true;
-      return (o.status || "pending") === currentOrderFilter;
+      var st = (o.status || "pending").toLowerCase();
+      if (currentOrderFilter === "all") {
+        return st !== "cancelled"; // Không hiện đơn đã hủy trong danh sách hoạt động
+      }
+      if (currentOrderFilter === "cancelled" || currentOrderFilter === "trash") {
+        return st === "cancelled";
+      }
+      return st === currentOrderFilter;
     });
 
     if (!filtered.length) {
-      setOrdersList.innerHTML = "";
-      if (setOrdersEmpty) setOrdersEmpty.hidden = false;
+      if (currentOrderFilter === "cancelled") {
+        setOrdersList.innerHTML = '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:24px 16px;text-align:center;color:#991b1b;"><span style="font-size:32px;display:block;margin-bottom:6px;">🗑️</span><strong style="font-size:14px;">Sọt rác đang trống</strong><p style="font-size:12px;color:#b91c1c;margin-top:4px;">Chưa có đơn hàng nào bị hủy. Mọi đơn đã hủy sẽ tự động được cách ly vào đây.</p></div>';
+      } else {
+        setOrdersList.innerHTML = "";
+      }
+      if (setOrdersEmpty) {
+        setOrdersEmpty.hidden = (currentOrderFilter === "cancelled");
+        if (currentOrderFilter !== "cancelled") {
+          setOrdersEmpty.textContent = "Chưa có đơn hàng nào trong mục này.";
+        }
+      }
       return;
     }
     if (setOrdersEmpty) setOrdersEmpty.hidden = true;
 
-    setOrdersList.innerHTML = filtered.map(function(o) {
+    function renderSingleCard(o, isTrash) {
       var timeStr = o.created_at ? ("Đặt lúc: " + fmtOrderCreatedTime(o.created_at)) : "";
       var rawTotal = typeof o.total === "number" ? o.total : parseInt(o.total, 10) || 0;
       var totalFmt = rawTotal >= 1000 ? (rawTotal.toLocaleString("vi-VN") + "đ") : ((rawTotal * 1000).toLocaleString("vi-VN") + "đ");
@@ -10310,7 +10437,6 @@
           '</div>'
         : '';
 
-      // Xử lý thực đơn (products hoặc schedule)
       var dishesList = [];
       if (Array.isArray(o.products) && o.products.length) {
         dishesList = o.products;
@@ -10333,7 +10459,39 @@
       }
 
       var st = o.status || "pending";
-      return '<div class="set__order-card" data-status="' + escAttr(st) + '" data-order-id="' + escAttr(o.id) + '">' +
+
+      if (isTrash) {
+        return '<div class="set__order-card" data-status="cancelled" data-order-id="' + escAttr(o.id) + '" style="border:1px dashed #fca5a5;background:#fffaf0;margin-bottom:10px;">' +
+          '<div class="set__order-head">' +
+            '<div style="display:flex;align-items:center;gap:6px;">' +
+              '<span class="set__order-code" style="background:#fee2e2;color:#991b1b;">#' + escHtml(String(o.id).slice(-8)) + '</span>' +
+              '<span class="set__order-time">' + escHtml(timeStr) + '</span>' +
+            '</div>' +
+            '<span style="background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:800;border:1px solid #fecaca;">🗑️ Đã hủy</span>' +
+          '</div>' +
+          '<div class="set__order-info" style="margin-top:4px;">' +
+            phoneHtml +
+            addrHtml +
+            schedDateTimeHtml +
+            peopleHtml +
+            dishesHtml +
+            noteHtml +
+          '</div>' +
+          '<div class="set__order-foot" style="margin-top:6px;padding-top:7px;border-top:1px dashed #fecaca;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">' +
+            '<div>' +
+              '<span style="font-size:11px;color:#64748b;font-weight:600;">Tổng tiền: </span>' +
+              '<strong class="set__order-total" style="font-size:14px;color:#64748b;font-weight:800;">' + escHtml(totalFmt) + '</strong>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px;">' +
+              '<button type="button" class="btn-restore-order" data-id="' + escAttr(o.id) + '" style="font-size:11.5px;padding:4px 10px;border-radius:6px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-weight:700;color:#0f172a;display:inline-flex;align-items:center;gap:4px;">🔄 Khôi phục</button>' +
+              '<button type="button" class="btn-delete-perm-order" data-id="' + escAttr(o.id) + '" style="font-size:11.5px;padding:4px 10px;border-radius:6px;border:1px solid #fecaca;background:#fee2e2;cursor:pointer;font-weight:700;color:#b91c1c;display:inline-flex;align-items:center;gap:4px;">❌ Xóa vĩnh viễn</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // Active card
+      return '<div class="set__order-card" data-status="' + escAttr(st) + '" data-order-id="' + escAttr(o.id) + '" style="margin-bottom:10px;">' +
         '<div class="set__order-head">' +
           '<div style="display:flex;align-items:center;gap:6px;">' +
             '<span class="set__order-code">#' + escHtml(String(o.id).slice(-8)) + '</span>' +
@@ -10344,7 +10502,7 @@
             '<option value="confirmed"' + (st === "confirmed" ? ' selected' : '') + '>👨‍🍳 Đã xác nhận</option>' +
             '<option value="preparing"' + (st === "preparing" ? ' selected' : '') + '>🍳 Đang chuẩn bị</option>' +
             '<option value="done"' + (st === "done" ? ' selected' : '') + '>✓ Hoàn thành</option>' +
-            '<option value="cancelled"' + (st === "cancelled" ? ' selected' : '') + '>✕ Đã hủy</option>' +
+            '<option value="cancelled"' + (st === "cancelled" ? ' selected' : '') + '>🗑️ Hủy đơn → Sọt rác</option>' +
           '</select>' +
         '</div>' +
         '<div class="set__order-info" style="margin-top:4px;">' +
@@ -10360,10 +10518,127 @@
             '<span style="font-size:11px;color:#64748b;font-weight:600;">Tổng tiền: </span>' +
             '<strong class="set__order-total" style="font-size:14px;color:#dc2626;font-weight:900;">' + escHtml(totalFmt) + '</strong>' +
           '</div>' +
-          '<button type="button" class="btn-copy-order-info" data-id="' + escAttr(o.id) + '" style="font-size:11px;padding:4px 9px;border-radius:6px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-weight:700;color:#334155;">📋 Sao chép đơn</button>' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<button type="button" class="btn-copy-order-info" data-id="' + escAttr(o.id) + '" style="font-size:11px;padding:4px 9px;border-radius:6px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-weight:700;color:#334155;">📋 Sao chép đơn</button>' +
+            '<button type="button" class="btn-cancel-to-trash" data-id="' + escAttr(o.id) + '" title="Chuyển vào Sọt rác" style="font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #e2e8f0;background:#fff;cursor:pointer;color:#dc2626;">🗑️</button>' +
+          '</div>' +
         '</div>' +
       '</div>';
-    }).join("");
+    }
+
+    // Render Sọt rác
+    if (currentOrderFilter === "cancelled") {
+      var trashHeader = '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<span style="font-size:20px;">🗑️</span>' +
+          '<div>' +
+            '<div style="font-size:13px;font-weight:800;color:#991b1b;">Sọt rác đơn hàng đã hủy (' + filtered.length + ' đơn)</div>' +
+            '<div style="font-size:11px;color:#b91c1c;">Các đơn đã hủy được tự động cách ly vào đây để không làm rối quy trình xử lý đơn.</div>' +
+          '</div>' +
+        '</div>' +
+        (filtered.length > 0 ? '<button type="button" id="btnClearTrashOwner" style="font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:8px;background:#dc2626;color:#fff;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">🧹 Dọn sạch sọt rác</button>' : '') +
+      '</div>';
+
+      setOrdersList.innerHTML = trashHeader + filtered.map(function(o){ return renderSingleCard(o, true); }).join('');
+    } else {
+      // ACTIVE ORDERS: SẮP XẾP VÀ HIỂN THỊ THEO TỪNG NGÀY
+      var curN = new Date();
+      var todayKey = curN.getFullYear() + '-' + ('0' + (curN.getMonth() + 1)).slice(-2) + '-' + ('0' + curN.getDate()).slice(-2);
+      var tmN = new Date();
+      tmN.setDate(tmN.getDate() + 1);
+      var tmKey = tmN.getFullYear() + '-' + ('0' + (tmN.getMonth() + 1)).slice(-2) + '-' + ('0' + tmN.getDate()).slice(-2);
+
+      var groupsMap = {};
+      var groupOrderKeys = [];
+
+      filtered.forEach(function(o) {
+        var dKey = parseOrderDeliveryDateKey(o);
+        if (!groupsMap[dKey]) {
+          var label = '';
+          var icon = '📅';
+          var isToday = (dKey === todayKey);
+          var isTomorrow = (dKey === tmKey);
+          var sortScore = 0;
+
+          if (isToday) {
+            label = '☀️ Hôm nay • ' + dKey.split('-').slice(1).reverse().join('/') + ' (' + getDayOfWeekVN(dKey) + ')';
+            icon = '☀️';
+            sortScore = 1;
+          } else if (isTomorrow) {
+            label = '🌙 Ngày mai • ' + dKey.split('-').slice(1).reverse().join('/') + ' (' + getDayOfWeekVN(dKey) + ')';
+            icon = '🌙';
+            sortScore = 2;
+          } else if (dKey === 'none') {
+            label = '📌 Chưa hẹn ngày cụ thể';
+            icon = '📌';
+            sortScore = 9999999999999;
+          } else {
+            var dow = getDayOfWeekVN(dKey);
+            var dFmt = dKey.split('-').slice(1).reverse().join('/');
+            if (dKey < todayKey) {
+              label = '⏳ Đơn ngày trước • ' + (dow ? dow + ', ' : '') + dFmt;
+              icon = '⏳';
+              sortScore = new Date(dKey).getTime();
+            } else {
+              label = '📅 ' + (dow ? dow + ', ' : '') + dFmt;
+              icon = '📅';
+              sortScore = new Date(dKey).getTime();
+            }
+          }
+
+          groupsMap[dKey] = {
+            key: dKey,
+            label: label,
+            icon: icon,
+            isToday: isToday,
+            isTomorrow: isTomorrow,
+            sortScore: sortScore,
+            orders: [],
+            totalServings: 0,
+            totalRevenue: 0
+          };
+          groupOrderKeys.push(dKey);
+        }
+
+        var g = groupsMap[dKey];
+        g.orders.push(o);
+        g.totalServings += (parseInt(o.people, 10) || 1);
+        var rawT = typeof o.total === "number" ? o.total : parseInt(o.total, 10) || 0;
+        g.totalRevenue += rawT;
+      });
+
+      // Sắp xếp các nhóm ngày
+      var sortedGroups = groupOrderKeys.map(function(k){ return groupsMap[k]; }).sort(function(a, b){
+        if (a.isToday) return -1;
+        if (b.isToday) return 1;
+        if (a.isTomorrow) return -1;
+        if (b.isTomorrow) return 1;
+        return a.sortScore - b.sortScore;
+      });
+
+      setOrdersList.innerHTML = sortedGroups.map(function(group) {
+        var rawRev = group.totalRevenue;
+        var revFmt = rawRev >= 1000 ? (rawRev.toLocaleString("vi-VN") + "đ") : ((rawRev * 1000).toLocaleString("vi-VN") + "đ");
+
+        var borderStyle = group.isToday ? 'border-left: 4px solid #f59e0b; background: #fffbeb;' : (group.isTomorrow ? 'border-left: 4px solid #3b82f6; background: #eff6ff;' : 'border-left: 4px solid #0f172a; background: #f8fafc;');
+        var badgeStyle = group.isToday ? 'background:#fef3c7;color:#92400e;' : (group.isTomorrow ? 'background:#dbeafe;color:#1e40af;' : 'background:#e2e8f0;color:#334155;');
+
+        var headerHtml = '<div class="set__order-date-header" style="border:1px solid #e2e8f0;' + borderStyle + 'border-radius:10px;padding:8px 12px;margin:16px 0 10px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">' +
+          '<div style="display:flex;align-items:center;gap:8px;">' +
+            '<span style="font-size:16px;">' + group.icon + '</span>' +
+            '<strong style="font-size:13px;color:#0f172a;">' + escHtml(group.label) + '</strong>' +
+            '<span style="font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;' + badgeStyle + '">' + group.orders.length + ' đơn</span>' +
+            '<span style="font-size:11.5px;color:#64748b;font-weight:600;">• ' + group.totalServings + ' suất</span>' +
+          '</div>' +
+          '<div style="font-size:12.5px;font-weight:900;color:#dc2626;font-family:monospace;">' +
+            escHtml(revFmt) +
+          '</div>' +
+        '</div>';
+
+        var cardsHtml = group.orders.map(function(o){ return renderSingleCard(o, false); }).join('');
+        return headerHtml + cardsHtml;
+      }).join('');
+    }
 
     // Gắn sự kiện thay đổi trạng thái
     setOrdersList.querySelectorAll(".set__order-status-select").forEach(function(sel){
@@ -10381,11 +10656,96 @@
           mine.forEach(function(x){ if(x.id === id) x.status = nextStatus; });
           saveOrders(mine);
           updateOrderFilterCounts(cachedOwnerOrders);
+          applyOrderFilter();
+          if (nextStatus === 'cancelled') {
+            alert("Đơn #" + id.slice(-8) + " đã được chuyển vào Sọt rác.");
+          }
         }).catch(function(){
           sel.disabled = false;
         });
       });
     });
+
+    // Gắn sự kiện nút chuyển vào sọt rác từ thẻ đơn hoạt động
+    setOrdersList.querySelectorAll(".btn-cancel-to-trash").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-id");
+        if (!confirm("Chuyển đơn #" + id.slice(-8) + " vào Sọt rác?")) return;
+        btn.disabled = true;
+        sharedStore.updateOrderStatus(id, "cancelled").then(function(){
+          (cachedOwnerOrders || []).forEach(function(x){ if(x.id === id) x.status = "cancelled"; });
+          var mine = loadOrders();
+          mine.forEach(function(x){ if(x.id === id) x.status = "cancelled"; });
+          saveOrders(mine);
+          updateOrderFilterCounts(cachedOwnerOrders);
+          applyOrderFilter();
+          alert("Đã chuyển đơn #" + id.slice(-8) + " vào Sọt rác.");
+        }).catch(function(){
+          btn.disabled = false;
+        });
+      });
+    });
+
+    // Gắn sự kiện khôi phục đơn từ sọt rác
+    setOrdersList.querySelectorAll(".btn-restore-order").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-id");
+        btn.disabled = true;
+        btn.textContent = "Đang khôi phục...";
+        sharedStore.updateOrderStatus(id, "pending").then(function(){
+          removeDeletedOrderId(id);
+          (cachedOwnerOrders || []).forEach(function(x){ if(x.id === id) x.status = "pending"; });
+          var mine = loadOrders();
+          mine.forEach(function(x){ if(x.id === id) x.status = "pending"; });
+          saveOrders(mine);
+          updateOrderFilterCounts(cachedOwnerOrders);
+          applyOrderFilter();
+          alert("Đã khôi phục đơn #" + id.slice(-8) + " về trạng thái Chờ xác nhận.");
+        }).catch(function(){
+          btn.disabled = false;
+          btn.textContent = "🔄 Khôi phục";
+        });
+      });
+    });
+
+    // Gắn sự kiện xóa vĩnh viễn đơn trong sọt rác
+    setOrdersList.querySelectorAll(".btn-delete-perm-order").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-id");
+        if (!confirm("Bạn có chắc chắn muốn xóa vĩnh viễn đơn #" + id.slice(-8) + "? Thao tác này không thể hoàn tác.")) return;
+        saveDeletedOrderId(id);
+        cachedOwnerOrders = (cachedOwnerOrders || []).filter(function(x){ return x.id !== id; });
+        var mine = loadOrders().filter(function(x){ return x.id !== id; });
+        saveOrders(mine);
+        if (typeof SUPABASE !== 'undefined' && SUPABASE) {
+          try { SUPABASE.from("orders").delete().eq("id", id).then(function(){}); } catch(e){}
+        }
+        updateOrderFilterCounts(cachedOwnerOrders);
+        applyOrderFilter();
+      });
+    });
+
+    // Gắn sự kiện dọn sạch sọt rác
+    var btnClearAll = document.getElementById("btnClearTrashOwner");
+    if (btnClearAll) {
+      btnClearAll.addEventListener("click", function(){
+        var canc = (cachedOwnerOrders || []).filter(function(x){ return (x.status || "pending") === "cancelled"; });
+        if (!canc.length) return;
+        if (!confirm("Bạn có chắc chắn muốn xóa vĩnh viễn toàn bộ " + canc.length + " đơn trong Sọt rác?")) return;
+        canc.forEach(function(c){
+          saveDeletedOrderId(c.id);
+          if (typeof SUPABASE !== 'undefined' && SUPABASE) {
+            try { SUPABASE.from("orders").delete().eq("id", c.id).then(function(){}); } catch(e){}
+          }
+        });
+        cachedOwnerOrders = (cachedOwnerOrders || []).filter(function(x){ return (x.status || "pending") !== "cancelled"; });
+        var mine = loadOrders().filter(function(x){ return (x.status || "pending") !== "cancelled"; });
+        saveOrders(mine);
+        updateOrderFilterCounts(cachedOwnerOrders);
+        applyOrderFilter();
+        alert("Đã dọn sạch sọt rác thành công.");
+      });
+    }
 
     // Gắn sự kiện sao chép SĐT
     setOrdersList.querySelectorAll(".btn-copy-phone").forEach(function(btn){
@@ -10451,12 +10811,15 @@
     initOrderFilters();
     if(setRefreshOrders) setRefreshOrders.classList.add("is-loading");
     sharedStore.loadOrders().then(function(rows){
-      var orders = Array.isArray(rows) ? rows : loadOrders();
+      var deletedIds = getDeletedOrderIds();
+      var orders = (Array.isArray(rows) ? rows : loadOrders()).filter(function(o){ return !deletedIds.has(o.id); });
       cachedOwnerOrders = sortOrdersByDeliveryDate(orders);
       updateOrderFilterCounts(cachedOwnerOrders);
       applyOrderFilter();
     }).catch(function(){
-      cachedOwnerOrders = sortOrdersByDeliveryDate(loadOrders());
+      var deletedIds = getDeletedOrderIds();
+      var orders = loadOrders().filter(function(o){ return !deletedIds.has(o.id); });
+      cachedOwnerOrders = sortOrdersByDeliveryDate(orders);
       updateOrderFilterCounts(cachedOwnerOrders);
       applyOrderFilter();
     }).then(function(){
