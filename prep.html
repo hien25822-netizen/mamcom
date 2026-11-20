@@ -954,13 +954,6 @@
           Mở khóa Bếp Sơ Chế
         </button>
 
-        <div class="pt-2 border-t border-stone-100 flex flex-col gap-2">
-          <button type="button" id="bypassPrepGateBtn" onclick="bypassPrepGate()" class="w-full py-2.5 px-3 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer">
-            <span>🔓</span>
-            <span>Vào Bếp Xem &amp; Thao Tác Nhanh</span>
-          </button>
-        </div>
-
         <a href="/" class="block text-xs font-semibold text-stone-400 hover:text-stone-700 pt-1 transition-colors">
           ← Quay lại trang chủ Mâm Cơm
         </a>
@@ -1635,22 +1628,9 @@
       } catch(e){}
     }
 
+    let inMemoryOwnerPin = '';
     function getOwnerPin() {
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlPin = urlParams.get('pin');
-        if (urlPin) {
-          const cleanPin = urlPin.trim();
-          sessionStorage.setItem('mamcom.ownerPin.session', cleanPin);
-          localStorage.setItem('mamcom.ownerPin.session', cleanPin);
-          return cleanPin;
-        }
-        return sessionStorage.getItem('mamcom.ownerPin.session') || 
-               localStorage.getItem('mamcom.ownerPin.session') || 
-               localStorage.getItem('mamcom_owner_pin') || '';
-      } catch(e) {
-        return '';
-      }
+      return inMemoryOwnerPin || '';
     }
 
     function formatVND(n) {
@@ -1702,21 +1682,6 @@
     // ------------------------------------------------------------
     let prepUnlocked = false;
 
-    function hashPin(text){
-      var out = "", s = String(text || "") + "|mamcom";
-      for(var i=0;i<s.length;i++){ out += ((s.charCodeAt(i) * 31 + i * 7) % 256).toString(16); }
-      return out;
-    }
-
-    function bypassPrepGate() {
-      try {
-        sessionStorage.setItem('mamcom.ownerPin.session', 'unlocked');
-        localStorage.setItem('mamcom.ownerPin.session', 'unlocked');
-      } catch(e){}
-      hidePrepGate();
-      refreshData(true);
-    }
-
     function hidePrepGate(){
       prepUnlocked = true;
       const pinGate = document.getElementById('prepPinGate');
@@ -1742,31 +1707,28 @@
     }
 
     async function checkPrepAuth(){
-      let savedPin = '';
+      // Dọn dẹp toàn bộ dữ liệu PIN đã từng lưu ở localStorage để bảo mật backend
       try {
+        localStorage.removeItem('mamcom.ownerPin.session');
+        localStorage.removeItem('mamcom.ownerPin.v1');
+        localStorage.removeItem('mamcom.ownerPin.seed.v1');
+        localStorage.removeItem('mamcom_owner_pin');
+
+        // Xóa sạch query parameter ?pin= khỏi thanh URL nếu có
         const urlParams = new URLSearchParams(window.location.search);
-        const urlPin = urlParams.get('pin');
-        if (urlPin) {
-          savedPin = urlPin.trim();
-          sessionStorage.setItem('mamcom.ownerPin.session', savedPin);
-          localStorage.setItem('mamcom.ownerPin.session', savedPin);
-        } else {
-          savedPin = sessionStorage.getItem('mamcom.ownerPin.session') || localStorage.getItem('mamcom.ownerPin.session') || '';
+        if (urlParams.has('pin')) {
+          window.history.replaceState({}, '', window.location.pathname);
         }
       } catch(e){}
 
-      if (savedPin) {
-        if (savedPin === 'unlocked' || savedPin.length >= 4) {
-          hidePrepGate();
-          if (supabase && typeof supabase.rpc === 'function' && savedPin !== 'unlocked') {
-            supabase.rpc('admin_verify_pin', { p_pin: savedPin }).then(function(res){
-              if (res.error || res.data !== true) {
-                console.warn('Session PIN invalid, but allowing staff read-only session');
-              }
-            }).catch(function(){});
-          }
-          return;
-        }
+      let isAuthed = false;
+      try {
+        isAuthed = sessionStorage.getItem('mamcom_prep_authed') === '1';
+      } catch(e){}
+
+      if (isAuthed) {
+        hidePrepGate();
+        return;
       }
 
       showPrepGate();
@@ -1795,7 +1757,29 @@
 
       try {
         let isOk = false;
-        if (supabase && typeof supabase.rpc === 'function') {
+
+        // 1. Thử xác thực trực tiếp qua Backend API Serverless
+        try {
+          const res = await fetch('/api/verify-pin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin: pin })
+          });
+          if (res.status === 429) {
+            if (btn) { btn.disabled = false; btn.innerText = 'Mở khóa Bếp Sơ Chế'; }
+            if (errEl) errEl.textContent = 'Tài khoản chủ tạm khóa 10 phút do nhập sai quá nhiều lần!';
+            return;
+          }
+          const data = await res.json().catch(() => ({}));
+          if (data && data.ok === true) {
+            isOk = true;
+          }
+        } catch(apiErr) {
+          console.warn('API verify-pin failed, fallback to direct Supabase RPC:', apiErr);
+        }
+
+        // 2. Fallback gọi trực tiếp RPC admin_verify_pin trong PostgreSQL nếu API chưa sẵn sàng
+        if (!isOk && supabase && typeof supabase.rpc === 'function') {
           const { data, error } = await supabase.rpc('admin_verify_pin', { p_pin: pin });
           if (!error && data === true) {
             isOk = true;
@@ -1809,24 +1793,12 @@
           }
         }
 
-        const localPin = localStorage.getItem('mamcom.ownerPin.session');
-        if (!isOk && localPin && (localPin === pin || localPin === 'unlocked')) {
-          isOk = true;
-        }
-        const localHash = localStorage.getItem('mamcom.ownerPin.v1');
-        if (!isOk && localHash && localHash === hashPin(pin)) {
-          isOk = true;
-        }
-        if (!isOk && (pin === '1234' || pin === '0000' || pin === '1111' || pin.length >= 4)) {
-          isOk = true;
-        }
-
         if (btn) { btn.disabled = false; btn.innerText = 'Mở khóa Bếp Sơ Chế'; }
 
         if (isOk) {
+          inMemoryOwnerPin = pin;
           try {
-            sessionStorage.setItem('mamcom.ownerPin.session', pin);
-            localStorage.setItem('mamcom.ownerPin.session', pin);
+            sessionStorage.setItem('mamcom_prep_authed', '1');
           } catch(e){}
           hidePrepGate();
           playBeep('success');
@@ -1842,9 +1814,9 @@
     }
 
     function lockPrepGate(){
+      inMemoryOwnerPin = '';
       try {
-        sessionStorage.removeItem('mamcom.ownerPin.session');
-        localStorage.removeItem('mamcom.ownerPin.session');
+        sessionStorage.removeItem('mamcom_prep_authed');
       } catch(e){}
       showPrepGate();
       const pinInp = document.getElementById('prepPinInput');
@@ -1867,7 +1839,7 @@
       try { await refreshData(); } catch(e){ console.error('refreshData error:', e); }
 
       window.addEventListener('storage', (e) => {
-        if (e.key === 'mamcom_inbox_orders_v1' || e.key === 'mamcom_prep_chk_states_v1' || e.key === 'mamcom.ownerPin.session') {
+        if (e.key === 'mamcom_inbox_orders_v1' || e.key === 'mamcom_prep_chk_states_v1') {
           refreshData(true);
         }
       });
@@ -1884,14 +1856,6 @@
         btnSubmit.addEventListener('click', (e) => {
           e.preventDefault();
           verifyPrepPin();
-        });
-      }
-
-      const btnBypass = document.getElementById('bypassPrepGateBtn');
-      if (btnBypass) {
-        btnBypass.addEventListener('click', (e) => {
-          e.preventDefault();
-          bypassPrepGate();
         });
       }
     }

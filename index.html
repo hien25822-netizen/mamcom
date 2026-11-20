@@ -380,6 +380,15 @@
     font-size: 15px;
     letter-spacing: -0.2px;
   }
+  .counter-card__label--visitors {
+    margin-top: 6px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #3b1c08;
+    text-align: center;
+    line-height: 1.4;
+    letter-spacing: -0.1px;
+  }
   .counter-card__stat {
     margin-top: 8px;
     padding: 6px 14px;
@@ -1088,11 +1097,69 @@
     stroke: #ffffff;
     transition: transform 0.25s var(--spring-bounce);
   }
-    display: inline-flex;
-    transition: transform 0.25s var(--spring-bounce);
-  }
   .rev__body {
     padding: 16px 18px 20px;
+    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  }
+  .rev.is-collapsed .rev__body {
+    display: none;
+  }
+  .rev:not(.is-collapsed) .rev__body {
+    display: block;
+    animation: paneFadeIn 0.25s ease;
+  }
+  .rev.is-collapsed .rev__toggle-icon svg {
+    transform: rotate(0deg);
+  }
+  .rev:not(.is-collapsed) .rev__toggle-icon svg {
+    transform: rotate(180deg);
+  }
+  .rev__head-bar {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    background: #ffff04 !important;
+    transition: background 0.2s ease, opacity 0.15s ease;
+  }
+  .rev.is-collapsed .rev__head-bar {
+    border-bottom: none !important;
+  }
+  .rev:not(.is-collapsed) .rev__head-bar {
+    border-bottom: 1.5px solid #d4c800 !important;
+  }
+  .rev__head-bar:hover {
+    filter: brightness(0.98);
+  }
+  .rev__expand-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #261109;
+    border: none;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(38, 17, 9, 0.25);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .rev__head-bar:hover .rev__expand-btn {
+    background: #000000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(38, 17, 9, 0.35);
+  }
+  .rev__toggle-icon {
+    display: inline-flex;
+    stroke: #ffffff;
+    transition: transform 0.25s var(--spring-bounce);
   }
   .qa__body {
     padding: 12px 16px 16px;
@@ -2612,6 +2679,12 @@
   .order__submitMsg.is-ok b { color: var(--red); }
 
   /* ---- 3 BUTTON MỞ APP: INSTAGRAM, TIKTOK & THREADS ---- */
+  #orderSocialSection {
+    display: block !important;
+  }
+  #footSocialSection {
+    display: none !important;
+  }
   .order__social-apps {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -3523,6 +3596,7 @@
     .flip { width: 42px; height: 52px; border-radius: 10px; }
     .flip__card { font-size: 30px; }
     .counter-card__label { font-size: 12px; margin-top: 8px; }
+    .counter-card__label--visitors { font-size: 12px !important; margin-top: 6px !important; }
     .counter-card__stat { font-size: clamp(9.5px, 2.7vw, 11.5px) !important; padding: 4px 10px !important; margin-top: 8px !important; white-space: nowrap !important; max-width: 96vw !important; }
     .menu__hint { padding: 2px 10px 5px !important; font-size: 11px !important; }
     .menu__filter-section {
@@ -3675,30 +3749,39 @@
       margin: 0 !important;
     }
     
-    /* 3 NÚT MẠNG XÃ HỘI TRÊN ĐIỆN THOẠI: INSTAGRAM & TIKTOK 1 HÀNG, THREADS HÀNG DƯỚI CÙNG KÍCH CỠ */
-    .order__social-apps {
+    /* 3 NÚT MẠNG XÃ HỘI TRÊN MOBILE: ĐƯỢC CHUYỂN XUỐNG DƯỚI CÙNG Ở PHÍA TRÊN ĐỊA CHỈ & HOTLINE */
+    #orderSocialSection {
+      display: none !important;
+    }
+    #footSocialSection {
+      display: block !important;
+      width: 100% !important;
+      margin: 16px auto 18px !important;
+    }
+    .order__social-apps--foot {
       display: flex !important;
-      flex-wrap: wrap !important;
+      flex-wrap: nowrap !important;
       justify-content: center !important;
       align-items: center !important;
       gap: 8px !important;
       width: 100% !important;
+      margin: 0 auto !important;
     }
-    .order__app-btn {
-      flex: 0 0 calc(50% - 5px) !important;
-      max-width: 220px !important;
-      padding: 10px 6px !important;
-      font-size: 11px !important;
-      gap: 5px !important;
-      min-height: 44px !important;
+    .order__social-apps--foot .order__app-btn {
+      flex: 1 1 0 !important;
+      max-width: 140px !important;
+      padding: 10px 8px !important;
+      font-size: 12px !important;
+      gap: 6px !important;
+      min-height: 42px !important;
       border-radius: var(--radius-pill) !important;
     }
-    .order__app-icon {
+    .order__social-apps--foot .order__app-icon {
       width: 16px !important;
       height: 16px !important;
       flex-shrink: 0 !important;
     }
-    .order__app-btn span {
+    .order__social-apps--foot .order__app-btn span {
       line-height: 1.25;
       font-weight: 800;
       letter-spacing: -0.2px;
@@ -3718,11 +3801,11 @@
   }
 
   @media (max-width: 480px) {
-    .order__social-apps {
+    .order__social-apps--foot {
       gap: 6px !important;
-      margin: 10px 0 14px !important;
+      margin: 12px 0 14px !important;
     }
-    .order__app-btn {
+    .order__social-apps--foot .order__app-btn {
       flex: 1 1 0 !important;
       max-width: none !important;
       padding: 9px 6px !important;
@@ -3730,13 +3813,13 @@
       gap: 4px !important;
       min-height: 38px !important;
     }
-    .order__app-icon {
+    .order__social-apps--foot .order__app-icon {
       width: 15px !important;
       height: 15px !important;
     }
   }
   @media (max-width: 360px) {
-    .order__app-btn {
+    .order__social-apps--foot .order__app-btn {
       padding: 8px 3px !important;
       font-size: 10.5px !important;
       gap: 3px !important;
@@ -3973,6 +4056,9 @@
         </div>
         <div class="counter-card__stat" id="counterSavedStat">
           <span class="counter-card__stat-text" id="counterSavedStatText">✨ Mâm Cơm tiết kiệm được tổng <strong class="counter-card__stat-hl" id="counterSavedStatCalc">79 tiếng</strong> cho khách hàng</span>
+        </div>
+        <div class="counter-card__label counter-card__label--visitors" id="counterVisitorsLabel">
+          <span class="counter-card__num" id="visitorsCount">717</span> người đã vào xem web Mâm Cơm
         </div>
       </div>
     </div>
@@ -4328,14 +4414,20 @@
       </div>
     </div>
 
-      <!-- REVIEWS & RATING (ĐÁNH GIÁ CỦA KHÁCH - Ô ĐỒNG BỘ 100%) -->
-      <div class="rev" id="revBox">
-        <div class="panel__head rev__head-bar">
+      <!-- REVIEWS & RATING (ĐÁNH GIÁ CỦA KHÁCH - CÓ NÚT MỞ RỘNG & TỰ ĐỘNG THU GỌN KHI MỚI VÀO) -->
+      <div class="rev is-collapsed" id="revBox">
+        <div class="panel__head rev__head-bar" id="revToggleBtn" role="button" tabindex="0" aria-expanded="false" title="Bấm để xem chi tiết đánh giá &amp; lời gửi của khách">
           <div class="panel__title-group">
             <h2>Đánh giá &amp; lời gửi của khách</h2>
           </div>
+          <div class="rev__expand-btn" id="revExpandBtn" aria-hidden="true">
+            <span class="hint" id="revToggleHint" style="font-size:11.5px;font-weight:700;color:#ffffff;">Mở rộng</span>
+            <span class="rev__toggle-icon" id="revToggleIcon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </div>
         </div>
-        <div class="rev__body">
+        <div class="rev__body" id="revBody">
           <div class="rev__sum">
           <span class="rev__avg" id="revAvg">—</span>
           <span class="rev__stars" id="revStars">★★★★★</span>
@@ -4392,6 +4484,24 @@
       <div class="site-foot__brand">
         <span class="site-foot__name">MÂM CƠM</span>
         <span class="site-foot__sub">Bữa ăn gia đình tươi ngon mỗi tuần</span>
+      </div>
+
+      <!-- 3 NÚT MẠNG XÃ HỘI (BẢN MOBILE: ĐỂ XUỐNG DƯỚI CÙNG Ở PHÍA TRÊN ĐỊA CHỈ VÀ HOTLINE) -->
+      <div class="site-foot__social" id="footSocialSection">
+        <div class="order__social-apps order__social-apps--foot">
+          <a class="order__app-btn order__app-btn--ig" id="btnOpenInstagramFoot" href="instagram://user?username=mamcomvn" target="_blank" rel="noopener">
+            <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            <span>Instagram</span>
+          </a>
+          <a class="order__app-btn order__app-btn--tiktok" id="btnOpenTiktokFoot" href="tiktok://user?username=mamcomvn" target="_blank" rel="noopener">
+            <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"/></svg>
+            <span>Tiktok</span>
+          </a>
+          <a class="order__app-btn order__app-btn--threads" id="btnOpenThreadsFoot" href="https://www.threads.net/@mamcomvn" target="_blank" rel="noopener">
+            <svg class="order__app-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098c1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015c-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164c1.43 1.783 3.631 2.698 6.54 2.717c2.623-.02 4.358-.631 5.8-2.045c1.647-1.613 1.618-3.593 1.09-4.798c-.31-.71-.873-1.3-1.634-1.75c-.192 1.352-.622 2.446-1.284 3.272c-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801c-1.063-.689-1.685-1.74-1.752-2.964c-.065-1.19.408-2.285 1.33-3.082c.88-.76 2.119-1.207 3.583-1.291a14 14 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757c-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32l-1.757-1.18c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388q.163.07.321.142c1.49.7 2.58 1.761 3.154 3.07c.797 1.82.871 4.79-1.548 7.158c-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69q-.362 0-.739.021c-1.836.103-2.98.946-2.916 2.143c.067 1.256 1.452 1.839 2.784 1.767c1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221"/></svg>
+            <span>Threads</span>
+          </a>
+        </div>
       </div>
 
       <!-- ĐỊA CHỈ & SỐ ĐIỆN THOẠI MÂM CƠM (Có thể sửa khi có PIN chủ) -->
@@ -4953,8 +5063,13 @@
 
 
   var STORAGE_KEY   = "mamcom.menu.v1";
-  var PIN_KEY       = "mamcom.ownerPin.v1";
-  var PIN_SEED      = "mamcom.ownerPin.seed.v1";
+  // Dọn dẹp các key PIN cũ lưu ở frontend để bảo mật tuyệt đối trên Backend
+  try {
+    localStorage.removeItem("mamcom.ownerPin.v1");
+    localStorage.removeItem("mamcom.ownerPin.seed.v1");
+    localStorage.removeItem("mamcom.ownerPin.session");
+    localStorage.removeItem("mamcom_owner_pin");
+  } catch(e){}
   var GEMINI_PRESET_CATS = [
     "thịt lợn, canh rau",
     "thịt lợn, món mặn",
@@ -5110,60 +5225,26 @@
     }).catch(function(){ /* offline — keep the local menu */ });
   }
 
-  // ---- owner PIN ----
-  // First use on a device: the owner creates a PIN, stored as a SHA-256 hash
-  // in localStorage. After that, editing needs the PIN. This is a client-side
-  // deterrent only — the hash sits in localStorage and is readable via dev
-  // tools, so it stops casual tampering but is NOT real security.
-  function hashPin(text){
-    var enc = new TextEncoder().encode(text + "|mamcom");
-    if(window.crypto && crypto.subtle){
-      return crypto.subtle.digest("SHA-256", enc).then(function(buf){
-        return Array.prototype.map.call(new Uint8Array(buf),
-          function(b){ return b.toString(16).padStart(2, "0"); }).join("");
-      });
-    }
-    // non-secure context (e.g. file://): deterministic fallback digest
-    var out = "", s = text + "|mamcom";
-    for(var i=0;i<s.length;i++){ out += ((s.charCodeAt(i) * 31 + i * 7) % 256).toString(16); }
-    return Promise.resolve(out);
-  }
-  function pinSeeded(){
-    try{ return localStorage.getItem(PIN_SEED) === "1"; }catch(e){ return false; }
-  }
-  function createPin(pin){
-    return hashPin(pin).then(function(hash){
-      try{
-        localStorage.setItem(PIN_KEY, hash);
-        localStorage.setItem(PIN_SEED, "1");
-      }catch(e){}
-      return true;
-    });
-  }
+  // ---- BẢO MẬT MÃ PIN QUẢN TRỊ TRÊN BACKEND ----
+  // Toàn bộ mã PIN được bảo vệ và xác thực ở Database Backend (bCrypt, lockout brute-force).
+  // Không lưu mã PIN dạng text hay hash ở localStorage / frontend, không lộ PIN qua URL!
   function checkPin(pin){
-    if(!pinSeeded()) return Promise.resolve(false);
-    return hashPin(pin).then(function(hash){
-      try{ return localStorage.getItem(PIN_KEY) === hash; }catch(e){ return false; }
-    });
-  }
-  var currentOwnerPin = "";
-  function getOwnerPin(){
-    if(currentOwnerPin) return currentOwnerPin;
-    try {
-      var s = sessionStorage.getItem("mamcom.ownerPin.session");
-      if(s && s !== "unlocked") return s;
-    } catch(e){}
-    return "";
+    if(sharedStore && typeof sharedStore.checkPin === "function"){
+      return sharedStore.checkPin(pin);
+    }
+    return Promise.resolve(false);
   }
 
-  // Tự động gắn token PIN vào các liên kết sang Bếp sơ chế nếu phiên chủ đang hoạt động
+  var currentOwnerPin = "";
+  function getOwnerPin(){
+    return currentOwnerPin || "";
+  }
+
+  // Đảm bảo không gắn mã PIN vào liên kết sang Bếp sơ chế
   try {
-    var initSavedPin = localStorage.getItem("mamcom.ownerPin.session") || sessionStorage.getItem("mamcom.ownerPin.session");
-    if (initSavedPin) {
-      document.querySelectorAll('a[href^="/prep"]').forEach(function(a){
-        a.setAttribute("href", "/prep?pin=" + encodeURIComponent(initSavedPin));
-      });
-    }
+    document.querySelectorAll('a[href^="/prep"]').forEach(function(a){
+      a.setAttribute("href", "/prep");
+    });
   } catch(e){}
 
   function escHtml(str){
@@ -5175,7 +5256,7 @@
     return String(str).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  var ownerUnlocked = false; // Luôn bắt đầu ở chế độ thường (khách), CHỈ mở khóa khi nhập đúng mã PIN
+  var ownerUnlocked = false; // Luôn bắt đầu ở chế độ thường (khách), CHỈ mở khóa khi backend xác thực đúng mã PIN
   function unlockOwner(pin){
     ownerUnlocked = true;
     document.body.classList.add("is-owner-unlocked");
@@ -5183,11 +5264,9 @@
       currentOwnerPin = pin;
     }
     try {
-      sessionStorage.setItem("mamcom.ownerPin.session", pin || "unlocked");
-      localStorage.setItem("mamcom.ownerPin.session", pin || "unlocked");
-      var actPin = pin || currentOwnerPin || "unlocked";
+      sessionStorage.setItem("mamcom.owner_authed", "1");
       document.querySelectorAll('a[href^="/prep"]').forEach(function(a){
-        a.setAttribute("href", "/prep?pin=" + encodeURIComponent(actPin));
+        a.setAttribute("href", "/prep");
       });
     } catch(e){}
     var ownerBar = document.getElementById("ownerStatusBar");
@@ -5215,7 +5294,7 @@
     document.body.classList.remove("is-owner-unlocked");
     currentOwnerPin = "";
     try {
-      sessionStorage.removeItem("mamcom.ownerPin.session");
+      sessionStorage.removeItem("mamcom.owner_authed");
       localStorage.removeItem("mamcom.ownerPin.session");
     } catch(e){}
     var ownerBar = document.getElementById("ownerStatusBar");
@@ -8501,29 +8580,35 @@
     window.addEventListener("pagehide", cleanupFallback);
   }
 
-  var btnOpenInstagram = document.getElementById("btnOpenInstagram");
-  if(btnOpenInstagram){
-    btnOpenInstagram.addEventListener("click", function(e){
-      e.preventDefault();
-      openSocialApp(IG_APP_SCHEME, IG_WEB_URL, IG_ANDROID_INTENT);
-    });
-  }
+  ["btnOpenInstagram", "btnOpenInstagramFoot"].forEach(function(id){
+    var btn = document.getElementById(id);
+    if(btn){
+      btn.addEventListener("click", function(e){
+        e.preventDefault();
+        openSocialApp(IG_APP_SCHEME, IG_WEB_URL, IG_ANDROID_INTENT);
+      });
+    }
+  });
 
-  var btnOpenTiktok = document.getElementById("btnOpenTiktok");
-  if(btnOpenTiktok){
-    btnOpenTiktok.addEventListener("click", function(e){
-      e.preventDefault();
-      openSocialApp(TIKTOK_APP_SCHEME, TIKTOK_WEB_URL, TIKTOK_ANDROID_INTENT);
-    });
-  }
+  ["btnOpenTiktok", "btnOpenTiktokFoot"].forEach(function(id){
+    var btn = document.getElementById(id);
+    if(btn){
+      btn.addEventListener("click", function(e){
+        e.preventDefault();
+        openSocialApp(TIKTOK_APP_SCHEME, TIKTOK_WEB_URL, TIKTOK_ANDROID_INTENT);
+      });
+    }
+  });
 
-  var btnOpenThreads = document.getElementById("btnOpenThreads");
-  if(btnOpenThreads){
-    btnOpenThreads.addEventListener("click", function(e){
-      e.preventDefault();
-      openSocialApp(THREADS_APP_SCHEME, THREADS_WEB_URL, THREADS_ANDROID_INTENT);
-    });
-  }
+  ["btnOpenThreads", "btnOpenThreadsFoot"].forEach(function(id){
+    var btn = document.getElementById(id);
+    if(btn){
+      btn.addEventListener("click", function(e){
+        e.preventDefault();
+        openSocialApp(THREADS_APP_SCHEME, THREADS_WEB_URL, THREADS_ANDROID_INTENT);
+      });
+    }
+  });
 
   // ---- Bộ đếm chỉ cộng MỘT LẦN cho cùng một nội dung đơn ----
   var BUMPED_KEY = "mamcom.bumped.v1";
@@ -8842,6 +8927,26 @@
     });
   }
 
+  // ================= COLLAPSIBLE REVIEWS BOX =================
+  var revToggleBtn = document.getElementById("revToggleBtn");
+  var revBox = document.getElementById("revBox");
+  var revToggleHint = document.getElementById("revToggleHint");
+  if(revToggleBtn && revBox){
+    revToggleBtn.addEventListener("click", function(){
+      var isCollapsed = revBox.classList.toggle("is-collapsed");
+      revToggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
+      if(revToggleHint){
+        revToggleHint.textContent = isCollapsed ? "Mở rộng" : "Thu gọn";
+      }
+    });
+    revToggleBtn.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        revToggleBtn.click();
+      }
+    });
+  }
+
   // ================= FOOTER CONTACT INFO MANAGEMENT =================
   var CONTACT_KEY = "mamcom_contact_info_v1";
 
@@ -9021,26 +9126,27 @@
     // resolves {meals:number, comments:[...]} ; null = keep local defaults
     loadState: function(){
       if(USE_SUPABASE){
-        return SUPABASE.from("state").select("value").eq("key","meals").single()
-          .then(function(st){
-            // .single() trả về {data, error, ...} — hàng nằm ở st.data.
-            var row = st && st.data;
-            var meals = (row && row.value != null) ? parseInt(row.value, 10) : null;
-            return SUPABASE.from("comments")
-              .select("id, rating, text, ts, name, img")
-              .eq("is_deleted", false)
-              .order("ts", { ascending:false })
-              .order("id", { ascending:false })
-              .then(function(r){
-                if(r.error) throw r.error;
-                var comments = (r.data || [])
-                  .filter(function(c){ return c && c.text && c.text.trim(); })
-                  .map(function(c){
-                    return { id:c.id, rating:c.rating, text:c.text.trim(), ts:c.ts, name:(c.name || "").trim(), img:(c.img || "").trim() };
-                  });
-                return { meals: meals, comments: comments };
-              });
-          });
+        return Promise.all([
+          SUPABASE.from("state").select("value").eq("key","meals").maybeSingle(),
+          SUPABASE.from("state").select("value").eq("key","page_views").maybeSingle(),
+          SUPABASE.from("comments")
+            .select("id, rating, text, ts, name, img")
+            .eq("is_deleted", false)
+            .order("ts", { ascending:false })
+            .order("id", { ascending:false })
+        ]).then(function(res){
+          var mealsRow = res[0] && res[0].data;
+          var pvRow = res[1] && res[1].data;
+          var commentsRes = res[2];
+          var meals = (mealsRow && mealsRow.value != null) ? parseInt(mealsRow.value, 10) : null;
+          var pv = (pvRow && pvRow.value != null) ? parseInt(pvRow.value, 10) : 717;
+          var comments = ((commentsRes && commentsRes.data) || [])
+            .filter(function(c){ return c && c.text && c.text.trim(); })
+            .map(function(c){
+              return { id:c.id, rating:c.rating, text:c.text.trim(), ts:c.ts, name:(c.name || "").trim(), img:(c.img || "").trim() };
+            });
+          return { meals: meals, page_views: pv, comments: comments };
+        });
       }
       return fetch("/api/state").then(function(r){
         if(!r.ok) throw new Error(String(r.status));
@@ -9158,48 +9264,58 @@
     },
 
     checkPin: function(pin){
-      if(USE_SUPABASE){
-        return SUPABASE.rpc("admin_verify_pin", { p_pin: pin }).then(function(res){
-          if(res.error){
-            var msg = res.error.message || "";
-            if(msg.indexOf("khóa") !== -1 || msg.indexOf("lock") !== -1 || msg.indexOf("sai 5 lần") !== -1){
-              throw new Error("Tài khoản chủ tạm khóa 10 phút do nhập sai quá 5 lần!");
-            }
-            throw res.error;
-          }
-          return res.data === true;
-        });
-      }
-      return fetch("/api/admin/verify-pin", {
+      return fetch("/api/verify-pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin: pin })
       }).then(function(r){
-        if(!r.ok && r.status === 429) throw new Error("Tài khoản chủ tạm khóa 10 phút do nhập sai quá nhiều lần!");
+        if(r.status === 429) throw new Error("Tài khoản chủ tạm khóa 10 phút do nhập sai quá nhiều lần!");
         return r.json();
       }).then(function(d){
-        return !!(d && d.ok);
+        if(d && d.ok === true) return true;
+        if(d && d.error) throw new Error(d.error);
+        return false;
+      }).catch(function(err){
+        if(USE_SUPABASE && SUPABASE && typeof SUPABASE.rpc === "function"){
+          return SUPABASE.rpc("admin_verify_pin", { p_pin: pin }).then(function(res){
+            if(res.error){
+              var msg = res.error.message || "";
+              if(msg.indexOf("khóa") !== -1 || msg.indexOf("lock") !== -1 || msg.indexOf("sai") !== -1){
+                throw new Error("Tài khoản chủ tạm khóa 10 phút do nhập sai quá nhiều lần!");
+              }
+              throw res.error;
+            }
+            return res.data === true;
+          });
+        }
+        throw err;
       });
     },
 
     changePin: function(oldPin, newPin){
-      if(USE_SUPABASE){
-        return SUPABASE.rpc("admin_change_pin", { p_old_pin: oldPin, p_new_pin: newPin }).then(function(res){
-          if(res.error) throw res.error;
-          try {
-            sessionStorage.setItem("mamcom.ownerPin.session", newPin);
-            localStorage.setItem("mamcom.ownerPin.session", newPin);
-          } catch(e){}
+      return fetch("/api/change-pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ oldPin: oldPin, newPin: newPin })
+      }).then(function(r){
+        return r.json();
+      }).then(function(d){
+        if(d && d.ok === true){
           currentOwnerPin = newPin;
           return true;
-        });
-      }
-      try {
-        sessionStorage.setItem("mamcom.ownerPin.session", newPin);
-        localStorage.setItem("mamcom.ownerPin.session", newPin);
-      } catch(e){}
-      currentOwnerPin = newPin;
-      return Promise.resolve(true);
+        }
+        if(d && d.error) throw new Error(d.error);
+        throw new Error("Lỗi đổi mã PIN");
+      }).catch(function(err){
+        if(USE_SUPABASE && SUPABASE && typeof SUPABASE.rpc === "function"){
+          return SUPABASE.rpc("admin_change_pin", { p_old_pin: oldPin, p_new_pin: newPin }).then(function(res){
+            if(res.error) throw res.error;
+            currentOwnerPin = newPin;
+            return true;
+          });
+        }
+        throw err;
+      });
     },
 
     // ---- shared price (owner-settable, in "k") ----
@@ -9803,9 +9919,18 @@
     }).catch(function(){ /* backend offline — giữ số đếm cục bộ */ });
   }
 
+  function updateVisitorsCount(count){
+    var el = document.getElementById("visitorsCount");
+    if(!el) return;
+    var n = parseInt(count, 10);
+    if(isNaN(n) || n <= 0) n = 717;
+    el.textContent = Number(n).toLocaleString("vi-VN");
+  }
+
   function loadServerState(){
     sharedStore.loadState().then(function(data){
       if(data && typeof data.meals === "number" && data.meals > 0) renderFlip(data.meals, false);
+      if(data && typeof data.page_views === "number") updateVisitorsCount(data.page_views);
       if(data && Array.isArray(data.comments)) renderReviews(data.comments);
     }).catch(function(){ /* offline — keep the local defaults */ });
   }
@@ -10966,8 +11091,9 @@
       // Đếm nếu chưa có trong tab này hoặc lần xem gần nhất cách hơn 15 phút
       if(!last || (now - last) > 15 * 60 * 1000){
         if(sharedStore && typeof sharedStore.trackEvent === "function"){
-          sharedStore.trackEvent("page_view").then(function(){
+          sharedStore.trackEvent("page_view").then(function(nextViews){
             try { sessionStorage.setItem("mamcom.last_view", String(now)); } catch(e){}
+            if(typeof nextViews === "number") updateVisitorsCount(nextViews);
           }).catch(function(){});
         }
       }
