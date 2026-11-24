@@ -4820,13 +4820,25 @@
     z-index: 3000 !important;
   }
 
-  /* Safe modal show/hide */
-  .modal, .picker, #vietqrModal.hidden, #lightbox.hidden {
+  /* Safe modal show/hide: All modals, pickers, lightbox, VietQR HIDDEN by default */
+  .modal,
+  .picker,
+  .lightbox,
+  #lightbox,
+  #vietqrModal,
+  .lightbox[hidden],
+  #lightbox[hidden],
+  .modal:not(.show):not(.is-open),
+  .picker:not(.show):not(.is-open),
+  #vietqrModal:not(.show):not(.is-open),
+  #lightbox:not(.show):not(.is-open) {
     display: none !important;
     pointer-events: none !important;
   }
-  .modal.is-open, .picker.is-open, #vietqrModal:not(.hidden), #lightbox:not(.hidden),
-  .modal.show, .picker.show {
+  .modal.show, .modal.is-open,
+  .picker.show, .picker.is-open,
+  #vietqrModal.show, #vietqrModal.is-open,
+  #lightbox.show:not([hidden]), #lightbox.is-open:not([hidden]) {
     display: flex !important;
     pointer-events: auto !important;
   }
@@ -6106,7 +6118,7 @@
 </div>
 
 <!-- FULLSIZE IMAGE PREVIEW -->
-<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true">
+<div class="lightbox hidden" id="lightbox" hidden role="dialog" aria-modal="true" style="display:none !important;pointer-events:none !important;">
   <button class="lightbox__close" type="button" aria-label="Đóng" id="lightboxClose">✕</button>
   <img class="lightbox__img" id="lightboxImg" alt="">
   <div class="lightbox__info">
@@ -6827,7 +6839,6 @@
   var lightboxClose = document.getElementById("lightboxClose");
   var lightboxReturnFocus = null;
   function showLightbox(src, name, description){
-    // Nhớ chỗ vừa bấm để trả tiêu điểm về đó khi đóng (tránh mất vị trí bàn phím).
     lightboxReturnFocus = document.activeElement;
     lightboxImg.src = src || "";
     lightboxImg.alt = name || "";
@@ -6837,11 +6848,21 @@
     lightboxDesc.textContent = desc;
     lightboxDesc.hidden = !desc;
     lightbox.hidden = false;
+    lightbox.removeAttribute("hidden");
+    lightbox.classList.remove("hidden");
+    lightbox.classList.add("is-open", "show");
+    lightbox.style.display = "flex";
+    lightbox.style.pointerEvents = "auto";
     syncScrollLock();
     lightboxClose.focus();
   }
   function closeLightbox(){
     lightbox.hidden = true;
+    lightbox.setAttribute("hidden", "");
+    lightbox.classList.add("hidden");
+    lightbox.classList.remove("is-open", "show");
+    lightbox.style.display = "none";
+    lightbox.style.pointerEvents = "none";
     lightboxImg.src = "";
     lightboxImg.hidden = false;
     lightboxDesc.textContent = "";
@@ -6852,6 +6873,13 @@
       lightboxReturnFocus = null;
     }
   }
+  function openLightboxForDish(idx){
+    if(Array.isArray(DISHES) && DISHES[idx]){
+      var d = DISHES[idx];
+      showLightbox(d.image, d.name, d.description);
+    }
+  }
+  window.openLightboxForDish = openLightboxForDish;
   lightbox.addEventListener("click", closeLightbox);
   lightboxClose.addEventListener("click", function(e){ e.stopPropagation(); closeLightbox(); });
   document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeLightbox(); });
