@@ -257,16 +257,16 @@
     border: 1px solid #EDE5DC;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(45, 25, 15, 0.04);
-    padding: 20px 18px;
+    padding: 24px 20px;
     transition: box-shadow 0.2s ease;
   }
   @media (min-width: 560px) {
     .card {
-      padding: 24px;
+      padding: 28px;
     }
   }
   .card-head {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
   }
   .step-tag {
     display: inline-flex;
@@ -299,114 +299,41 @@
     margin-top: 4px;
   }
 
-  /* ================= HERO SÁNG ẤM & FOOD-FIRST ================= */
+  /* ================= HERO SÁNG ẤM & TỐI GIẢN LIỀN MẠCH ================= */
   .hero-card {
-    background: linear-gradient(180deg, #FFFFFF 0%, #FFFBF5 100%);
-    border: 1px solid #EDE5DC;
-    border-radius: 24px;
-    padding: 24px 20px;
-    box-shadow: 0 4px 20px rgba(45, 25, 15, 0.04);
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 10px 4px 8px;
+    box-shadow: none;
     text-align: center;
   }
-  .hero-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #FFF5F5;
-    color: #DA241C;
-    font-size: 12px;
-    font-weight: 800;
-    padding: 4px 12px;
-    border-radius: 99px;
-    margin-bottom: 12px;
-  }
   .hero-h1 {
-    font-size: 24px;
+    font-size: 25px;
     font-weight: 800;
     color: #1E1917;
-    line-height: 1.28;
+    line-height: 1.25;
     letter-spacing: -0.02em;
     margin-bottom: 10px;
   }
   @media (min-width: 600px) {
     .hero-h1 {
-      font-size: 28px;
+      font-size: 30px;
     }
   }
   .hero-desc {
     font-size: 14.5px;
     color: #574F4A;
-    line-height: 1.55;
-    margin: 0 auto 16px;
-    max-width: 580px;
+    line-height: 1.6;
+    margin: 0 auto 12px;
+    max-width: 540px;
   }
-  .hero-chips {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 18px;
-  }
-  .hero-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12.5px;
-    font-weight: 700;
-    background: #FAF6F0;
-    border: 1px solid #E6DDD3;
-    color: #3F3834;
-    padding: 5px 11px;
-    border-radius: 99px;
-  }
-  .hero-food-strip {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-    margin-bottom: 14px;
-  }
-  @media (max-width: 540px) {
-    .hero-food-strip {
-      display: flex;
-      overflow-x: auto;
-      gap: 8px;
-      padding-bottom: 4px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .hero-food-strip::-webkit-scrollbar {
-      display: none;
-    }
-    .hero-food-thumb {
-      flex: 0 0 74px;
-      width: 74px;
-      scroll-snap-align: start;
-    }
-  }
-  .hero-food-thumb {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #FAF6F0;
-    border: 1px solid #EDE5DC;
-    cursor: pointer;
-    display: block;
-    transition: transform 0.16s ease;
-  }
-  .hero-food-thumb:hover {
-    transform: translateY(-2px);
-  }
-  .hero-food-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 82%;
-    transform: scale(1.24);
-    transform-origin: center bottom;
-    display: block;
+  .hero-subline {
+    font-size: 13px;
+    color: #78716C;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0 auto 10px;
   }
   .hero-stats {
     font-size: 12.5px;
@@ -505,26 +432,28 @@
     box-shadow: 0 4px 12px rgba(218, 36, 28, 0.25);
   }
   .people-tip {
-    background: #FAF6F0;
-    border-radius: 10px;
-    padding: 10px 14px;
+    background: transparent;
+    border: none;
+    border-left: none;
+    border-radius: 0;
+    padding: 2px 0 4px;
     font-size: 13px;
-    color: #574F4A;
-    line-height: 1.45;
-    margin-bottom: 18px;
-    border-left: 3.5px solid #DA241C;
+    color: #78716C;
+    line-height: 1.5;
+    margin-bottom: 20px;
   }
 
   .pkg-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    padding-top: 14px;
+    padding-top: 4px;
+    align-items: stretch;
   }
   @media (max-width: 519px) {
     .pkg-grid {
       grid-template-columns: 1fr;
-      gap: 18px;
+      gap: 12px;
     }
   }
   .pkg-card {
@@ -532,7 +461,7 @@
     border: 2px solid #E8DFD5;
     border-radius: 16px;
     background: #FFFFFF;
-    padding: 18px 10px 14px;
+    padding: 14px 10px 14px;
     cursor: pointer;
     transition: all 0.18s ease;
     display: flex;
@@ -540,7 +469,8 @@
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    gap: 5px;
+    gap: 6px;
+    height: 100%;
   }
   .pkg-card:hover {
     border-color: #DA241C;
@@ -552,29 +482,29 @@
     background: #FFF9F8;
     box-shadow: 0 6px 18px rgba(218, 36, 28, 0.10);
   }
-  .pkg-floating-badge {
-    position: absolute;
-    top: -11px;
-    left: 50%;
-    transform: translateX(-50%);
+  .pkg-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     white-space: nowrap;
+    height: 22px;
     font-size: 11px;
     font-weight: 800;
-    padding: 3px 10px;
+    padding: 0 10px;
     border-radius: 99px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    margin-bottom: 2px;
   }
-  .pkg-floating-badge--muted {
+  .pkg-badge--muted {
     background: #FAF6F0;
     color: #78716C;
     border: 1px solid #E6DDD3;
   }
-  .pkg-floating-badge--pop {
+  .pkg-badge--pop {
     background: #FEF3C7;
     color: #92400E;
     border: 1px solid #FDE68A;
   }
-  .pkg-floating-badge--save {
+  .pkg-badge--save {
     background: #ECFDF3;
     color: #15803D;
     border: 1px solid #BBF7D0;
@@ -718,19 +648,19 @@
     position: absolute;
     top: 8px;
     left: 8px;
-    min-width: 26px;
-    height: 26px;
+    min-width: 24px;
+    height: 24px;
     padding: 0 7px;
     border-radius: 99px;
     background: #DA241C;
     color: #FFFFFF;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 800;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     z-index: 6;
-    box-shadow: 0 2px 8px rgba(218, 36, 28, 0.35);
+    box-shadow: 0 2px 6px rgba(218, 36, 28, 0.30);
   }
   .dish-zoom-btn {
     position: absolute;
@@ -777,32 +707,42 @@
     display: flex !important;
   }
   .dish-body {
-    padding: 10px 12px 12px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     justify-content: space-between;
-    gap: 8px;
+    gap: 10px;
   }
   .dish-title {
     font-size: 13.5px;
     font-weight: 700;
     color: #1E1917;
     line-height: 1.35;
+    min-height: 2.7em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     margin-bottom: 4px;
   }
   .dish-desc {
     font-size: 11.5px;
     color: #78716C;
     line-height: 1.4;
+    min-height: 2.8em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .dish-action {
-    margin-top: 2px;
+    margin-top: auto;
   }
   .btn-select-dish {
     width: 100%;
-    height: 40px;
-    border-radius: 10px;
+    height: 44px;
+    border-radius: 12px;
     background: #FAF6F0;
     border: 1.5px solid #E2D9CE;
     color: #1E1917;
@@ -824,19 +764,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 40px;
-    border-radius: 10px;
+    height: 44px;
+    border-radius: 12px;
     background: #FFF5F5;
     border: 1.5px solid #DA241C;
-    padding: 2px 5px;
+    padding: 3px 5px;
   }
   .stepper-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
     background: #FFFFFF;
     border: 1px solid #F2D7D5;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 800;
     color: #DA241C;
     display: flex;
@@ -2539,19 +2479,11 @@
 <div class="wrap">
   <div class="board-layout">
     <main class="board-main-col">
-      <!-- HERO SÁNG ẤM & FOOD-FIRST -->
+      <!-- HERO SÁNG ẤM & TỐI GIẢN -->
       <header class="hero-card">
-        <div class="hero-tag">🍲 Cơm nhà miền Bắc · Giao tươi Hà Nội</div>
-        <h1 class="hero-h1">Nguyên liệu tươi sơ chế sẵn — 15 phút nấu trọn cơm nhà</h1>
-        <p class="hero-desc">Không phải cơm hộp nấu sẵn. Hộp thịt rau đã rửa sạch, thái sẵn &amp; kèm gói nước sốt pha chuẩn vị Bắc — tối về đổ vào chảo nấu 15 phút là ăn.</p>
-        <div class="hero-chips">
-          <span class="hero-chip">✓ Tươi sạch mỗi ngày</span>
-          <span class="hero-chip">✓ Chỉ từ 54.000đ/bữa</span>
-          <span class="hero-chip">✓ Freeship 100%</span>
-        </div>
-        <div class="hero-food-strip" id="heroFoodStrip" aria-label="Xem trước các mâm cơm thật">
-          <!-- Render động từ DISHES -->
-        </div>
+        <h1 class="hero-h1">Cơm nhà tự nấu, gọn trong 15 phút.</h1>
+        <p class="hero-desc">Mâm Cơm giao nguyên liệu tươi đã sơ chế sạch, chia đủ phần kèm sốt và công thức. Bạn chọn món trước cho cả tuần — tối về chỉ việc bật bếp.</p>
+        <p class="hero-subline">Nguyên liệu sống sơ chế mới mỗi ngày · Từ 54k/người/bữa · Freeship Hà Nội</p>
         <div class="hero-stats">
           Đã chuẩn bị <strong id="mealsCount">83</strong> mâm cơm nhà · <strong id="visitorsCount">717</strong> lượt ghé thăm
         </div>
@@ -2561,12 +2493,11 @@
       <section class="card" id="stepPackage">
         <div class="card-head">
           <div class="step-tag">Bước 1</div>
-          <h2 class="step-title">Chọn gói ăn theo số người</h2>
-          <p class="step-sub">Chọn số người và số bữa bạn muốn đặt trong tuần.</p>
+          <h2 class="step-title">Chọn gói cho tuần này</h2>
         </div>
 
         <div class="section-label">
-          <span>1. Bạn đặt cho mấy người ăn?</span>
+          <span>1. Nhà bạn có mấy người ăn?</span>
         </div>
         <div class="people-row">
           <button type="button" class="people-pill" data-people="1">1 người</button>
@@ -2579,7 +2510,7 @@
         </div>
 
         <div class="section-label">
-          <span>2. Bạn muốn đặt mấy bữa?</span>
+          <span>2. Tuần này bạn muốn nấu mấy bữa?</span>
         </div>
         <div class="pkg-grid" id="pkgGrid">
           <!-- 3 Thẻ gói được JS render động -->
@@ -2591,14 +2522,14 @@
         <div class="step2-head">
           <div>
             <div class="step-tag">Bước 2</div>
-            <h2 class="step-title">Chọn món vào thực đơn</h2>
+            <h2 class="step-title" id="stepMenuTitle">Chọn 3 mâm cơm</h2>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <div class="progress-pill is-incomplete" id="mealProgressPill">
               Đã chọn: 0/3 bữa
             </div>
             <button type="button" class="btn-auto-mix" id="btnAutoMix">
-              ✨ Để Mâm Cơm chọn giúp
+              ✨ Chọn nhanh giúp mình
             </button>
           </div>
         </div>
@@ -2630,7 +2561,7 @@
             <span>Đơn giá</span>
             <span id="summaryUnitVal" style="font-weight:700;color:#1E1917;">54.000đ/người/bữa</span>
           </div>
-          <div class="summary-line">
+          <div class="summary-line" id="summarySaveRow">
             <span>Tiết kiệm</span>
             <span id="summarySaveVal" style="color:#15803D;font-weight:700;">36.000đ</span>
           </div>
@@ -2689,7 +2620,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="cNote">Ghi chú cho bếp sơ chế</label>
+          <label class="form-label" for="cNote">Ghi chú thêm (nếu có)</label>
           <input type="text" class="form-input" id="cNote" placeholder="Ví dụ: Không ăn hành, bớt cay, giao lên tầng 3..." />
         </div>
 
@@ -2707,7 +2638,7 @@
         <div class="qa-list">
           <div class="qa-item">
             <button type="button" class="qa-head">
-              <span>Mâm Cơm là gì, có giống cơm hộp văn phòng không?</span>
+              <span>Mâm Cơm giao đồ sống hay đồ nấu sẵn?</span>
               <span class="qa-icon">▼</span>
             </button>
             <div class="qa-body">
@@ -2802,8 +2733,8 @@
         </div>
         <div class="foot-info">
           <div><strong>MÂM CƠM — Nguyên liệu sơ chế sẵn</strong></div>
-          <div id="footAddressText">Địa chỉ: Quận Cầu Giấy, Hà Nội</div>
-          <div>Hotline / Zalo: <a href="tel:0858200286" class="foot-hotline" id="footPhoneLink">0858 200 286</a></div>
+          <div id="footAddressText">Minh Khai, Bạch Mai, Hà Nội</div>
+          <div>Hotline / Zalo: <a href="tel:0965942185" class="foot-hotline" id="footPhoneLink">0965942185</a></div>
         </div>
         <div>
           <button type="button" class="foot-admin-btn" id="btnOpenOwnerFooter">Quản trị viên (PIN)</button>
@@ -3362,7 +3293,7 @@
       </label>
       <label style="display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:#261109;">
         <span>Số điện thoại / Hotline</span>
-        <input type="tel" id="contactPhoneInput" placeholder="VD: 0987 654 321" style="padding:9px 12px;border:1.5px solid #cca020;border-radius:12px;font-size:14px;">
+        <input type="tel" id="contactPhoneInput" placeholder="VD: 0965 942 185" style="padding:9px 12px;border:1.5px solid #cca020;border-radius:12px;font-size:14px;">
       </label>
       <div id="contactSaveStatus" style="font-size:12px;font-weight:600;min-height:18px;"></div>
     </div>
@@ -3475,7 +3406,7 @@
 
   /* ================= PRICING MATRIX (CHÍNH XÁC TUYỆT ĐỐI 100%) ================= */
   var PEOPLE_TIPS = {
-    1: "Khẩu phần gọn gàng, chia sẵn từng bữa, không lãng phí đồ ăn thừa.",
+    1: 'Ở một mình? Bạn có thể chọn "2 người" để nấu 1 lần ăn tối + mang trưa mai (chỉ từ 54k/bữa).',
     2: "Gói chuẩn cơm nhà ấm cúng cho cặp đôi hoặc 2 người bạn. Đủ 1 món mặn + 1 món canh/rau.",
     3: "Khẩu phần rộng rãi, no nê cho gia đình nhỏ hoặc 3 người bạn.",
     4: "Bữa cơm đầy đặn cho cả nhà, tối ưu chi phí và thời gian vào bếp."
@@ -3627,27 +3558,17 @@
     return desc || "1 mặn + 1 canh tươi mỗi ngày";
   }
 
-  function renderHeroFoodStrip() {
-    var strip = document.getElementById("heroFoodStrip");
-    if (!strip) return;
-    var html = "";
-    var count = 0;
-    DISHES.forEach(function(dish) {
-      if (count >= 6 || !isDishVisibleToCustomer(dish)) return;
-      html += '<a href="#stepMenu" class="hero-food-thumb" data-scroll-menu title="' + (dish.name || "").replace(/"/g, "&quot;") + '">';
-      html += '  <img src="' + dish.img + '" alt="' + (dish.name || "Mâm cơm") + '" loading="eager" />';
-      html += '</a>';
-      count++;
-    });
-    strip.innerHTML = html;
-  }
-
-  var isCheckoutBtnInView = false;
   function updateStickyVisibility() {
     var bar = document.getElementById("floatingStickyBar");
     if (!bar) return;
     var anyModalOpen = !!document.querySelector(".modal.show, .modal.is-open, .modal-backdrop.is-open, .lightbox-backdrop.is-open, #editor:not([hidden])");
-    bar.classList.toggle("is-hidden", isCheckoutBtnInView || anyModalOpen);
+    var orderFormEl = document.getElementById("orderForm");
+    var inOrPastStep3 = false;
+    if (orderFormEl) {
+      var rect = orderFormEl.getBoundingClientRect();
+      inOrPastStep3 = (rect.top <= window.innerHeight - 60);
+    }
+    bar.classList.toggle("is-hidden", inOrPastStep3 || anyModalOpen);
   }
 
   /* Toast Notification */
@@ -3685,11 +3606,11 @@
       var isActive = (m === appState.meals);
       var badgeHtml = "";
       if (m === 2) {
-        badgeHtml = '<span class="pkg-floating-badge pkg-floating-badge--muted">Làm quen</span>';
+        badgeHtml = '<span class="pkg-badge pkg-badge--muted">Làm quen</span>';
       } else if (m === 3) {
-        badgeHtml = '<span class="pkg-floating-badge pkg-floating-badge--pop">⭐ Phổ biến nhất</span>';
+        badgeHtml = '<span class="pkg-badge pkg-badge--pop">⭐ Phổ biến nhất</span>';
       } else {
-        badgeHtml = '<span class="pkg-floating-badge pkg-floating-badge--save">🔥 Giao tươi 2 lần</span>';
+        badgeHtml = '<span class="pkg-badge pkg-badge--save">🔥 Giao tươi 2 lần</span>';
       }
 
       var unitText = (appState.people === 1)
@@ -3712,7 +3633,10 @@
   }
 
   function renderMenu() {
-    renderHeroFoodStrip();
+    var stepMenuTitle = document.getElementById("stepMenuTitle");
+    if (stepMenuTitle) {
+      stepMenuTitle.textContent = "Chọn " + appState.meals + " mâm cơm";
+    }
     var grid = document.getElementById("dishGrid");
     if (!grid) return;
     var totalSelected = getSelectedCount();
@@ -3817,8 +3741,14 @@
     var unitValEl = document.getElementById("summaryUnitVal");
     if (unitValEl) unitValEl.textContent = formatVND(pricing.perPerson) + (appState.people === 1 ? "/bữa" : "/người/bữa");
 
+    var saveRowEl = document.getElementById("summarySaveRow");
     var saveValEl = document.getElementById("summarySaveVal");
-    if (saveValEl) saveValEl.textContent = pricing.save > 0 ? formatVND(pricing.save) : "0đ";
+    if (pricing.save > 0) {
+      if (saveRowEl) saveRowEl.style.display = "flex";
+      if (saveValEl) saveValEl.textContent = formatVND(pricing.save);
+    } else {
+      if (saveRowEl) saveRowEl.style.display = "none";
+    }
 
     var fsBadgeEl = document.getElementById("summaryFreeshipBadge");
     if (fsBadgeEl) fsBadgeEl.textContent = pricing.freeshipLabel;
@@ -4764,20 +4694,9 @@
     }
   });
 
-  /* Initial UI Sync */
-  // Observer tự ẩn Sticky Bar khi nút Thanh toán chuyển khoản đã vào màn hình
-  if (typeof IntersectionObserver !== "undefined") {
-    try {
-      var ctaEl = document.getElementById("btnOpenVietQR");
-      if (ctaEl) {
-        var io = new IntersectionObserver(function(entries) {
-          isCheckoutBtnInView = !!(entries[0] && entries[0].isIntersecting);
-          updateStickyVisibility();
-        }, { threshold: 0.1 });
-        io.observe(ctaEl);
-      }
-    } catch(e) {}
-  }
+  /* Initial UI Sync & Sticky Bottom Bar Scroll Detection */
+  window.addEventListener("scroll", updateStickyVisibility, { passive: true });
+  window.addEventListener("resize", updateStickyVisibility, { passive: true });
 
   document.addEventListener("DOMContentLoaded", function() {
     syncUI();
@@ -6717,19 +6636,23 @@
   var CONTACT_KEY = "mamcom_contact_info_v1";
 
   function loadContactInfo(){
+    var fallback = {
+      address: "Minh Khai, Bạch Mai, Hà Nội",
+      phone: "0965942185"
+    };
     try {
       var raw = localStorage.getItem(CONTACT_KEY);
       if(raw){
         var parsed = JSON.parse(raw);
         if(parsed && typeof parsed.address === "string" && typeof parsed.phone === "string"){
-          return parsed;
+          var cleanPhone = parsed.phone.replace(/\s+/g, "");
+          if(cleanPhone !== "0987654321" && cleanPhone !== "0858200286"){
+            return parsed;
+          }
         }
       }
     } catch(e){}
-    return {
-      address: "Địa chỉ: Quận Cầu Giấy, Hà Nội",
-      phone: "0858 200 286"
-    };
+    return fallback;
   }
 
   function saveContactInfo(info){
@@ -6781,10 +6704,11 @@
     var info = loadContactInfo();
     var addrEl = document.getElementById("footAddressText");
     var phoneEl = document.getElementById("footPhoneLink");
-    if(addrEl) addrEl.textContent = info.address || "Địa chỉ: Quận Cầu Giấy, Hà Nội";
+    if(addrEl) addrEl.textContent = info.address || "Minh Khai, Bạch Mai, Hà Nội";
     if(phoneEl){
-      phoneEl.textContent = info.phone || "0858 200 286";
-      phoneEl.href = "tel:" + (info.phone || "0858200286").replace(/\s+/g, "");
+      var displayPhone = info.phone || "0965942185";
+      phoneEl.textContent = displayPhone;
+      phoneEl.href = "tel:" + displayPhone.replace(/\s+/g, "");
     }
   }
 
