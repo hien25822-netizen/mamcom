@@ -106,6 +106,7 @@ export default async function handler(req, res) {
       orderCode: numericOrderCode,
       orderId: "MC" + numericOrderCode,
       amount: cleanAmount,
+      description: data.data.description || desc,
       accountNumber: data.data.accountNumber,
       accountName: data.data.accountName,
       bin: data.data.bin || "970422",

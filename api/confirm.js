@@ -7,43 +7,63 @@ export default async function handler(req, res) {
   }
 
   const cleanId = String(id).trim().toUpperCase();
-  const SUPABASE_URL = "https://sdlpldhldyyytkbpujdk.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_9-Z47h5jf1Dtj2ZJ-RslwA_RjL1rz9_";
+  const SUPABASE_URL = process.env.SUPABASE_URL || "https://sdlpldhldyyytkbpujdk.supabase.co";
+  const SUPABASE_KEY = process.env.SUPABASE_KEY || "sb_publishable_9-Z47h5jf1Dtj2ZJ-RslwA_RjL1rz9_";
   
   // Đọc Bot Token và Chat ID từ Biến Môi Trường Vercel
   const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "5756916605";
 
   try {
-    // 1. Gọi RPC confirm_order_payment trong Supabase (Atomic & Security Definer)
-    const confRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/confirm_order_payment`, {
-      method: "POST",
-      headers: {
-        "apikey": SUPABASE_KEY,
-        "Authorization": `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ p_order_id: cleanId })
-    });
+    // 0. Kiểm tra trạng thái hiện tại để tránh cộng dồn số mâm nếu bấm xác nhận lặp lại
+    let alreadyConfirmed = false;
+    try {
+      const stRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_order_status`, {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ p_order_id: cleanId })
+      });
+      if (stRes.ok) {
+        const curSt = await stRes.json();
+        if (curSt === "confirmed" || curSt === "done") alreadyConfirmed = true;
+      }
+    } catch (e) {}
 
-    if (!confRes.ok) {
-      const errText = await confRes.text();
-      return res.status(500).send(`Lỗi cập nhật đơn: ${errText}`);
-    }
+    if (!alreadyConfirmed) {
+      // 1. Gọi RPC confirm_order_payment trong Supabase (Atomic & Security Definer)
+      const confRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/confirm_order_payment`, {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ p_order_id: cleanId })
+      });
 
-    // 2. Gửi tin nhắn xác nhận qua Telegram nếu đã cấu hình Token
-    if (TELEGRAM_BOT_TOKEN) {
-      try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: `🎉 <b>CHỦ QUÁN ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!</b>\n━━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Mã đơn:</b> <code>${cleanId}</code>\n⚡ Màn hình của khách đã tự động hoàn tất và số mâm đã được cộng vào hệ thống.`,
-            parse_mode: "HTML"
-          })
-        });
-      } catch(e) {}
+      if (!confRes.ok) {
+        const errText = await confRes.text();
+        return res.status(500).send(`Lỗi cập nhật đơn: ${errText}`);
+      }
+
+      // 2. Gửi tin nhắn xác nhận qua Telegram nếu đã cấu hình Token
+      if (TELEGRAM_BOT_TOKEN) {
+        try {
+          await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: TELEGRAM_CHAT_ID,
+              text: `🎉 <b>CHỦ QUÁN ĐÃ XÁC NHẬN NHẬN TIỀN THÀNH CÔNG!</b>\n━━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Mã đơn:</b> <code>${cleanId}</code>\n⚡ Màn hình của khách đã tự động hoàn tất và số mâm đã được cộng vào hệ thống.`,
+              parse_mode: "HTML"
+            })
+          });
+        } catch(e) {}
+      }
     }
 
     // 3. Trả về trang thông báo xác nhận thành công cho chủ quán
