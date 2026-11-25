@@ -538,6 +538,7 @@
   }
   .hero-stats {
     font-size: 12.5px;
+    line-height: 1.5;
     color: #574F4A;
     font-weight: 500;
   }
@@ -806,46 +807,48 @@
     color: #15803D;
   }
   .pkg-title {
-    font-size: 15px;
+    font-size: clamp(14.5px, 3.8vw, 15.5px);
     font-weight: 800;
     color: #1E1917;
     line-height: 1.25;
   }
-  @media (min-width: 520px) {
-    .pkg-title {
-      font-size: 16px;
-    }
-  }
   .pkg-price {
-    font-size: 18px;
-    font-weight: 800;
+    font-size: clamp(16px, 4.4vw, 20px);
+    font-weight: 900;
     color: #DA241C;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
     display: inline-block;
-    margin: 2px 0;
-  }
-  @media (min-width: 520px) {
-    .pkg-price {
-      font-size: 20px;
-    }
+    margin: 2px 0 0;
   }
   .pkg-unit {
     font-size: 11px;
-    color: #574F4A;
-    font-weight: 500;
+    font-weight: 600;
+    color: #78716C;
+    margin-top: 2px;
     line-height: 1.25;
-    min-height: 16px;
+    white-space: nowrap;
   }
-  .unit-per-meal {
-    display: none;
+  .pkg-total-line {
+    font-size: clamp(10.5px, 2.8vw, 12px);
+    color: #3F3834;
+    margin: 6px 0 8px;
+    padding-top: 6px;
+    border-top: 1px dashed #ECE4DC;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
   }
-  @media (min-width: 520px) {
-    .pkg-unit {
-      font-size: 11.5px;
-    }
-    .unit-per-meal {
-      display: inline;
+  .pkg-total-line strong {
+    font-weight: 800;
+    color: #1E1917;
+  }
+  @media (max-width: 400px) {
+    .pkg-total-line {
+      letter-spacing: -0.025em;
     }
   }
   .pkg-foot-pill {
@@ -978,11 +981,14 @@
   .btn-wizard-next {
     width: 100%;
     height: 50px;
+    padding: 0 12px;
     border-radius: 14px;
     background: linear-gradient(180deg, #E32B23 0%, #CE1E16 100%);
     color: #FFFFFF;
-    font-size: 15.5px;
+    font-size: clamp(13.5px, 3.8vw, 15.5px);
     font-weight: 800;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
     border: none;
     cursor: pointer;
     margin-top: 2px;
@@ -3883,7 +3889,7 @@
           </button>
         </div>
         <div class="hero-stats">
-          Từ 54k/người/bữa · Freeship Hà Nội · Đã phục vụ <strong id="mealsCount">83</strong> mâm<span id="visitorsCount" style="display:none;">717</span>
+          <span>Sơ chế tươi mỗi ngày · Freeship Hà Nội · </span><span style="white-space:nowrap;"><strong id="mealsCount">109</strong> gia đình tin tưởng Mâm Cơm</span><span id="visitorsCount" style="display:none;">717</span>
         </div>
       </header>
 
@@ -3932,7 +3938,7 @@
         <div class="pkg-reward-banner is-unlocked" id="pkgRewardBanner">
           <!-- Thanh phản hồi mở khóa giảm 10% render động -->
         </div>
-        <button type="button" class="btn-wizard-next" id="btnStep1Next">Tiếp tục: Chọn 3 mâm cơm →</button>
+        <button type="button" class="btn-wizard-next" id="btnStep1Next">Tiếp tục: Chọn 3 mâm cơm · 324.000đ →</button>
         </section>
 
         <!-- BƯỚC 2: CHỌN MÓN -->
@@ -5332,11 +5338,6 @@
     return daysName[dt.getDay()] + ", " + parts[2] + "/" + parts[1] + "/" + parts[0];
   }
 
-  function formatShortK(n) {
-    var k = Math.round((Number(n) || 0) / 1000);
-    return k + "k";
-  }
-
   function getDishNutritionLabel(d, verbose) {
     var prefix = verbose ? "1 mặn · 1 canh · " : "";
     var meta = getDishMeta(d);
@@ -5406,9 +5407,7 @@
       }
       recSlotHtml += '</div>';
 
-      var unitHtml = (appState.people === 1)
-        ? (formatShortK(p.perPerson) + "/bữa")
-        : (formatShortK(p.perPerson) + '/người<span class="unit-per-meal">/bữa</span>');
+      var unitHtml = (appState.people === 1) ? "/bữa" : "/người/bữa";
 
       var footPill = "";
       if (m === 2) {
@@ -5423,16 +5422,17 @@
       html += '  <span class="pkg-check" aria-hidden="true">✓</span>';
       html += '  ' + recSlotHtml;
       html += '  <div class="pkg-title">' + m + ' bữa</div>';
-      html += '  <div class="pkg-price' + ((shouldPopPriceThisRender && isActive) ? ' is-price-pop' : '') + '">' + formatVND(p.total) + '</div>';
+      html += '  <div class="pkg-price' + ((shouldPopPriceThisRender && isActive) ? ' is-price-pop' : '') + '">' + formatVND(p.perPerson) + '</div>';
       html += '  <div class="pkg-unit">' + unitHtml + '</div>';
+      html += '  <div class="pkg-total-line">Tổng: <strong>' + formatVND(p.total) + '</strong></div>';
       html += '  ' + footPill;
       html += '</div>';
     });
     pkgGrid.innerHTML = html;
 
+    var curPricing = computePricing(appState.people, appState.meals);
     var rewardBanner = document.getElementById("pkgRewardBanner");
     if (rewardBanner) {
-      var curPricing = computePricing(appState.people, appState.meals);
       if (appState.meals === 2) {
         var p3 = computePricing(appState.people, 3);
         rewardBanner.className = "upsell-banner is-nudge";
@@ -5451,7 +5451,7 @@
 
     var nextBtn = document.getElementById("btnStep1Next");
     if (nextBtn) {
-      nextBtn.textContent = "Tiếp tục: Chọn " + appState.meals + " mâm cơm →";
+      nextBtn.textContent = "Tiếp tục: Chọn " + appState.meals + " mâm cơm · " + formatVND(curPricing.total) + " →";
     }
   }
 
