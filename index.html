@@ -2053,11 +2053,14 @@
     text-align: center;
   }
   .vietqr-modal-sub {
-    font-size: 11.5px;
+    font-size: 12px;
     color: #574F4A;
-    margin: 3px 0 0;
+    margin: 4px 0 0;
     font-weight: 600;
     line-height: 1.35;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
   }
   .vietqr-img-wrap {
     background: #FFFFFF;
@@ -2065,10 +2068,10 @@
     border-radius: 16px;
     padding: 10px;
     display: inline-block;
-    margin-bottom: 6px;
+    margin: 0 auto 12px;
     max-width: 260px;
     width: 100%;
-    box-shadow: 0 4px 16px rgba(45, 25, 15, 0.06);
+    box-shadow: 0 4px 16px rgba(30, 25, 23, 0.06);
   }
   .vietqr-img {
     width: 100%;
@@ -2078,8 +2081,8 @@
   }
   .bank-details-box {
     background: #FAF6F0;
-    border-radius: 12px;
-    padding: 12px 14px;
+    border-radius: 14px;
+    padding: 14px 16px;
     margin-bottom: 14px;
     text-align: left;
     border: 1px solid #EDE5DC;
@@ -2211,6 +2214,8 @@
     padding: 2px 7px;
     border-radius: 6px;
     cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .btn-copy-chip:hover {
     border-color: #DA241C;
@@ -2286,7 +2291,7 @@
     font-family: inherit;
     font-weight: 800;
     font-size: 14px;
-    margin: 10px 0 6px;
+    margin: 0 0 14px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -2297,21 +2302,6 @@
   .btn-save-qr:hover { background: #FEE2E2; }
   .btn-save-qr:active { transform: scale(0.98); }
   .btn-save-qr:disabled { opacity: 0.55; cursor: not-allowed; }
-  .qr-save-hint {
-    font-size: 11.5px;
-    color: #78716C;
-    line-height: 1.45;
-    margin: 0 0 14px;
-    text-align: center;
-  }
-  .qr-stk-subnote {
-    font-size: 11px;
-    color: #15803D;
-    font-weight: 600;
-    line-height: 1.4;
-    margin: 2px 0 8px;
-    text-align: left;
-  }
   .btn-ig-deeplink {
     width: 100%;
     height: 48px;
@@ -2365,7 +2355,7 @@
 
   .qr-auto-status-box {
     background: #ECFDF3;
-    border: 1px solid #A7F3D0;
+    border: 1px solid #BBF7D0;
     border-radius: 12px;
     padding: 12px 14px;
     display: flex;
@@ -2389,22 +2379,10 @@
   @keyframes qrSpin {
     to { transform: rotate(360deg); }
   }
-  .qr-slow-notice {
-    display: none;
-    margin-top: 8px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    background: #FFFBEB;
-    border: 1px solid #FDE68A;
-    font-size: 12.5px;
-    color: #92400E;
-    line-height: 1.45;
-    text-align: left;
-  }
-  .qr-slow-notice a {
-    color: #DA241C;
-    font-weight: 800;
-    text-decoration: underline;
+  @media (prefers-reduced-motion: reduce) {
+    .qr-spinner {
+      animation-duration: 6s;
+    }
   }
 
   /* ================= LIGHTBOX PREVIEW (GIỮ ẢNH GỐC KHÔNG CROP) ================= */
@@ -4577,8 +4555,11 @@
   <div class="modal-box">
     <div class="modal-head">
       <div>
-        <h3 class="modal-title" id="vietqrModalTitle">Quét mã VietQR chuyển khoản</h3>
-        <p class="vietqr-modal-sub" id="vietqrModalSub">Thanh toán tự động · Mâm Cơm VN (MB Bank)</p>
+        <h3 class="modal-title" id="vietqrModalTitle">Thanh toán chuyển khoản</h3>
+        <p class="vietqr-modal-sub" id="vietqrModalSub">
+          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          <span id="vietqrModalSubText">Mâm Cơm VN · Xác nhận tự động qua MB Bank</span>
+        </p>
       </div>
       <button type="button" class="modal-close-btn" data-close-modal aria-label="Đóng">✕</button>
     </div>
@@ -4591,13 +4572,11 @@
           <span>Đang tạo mã VietQR riêng cho đơn hàng...</span>
         </div>
         <img id="vietqrImg" class="vietqr-img" src="" alt="Mã VietQR Chuyển khoản" style="display:none;" />
-        <div id="qrStkBadge" style="font-size:11px;color:#15803D;font-weight:700;margin-top:6px;">MB Bank (VietQR PRO · PayOS)</div>
       </div>
 
       <button type="button" class="btn-save-qr" id="btnVietQRSavedPhoto" disabled>
         📥 Lưu ảnh mã QR về máy
       </button>
-      <p class="qr-save-hint" id="qrSaveHint">Mở app ngân hàng → Quét QR → Chọn ảnh vừa lưu (hoặc chạm giữ vào ảnh QR để lưu).</p>
 
       <div class="bank-details-box">
         <div class="bank-detail-row">
@@ -4611,7 +4590,6 @@
             <button type="button" class="btn-copy-chip" data-copy-target="qrStkText">Chép</button>
           </span>
         </div>
-        <div class="qr-stk-subnote" id="qrStkNote" style="display:none;">TK định danh tự động MB Bank · PayOS — Tiền về thẳng TK 2258228668 &amp; tự xác nhận ngay</div>
         <div class="bank-detail-row">
           <span class="bank-detail-label">Chủ tài khoản:</span>
           <span class="bank-detail-val" id="qrAccNameText">NGUYEN QUANG HIEN</span>
@@ -4634,15 +4612,12 @@
       <div class="vietqr-actions">
         <div class="qr-auto-status-box" id="qrAutoStatusBox">
           <span class="qr-spinner" aria-hidden="true"></span>
-          <span id="qrAutoStatusText">Đang tự động kiểm tra giao dịch... Hệ thống tự xác nhận ngay sau khi bạn chuyển khoản đúng số tiền và nội dung.</span>
+          <span id="qrAutoStatusText">Đang chờ thanh toán... Hệ thống tự động xác nhận ngay khi nhận được chuyển khoản.</span>
         </div>
         <div class="qr-fallback-box" id="qrFallbackBox" style="display:none;">
           <div><strong>Cổng tự động PayOS đang tạm bận.</strong> Bạn vẫn chuyển khoản bình thường vào MB Bank <strong>2258228668</strong> (<strong>NGUYEN QUANG HIEN</strong>) với nội dung <strong id="qrFallbackOrderId">MC12345678</strong> rồi bấm nút bên dưới để bếp xác nhận ngay:</div>
           <button type="button" class="btn-vietqr-confirm" id="btnManualConfirmNotify">Tôi đã chuyển khoản · Nhắn xác nhận ngay</button>
           <div style="margin-top:8px;font-size:11.5px;">Hỗ trợ nhanh: Gọi/Zalo <a href="tel:0965942185" style="color:#DA241C;font-weight:700;">0965 942 185</a> (<a href="https://zalo.me/0965942185" target="_blank" rel="noopener" style="color:#DA241C;font-weight:700;">Mở Zalo</a>) · <a href="https://instagram.com/mamcomvn" target="_blank" rel="noopener noreferrer" style="color:#DA241C;font-weight:700;">Instagram</a></div>
-        </div>
-        <div class="qr-slow-notice" id="qrSlowNoticeBox">
-          Đã chuyển khoản nhưng hệ thống chưa tự cập nhật? Gọi/nhắn Zalo <a href="tel:0965942185">0965 942 185</a> (<a href="https://zalo.me/0965942185" target="_blank" rel="noopener">Mở Zalo</a>) kèm mã đơn <strong id="qrSlowOrderId"></strong> để bếp kiểm tra ngay.
         </div>
       </div>
     </div>
@@ -6328,7 +6303,6 @@
   var currentPayAmount = 0;
   var currentPayDescription = "";
   var paymentPollInterval = null;
-  var paymentSlowTimer = null;
   var paymentRealtimeChannel = null;
   var activeOrderSnapshot = null;
 
@@ -6399,10 +6373,6 @@
     if (paymentPollInterval) {
       clearInterval(paymentPollInterval);
       paymentPollInterval = null;
-    }
-    if (paymentSlowTimer) {
-      clearTimeout(paymentSlowTimer);
-      paymentSlowTimer = null;
     }
     if (paymentRealtimeChannel) {
       try {
@@ -6594,8 +6564,8 @@
     // 2. Chuyển Modal VietQR sang màn hình Thành công đúng mẫu Mâm Cơm
     var modalTitle = document.getElementById("vietqrModalTitle");
     if (modalTitle) modalTitle.textContent = "Xác nhận đơn hàng";
-    var modalSub = document.getElementById("vietqrModalSub");
-    if (modalSub) modalSub.textContent = "Mâm Cơm VN · Đơn hàng đã được xác nhận";
+    var modalSubText = document.getElementById("vietqrModalSubText");
+    if (modalSubText) modalSubText.textContent = "Mâm Cơm VN · Đơn hàng đã được xác nhận";
 
     var cleanOrderCode = String(snap.id || "").replace(/^#/, "");
     var recOrder = document.getElementById("recOrderId");
@@ -6687,18 +6657,6 @@
           })
           .subscribe();
       } catch(e) {}
-    }
-
-    // 3. Sau 3 phút (180s) ở chế độ tự động chưa thấy tín hiệu -> hiện hướng dẫn liên hệ Zalo/Hotline
-    if (isPayosVerifiedMode) {
-      paymentSlowTimer = setTimeout(function() {
-        if (isPaymentModalActive && !isPaymentSuccessTriggered) {
-          var slowBox = document.getElementById("qrSlowNoticeBox");
-          var slowId = document.getElementById("qrSlowOrderId");
-          if (slowId) slowId.textContent = orderId;
-          if (slowBox) slowBox.style.display = "block";
-        }
-      }, 180000);
     }
   }
 
@@ -6844,10 +6802,10 @@
     };
 
     var modalTitle = document.getElementById("vietqrModalTitle");
-    if (modalTitle) modalTitle.textContent = "Quét mã VietQR chuyển khoản";
+    if (modalTitle) modalTitle.textContent = "Thanh toán chuyển khoản";
 
-    var modalSub = document.getElementById("vietqrModalSub");
-    if (modalSub) modalSub.textContent = "Thanh toán tự động · Mâm Cơm VN (MB Bank)";
+    var modalSubText = document.getElementById("vietqrModalSubText");
+    if (modalSubText) modalSubText.textContent = "Mâm Cơm VN · Xác nhận tự động qua MB Bank";
 
     var loadingBox = document.getElementById("vietqrLoadingBox");
     var qrImg = document.getElementById("vietqrImg");
@@ -6864,14 +6822,8 @@
     var stkEl = document.getElementById("qrStkText");
     if (stkEl) stkEl.textContent = "Đang tạo...";
 
-    var stkNoteEl = document.getElementById("qrStkNote");
-    if (stkNoteEl) stkNoteEl.style.display = "none";
-
     var accNameEl = document.getElementById("qrAccNameText");
     if (accNameEl) accNameEl.textContent = PAY_ACCOUNT_NAME;
-
-    var stkBadge = document.getElementById("qrStkBadge");
-    if (stkBadge) stkBadge.textContent = "Đang kết nối MB Bank (VietQR PRO · PayOS)...";
 
     var amtEl = document.getElementById("qrAmountText");
     if (amtEl) amtEl.textContent = formatVND(exactTotalAmount);
@@ -6888,9 +6840,6 @@
       manualBtn.disabled = false;
       manualBtn.textContent = "Tôi đã chuyển khoản · Nhắn xác nhận ngay";
     }
-
-    var slowBox = document.getElementById("qrSlowNoticeBox");
-    if (slowBox) slowBox.style.display = "none";
 
     var stepScan = document.getElementById("vietqrStepScan");
     var stepSuccess = document.getElementById("vietqrStepSuccess");
@@ -6921,24 +6870,14 @@
       // Đồng bộ 100% dữ liệu hiển thị cho cả QR chính thức & 3 nút Copy
       if (stkEl) stkEl.textContent = currentAccountNumber;
       if (accNameEl) accNameEl.textContent = currentAccountName;
-      if (stkNoteEl) {
-        if (isPayosVerifiedMode && currentAccountNumber && currentAccountNumber !== PAY_ACCOUNT_NO) {
-          stkNoteEl.textContent = "TK định danh tự động MB Bank · PayOS — Tiền về thẳng TK 2258228668 & tự xác nhận ngay";
-          stkNoteEl.style.display = "block";
-        } else {
-          stkNoteEl.style.display = "none";
-        }
-      }
       if (codeEl) codeEl.textContent = currentPayDescription;
 
       if (isPayosVerifiedMode) {
-        if (modalSub) modalSub.textContent = "Thanh toán tự động · Mâm Cơm VN (MB Bank)";
-        if (stkBadge) stkBadge.textContent = "MB Bank (VietQR PRO · PayOS)";
+        if (modalSubText) modalSubText.textContent = "Mâm Cơm VN · Xác nhận tự động qua MB Bank";
         if (autoBox) autoBox.style.display = "flex";
         if (fallbackBox) fallbackBox.style.display = "none";
       } else {
-        if (modalSub) modalSub.textContent = "Chuyển khoản MB Bank · Mâm Cơm VN";
-        if (stkBadge) stkBadge.textContent = "MB Bank 2258228668 (Chuyển khoản trực tiếp)";
+        if (modalSubText) modalSubText.textContent = "Mâm Cơm VN · Chuyển khoản MB Bank";
         if (autoBox) autoBox.style.display = "none";
         var fbOrderEl = document.getElementById("qrFallbackOrderId");
         if (fbOrderEl) fbOrderEl.textContent = currentPayDescription;
@@ -8642,16 +8581,6 @@
     if(phoneEl){
       phoneEl.textContent = displayPhone;
       phoneEl.href = "tel:" + digitsPhone;
-    }
-    var slowBox = document.getElementById("qrSlowNoticeBox");
-    if(slowBox){
-      slowBox.querySelectorAll('a[href^="tel:"]').forEach(function(a){
-        a.href = "tel:" + digitsPhone;
-        a.textContent = displayPhone;
-      });
-      slowBox.querySelectorAll('a[href*="zalo.me"]').forEach(function(a){
-        a.href = "https://zalo.me/" + digitsPhone;
-      });
     }
     var btnZalo = document.getElementById("btnZaloChat");
     if(btnZalo){
