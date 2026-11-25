@@ -539,14 +539,15 @@
     flex-shrink: 0;
   }
   .hero-stats {
-    font-size: 12.5px;
+    font-size: 13px;
     line-height: 1.5;
     color: #574F4A;
-    font-weight: 500;
+    font-weight: 600;
+    text-align: center;
   }
   .hero-stats strong {
-    color: #1E1917;
-    font-weight: 800;
+    color: #574F4A;
+    font-weight: 700;
   }
 
   /* ================= OWNER STATUS BAR ================= */
@@ -1449,17 +1450,20 @@
   .btn-submit-order {
     width: 100%;
     height: 52px;
+    padding: 0 12px;
     border-radius: 14px;
     background: linear-gradient(180deg, #E32B23 0%, #CE1E16 100%);
     color: #FFFFFF;
-    font-size: 16px;
+    font-size: clamp(14px, 3.8vw, 16px);
     font-weight: 800;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     box-shadow: 0 6px 18px -4px rgba(218, 36, 28, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -1657,6 +1661,30 @@
   .commit-points li strong {
     color: #1E1917;
     font-weight: 700;
+  }
+  .commit-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .commit-header .step-title {
+    margin: 0;
+  }
+  .commit-signature {
+    height: clamp(34px, 7.5vw, 42px);
+    width: auto;
+    vertical-align: middle;
+    margin-left: clamp(2px, 2vw, 12px);
+    mix-blend-mode: multiply;
+    filter: contrast(1.08);
+    transform: rotate(-2deg);
+    display: inline-block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   /* ================= REVIEWS SECTION (THU GỌN THANH THOÁT) ================= */
@@ -3660,26 +3688,19 @@
   /* Quick 1-tap Date Pills & Collapsible Note */
   .quick-date-row {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-  @media (max-width: 480px) {
-    .quick-date-row {
-      grid-template-columns: 1fr 1fr;
-    }
-    .quick-date-pill--custom {
-      grid-column: 1 / -1;
-    }
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
   .quick-date-pill {
     min-height: 42px;
-    padding: 6px 10px;
+    padding: 8px 10px;
     border-radius: 10px;
-    border: 1.5px solid #E6DDD3;
-    background: #FAF6F0;
+    border: 1.5px solid #EAE0D5;
+    background: #FFFFFF;
     color: #3F3834;
-    font-size: 13px;
+    font-size: clamp(12px, 3.1vw, 13px);
     font-weight: 700;
+    line-height: 1.3;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -3912,7 +3933,7 @@
           </button>
         </div>
         <div class="hero-stats">
-          <span>Sơ chế tươi mỗi ngày · Freeship Hà Nội · </span><span style="white-space:nowrap;"><strong id="mealsCount">109</strong> gia đình tin tưởng Mâm Cơm</span><span id="visitorsCount" style="display:none;">717</span>
+          <strong id="mealsCount">109</strong> gia đình tin tưởng Mâm Cơm<span id="visitorsCount" style="display:none;">717</span>
         </div>
       </header>
 
@@ -4039,7 +4060,6 @@
           <label class="form-label" for="cDate">Ngày nhận hàng *</label>
           <div class="quick-date-row" id="quickDateRow">
             <button type="button" class="quick-date-pill is-active" data-quick-date="tomorrow" id="btnDateTomorrow">Ngày mai</button>
-            <button type="button" class="quick-date-pill" data-quick-date="dayafter" id="btnDateDayAfter">Ngày kia</button>
             <button type="button" class="quick-date-pill quick-date-pill--custom" data-quick-date="custom" id="btnDateCustom">Chọn ngày khác 📅</button>
           </div>
           <div class="custom-date-wrap" id="customDateWrap" style="display:none;">
@@ -4092,8 +4112,9 @@
 
       <!-- CAM KẾT TỪ MÂM CƠM (CHỈ HIỂN THỊ Ở ẢI 1) -->
       <section class="card qa" id="commitmentSection">
-        <div class="card-head">
+        <div class="commit-header">
           <h2 class="step-title">Cam kết từ Mâm Cơm</h2>
+          <img src="image_25.png" alt="Chữ ký Nguyễn Quang Tiển" class="commit-signature" />
         </div>
         <div class="qa-list">
           <div class="qa-item">
@@ -5314,12 +5335,6 @@
     }
   }
 
-  function getDayAfterTomorrowISO() {
-    var dt = new Date();
-    dt.setDate(dt.getDate() + 2);
-    return toLocalISODate(dt);
-  }
-
   function formatShortDayDDMM(isoStr) {
     if (!isoStr) return "";
     var parts = isoStr.split("-");
@@ -5751,27 +5766,22 @@
     }
 
     // Quick Date Pills & Native Date Input Sync
+    if (appState.dateMode !== "tomorrow" && appState.dateMode !== "custom") {
+      appState.dateMode = "tomorrow";
+    }
     var tomorrowISO = getTomorrowISO();
-    var dayAfterISO = getDayAfterTomorrowISO();
     var btnTomorrow = document.getElementById("btnDateTomorrow");
-    var btnDayAfter = document.getElementById("btnDateDayAfter");
     var btnCustom = document.getElementById("btnDateCustom");
     if (btnTomorrow) {
       btnTomorrow.textContent = "Ngày mai (" + formatShortDayDDMM(tomorrowISO) + ")";
       btnTomorrow.classList.toggle("is-active", appState.dateMode === "tomorrow");
     }
-    if (btnDayAfter) {
-      btnDayAfter.textContent = "Ngày kia (" + formatShortDayDDMM(dayAfterISO) + ")";
-      btnDayAfter.classList.toggle("is-active", appState.dateMode === "dayafter");
-    }
     if (btnCustom) {
       btnCustom.classList.toggle("is-active", appState.dateMode === "custom");
     }
 
-    if (appState.dateMode === "tomorrow" && (!appState.date || appState.date < tomorrowISO)) {
+    if (appState.dateMode === "tomorrow") {
       appState.date = tomorrowISO;
-    } else if (appState.dateMode === "dayafter") {
-      appState.date = dayAfterISO;
     }
 
     var customDateWrap = document.getElementById("customDateWrap");
@@ -6788,12 +6798,10 @@
 
     var quickDateBtn = target.closest("[data-quick-date]");
     if (quickDateBtn) {
-      var mode = quickDateBtn.getAttribute("data-quick-date");
+      var mode = quickDateBtn.getAttribute("data-quick-date") === "custom" ? "custom" : "tomorrow";
       appState.dateMode = mode;
       if (mode === "tomorrow") {
         appState.date = getTomorrowISO();
-      } else if (mode === "dayafter") {
-        appState.date = getDayAfterTomorrowISO();
       }
       if (appState.meals === 4 && appState.date) {
         appState.date2 = addDaysISO(appState.date, getBatch2GapDays());
