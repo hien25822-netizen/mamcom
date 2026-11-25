@@ -25,14 +25,20 @@ export default async function handler(req, res) {
   try {
     const { orderId, amount, description } = req.body || {};
 
-    const cleanAmount = Number(amount) || 49000;
+    const cleanAmount = Math.round(Number(amount)) || 0;
+    if (!cleanAmount || cleanAmount < 1000) {
+      return res.status(400).json({ error: "Số tiền thanh toán không hợp lệ" });
+    }
     // Lấy mã số đơn hàng (dạng số nguyên)
     let numericOrderCode = Number(String(orderId || "").replace(/\D/g, ""));
     if (!numericOrderCode || numericOrderCode <= 0) {
       numericOrderCode = Number(Date.now().toString().slice(-8));
     }
 
-    let desc = String(description || ("MC" + numericOrderCode)).slice(0, 25);
+    let desc = String(description || ("MC" + numericOrderCode))
+      .replace(/[^A-Za-z0-9 ]/g, "")
+      .trim()
+      .slice(0, 25) || ("MC" + numericOrderCode);
     const cancelUrl = "https://mamcomvn.vercel.app";
     const returnUrl = "https://mamcomvn.vercel.app";
 

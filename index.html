@@ -15,6 +15,8 @@
 
   <!-- Supabase JS Client v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Offline QR Matrix Renderer (MIT) -->
+  <script src="./qrcode.min.js"></script>
 
   <style>
 
@@ -538,16 +540,33 @@
     margin-bottom: 24px;
     flex-shrink: 0;
   }
-  .hero-stats {
-    font-size: 13px;
-    line-height: 1.5;
+  .hero-stats,
+  .hero-trust-line {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 5px;
+    font-size: 13.5px;
+    line-height: 1.4;
     color: #574F4A;
     font-weight: 600;
+    margin-top: 8px;
     text-align: center;
+    width: 100%;
+    flex-wrap: wrap;
   }
-  .hero-stats strong {
-    color: #574F4A;
-    font-weight: 700;
+  .hero-stats strong,
+  .hero-trust-num {
+    font-size: 17px;
+    font-weight: 900;
+    color: #DA241C;
+    letter-spacing: -0.02em;
+    background: #FFF1F0;
+    border: 1px solid #FECACA;
+    padding: 1px 9px;
+    border-radius: 999px;
+    line-height: 1.35;
+    font-variant-numeric: tabular-nums;
   }
 
   /* ================= OWNER STATUS BAR ================= */
@@ -1665,26 +1684,26 @@
   .commit-header {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    margin-bottom: 16px;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
     flex-wrap: wrap;
   }
   .commit-header .step-title {
     margin: 0;
   }
-  .commit-signature {
-    height: clamp(34px, 7.5vw, 42px);
+  .commit-signature-img {
+    height: clamp(56px, 14vw, 74px);
     width: auto;
-    vertical-align: middle;
-    margin-left: clamp(2px, 2vw, 12px);
+    max-width: 195px;
+    object-fit: contain;
     mix-blend-mode: multiply;
-    filter: contrast(1.08);
-    transform: rotate(-2deg);
-    display: inline-block;
+    filter: contrast(1.18) saturate(1.1);
+    display: block;
     pointer-events: none;
     user-select: none;
     -webkit-user-drag: none;
+    flex-shrink: 0;
   }
 
   /* ================= REVIEWS SECTION (THU GỌN THANH THOÁT) ================= */
@@ -2115,31 +2134,109 @@
     background: #DCFCE7;
     color: #15803D;
     font-size: 32px;
+    font-weight: 900;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 12px;
+    animation: popInSuccess 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes popInSuccess {
+    0% { transform: scale(0.6); opacity: 0; }
+    70% { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
   }
   .vietqr-success-title {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 900;
     color: #15803D;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
   .vietqr-success-sub {
     font-size: 13.5px;
-    color: #574F4A;
-    line-height: 1.45;
+    color: #44403C;
+    line-height: 1.55;
     margin-bottom: 16px;
   }
   .vietqr-order-receipt {
     background: #FAF6F0;
-    border-radius: 12px;
-    padding: 12px 14px;
+    border: 1px solid #EDE5DC;
+    border-radius: 14px;
+    padding: 14px 16px;
     margin-bottom: 16px;
     text-align: left;
     font-size: 13px;
+    color: #292524;
     line-height: 1.6;
+  }
+  .btn-save-qr {
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    background: #FFF5F5;
+    border: 1.5px solid #DA241C;
+    color: #DA241C;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 14px;
+    margin: 10px 0 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .btn-save-qr:hover { background: #FEE2E2; }
+  .btn-save-qr:active { transform: scale(0.98); }
+  .btn-save-qr:disabled { opacity: 0.55; cursor: not-allowed; }
+  .qr-save-hint {
+    font-size: 11.5px;
+    color: #78716C;
+    line-height: 1.45;
+    margin: 0 0 14px;
+    text-align: center;
+  }
+  .qr-stk-subnote {
+    font-size: 11px;
+    color: #15803D;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 2px 0 8px;
+    text-align: left;
+  }
+  .btn-ig-deeplink {
+    width: 100%;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #F58529 0%, #DD2A7B 52%, #8134AF 100%);
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 6px 16px rgba(221, 42, 123, 0.25);
+  }
+  .btn-go-home {
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    background: #F5F0EB;
+    color: #3F3834;
+    border: 1px solid #DFD5CB;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-go-home:hover { background: #EDE5DC; }
+  #vietqrModal {
+    overscroll-behavior: contain;
   }
   .btn-zalo-deeplink {
     width: 100%;
@@ -3932,8 +4029,10 @@
             <span class="hero-circle-label hero-circle-label--red">Bạn bật bếp</span>
           </button>
         </div>
-        <div class="hero-stats">
-          <strong id="mealsCount">109</strong> gia đình tin tưởng Mâm Cơm<span id="visitorsCount" style="display:none;">717</span>
+        <div class="hero-stats hero-trust-line">
+          <strong id="mealsCount" class="hero-trust-num">109</strong>
+          <span>gia đình tin tưởng Mâm Cơm</span>
+          <span id="visitorsCount" style="display:none;">717</span>
         </div>
       </header>
 
@@ -3982,7 +4081,7 @@
         <div class="pkg-reward-banner is-unlocked" id="pkgRewardBanner">
           <!-- Thanh phản hồi mở khóa giảm 10% render động -->
         </div>
-        <button type="button" class="btn-wizard-next" id="btnStep1Next">Tiếp tục: Chọn 3 mâm cơm · 324.000đ →</button>
+        <button type="button" class="btn-wizard-next" id="btnStep1Next">Chọn món ngay →</button>
         </section>
 
         <!-- BƯỚC 2: CHỌN MÓN -->
@@ -4114,7 +4213,7 @@
       <section class="card qa" id="commitmentSection">
         <div class="commit-header">
           <h2 class="step-title">Cam kết từ Mâm Cơm</h2>
-          <img src="image_25.png" alt="Chữ ký Nguyễn Quang Tiển" class="commit-signature" />
+          <img src="image_25.png" alt="Chữ ký Nguyễn Quang Hiển" class="commit-signature-img" />
         </div>
         <div class="qa-list">
           <div class="qa-item">
@@ -4382,21 +4481,28 @@
         <img id="vietqrImg" class="vietqr-img" src="" alt="Mã VietQR Chuyển khoản" style="display:none;" />
         <div id="qrStkBadge" style="font-size:11px;color:#15803D;font-weight:700;margin-top:6px;">MB Bank · VietQR Tự động</div>
       </div>
+
+      <button type="button" class="btn-save-qr" id="btnVietQRSavedPhoto" disabled>
+        📥 Lưu ảnh mã QR về máy
+      </button>
+      <p class="qr-save-hint" id="qrSaveHint">Mở app ngân hàng → Quét QR → Chọn ảnh vừa lưu (hoặc chạm giữ vào ảnh QR để lưu).</p>
+
       <div class="bank-details-box">
         <div class="bank-detail-row">
           <span class="bank-detail-label">Ngân hàng:</span>
           <span class="bank-detail-val" id="qrBankName">MB Bank (Quân Đội)</span>
         </div>
         <div class="bank-detail-row">
-          <span class="bank-detail-label">Số tài khoản:</span>
+          <span class="bank-detail-label">STK nhận tự động:</span>
           <span class="bank-detail-val">
             <span id="qrStkText">2258228668</span>
             <button type="button" class="btn-copy-chip" data-copy-target="qrStkText">Chép</button>
           </span>
         </div>
+        <div class="qr-stk-subnote" id="qrStkNote">Tài khoản định danh PayOS của Mâm Cơm VN (liên kết trực tiếp MB 2258228668 · Tự động xác nhận sau 5–15 giây).</div>
         <div class="bank-detail-row">
           <span class="bank-detail-label">Chủ tài khoản:</span>
-          <span class="bank-detail-val" id="qrAccNameText">NGUYEN QUANG HIEN</span>
+          <span class="bank-detail-val" id="qrAccNameText">Mâm Cơm VN - NGUYEN QUANG HIEN</span>
         </div>
         <div class="bank-detail-row">
           <span class="bank-detail-label">Số tiền:</span>
@@ -4421,30 +4527,34 @@
         <div class="qr-slow-notice" id="qrSlowNoticeBox">
           Đã chuyển khoản nhưng hệ thống chưa tự cập nhật? Gọi/nhắn Zalo <a href="tel:0965942185">0965 942 185</a> (<a href="https://zalo.me/0965942185" target="_blank" rel="noopener">Mở Zalo</a>) kèm mã đơn <strong id="qrSlowOrderId"></strong> để bếp kiểm tra ngay.
         </div>
-        <button type="button" style="background:#FAF6F0;border:1px solid #E8DFD5;border-radius:10px;height:40px;color:#3F3834;font-size:13px;font-weight:700;cursor:pointer;margin-top:2px;" id="btnVietQRSavedPhoto">
-          📥 Tải ảnh mã QR về máy
-        </button>
       </div>
     </div>
 
     <!-- Bước 2: Xác nhận thành công -->
     <div class="vietqr-box" id="vietqrStepSuccess" style="display:none;">
       <div class="vietqr-success-icon">✓</div>
-      <h4 class="vietqr-success-title">Đặt hàng thành công!</h4>
-      <p class="vietqr-success-sub">Hệ thống đã nhận được thanh toán và chuyển đơn cho Bếp Mâm Cơm chuẩn bị nguyên liệu tươi ngon nhất.</p>
+      <h4 class="vietqr-success-title">Thanh toán thành công!</h4>
+      <p class="vietqr-success-sub">
+        Cảm ơn bạn đã đặt Mâm Cơm. Đơn <strong id="recOrderId">#MC12345678</strong> đã được xác nhận tự động. Nguyên liệu tươi sẽ được chuẩn bị sớm nhất và giao đến bạn.
+      </p>
       <div class="vietqr-order-receipt" id="vietqrReceiptBox">
-        <div><strong>Mã đơn hàng:</strong> <span id="recOrderId" style="color:#DA241C;font-weight:800;"></span></div>
-        <div><strong>Tổng tiền đã thanh toán:</strong> <span id="recTotal" style="font-weight:800;color:#15803D;"></span></div>
-        <div><strong>Số điện thoại:</strong> <span id="recPhone"></span></div>
-        <div><strong>Giao đến:</strong> <span id="recAddress"></span></div>
-        <div><strong>Thời gian giao:</strong> <span id="recSchedule"></span></div>
+        <div>
+          <strong>- Thời gian giao:</strong> <span id="recScheduleLine1">Ngày mai (27/11), khung 17:30 – 18:30</span>
+          <div id="recScheduleLine2" style="display:none;margin-top:4px;padding-left:10px;color:#15803D;font-weight:700;"></div>
+        </div>
+        <div style="margin-top:6px;">
+          <strong>- Bảo quản:</strong> Cất nguyên liệu vào ngăn mát ngay khi nhận nếu bạn chưa nấu liền nhé.
+        </div>
+        <div style="margin-top:6px;">
+          <strong>- Cần dặn dò thêm hoặc hỗ trợ, nhắn ngay cho Mâm Cơm qua Instagram nha!</strong>
+        </div>
       </div>
       <div class="vietqr-actions">
-        <a href="https://zalo.me/0965942185" target="_blank" rel="noopener" class="btn-zalo-deeplink" id="btnZaloChat">
-          💬 Mở Zalo nhắn tin cho Shop
+        <a href="https://instagram.com/mamcomvn" target="_blank" rel="noopener noreferrer" class="btn-ig-deeplink" id="btnSuccessInstagram">
+          📷 Nhắn Mâm Cơm qua Instagram
         </a>
-        <button type="button" class="btn-vietqr-confirm" data-close-modal style="background:#57534E;">
-          Đóng cửa sổ
+        <button type="button" class="btn-go-home" id="btnVietqrGoHome" data-close-modal>
+          Về trang chủ
         </button>
       </div>
     </div>
@@ -5568,7 +5678,7 @@
 
     var nextBtn = document.getElementById("btnStep1Next");
     if (nextBtn) {
-      nextBtn.textContent = "Tiếp tục: Chọn " + appState.meals + " mâm cơm · " + formatVND(curPricing.total) + " →";
+      nextBtn.textContent = "Chọn món ngay →";
     }
   }
 
@@ -6091,12 +6201,179 @@
   var paymentRealtimeChannel = null;
   var activeOrderSnapshot = null;
 
+  var currentOrderQrDataUrl = "";
+  var activeQrRenderToken = 0;
+
   function buildVietQrUrl(accountNo, accountName, amount, orderId) {
     var safeAcc = encodeURIComponent(String(accountNo || PAY_ACCOUNT_NO).trim());
     var safeName = encodeURIComponent(String(accountName || PAY_ACCOUNT_NAME).trim());
     var safeOrder = encodeURIComponent(String(orderId || "").trim());
     var cleanAmt = Number(amount) || 0;
     return "https://img.vietqr.io/image/" + PAY_BANK_ID + "-" + safeAcc + "-compact2.jpg?amount=" + cleanAmt + "&addInfo=" + safeOrder + "&accountName=" + safeName;
+  }
+
+  function buildSameOriginQrUrl(accountNo, accountName, amount, orderId) {
+    var base = (window.location && window.location.origin && window.location.origin.indexOf("http") === 0 && window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost")
+      ? (window.location.origin + "/api/qr-image")
+      : "https://mamcomvn.vercel.app/api/qr-image";
+    return base + "?bin=" + encodeURIComponent(PAY_BANK_ID) +
+      "&account=" + encodeURIComponent(String(accountNo || PAY_ACCOUNT_NO).trim()) +
+      "&amount=" + encodeURIComponent(String(Math.round(Number(amount) || 0))) +
+      "&addInfo=" + encodeURIComponent(String(orderId || "").trim()) +
+      "&accountName=" + encodeURIComponent(String(accountName || PAY_ACCOUNT_NAME).trim());
+  }
+
+  function composeBrandedQrPngDataUrl(drawQrBlock, orderId, amount, accountNo) {
+    var W = 720;
+    var H = 880;
+    var cv = document.createElement("canvas");
+    cv.width = W;
+    cv.height = H;
+    var ctx = cv.getContext("2d");
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = "#DA241C";
+    ctx.fillRect(0, 0, W, 10);
+
+    ctx.fillStyle = "#1E1917";
+    ctx.textAlign = "center";
+    ctx.font = '800 28px "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText("MÂM CƠM VN - NGUYỄN QUANG HIỂN", W / 2, 66, W - 48);
+
+    ctx.fillStyle = "#15803D";
+    ctx.font = '700 18px "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText("Quét mã VietQR chuyển khoản · Tự động xác nhận", W / 2, 100, W - 48);
+
+    var frameX = 110;
+    var frameY = 128;
+    var frameSize = 500;
+    ctx.fillStyle = "#FFFFFF";
+    ctx.strokeStyle = "#E8DFD5";
+    ctx.lineWidth = 3;
+    if (typeof ctx.roundRect === "function") {
+      ctx.beginPath();
+      ctx.roundRect(frameX, frameY, frameSize, frameSize, 24);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.fillRect(frameX, frameY, frameSize, frameSize);
+      ctx.strokeRect(frameX, frameY, frameSize, frameSize);
+    }
+
+    var pad = 26;
+    drawQrBlock(ctx, frameX + pad, frameY + pad, frameSize - pad * 2);
+
+    ctx.fillStyle = "#1E1917";
+    ctx.font = '800 24px "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText("MB Bank · " + formatVND(amount) + " · ND: " + String(orderId || ""), W / 2, 696, W - 48);
+
+    ctx.fillStyle = "#574F4A";
+    ctx.font = '600 19px "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText("STK: " + String(accountNo || PAY_ACCOUNT_NO) + " · Mâm Cơm VN", W / 2, 740, W - 48);
+
+    ctx.fillStyle = "#78716C";
+    ctx.font = '500 15px "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText("Mở app ngân hàng → Quét QR → Chọn ảnh này để thanh toán", W / 2, 818, W - 48);
+
+    return cv.toDataURL("image/png");
+  }
+
+  function renderQrStringToBrandedPng(qrStr, orderId, amount, accountNo) {
+    if (!qrStr || typeof window.qrcode !== "function") return "";
+    try {
+      var qr = window.qrcode(0, "M");
+      qr.addData(String(qrStr));
+      qr.make();
+      var count = qr.getModuleCount();
+      return composeBrandedQrPngDataUrl(function(ctx, x0, y0, size) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(x0, y0, size, size);
+        var cell = size / count;
+        ctx.fillStyle = "#0B0A0A";
+        for (var r = 0; r < count; r++) {
+          for (var c = 0; c < count; c++) {
+            if (qr.isDark(r, c)) {
+              var rx = Math.floor(x0 + c * cell);
+              var ry = Math.floor(y0 + r * cell);
+              var rw = Math.ceil(x0 + (c + 1) * cell) - rx;
+              var rh = Math.ceil(y0 + (r + 1) * cell) - ry;
+              ctx.fillRect(rx, ry, rw, rh);
+            }
+          }
+        }
+      }, orderId, amount, accountNo);
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function loadBlobIntoCanvasBrandedPng(blob, orderId, amount, accountNo) {
+    return new Promise(function(resolve, reject) {
+      var objUrl = URL.createObjectURL(blob);
+      var img = new Image();
+      img.onload = function() {
+        try {
+          var dataUrl = composeBrandedQrPngDataUrl(function(ctx, x0, y0, size) {
+            ctx.drawImage(img, x0, y0, size, size);
+          }, orderId, amount, accountNo);
+          URL.revokeObjectURL(objUrl);
+          resolve(dataUrl);
+        } catch (err) {
+          URL.revokeObjectURL(objUrl);
+          reject(err);
+        }
+      };
+      img.onerror = function() {
+        URL.revokeObjectURL(objUrl);
+        reject(new Error("QR image decode error"));
+      };
+      img.src = objUrl;
+    });
+  }
+
+  function generateBrandedVietQrDataUrl(payosQrCode, accountNo, accountName, amount, orderId) {
+    var directDataUrl = renderQrStringToBrandedPng(payosQrCode, orderId, amount, accountNo);
+    if (directDataUrl) {
+      return Promise.resolve(directDataUrl);
+    }
+    var proxyUrl = buildSameOriginQrUrl(accountNo, accountName, amount, orderId);
+    return fetch(proxyUrl)
+      .then(function(r) {
+        if (!r.ok) throw new Error("proxy " + r.status);
+        return r.blob();
+      })
+      .then(function(blob) {
+        return loadBlobIntoCanvasBrandedPng(blob, orderId, amount, accountNo);
+      })
+      .catch(function() {
+        var svgUrl = "https://img.vietqr.io/image/" + encodeURIComponent(PAY_BANK_ID) + "-" +
+          encodeURIComponent(String(accountNo || PAY_ACCOUNT_NO).trim()) +
+          "-qr_only.svg?amount=" + encodeURIComponent(String(Math.round(Number(amount) || 0))) +
+          "&addInfo=" + encodeURIComponent(String(orderId || "").trim()) +
+          "&accountName=" + encodeURIComponent(String(accountName || PAY_ACCOUNT_NAME).trim());
+        return fetch(svgUrl)
+          .then(function(r) { return r.text(); })
+          .then(function(svgText) {
+            var m = svgText.match(/href=["'](data:image\/png;base64,[A-Za-z0-9+/=]+)["']/i);
+            if (!m || !m[1]) throw new Error("SVG PNG not found");
+            var innerBlob = dataUrlToBlob(m[1]);
+            return loadBlobIntoCanvasBrandedPng(innerBlob, orderId, amount, accountNo);
+          });
+      })
+      .catch(function() {
+        return buildVietQrUrl(accountNo, accountName, amount, orderId);
+      });
+  }
+
+  function resetWizardAfterOrder() {
+    appState.selectedDishes = {};
+    appState.selectedOrder = [];
+    appState.currentOrderId = "";
+    try { clearDraft(); } catch (e) {}
+    goToStep(1, false);
+    if (typeof syncUI === "function") syncUI();
   }
 
   function stopPaymentWatchers() {
@@ -6120,14 +6397,21 @@
   }
 
   function closeVietQRModal() {
+    var wasSuccess = isPaymentSuccessTriggered;
     isPaymentModalActive = false;
     isCreatingPayment = false;
+    activeQrRenderToken++;
+    currentOrderQrDataUrl = "";
     var openBtn = document.getElementById("btnOpenVietQR");
     if (openBtn) openBtn.disabled = false;
     stopPaymentWatchers();
     var vModal = document.getElementById("vietqrModal");
     if (vModal) vModal.classList.remove("is-open");
     updateStickyVisibility();
+    if (wasSuccess) {
+      isPaymentSuccessTriggered = false;
+      resetWizardAfterOrder();
+    }
   }
 
   function groupDishNames(list) {
@@ -6224,6 +6508,22 @@
     }
   }
 
+  function formatSuccessDateLine(isoStr, timeSlot, forceWeekday) {
+    var slot = String(timeSlot || "11:30 – 12:30").trim();
+    if (!isoStr || String(isoStr).indexOf("-") === -1) {
+      return String(isoStr || "Ngày mai") + ", khung " + slot;
+    }
+    var parts = String(isoStr).split("-");
+    var dt = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    var ddmm = parts[2] + "/" + parts[1];
+    if (!forceWeekday && isoStr === getTomorrowISO()) {
+      return "Ngày mai (" + ddmm + "), khung " + slot;
+    }
+    var daysName = ["Chủ Nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+    var wd = !isNaN(dt.getTime()) ? daysName[dt.getDay()] : "";
+    return (wd ? (wd + " (" + ddmm + ")") : ddmm) + ", khung " + slot;
+  }
+
   function triggerSuccessPayment() {
     if (isPaymentSuccessTriggered) return;
     isPaymentSuccessTriggered = true;
@@ -6237,6 +6537,9 @@
       total: currentPayAmount,
       phone: appState.phone,
       address: appState.address,
+      date1ISO: appState.date,
+      date2ISO: (appState.meals === 4) ? (appState.date2 || addDaysISO(appState.date, getBatch2GapDays())) : "",
+      time: appState.time,
       scheduleDisplay: appState.date + " (" + appState.time + ")",
       mealsCount: appState.meals
     };
@@ -6268,31 +6571,35 @@
       }
     }, 600);
 
-    // 2. Chuyển Modal VietQR sang màn hình Thành công
+    // 2. Chuyển Modal VietQR sang màn hình Thành công đúng mẫu Mâm Cơm
     var modalTitle = document.getElementById("vietqrModalTitle");
     if (modalTitle) modalTitle.textContent = "Xác nhận đơn hàng";
 
+    var cleanOrderCode = String(snap.id || "").replace(/^#/, "");
     var recOrder = document.getElementById("recOrderId");
-    if (recOrder) recOrder.textContent = snap.id;
+    if (recOrder) recOrder.textContent = "#" + cleanOrderCode;
 
-    var recTotal = document.getElementById("recTotal");
-    if (recTotal) recTotal.textContent = formatVND(snap.total);
-
-    var recPhone = document.getElementById("recPhone");
-    if (recPhone) recPhone.textContent = snap.phone;
-
-    var recAddr = document.getElementById("recAddress");
-    if (recAddr) recAddr.textContent = snap.address;
-
-    var recSched = document.getElementById("recSchedule");
-    if (recSched) recSched.textContent = snap.scheduleDisplay;
+    var recLine1 = document.getElementById("recScheduleLine1");
+    if (recLine1) {
+      recLine1.textContent = formatSuccessDateLine(snap.date1ISO || appState.date, snap.time || appState.time, false);
+    }
+    var recLine2 = document.getElementById("recScheduleLine2");
+    if (recLine2) {
+      if ((snap.mealsCount || appState.meals) === 4 && (snap.date2ISO || appState.date2)) {
+        recLine2.textContent = "Đợt 2 (2 bữa sau): " + formatSuccessDateLine(snap.date2ISO || appState.date2, snap.time || appState.time, true);
+        recLine2.style.display = "block";
+      } else {
+        recLine2.textContent = "";
+        recLine2.style.display = "none";
+      }
+    }
 
     var stepScan = document.getElementById("vietqrStepScan");
     var stepSuccess = document.getElementById("vietqrStepSuccess");
     if (stepScan) stepScan.style.display = "none";
     if (stepSuccess) stepSuccess.style.display = "block";
 
-    showToast("🎉 Thanh toán thành công! Đơn " + snap.id + " đã được xác nhận.");
+    showToast("🎉 Thanh toán thành công! Đơn #" + cleanOrderCode + " đã được xác nhận.");
   }
 
   function startPaymentStatusWatchers(orderId) {
@@ -6480,6 +6787,8 @@
       phone: appState.phone,
       address: appState.address,
       note: appState.note,
+      date1ISO: appState.date,
+      date2ISO: d2ISO,
       date1VN: date1VN,
       date2VN: date2VN,
       time: appState.time,
@@ -6497,7 +6806,11 @@
 
     var loadingBox = document.getElementById("vietqrLoadingBox");
     var qrImg = document.getElementById("vietqrImg");
+    var saveQrBtn = document.getElementById("btnVietQRSavedPhoto");
+    currentOrderQrDataUrl = "";
+    activeQrRenderToken++;
     if (loadingBox) loadingBox.style.display = "flex";
+    if (saveQrBtn) saveQrBtn.disabled = true;
     if (qrImg) {
       qrImg.style.display = "none";
       qrImg.removeAttribute("src");
@@ -6506,8 +6819,11 @@
     var stkEl = document.getElementById("qrStkText");
     if (stkEl) stkEl.textContent = "Đang tạo...";
 
+    var stkNoteEl = document.getElementById("qrStkNote");
+    if (stkNoteEl) stkNoteEl.textContent = "Đang khởi tạo tài khoản nhận tự động Mâm Cơm VN (liên kết MB 2258228668)...";
+
     var accNameEl = document.getElementById("qrAccNameText");
-    if (accNameEl) accNameEl.textContent = "Đang tạo...";
+    if (accNameEl) accNameEl.textContent = "Mâm Cơm VN - NGUYEN QUANG HIEN";
 
     var stkBadge = document.getElementById("qrStkBadge");
     if (stkBadge) stkBadge.textContent = "Đang kết nối MB Bank · VietQR PRO...";
@@ -6531,7 +6847,7 @@
     updateStickyVisibility();
 
     // Lưu đơn pending vào Supabase + gửi Telegram + bật đối soát tự động (sau khi lấy TK ảo PayOS nếu có)
-    function finalizeOrderCreationAndWatch(finalOrderId, accNo, accName) {
+    function finalizeOrderCreationAndWatch(finalOrderId, accNo, accName, payosQrStr) {
       isCreatingPayment = false;
       if (openBtn) openBtn.disabled = false;
       if (!isPaymentModalActive) return;
@@ -6546,14 +6862,38 @@
         activeOrderSnapshot.accountName = currentAccountName;
       }
 
-      if (loadingBox) loadingBox.style.display = "none";
       if (stkEl) stkEl.textContent = currentAccountNumber;
-      if (accNameEl) accNameEl.textContent = currentAccountName;
-      if (codeEl) codeEl.textContent = finalOrderId;
-      if (qrImg) {
-        qrImg.src = buildVietQrUrl(currentAccountNumber, currentAccountName, exactTotalAmount, finalOrderId);
-        qrImg.style.display = "block";
+      if (accNameEl) accNameEl.textContent = "Mâm Cơm VN - NGUYEN QUANG HIEN";
+      if (stkNoteEl) {
+        stkNoteEl.textContent = (currentAccountNumber && currentAccountNumber !== PAY_ACCOUNT_NO)
+          ? "Tài khoản định danh PayOS của Mâm Cơm VN (liên kết trực tiếp MB 2258228668 · Tự động xác nhận sau 5–15 giây)."
+          : "Tài khoản MB Bank chính thức của Mâm Cơm VN (liên kết trực tiếp MB 2258228668 · Tự động xác nhận sau 5–15 giây).";
       }
+      if (codeEl) codeEl.textContent = finalOrderId;
+
+      var renderToken = ++activeQrRenderToken;
+      generateBrandedVietQrDataUrl(payosQrStr, currentAccountNumber, currentAccountName, exactTotalAmount, finalOrderId)
+        .then(function(finalQrSrc) {
+          if (!isPaymentModalActive || renderToken !== activeQrRenderToken) return;
+          if (loadingBox) loadingBox.style.display = "none";
+          if (finalQrSrc && finalQrSrc.indexOf("data:image/") === 0) {
+            currentOrderQrDataUrl = finalQrSrc;
+          }
+          if (qrImg) {
+            qrImg.src = finalQrSrc;
+            qrImg.style.display = "block";
+          }
+          if (saveQrBtn) saveQrBtn.disabled = false;
+        })
+        .catch(function() {
+          if (!isPaymentModalActive || renderToken !== activeQrRenderToken) return;
+          if (loadingBox) loadingBox.style.display = "none";
+          if (qrImg) {
+            qrImg.src = buildVietQrUrl(currentAccountNumber, currentAccountName, exactTotalAmount, finalOrderId);
+            qrImg.style.display = "block";
+          }
+          if (saveQrBtn) saveQrBtn.disabled = false;
+        });
 
       // Định dạng products [{ day, dishes }] tách đúng 2 bữa/đợt cho /prep và Admin
       var productsForDb;
@@ -6629,17 +6969,18 @@
         finalizeOrderCreationAndWatch(
           data.orderId || initialOrderCode,
           data.accountNumber || PAY_ACCOUNT_NO,
-          data.accountName || PAY_ACCOUNT_NAME
+          data.accountName || PAY_ACCOUNT_NAME,
+          data.qrCode || ""
         );
       } else {
         if (stkBadge) stkBadge.textContent = "MB Bank · VietQR Tự động";
-        finalizeOrderCreationAndWatch(initialOrderCode, PAY_ACCOUNT_NO, PAY_ACCOUNT_NAME);
+        finalizeOrderCreationAndWatch(initialOrderCode, PAY_ACCOUNT_NO, PAY_ACCOUNT_NAME, "");
       }
     })
     .catch(function(err) {
       console.warn("PayOS create-payment fallback:", err);
       if (stkBadge) stkBadge.textContent = "MB Bank · VietQR Tự động";
-      finalizeOrderCreationAndWatch(initialOrderCode, PAY_ACCOUNT_NO, PAY_ACCOUNT_NAME);
+      finalizeOrderCreationAndWatch(initialOrderCode, PAY_ACCOUNT_NO, PAY_ACCOUNT_NAME, "");
     });
   }
 
@@ -6956,7 +7297,15 @@
     }
 
     if (target.closest("[data-close-modal]") || target.classList.contains("modal-backdrop") || target.classList.contains("lightbox-backdrop")) {
-      var closingVietQR = !!(target.closest("#vietqrModal") || (document.getElementById("vietqrModal") && document.getElementById("vietqrModal").classList.contains("is-open") && target.closest("[data-close-modal]")));
+      var vietqrEl = document.getElementById("vietqrModal");
+      var vietqrOpen = !!(vietqrEl && vietqrEl.classList.contains("is-open"));
+      var stepScanEl = document.getElementById("vietqrStepScan");
+      var inScanStep = !!(stepScanEl && stepScanEl.style.display !== "none");
+      // Chống đóng nhầm Modal QR trên điện thoại khi khách vô tình chạm vùng nền tối lúc chờ chuyển khoản
+      if (vietqrOpen && inScanStep && target === vietqrEl && !target.closest("[data-close-modal]")) {
+        return;
+      }
+      var closingVietQR = !!(target.closest("#vietqrModal") || (vietqrOpen && target.closest("[data-close-modal]")));
       if (closingVietQR) {
         closeVietQRModal();
       }
@@ -6975,22 +7324,55 @@
 
     if (target.closest("#btnVietQRSavedPhoto")) {
       var qrImg = document.getElementById("vietqrImg");
-      if (qrImg && qrImg.src) {
-        fetch(qrImg.src)
-          .then(function(r) { return r.blob(); })
-          .then(function(blob) {
-            var blobUrl = URL.createObjectURL(blob);
-            var a = document.createElement("a");
-            a.href = blobUrl;
-            a.download = "VietQR_MamCom_" + (appState.currentOrderId || "donhang") + ".jpg";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(blobUrl);
-            showToast("✓ Đã tải ảnh mã VietQR về máy!");
+      var qrDataSrc = currentOrderQrDataUrl || (qrImg && qrImg.src) || "";
+      if (!qrDataSrc) {
+        showToast("Đang tạo ảnh mã QR, vui lòng đợi 1 giây...");
+        return;
+      }
+      var safeCode = String(appState.currentOrderId || "donhang").replace(/[^A-Za-z0-9_-]/g, "");
+      var filename = "VietQR_MamCom_" + safeCode + ".png";
+
+      function downloadPngBlob(blobObj) {
+        var blobUrl = URL.createObjectURL(blobObj);
+        var a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 1000);
+        showToast("✓ Đã lưu ảnh mã QR! Mở app ngân hàng để quét nhé.");
+      }
+
+      function shareOrDownloadPng(blobObj) {
+        try {
+          if (typeof File !== "undefined" && navigator.canShare && navigator.share) {
+            var qrFile = new File([blobObj], filename, { type: "image/png" });
+            if (navigator.canShare({ files: [qrFile] })) {
+              navigator.share({ files: [qrFile], title: "Mã VietQR Mâm Cơm" })
+                .catch(function(err) {
+                  if (err && err.name === "AbortError") return;
+                  downloadPngBlob(blobObj);
+                });
+              return;
+            }
+          }
+        } catch (e) {}
+        downloadPngBlob(blobObj);
+      }
+
+      if (qrDataSrc.indexOf("data:") === 0) {
+        var syncBlob = dataUrlToBlob(qrDataSrc);
+        shareOrDownloadPng(syncBlob);
+      } else {
+        fetch(buildSameOriginQrUrl(currentAccountNumber, currentAccountName, currentPayAmount, safeCode))
+          .then(function(r) {
+            if (!r.ok) throw new Error("fetch qr error");
+            return r.blob();
           })
+          .then(shareOrDownloadPng)
           .catch(function() {
-            window.open(qrImg.src, "_blank");
+            showToast("Bạn hãy chạm giữ vào ảnh QR ở trên để lưu về máy nhé!");
           });
       }
       return;
