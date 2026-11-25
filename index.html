@@ -8546,7 +8546,7 @@
       return SUPABASE.rpc("admin_set_order_batch", {
         p_pin: pin,
         p_order_id: orderId,
-        p_batch_key: batchKey,
+        p_batch: batchKey,
         p_done: !!done
       }).then(function(res){
         if(res.error) throw res.error;
