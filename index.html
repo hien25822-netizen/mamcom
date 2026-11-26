@@ -751,7 +751,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 7px;
-    padding-top: 2px;
+    padding-top: 14px;
     align-items: stretch;
   }
   @media (min-width: 520px) {
@@ -764,7 +764,7 @@
     border: 1.5px solid #E8DFD5;
     border-radius: 16px;
     background: #FFFFFF;
-    padding: 24px 4px 11px;
+    padding: 20px 4px 11px;
     cursor: pointer;
     transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
     display: flex;
@@ -786,7 +786,7 @@
   }
   @media (min-width: 520px) {
     .pkg-card {
-      padding: 14px 10px 14px;
+      padding: 20px 10px 14px;
       gap: 5px;
     }
   }
@@ -799,20 +799,20 @@
   }
   .pkg-card.is-active,
   .pkg-card.is-selected {
-    border: 2px solid var(--brand-red);
+    border: 1.5px solid var(--brand-red);
     background: var(--brand-red-tint);
-    box-shadow: 0 6px 18px rgba(217, 38, 28, 0.10);
+    box-shadow: inset 0 0 0 0.5px var(--brand-red), 0 6px 18px rgba(217, 38, 28, 0.10);
   }
   .pkg-check {
     position: absolute;
-    top: 5px;
+    top: 10px;
     right: 5px;
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: var(--brand-red);
     color: #FFFFFF;
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: 900;
     display: flex;
     align-items: center;
@@ -825,40 +825,37 @@
   @media (min-width: 520px) {
     .pkg-check {
       top: 10px;
-      right: 10px;
-      width: 20px;
-      height: 20px;
-      font-size: 11px;
+      right: 8px;
+      width: 19px;
+      height: 19px;
+      font-size: 10.5px;
     }
   }
   .pkg-card.is-selected .pkg-check {
     opacity: 1;
     transform: scale(1);
   }
-  .pkg-rec-slot {
-    height: 22px;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    flex-shrink: 0;
-  }
   .pkg-rec-badge {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     white-space: nowrap;
     font-size: 9.5px;
     font-weight: 800;
-    padding: 2px 6px;
+    padding: 2px 7px;
     border-radius: 99px;
-    line-height: 1.2;
+    line-height: 1.25;
+    box-shadow: 0 2px 6px rgba(31, 26, 23, 0.08);
   }
   @media (min-width: 520px) {
     .pkg-rec-badge {
       font-size: 10.5px;
-      padding: 2px 8px;
+      padding: 2.5px 9px;
     }
   }
   .pkg-rec-badge--pop {
@@ -1472,6 +1469,10 @@
     font-size: 13px;
     font-weight: 700;
     color: #3F3834;
+  }
+  .req-star {
+    color: var(--brand-red);
+    font-weight: 800;
   }
   .form-input {
     height: 46px;
@@ -4330,7 +4331,6 @@
           <!-- Thanh phản hồi mở khóa giảm 10% render động -->
         </div>
         <button type="button" class="btn-wizard-next" id="btnStep1Next">Chọn món ngay →</button>
-        <p class="micro-trust-line">✓ Sơ chế sạch trong ngày · ✓ Không đụng dao thớt · ✓ Đổi trả nếu chưa tươi</p>
         </section>
 
         <!-- BƯỚC 2: CHỌN MÓN -->
@@ -4395,8 +4395,8 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="cName">Họ tên của bạn</label>
-          <input type="text" class="form-input" id="cName" placeholder="Ví dụ: Nguyễn Văn A" autocomplete="name" />
+          <label class="form-label" for="cName">Họ tên của bạn <span class="req-star">*</span></label>
+          <input type="text" class="form-input" id="cName" placeholder="Ví dụ: Nguyễn Văn A" autocomplete="name" required />
         </div>
 
         <div class="form-group">
@@ -4974,7 +4974,7 @@
           </div>
           <div>
             <label class="set__label" for="admDishName">Tên mâm cơm *</label>
-            <input type="text" class="adm-input" id="admDishName" maxlength="80" placeholder="VD: Thịt rang cháy cạnh và Canh rau muống" />
+            <input type="text" class="adm-input" id="admDishName" maxlength="80" placeholder="VD: Thịt rang cháy cạnh & Canh rau muống dầm sấu" />
           </div>
           <div>
             <label class="set__label" for="admDishDesc">Mô tả chi tiết (hiện khi khách bấm kính lúp)</label>
@@ -5221,7 +5221,7 @@
   /* ================= DEFAULT DISHES (SYNCHRONOUS GUARANTEE) ================= */
   var DEFAULT_DISHES = [
     {
-      name: "Thịt rang cháy cạnh và Canh rau muống",
+      name: "Thịt rang cháy cạnh & Canh rau muống dầm sấu",
       emoji: "🥩",
       img: "https://sdlpldhldyyytkbpujdk.supabase.co/storage/v1/object/public/dish-images/mamdish-1794073329197-nw762z.jpg",
       description: "Thịt ba chỉ cháy cạnh đậm đà ăn kèm canh rau muống luộc dầm sấu mát lành.",
@@ -5241,7 +5241,7 @@
       categories: "Cơm nhà [tag: #DA241C, txt: #FFFFFF, sub: #E65100]"
     },
     {
-      name: "Thịt viên sốt mắm tỏi và Canh bắp cải luộc",
+      name: "Thịt viên sốt mắm tỏi & Canh bắp cải luộc",
       emoji: "🧆",
       img: "https://sdlpldhldyyytkbpujdk.supabase.co/storage/v1/object/public/dish-images/mamdish-1794240252114-qg6vze.jpg",
       description: "Thịt viên mềm thơm sốt mắm tỏi đưa cơm, kèm canh bắp cải luộc chấm trứng.",
@@ -5251,7 +5251,7 @@
       categories: "Cơm nhà [tag: #DA241C, txt: #FFFFFF, sub: #E65100]"
     },
     {
-      name: "Gà chiên mắm và Canh chua thịt băm",
+      name: "Gà chiên mắm & Canh chua thịt băm",
       emoji: "🍗",
       img: "https://sdlpldhldyyytkbpujdk.supabase.co/storage/v1/object/public/dish-images/mamdish-1794364492859-apg1rw.jpg",
       description: "Thịt gà giòn thơm ngấm vị nước mắm tỏi ớt, canh chua thịt băm giải nhiệt.",
@@ -5261,7 +5261,7 @@
       categories: "Cơm nhà [tag: #DA241C, txt: #FFFFFF, sub: #E65100]"
     },
     {
-      name: "Gà xào nấm và Canh cải cúc thịt băm",
+      name: "Gà xào nấm & Canh cải cúc thịt băm",
       emoji: "🍄",
       img: "https://sdlpldhldyyytkbpujdk.supabase.co/storage/v1/object/public/dish-images/mamdish-1794364513985-c27uef.jpg",
       description: "Gà đùi mềm xào nấm hương tươi giòn ngọt, canh cải cúc thịt băm ấm bụng.",
@@ -5271,7 +5271,7 @@
       categories: "Cơm nhà [tag: #DA241C, txt: #FFFFFF, sub: #E65100]"
     },
     {
-      name: "Gà om nấm và Rau muống xào tỏi",
+      name: "Gà om nấm & Rau muống xào tỏi",
       emoji: "🍲",
       img: "https://sdlpldhldyyytkbpujdk.supabase.co/storage/v1/object/public/dish-images/mamdish-1794073558814-20pe0x.jpg",
       description: "Gà hầm nấm đậm đà mềm mọng, kết hợp rau muống xào tỏi giòn xanh chuẩn vị cơm mẹ nấu.",
@@ -5935,15 +5935,14 @@
     [2, 3, 4].forEach(function(m) {
       var p = computePricing(appState.people, m);
       var isActive = (m === appState.meals);
-      var recSlotHtml = '<div class="pkg-rec-slot">';
+      var recBadgeHtml = "";
       if (m === recMeals) {
         if (m === 4) {
-          recSlotHtml += '<span class="pkg-rec-badge pkg-rec-badge--fam">Phù hợp gia đình</span>';
+          recBadgeHtml = '<span class="pkg-rec-badge pkg-rec-badge--fam">Phù hợp gia đình</span>';
         } else {
-          recSlotHtml += '<span class="pkg-rec-badge pkg-rec-badge--pop">Phổ biến</span>';
+          recBadgeHtml = '<span class="pkg-rec-badge pkg-rec-badge--pop">Phổ biến</span>';
         }
       }
-      recSlotHtml += '</div>';
 
       var unitHtml = (appState.people === 1) ? "/bữa" : "/người/bữa";
 
@@ -5958,7 +5957,7 @@
 
       html += '<div class="pkg-card ' + (isActive ? 'is-active is-selected' : '') + '" data-meals="' + m + '">';
       html += '  <span class="pkg-check" aria-hidden="true">✓</span>';
-      html += '  ' + recSlotHtml;
+      if (recBadgeHtml) html += '  ' + recBadgeHtml;
       html += '  <div class="pkg-title">' + m + ' bữa</div>';
       html += '  <div class="pkg-price' + ((shouldPopPriceThisRender && isActive) ? ' is-price-pop' : '') + '">' + formatVND(p.perPerson) + '</div>';
       html += '  <div class="pkg-unit">' + unitHtml + '</div>';
@@ -5975,7 +5974,7 @@
         var p3 = computePricing(appState.people, 3);
         rewardBanner.className = "upsell-banner is-nudge";
         rewardBanner.innerHTML =
-          '<span class="upsell-text">💡 Chọn 3 bữa để ' + (p3.discountPct > 0 ? ('giảm ' + p3.discountPct + '% (tiết kiệm thêm <strong class="upsell-save">' + formatVND(p3.save) + '</strong>)') : 'nhận ưu đãi') + '</span>' +
+          '<span class="upsell-text">💡 Chọn 3 bữa để ' + (p3.discountPct > 0 ? ('giảm ' + p3.discountPct + '% (Tiết kiệm <strong class="upsell-save">' + formatVND(p3.save) + '</strong>)') : 'nhận ưu đãi') + '</span>' +
           '<button type="button" class="btn-upgrade-3meals" id="btnUpgradeTo3">Chọn 3 bữa</button>';
       } else {
         rewardBanner.className = "upsell-banner pkg-reward-banner is-unlocked";
@@ -6926,6 +6925,16 @@
       showToast(msg);
     }
 
+    var nameInput = document.getElementById("cName");
+    var customerName = nameInput ? nameInput.value.trim() : "";
+    if (!customerName) {
+      flagInputError(nameInput, "Vui lòng nhập họ tên của bạn!");
+      return;
+    } else if (nameInput) {
+      nameInput.value = customerName;
+      nameInput.classList.remove("is-error", "is-shake");
+    }
+
     var phoneInput = document.getElementById("cPhone");
     var rawPhone = phoneInput ? phoneInput.value : "";
     var phone = normalizeVNPhone(rawPhone);
@@ -6974,8 +6983,7 @@
 
     appState.phone = phone;
     appState.address = addr;
-    var nameInput = document.getElementById("cName");
-    appState.name = nameInput ? nameInput.value.trim() : "";
+    appState.name = customerName;
     var noteInput = document.getElementById("cNote");
     appState.note = noteInput ? noteInput.value.trim() : "";
     saveDraft();
@@ -8219,7 +8227,7 @@
           DISHES = remoteDishes.map(function(d) {
             var m = getDishMeta(d);
             return {
-              name: d.name || "",
+              name: typeof normalizeLegacyDishName === "function" ? normalizeLegacyDishName(d.name) : (d.name || ""),
               emoji: d.emoji || "🍽️",
               img: d.img || "",
               description: d.description || "",
@@ -8422,6 +8430,17 @@
       };
     });
   }
+  function normalizeLegacyDishName(name){
+    var s = String(name || "").trim();
+    var map = {
+      "Thịt rang cháy cạnh và Canh rau muống": "Thịt rang cháy cạnh & Canh rau muống dầm sấu",
+      "Thịt viên sốt mắm tỏi và Canh bắp cải luộc": "Thịt viên sốt mắm tỏi & Canh bắp cải luộc",
+      "Gà chiên mắm và Canh chua thịt băm": "Gà chiên mắm & Canh chua thịt băm",
+      "Gà xào nấm và Canh cải cúc thịt băm": "Gà xào nấm & Canh cải cúc thịt băm",
+      "Gà om nấm và Rau muống xào tỏi": "Gà om nấm & Rau muống xào tỏi"
+    };
+    return map[s] || s;
+  }
   function loadMenu(){
     try{
       var raw = localStorage.getItem(STORAGE_KEY);
@@ -8432,7 +8451,7 @@
           return parsed.map(function(d){
             var m = getDishMeta(d);
             return {
-              name: d.name.trim(),
+              name: normalizeLegacyDishName(d.name),
               emoji: String(d.emoji || "🍽️").slice(0, 8),
               img: String(d.img || "").trim(),
               description: String(d.description || "").trim().slice(0, 200),
@@ -8469,7 +8488,7 @@
           var cur = DISHES[i] || {};
           var imgVal = String(cur.img || "").indexOf("data:") === 0 ? cur.img : (d.img || "");
           return {
-            name: d.name || "",
+            name: normalizeLegacyDishName(d.name),
             emoji: d.emoji || "🍽️",
             img: imgVal,
             description: d.description || "",
