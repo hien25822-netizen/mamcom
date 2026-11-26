@@ -2053,7 +2053,7 @@
     text-align: center;
   }
   .vietqr-modal-sub {
-    font-size: 12px;
+    font-size: 12.5px;
     color: #574F4A;
     margin: 4px 0 0;
     font-weight: 600;
@@ -2062,16 +2062,47 @@
     align-items: center;
     gap: 5px;
   }
+  #vietqrModal .modal-box {
+    padding: 16px 18px;
+    max-height: 92vh;
+  }
+  #vietqrModal .modal-head {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+  .qr-summary-strip {
+    background: #FAF6F0;
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border: 1px solid #EDE5DC;
+    font-size: 13px;
+    color: #574F4A;
+    gap: 8px;
+  }
+  .qr-summary-strip__amt {
+    color: #DA241C;
+    font-weight: 800;
+    font-size: 15px;
+  }
+  .qr-summary-strip__id {
+    color: #1E1917;
+    font-weight: 700;
+    font-size: 13px;
+  }
   .vietqr-img-wrap {
     background: #FFFFFF;
     border: 1px solid #EAE0D5;
     border-radius: 16px;
-    padding: 10px;
-    display: inline-block;
-    margin: 0 auto 12px;
-    max-width: 260px;
+    padding: 8px;
+    display: block;
+    margin: 0 auto;
+    max-width: 248px;
     width: 100%;
-    box-shadow: 0 4px 16px rgba(30, 25, 23, 0.06);
+    box-shadow: 0 4px 16px rgba(30, 25, 23, 0.05);
   }
   .vietqr-img {
     width: 100%;
@@ -2082,8 +2113,9 @@
   .bank-details-box {
     background: #FAF6F0;
     border-radius: 14px;
-    padding: 14px 16px;
-    margin-bottom: 14px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    margin-bottom: 0;
     text-align: left;
     border: 1px solid #EDE5DC;
   }
@@ -2291,7 +2323,7 @@
     font-family: inherit;
     font-weight: 800;
     font-size: 14px;
-    margin: 0 0 14px;
+    margin: 12px 0;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -2302,6 +2334,68 @@
   .btn-save-qr:hover { background: #FEE2E2; }
   .btn-save-qr:active { transform: scale(0.98); }
   .btn-save-qr:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-manual-toggle {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #FFFFFF;
+    border: 1px dashed #D6CCC2;
+    color: #574F4A;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+  .btn-manual-toggle:hover {
+    border-color: #B8ABA0;
+    background: #FAF6F0;
+  }
+  .manual-toggle-chevron {
+    flex-shrink: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .manual-toggle-chevron {
+      transition: transform 0.22s ease;
+    }
+  }
+  .btn-manual-toggle[aria-expanded="true"] .manual-toggle-chevron {
+    transform: rotate(180deg);
+  }
+  .manual-transfer-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .manual-transfer-collapse {
+      transition: grid-template-rows 0.26s ease, opacity 0.22s ease;
+    }
+  }
+  .manual-transfer-collapse.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .manual-transfer-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+  .qr-va-reassure-box {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    color: #78350F;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: left;
+  }
   .btn-ig-deeplink {
     width: 100%;
     height: 48px;
@@ -2357,12 +2451,12 @@
     background: #ECFDF3;
     border: 1px solid #BBF7D0;
     border-radius: 12px;
-    padding: 12px 14px;
+    padding: 10px 12px;
     display: flex;
     align-items: center;
     gap: 10px;
     text-align: left;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
     color: #166534;
     line-height: 1.45;
@@ -4558,14 +4652,21 @@
         <h3 class="modal-title" id="vietqrModalTitle">Thanh toán chuyển khoản</h3>
         <p class="vietqr-modal-sub" id="vietqrModalSub">
           <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-          <span id="vietqrModalSubText">Mâm Cơm VN · Xác nhận tự động qua MB Bank</span>
+          <span id="vietqrModalSubText">Mâm Cơm VN · Xác nhận tự động</span>
         </p>
       </div>
       <button type="button" class="modal-close-btn" data-close-modal aria-label="Đóng">✕</button>
     </div>
 
-    <!-- Bước 1: Quét mã QR -->
+    <!-- Bước 1: Quét mã QR (Bố cục 2 tầng sạch, tập trung) -->
     <div class="vietqr-box" id="vietqrStepScan">
+      <!-- Dải tóm tắt 1 hàng -->
+      <div class="qr-summary-strip" id="qrSummaryStrip">
+        <span>Số tiền: <strong class="qr-summary-strip__amt" id="qrSummaryAmount">324.000đ</strong></span>
+        <span>Đơn: <strong class="qr-summary-strip__id" id="qrSummaryOrderId">#MC12345678</strong></span>
+      </div>
+
+      <!-- Khung ảnh VietQR chính thức -->
       <div class="vietqr-img-wrap">
         <div class="vietqr-loading-box" id="vietqrLoadingBox">
           <span class="qr-spinner" style="width:24px;height:24px;border-width:3px;" aria-hidden="true"></span>
@@ -4574,50 +4675,66 @@
         <img id="vietqrImg" class="vietqr-img" src="" alt="Mã VietQR Chuyển khoản" style="display:none;" />
       </div>
 
+      <!-- Nút Lưu ảnh mã QR -->
       <button type="button" class="btn-save-qr" id="btnVietQRSavedPhoto" disabled>
         📥 Lưu ảnh mã QR về máy
       </button>
 
-      <div class="bank-details-box">
-        <div class="bank-detail-row">
-          <span class="bank-detail-label">Ngân hàng:</span>
-          <span class="bank-detail-val" id="qrBankName">MB Bank (Quân Đội)</span>
-        </div>
-        <div class="bank-detail-row">
-          <span class="bank-detail-label">Số tài khoản:</span>
-          <span class="bank-detail-val">
-            <span id="qrStkText">2258228668</span>
-            <button type="button" class="btn-copy-chip" data-copy-target="qrStkText">Chép</button>
-          </span>
-        </div>
-        <div class="bank-detail-row">
-          <span class="bank-detail-label">Chủ tài khoản:</span>
-          <span class="bank-detail-val" id="qrAccNameText">NGUYEN QUANG HIEN</span>
-        </div>
-        <div class="bank-detail-row">
-          <span class="bank-detail-label">Số tiền:</span>
-          <span class="bank-detail-val" style="color:#DA241C;">
-            <span id="qrAmountText">324.000đ</span>
-            <button type="button" class="btn-copy-chip" data-copy-target="qrAmountText">Chép</button>
-          </span>
-        </div>
-        <div class="bank-detail-row">
-          <span class="bank-detail-label">Nội dung CK:</span>
-          <span class="bank-detail-val">
-            <span id="qrOrderCodeText">MC12345678</span>
-            <button type="button" class="btn-copy-chip" data-copy-target="qrOrderCodeText">Chép</button>
-          </span>
-        </div>
-      </div>
+      <!-- Thanh trạng thái tự động -->
       <div class="vietqr-actions">
         <div class="qr-auto-status-box" id="qrAutoStatusBox">
           <span class="qr-spinner" aria-hidden="true"></span>
-          <span id="qrAutoStatusText">Đang chờ thanh toán... Hệ thống tự động xác nhận ngay khi nhận được chuyển khoản.</span>
+          <span id="qrAutoStatusText">Đang chờ thanh toán... Hệ thống tự xác nhận ngay khi nhận được chuyển khoản.</span>
         </div>
         <div class="qr-fallback-box" id="qrFallbackBox" style="display:none;">
           <div><strong>Cổng tự động PayOS đang tạm bận.</strong> Bạn vẫn chuyển khoản bình thường vào MB Bank <strong>2258228668</strong> (<strong>NGUYEN QUANG HIEN</strong>) với nội dung <strong id="qrFallbackOrderId">MC12345678</strong> rồi bấm nút bên dưới để bếp xác nhận ngay:</div>
           <button type="button" class="btn-vietqr-confirm" id="btnManualConfirmNotify">Tôi đã chuyển khoản · Nhắn xác nhận ngay</button>
           <div style="margin-top:8px;font-size:11.5px;">Hỗ trợ nhanh: Gọi/Zalo <a href="tel:0965942185" style="color:#DA241C;font-weight:700;">0965 942 185</a> (<a href="https://zalo.me/0965942185" target="_blank" rel="noopener" style="color:#DA241C;font-weight:700;">Mở Zalo</a>) · <a href="https://instagram.com/mamcomvn" target="_blank" rel="noopener noreferrer" style="color:#DA241C;font-weight:700;">Instagram</a></div>
+        </div>
+      </div>
+
+      <!-- Tầng 2: Nút mở rộng phần sao chép chuyển khoản thủ công (đóng mặc định) -->
+      <button type="button" class="btn-manual-toggle" id="btnToggleManualTransfer" aria-expanded="false" aria-controls="manualTransferBox">
+        <span>Không quét được QR? Sao chép thông tin chuyển khoản</span>
+        <svg class="manual-toggle-chevron" aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div id="manualTransferBox" class="manual-transfer-collapse" inert>
+        <div class="manual-transfer-inner">
+          <div class="bank-details-box">
+            <div class="bank-detail-row">
+              <span class="bank-detail-label">Ngân hàng:</span>
+              <span class="bank-detail-val" id="qrBankName">MB Bank (Quân Đội)</span>
+            </div>
+            <div class="bank-detail-row">
+              <span class="bank-detail-label">Số tài khoản:</span>
+              <span class="bank-detail-val">
+                <span id="qrStkText">2258228668</span>
+                <button type="button" class="btn-copy-chip" data-copy-target="qrStkText">Chép</button>
+              </span>
+            </div>
+            <div class="bank-detail-row">
+              <span class="bank-detail-label">Chủ tài khoản:</span>
+              <span class="bank-detail-val" id="qrAccNameText">NGUYEN QUANG HIEN</span>
+            </div>
+            <div class="bank-detail-row">
+              <span class="bank-detail-label">Số tiền:</span>
+              <span class="bank-detail-val" style="color:#DA241C;">
+                <span id="qrAmountText">324.000đ</span>
+                <button type="button" class="btn-copy-chip" data-copy-target="qrAmountText">Chép</button>
+              </span>
+            </div>
+            <div class="bank-detail-row">
+              <span class="bank-detail-label">Nội dung CK:</span>
+              <span class="bank-detail-val">
+                <span id="qrOrderCodeText">MC12345678</span>
+                <button type="button" class="btn-copy-chip" data-copy-target="qrOrderCodeText">Chép</button>
+              </span>
+            </div>
+          </div>
+          <div class="qr-va-reassure-box" id="qrVaReassureBox" style="display:none;">
+            <strong>Lưu ý:</strong> Số tài khoản gồm cả chữ và số là tài khoản định danh của MB Bank cấp riêng cho đơn này. Bạn chỉ cần chọn <strong>MB Bank</strong> và dán nguyên dãy số vào, tên <strong>NGUYEN QUANG HIEN</strong> sẽ tự động hiện lên để bạn kiểm tra trước khi chuyển.
+          </div>
         </div>
       </div>
     </div>
@@ -5691,7 +5808,7 @@
   }
 
   /* Toast Notification */
-  function showToast(msg) {
+  function showToast(msg, durationMs) {
     var container = document.getElementById("mamcomToastContainer");
     if (!container) return;
     container.innerHTML = "";
@@ -5703,7 +5820,7 @@
       t.style.opacity = "0";
       t.style.transition = "opacity 0.3s ease";
       setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 300);
-    }, 2800);
+    }, durationMs || 2800);
   }
 
   /* ================= RENDER FUNCTIONS ================= */
@@ -6805,7 +6922,22 @@
     if (modalTitle) modalTitle.textContent = "Thanh toán chuyển khoản";
 
     var modalSubText = document.getElementById("vietqrModalSubText");
-    if (modalSubText) modalSubText.textContent = "Mâm Cơm VN · Xác nhận tự động qua MB Bank";
+    if (modalSubText) modalSubText.textContent = "Mâm Cơm VN · Xác nhận tự động";
+
+    var sumAmtEl = document.getElementById("qrSummaryAmount");
+    if (sumAmtEl) sumAmtEl.textContent = formatVND(exactTotalAmount);
+    var sumIdEl = document.getElementById("qrSummaryOrderId");
+    if (sumIdEl) sumIdEl.textContent = "#" + initialOrderCode;
+
+    var toggleManualBtn = document.getElementById("btnToggleManualTransfer");
+    var manualBox = document.getElementById("manualTransferBox");
+    var vaReassureBox = document.getElementById("qrVaReassureBox");
+    if (manualBox) {
+      manualBox.classList.remove("is-open");
+      manualBox.inert = true;
+    }
+    if (toggleManualBtn) toggleManualBtn.setAttribute("aria-expanded", "false");
+    if (vaReassureBox) vaReassureBox.style.display = "none";
 
     var loadingBox = document.getElementById("vietqrLoadingBox");
     var qrImg = document.getElementById("vietqrImg");
@@ -6847,7 +6979,11 @@
     if (stepSuccess) stepSuccess.style.display = "none";
 
     var vModal = document.getElementById("vietqrModal");
-    if (vModal) vModal.classList.add("is-open");
+    if (vModal) {
+      vModal.classList.add("is-open");
+      var vBox = vModal.querySelector(".modal-box");
+      if (vBox) vBox.scrollTop = 0;
+    }
     updateStickyVisibility();
 
     function finalizeOrderCreationAndWatch(finalOrderId, accNo, accName, payDesc, isPayosOk) {
@@ -6868,12 +7004,17 @@
       }
 
       // Đồng bộ 100% dữ liệu hiển thị cho cả QR chính thức & 3 nút Copy
+      if (sumAmtEl) sumAmtEl.textContent = formatVND(exactTotalAmount);
+      if (sumIdEl) sumIdEl.textContent = "#" + finalOrderId;
       if (stkEl) stkEl.textContent = currentAccountNumber;
       if (accNameEl) accNameEl.textContent = currentAccountName;
       if (codeEl) codeEl.textContent = currentPayDescription;
+      if (vaReassureBox) {
+        vaReassureBox.style.display = /[A-Za-z]/.test(currentAccountNumber) ? "block" : "none";
+      }
 
       if (isPayosVerifiedMode) {
-        if (modalSubText) modalSubText.textContent = "Mâm Cơm VN · Xác nhận tự động qua MB Bank";
+        if (modalSubText) modalSubText.textContent = "Mâm Cơm VN · Xác nhận tự động";
         if (autoBox) autoBox.style.display = "flex";
         if (fallbackBox) fallbackBox.style.display = "none";
       } else {
@@ -7590,6 +7731,24 @@
       return;
     }
 
+    if (target.closest("#btnToggleManualTransfer")) {
+      var toggleBtn = document.getElementById("btnToggleManualTransfer");
+      var manualBox = document.getElementById("manualTransferBox");
+      if (manualBox && toggleBtn) {
+        var nowOpen = manualBox.classList.toggle("is-open");
+        toggleBtn.setAttribute("aria-expanded", nowOpen ? "true" : "false");
+        manualBox.inert = !nowOpen;
+        if (nowOpen) {
+          setTimeout(function() {
+            if (typeof manualBox.scrollIntoView === "function") {
+              manualBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+          }, 120);
+        }
+      }
+      return;
+    }
+
     var copyBtn = target.closest("[data-copy-target]");
     if (copyBtn) {
       var targetId = copyBtn.getAttribute("data-copy-target");
@@ -7606,6 +7765,13 @@
           var originalText = copyBtn.textContent;
           copyBtn.textContent = "Đã chép ✓";
           setTimeout(function() { copyBtn.textContent = originalText; }, 2000);
+          if (targetId === "qrStkText") {
+            if (/[A-Za-z]/.test(textToCopy)) {
+              showToast("✓ Đã chép STK! Chọn MB Bank và dán vào — tên NGUYEN QUANG HIEN sẽ tự hiện ra.", 3200);
+            } else {
+              showToast("✓ Đã chép số tài khoản!", 3200);
+            }
+          }
         } catch(e) {}
       }
       return;
