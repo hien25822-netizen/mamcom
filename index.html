@@ -21,15 +21,42 @@
 
   :root {
     color-scheme: light;
-    --red: #da241c;
-    --red-hover: #c41e17;
-    --red-dark: #9e140e;
-    --red-soft: #fdf2f1;
-    --ink: #1e1917;
-    --muted: #786f6a;
-    --line: #ebe3dc;
-    --green: #198042;
-    --green-soft: #edf8f1;
+    /* 60% Warm Neutral Canvas */
+    --bg-page: #FAF6F0;
+    --bg-card: #FFFFFF;
+    --bg-subtle: #F4EDE4;
+    --border-soft: #EAE0D5;
+    --border-hairline: #F1EAE2;
+
+    /* 30% Espresso Dark Charcoal (Typography & Selection State) */
+    --ink-primary: #1F1A17;
+    --ink-secondary: #5C534E;
+    --ink-muted: #827872;
+    --select-bg: #261F1B;
+    --select-text: #FFFFFF;
+
+    /* 10% Brand Vermilion Red & Semantic Tokens */
+    --brand-red: #D9261C;
+    --brand-red-dark: #B91C1C;
+    --brand-red-tint: #FFF6F5;
+    --brand-red-border: #F2B8B5;
+    --trust-green: #15803D;
+    --trust-green-bg: #ECFDF3;
+    --trust-green-border: #BBF7D0;
+    --vip-amber: #92400E;
+    --vip-amber-border: #F59E0B;
+    --vip-amber-bg: #FFFBEB;
+
+    /* Compatibility aliases */
+    --red: #D9261C;
+    --red-hover: #B91C1C;
+    --red-dark: #991B1B;
+    --red-soft: #FFF6F5;
+    --ink: #1F1A17;
+    --muted: #827872;
+    --line: #EAE0D5;
+    --green: #15803D;
+    --green-soft: #ECFDF3;
     --radius-pill: 9999px;
   }
   .owner-bar[hidden] {
@@ -142,14 +169,14 @@
     transition: all 0.15s ease;
   }
   .time-pill:hover {
-    border-color: #DA241C;
-    color: #DA241C;
+    border-color: var(--select-bg);
+    color: var(--ink-primary);
   }
   .time-pill.is-active {
-    background: #DA241C;
-    color: #FFFFFF;
-    border-color: #DA241C;
-    box-shadow: 0 3px 10px rgba(218, 36, 28, 0.25);
+    background: var(--select-bg);
+    color: var(--select-text);
+    border-color: var(--select-bg);
+    box-shadow: 0 3px 10px rgba(38, 31, 27, 0.22);
   }
   .time-pills-grid.is-error .time-pill {
     border-color: #EF4444;
@@ -171,14 +198,14 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
-    background-color: #FAF6F0;
-    color: #1E1917;
+    background-color: var(--bg-page);
+    color: var(--ink-primary);
   }
   body {
     min-height: 100vh;
     font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
-    background-color: #FAF6F0;
-    color: #1E1917;
+    background-color: var(--bg-page);
+    color: var(--ink-primary);
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
     -webkit-font-smoothing: antialiased;
@@ -188,14 +215,22 @@
     font-family: inherit;
     font-size: 16px; /* Chống iOS zoom tự động */
   }
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  textarea:-webkit-autofill,
-  select:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
-    -webkit-text-fill-color: #1E1917 !important;
-    transition: background-color 5000s ease-in-out 0s;
+  :is(input, select, textarea):is(:autofill, :-webkit-autofill) {
+    box-shadow: inset 0 0 0 100vmax #FFFDFB;
+    -webkit-text-fill-color: var(--ink-primary);
+    caret-color: var(--ink-primary);
+    border-color: var(--border-soft);
+  }
+  :is(input, select, textarea):is(:autofill, :-webkit-autofill):focus,
+  .form-input:is(:autofill, :-webkit-autofill):focus-visible {
+    border-color: var(--brand-red);
+    box-shadow:
+      0 0 0 3px rgba(217, 38, 28, 0.12),
+      inset 0 0 0 100vmax #FFFDFB;
+  }
+  :is(button, a, .pkg-card):focus-visible {
+    outline: 2px solid var(--brand-red);
+    outline-offset: 2px;
   }
 
   /* ================= LAYOUT CONTAINER (1 CỘT CĂN GIỮA 640px) ================= */
@@ -450,7 +485,7 @@
 
   .hero-transform {
     max-width: 480px;
-    margin: 0 auto 16px;
+    margin: 0 auto 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -470,7 +505,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     font-family: inherit;
     transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -481,20 +516,20 @@
     transform: scale(0.97);
   }
   .hero-circle-media {
-    width: 132px;
-    height: 132px;
+    width: 98px;
+    height: 98px;
     border-radius: 50%;
     border: 3px solid #FFFFFF;
     box-shadow: 0 8px 24px -4px rgba(45, 25, 15, 0.15);
     overflow: hidden;
-    background: #FAF6F0;
+    background: var(--bg-page);
     display: block;
     flex-shrink: 0;
   }
   @media (min-width: 520px) {
     .hero-circle-media {
-      width: 164px;
-      height: 164px;
+      width: 156px;
+      height: 156px;
       border-width: 3.5px;
     }
   }
@@ -699,17 +734,17 @@
     transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .people-pill:hover {
-    border-color: #DA241C;
-    color: #DA241C;
+    border-color: var(--select-bg);
+    color: var(--ink-primary);
   }
   .people-pill:active {
     transform: scale(0.97);
   }
   .people-pill.is-active {
-    background: #DA241C;
-    color: #FFFFFF;
-    border-color: #DA241C;
-    box-shadow: 0 4px 12px rgba(218, 36, 28, 0.25);
+    background: var(--select-bg);
+    color: var(--select-text);
+    border-color: var(--select-bg);
+    box-shadow: 0 4px 12px rgba(38, 31, 27, 0.22);
   }
 
   .pkg-grid {
@@ -756,7 +791,7 @@
     }
   }
   .pkg-card:hover {
-    border-color: #DA241C;
+    border-color: var(--brand-red);
     transform: translateY(-2px);
   }
   .pkg-card:active {
@@ -764,9 +799,9 @@
   }
   .pkg-card.is-active,
   .pkg-card.is-selected {
-    border: 2px solid #DA241C;
-    background: #FFF8F7;
-    box-shadow: 0 6px 18px rgba(218, 36, 28, 0.10);
+    border: 2px solid var(--brand-red);
+    background: var(--brand-red-tint);
+    box-shadow: 0 6px 18px rgba(217, 38, 28, 0.10);
   }
   .pkg-check {
     position: absolute;
@@ -775,7 +810,7 @@
     width: 17px;
     height: 17px;
     border-radius: 50%;
-    background: #DA241C;
+    background: var(--brand-red);
     color: #FFFFFF;
     font-size: 9.5px;
     font-weight: 900;
@@ -837,19 +872,24 @@
   .pkg-title {
     font-size: clamp(14.5px, 3.8vw, 15.5px);
     font-weight: 800;
-    color: #1E1917;
+    color: var(--ink-primary);
     line-height: 1.25;
   }
   .pkg-price {
     font-size: clamp(16px, 4.4vw, 20px);
     font-weight: 900;
-    color: #DA241C;
+    color: var(--ink-primary);
     letter-spacing: -0.025em;
     line-height: 1.15;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
     display: inline-block;
     margin: 2px 0 0;
+    transition: color 0.16s ease;
+  }
+  .pkg-card.is-active .pkg-price,
+  .pkg-card.is-selected .pkg-price {
+    color: var(--brand-red);
   }
   .pkg-unit {
     font-size: 11px;
@@ -1008,7 +1048,7 @@
     height: 50px;
     padding: 0 12px;
     border-radius: 14px;
-    background: linear-gradient(180deg, #E32B23 0%, #CE1E16 100%);
+    background: linear-gradient(180deg, #E32C22 0%, #CC1E15 100%);
     color: #FFFFFF;
     font-size: clamp(13.5px, 3.8vw, 15.5px);
     font-weight: 800;
@@ -1021,16 +1061,24 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    box-shadow: 0 6px 18px -4px rgba(218, 36, 28, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 18px -4px rgba(217, 38, 28, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .btn-wizard-next:hover {
-    background: linear-gradient(180deg, #D1221B 0%, #B91C1C 100%);
+    background: linear-gradient(180deg, #D1221B 0%, var(--brand-red-dark) 100%);
     transform: translateY(-1px);
-    box-shadow: 0 8px 22px -4px rgba(218, 36, 28, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 22px -4px rgba(217, 38, 28, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.22);
   }
   .btn-wizard-next:active {
     transform: scale(0.97);
+  }
+  .micro-trust-line {
+    margin: 9px 0 0;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    line-height: 1.45;
   }
 
   /* Thanh điều hướng & nút Back trong Ải 2 / Ải 3 */
@@ -1469,7 +1517,7 @@
     height: 52px;
     padding: 0 12px;
     border-radius: 14px;
-    background: linear-gradient(180deg, #E32B23 0%, #CE1E16 100%);
+    background: linear-gradient(180deg, #E32C22 0%, #CC1E15 100%);
     color: #FFFFFF;
     font-size: clamp(14px, 3.8vw, 16px);
     font-weight: 800;
@@ -1481,16 +1529,21 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    box-shadow: 0 6px 18px -4px rgba(218, 36, 28, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 18px -4px rgba(217, 38, 28, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .btn-submit-order:hover {
-    background: linear-gradient(180deg, #D1221B 0%, #B91C1C 100%);
+    background: linear-gradient(180deg, #D1221B 0%, var(--brand-red-dark) 100%);
     transform: translateY(-1px);
-    box-shadow: 0 8px 22px -4px rgba(218, 36, 28, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 22px -4px rgba(217, 38, 28, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.22);
   }
   .btn-submit-order:active {
     transform: scale(0.97);
+  }
+  .btn-submit-order:disabled {
+    opacity: 0.72;
+    cursor: wait;
+    transform: none;
   }
 
   /* ================= FLOATING STICKY BOTTOM BAR (MOBILE & DESKTOP) ================= */
@@ -1555,7 +1608,7 @@
     height: 42px;
     padding: 0 16px;
     border-radius: 12px;
-    background: linear-gradient(180deg, #E32B23 0%, #CE1E16 100%);
+    background: linear-gradient(180deg, #E32C22 0%, #CC1E15 100%);
     color: #FFFFFF;
     font-weight: 800;
     font-size: 14px;
@@ -1563,7 +1616,7 @@
     cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
-    box-shadow: 0 6px 18px -4px rgba(218, 36, 28, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 18px -4px rgba(217, 38, 28, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .btn-sticky-action:active {
@@ -3985,14 +4038,14 @@
     transition: all 0.15s ease;
   }
   .quick-date-pill:hover {
-    border-color: #DA241C;
-    color: #DA241C;
+    border-color: var(--select-bg);
+    color: var(--ink-primary);
   }
   .quick-date-pill.is-active {
-    background: #DA241C;
-    color: #FFFFFF;
-    border-color: #DA241C;
-    box-shadow: 0 4px 12px rgba(218, 36, 28, 0.22);
+    background: var(--select-bg);
+    color: var(--select-text);
+    border-color: var(--select-bg);
+    box-shadow: 0 4px 12px rgba(38, 31, 27, 0.20);
   }
   .custom-date-wrap {
     margin-top: 8px;
@@ -4042,19 +4095,33 @@
   .lightbox-nutri {
     font-size: 12px;
     font-weight: 700;
-    color: #15803D;
-    background: #ECFDF3;
+    color: var(--trust-green);
+    background: var(--trust-green-bg);
     display: inline-block;
     padding: 3px 9px;
     border-radius: 99px;
     margin-top: 8px;
+  }
+  .lightbox-box-contents {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-soft);
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--ink-secondary);
+    text-align: left;
+  }
+  .lightbox-box-contents strong {
+    color: var(--ink-primary);
   }
   .btn-lightbox-add {
     margin-top: 12px;
     width: 100%;
     height: 44px;
     border-radius: 12px;
-    background: #DA241C;
+    background: linear-gradient(180deg, #E32C22 0%, #CC1E15 100%);
     color: #FFFFFF;
     font-size: 14.5px;
     font-weight: 800;
@@ -4067,21 +4134,21 @@
     transition: background 0.15s ease;
   }
   .btn-lightbox-add:hover {
-    background: #B91C1C;
+    background: var(--brand-red-dark);
   }
 
-  /* ================= SPLASH LOADING SCREEN (~0.9s) ================= */
+  /* ================= SPLASH LOADING SCREEN (<0.9s) ================= */
   #splash {
     position: fixed;
     inset: 0;
     z-index: 99999;
-    background: #FAF6F0;
+    background: var(--bg-page);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    transition: opacity 0.22s ease;
+    transition: opacity 0.2s ease;
   }
   .splash__logo-box {
     width: 196px;
@@ -4098,11 +4165,11 @@
     height: 100%;
   }
   #splashRedRing {
-    transition: stroke-dashoffset 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: stroke-dashoffset 0.42s cubic-bezier(0.22, 1, 0.36, 1);
   }
   #splashTextGroup {
     opacity: 0.25;
-    transition: opacity 0.24s ease;
+    transition: opacity 0.18s ease;
   }
   .splash-caption {
     font-size: 12.5px;
@@ -4149,14 +4216,14 @@
       if (ring) ring.style.strokeDashoffset = "0";
       setTimeout(function () {
         if (textGroup) textGroup.style.opacity = "1";
-      }, 340);
-    }, 20);
+      }, 260);
+    }, 16);
     setTimeout(function () {
       splashEl.style.opacity = "0";
       splashEl.style.pointerEvents = "none";
-    }, 700);
-    setTimeout(removeSplash, 940);
-    setTimeout(removeSplash, 1500);
+    }, 560);
+    setTimeout(removeSplash, 760);
+    setTimeout(removeSplash, 1300);
   })();
 </script>
 
@@ -4210,7 +4277,7 @@
         </div>
         <div class="hero-trust-pill">
           <span class="hero-trust-pill__icon" aria-hidden="true">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.92 5.92 6.53.95-4.72 4.6 1.11 6.5L12 17.4l-5.84 3.07 1.11-6.5-4.72-4.6 6.53-.95L12 2.5z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.92 5.92 6.53.95-4.72 4.6 1.11 6.5L12 17.4l-5.84 3.07 1.11-6.5-4.72-4.6 6.53-.95L12 2.5z"/></svg>
           </span>
           <span><strong id="mealsCount">109</strong> gia đình tin tưởng Mâm Cơm</span>
           <span id="visitorsCount" style="display:none;">717</span>
@@ -4263,6 +4330,7 @@
           <!-- Thanh phản hồi mở khóa giảm 10% render động -->
         </div>
         <button type="button" class="btn-wizard-next" id="btnStep1Next">Chọn món ngay →</button>
+        <p class="micro-trust-line">✓ Sơ chế sạch trong ngày · ✓ Không đụng dao thớt · ✓ Đổi trả nếu chưa tươi</p>
         </section>
 
         <!-- BƯỚC 2: CHỌN MÓN -->
@@ -4333,7 +4401,7 @@
 
         <div class="form-group">
           <label class="form-label" for="cPhone">Số điện thoại (Zalo) nhận hàng *</label>
-          <input type="tel" class="form-input" id="cPhone" placeholder="Ví dụ: 0912 345 678" autocomplete="tel" required />
+          <input type="tel" class="form-input" id="cPhone" inputmode="tel" placeholder="Ví dụ: 0912 345 678" autocomplete="tel" required />
         </div>
 
         <div class="form-group">
@@ -4387,6 +4455,7 @@
         <button type="button" class="btn-submit-order" id="btnOpenVietQR">
           Thanh toán chuyển khoản · <span id="btnSubmitPrice">324.000đ</span>
         </button>
+        <p class="micro-trust-line">🔒 Xác nhận tự động qua MB Bank · Hoàn tiền ngay nếu thiếu món hoặc chưa tươi</p>
         </section>
       </div>
 
@@ -4670,7 +4739,7 @@
       <div class="vietqr-img-wrap">
         <div class="vietqr-loading-box" id="vietqrLoadingBox">
           <span class="qr-spinner" style="width:24px;height:24px;border-width:3px;" aria-hidden="true"></span>
-          <span>Đang tạo mã VietQR riêng cho đơn hàng...</span>
+          <span>Đang tạo mã VietQR tự động...</span>
         </div>
         <img id="vietqrImg" class="vietqr-img" src="" alt="Mã VietQR Chuyển khoản" style="display:none;" />
       </div>
@@ -4791,6 +4860,9 @@
       <h3 class="lightbox-title" id="lightboxName">Tên món</h3>
       <div class="lightbox-nutri" id="lightboxNutri"></div>
       <p class="lightbox-desc" id="lightboxDesc">Mô tả món ăn</p>
+      <div class="lightbox-box-contents" id="lightboxBoxContents" style="display:none;">
+        <strong>Trong hộp có sẵn:</strong> Thịt/cá sơ chế &amp; cân định lượng · Rau củ nhặt rửa sạch · Gói gia vị nêm chuẩn · Thẻ công thức nấu 15 phút
+      </div>
       <button type="button" class="btn-lightbox-add" id="btnLightboxAddDish">+ Thêm mâm này vào thực đơn</button>
     </div>
   </div>
@@ -5478,6 +5550,9 @@
   var currentMeals = 83;
   var activeLightboxDishIndex = -1;
   var isCreatingPayment = false;
+  var isSubmittingOrder = false;
+  var activePaymentCheckFn = null;
+  var lastInstantPollTs = 0;
   var lastMixedSignature = "";
 
   var appState = {
@@ -5521,6 +5596,9 @@
         meals: appState.meals,
         selectedDishes: appState.selectedDishes,
         selectedOrder: appState.selectedOrder,
+        date: appState.date,
+        date2: appState.date2,
+        dateMode: appState.dateMode,
         name: nameEl ? nameEl.value : appState.name,
         phone: phoneEl ? phoneEl.value : appState.phone,
         address: addrEl ? addrEl.value : appState.address,
@@ -5541,6 +5619,18 @@
       }
       if ([2, 3, 4].indexOf(parseInt(d.meals, 10)) !== -1) {
         appState.meals = parseInt(d.meals, 10);
+      }
+      var tomorrowISO = getTomorrowISO();
+      if (typeof d.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d.date) && d.date >= tomorrowISO) {
+        appState.date = d.date;
+        appState.dateMode = (d.dateMode === "custom" && d.date > tomorrowISO) ? "custom" : "tomorrow";
+        if (typeof d.date2 === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d.date2) && d.date2 > d.date) {
+          appState.date2 = d.date2;
+        }
+      } else {
+        appState.date = tomorrowISO;
+        appState.dateMode = "tomorrow";
+        appState.date2 = "";
       }
       if (d.selectedDishes && typeof d.selectedDishes === "object") {
         var cleanMap = {};
@@ -6362,6 +6452,7 @@
     var t = document.getElementById("lightboxName");
     var d = document.getElementById("lightboxDesc");
     var nutriEl = document.getElementById("lightboxNutri");
+    var boxContentsEl = document.getElementById("lightboxBoxContents");
     var addBtn = document.getElementById("btnLightboxAddDish");
     if (!lb || !img) return;
     img.src = src || "";
@@ -6379,6 +6470,7 @@
         nutriEl.textContent = getDishNutritionLabel(dishObj, true);
         nutriEl.style.display = "inline-block";
       }
+      if (boxContentsEl) boxContentsEl.style.display = "block";
       if (addBtn) {
         addBtn.style.display = "flex";
         var isFull = (getSelectedCount() >= appState.meals);
@@ -6393,6 +6485,7 @@
       }
     } else {
       if (nutriEl) nutriEl.style.display = "none";
+      if (boxContentsEl) boxContentsEl.style.display = "none";
       if (addBtn) addBtn.style.display = "none";
     }
 
@@ -6487,6 +6580,7 @@
   }
 
   function stopPaymentWatchers() {
+    activePaymentCheckFn = null;
     if (paymentPollInterval) {
       clearInterval(paymentPollInterval);
       paymentPollInterval = null;
@@ -6506,6 +6600,7 @@
     var wasSuccess = isPaymentSuccessTriggered;
     isPaymentModalActive = false;
     isCreatingPayment = false;
+    isSubmittingOrder = false;
     isPayosVerifiedMode = false;
     activeQrRenderToken++;
     cachedQrJpgBlob = null;
@@ -6635,6 +6730,7 @@
     if (isPaymentSuccessTriggered) return;
     isPaymentSuccessTriggered = true;
     isCreatingPayment = false;
+    isSubmittingOrder = false;
     var openBtn = document.getElementById("btnOpenVietQR");
     if (openBtn) openBtn.disabled = false;
     stopPaymentWatchers();
@@ -6753,7 +6849,8 @@
       }
     }
 
-    // 1. Polling mỗi 3 giây: Supabase RPC get_order_status + kiểm tra trực tiếp PayOS API
+    // 1. Polling mỗi 3 giây + kích hoạt tức thì khi quay lại app ngân hàng (visibilitychange/focus)
+    activePaymentCheckFn = checkStatusOnce;
     paymentPollInterval = setInterval(checkStatusOnce, 3000);
 
     // 2. Supabase Realtime listener phản hồi tức thì khi webhook cập nhật status
@@ -6777,8 +6874,36 @@
     }
   }
 
+  function pollOrderStatusNow() {
+    if (!isPaymentModalActive || isPaymentSuccessTriggered) return;
+    var now = Date.now();
+    if (now - lastInstantPollTs < 400) return;
+    lastInstantPollTs = now;
+    if (typeof activePaymentCheckFn === "function") {
+      activePaymentCheckFn();
+    }
+  }
+  window.__mamcomPollOrderStatusNow = pollOrderStatusNow;
+
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "visible") {
+      pollOrderStatusNow();
+    }
+  });
+  window.addEventListener("focus", pollOrderStatusNow);
+
+  function normalizeVNPhone(raw) {
+    var s = String(raw || "").trim().replace(/[\s\-().]/g, "");
+    if (s.indexOf("+84") === 0) {
+      s = "0" + s.slice(3);
+    } else if (s.indexOf("84") === 0 && s.length >= 10) {
+      s = "0" + s.slice(2);
+    }
+    return s;
+  }
+
   function handleOpenVietQR() {
-    if (isCreatingPayment) return;
+    if (isSubmittingOrder || isCreatingPayment) return;
 
     var totalSelected = getSelectedCount();
     var maxMeals = appState.meals;
@@ -6802,11 +6927,13 @@
     }
 
     var phoneInput = document.getElementById("cPhone");
-    var phone = phoneInput ? phoneInput.value.trim() : "";
-    if (!phone || phone.length < 8) {
-      flagInputError(phoneInput, "Vui lòng nhập số điện thoại nhận hàng!");
+    var rawPhone = phoneInput ? phoneInput.value : "";
+    var phone = normalizeVNPhone(rawPhone);
+    if (!/^0[35789]\d{8}$/.test(phone)) {
+      flagInputError(phoneInput, "Số điện thoại chưa đúng (10 số, bắt đầu bằng 0 hoặc +84)!");
       return;
     } else if (phoneInput) {
+      phoneInput.value = phone;
       phoneInput.classList.remove("is-error", "is-shake");
     }
 
@@ -6854,6 +6981,7 @@
     saveDraft();
     trackWizardFunnel("qr_opened");
     isCreatingPayment = true;
+    isSubmittingOrder = true;
     var openBtn = document.getElementById("btnOpenVietQR");
     if (openBtn) openBtn.disabled = true;
 
@@ -6973,6 +7101,9 @@
       manualBtn.textContent = "Tôi đã chuyển khoản · Nhắn xác nhận ngay";
     }
 
+    var toastCont = document.getElementById("mamcomToastContainer");
+    if (toastCont) toastCont.innerHTML = "";
+
     var stepScan = document.getElementById("vietqrStepScan");
     var stepSuccess = document.getElementById("vietqrStepSuccess");
     if (stepScan) stepScan.style.display = "block";
@@ -6988,6 +7119,7 @@
 
     function finalizeOrderCreationAndWatch(finalOrderId, accNo, accName, payDesc, isPayosOk) {
       isCreatingPayment = false;
+      isSubmittingOrder = false;
       if (openBtn) openBtn.disabled = false;
       if (!isPaymentModalActive) return;
 
@@ -7135,6 +7267,7 @@
       .then(function(data) {
         if (!isPaymentModalActive) {
           isCreatingPayment = false;
+          isSubmittingOrder = false;
           if (openBtn) openBtn.disabled = false;
           return;
         }
@@ -7150,6 +7283,7 @@
         console.warn("PayOS create-payment fallback after retry:", err);
         if (!isPaymentModalActive) {
           isCreatingPayment = false;
+          isSubmittingOrder = false;
           if (openBtn) openBtn.disabled = false;
           return;
         }
@@ -7176,12 +7310,20 @@
     cDateEl.min = getTomorrowISO();
     cDateEl.value = appState.date || getTomorrowISO();
     cDateEl.addEventListener("change", function() {
+      var minIso = getTomorrowISO();
+      var chosen = cDateEl.value || minIso;
+      if (chosen < minIso) {
+        chosen = minIso;
+        cDateEl.value = minIso;
+        showToast("Ngày giao sớm nhất là ngày mai nhé!");
+      }
       appState.dateMode = "custom";
-      appState.date = cDateEl.value;
+      appState.date = chosen;
       cDateEl.classList.remove("is-error", "is-shake");
       if (appState.meals === 4 && appState.date) {
         appState.date2 = addDaysISO(appState.date, getBatch2GapDays());
       }
+      saveDraft();
       renderStep3Summary();
     });
   }
